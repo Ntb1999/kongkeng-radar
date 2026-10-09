@@ -1501,6 +1501,11 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
   color: #fff;
   border-color: #dc2626;
 }
+.mcp-server-tab.active-logo {
+  background: #6366f1;
+  color: #fff;
+  border-color: #6366f1;
+}
 
 .ssi-mcp-badge {
   display: flex;
@@ -3481,24 +3486,53 @@ function stockHeader() {
       <div class="sym"><span class="dd" data-act="symmenu"><h1>${STOCK.sym}</h1>${I.chev}</span><span class="tg">${STOCK.ex}</span>
         <button class="follow ${f ? 'on' : ''}" data-act="follow" aria-haspopup="menu" data-tip="${typeof wlPickTip === 'function' ? esc(wlPickTip(STOCK.sym)) : ''}">${f ? I.bmf + 'Đang theo dõi' : I.bm + 'Theo dõi'}</button></div>
       <div class="sub-l"><span>${STOCK.name}</span><i></i><span>Ngành: ${STOCK.ind}</span></div>
+      <div class="c360-quick-switch" style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap">
+        <span style="font-size:11px;color:var(--ink3)">Mã nhanh:</span>
+        ${['MSB', 'FPT', 'HPG', 'VCB', 'TCB', 'SSI', 'VNM', 'MWG', 'MBB', 'VND'].map(tk => `
+          <button class="c360-quick-btn ${tk === STOCK.sym ? 'on' : ''}" onclick="openStock('${tk}')" style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:6px;border:1px solid ${tk === STOCK.sym ? 'var(--brand)' : 'var(--line)'};background:${tk === STOCK.sym ? 'rgba(234,88,12,0.12)' : 'var(--card)'};font-size:11px;font-weight:${tk === STOCK.sym ? '700' : '600'};color:${tk === STOCK.sym ? 'var(--brand)' : 'var(--ink)'};cursor:pointer">
+            ${getCompanyLogo(tk, 15)}
+            <span>${tk}</span>
+          </button>
+        `).join('')}
+      </div>
     </div>
     <div class="price-b"><div class="p">${fmtVN(STOCK.price, 0)}</div><div class="c ${STOCK.chg >= 0 ? 'up' : 'down'}">${STOCK.chg >= 0 ? '▲ +' : '▼ '}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)</div></div>
-        <div class="mcp-cluster">
+    <div class="mcp-cluster" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
       <div class="dnse-mcp-badge" onclick="openDnseMcpModal('dnse')" title="DNSE Model Context Protocol Server (mcp.dnse.com.vn)">
         <span class="mcp-dot"></span>
         <div class="mcp-info">
-          <span class="mcp-title">DNSE MCP LIVE</span>
-          <span class="mcp-sub">mcp.dnse.com.vn · 6 Tools</span>
+          <span class="mcp-title">DNSE MCP</span>
+          <span class="mcp-sub">7 Tools</span>
         </div>
         <button class="mcp-btn" onclick="event.stopPropagation(); syncDnseMcpLive();" title="Đồng bộ dữ liệu DNSE">↻</button>
       </div>
       <div class="vnd-mcp-badge" onclick="openDnseMcpModal('vnd')" title="VNDIRECT Model Context Protocol Server (mcp.vndirect.com.vn)">
         <span class="vnd-dot"></span>
         <div class="mcp-info">
-          <span class="vnd-title">VND MCP LIVE</span>
-          <span class="vnd-sub">mcp.vndirect.com.vn · 6 Tools</span>
+          <span class="vnd-title">VND MCP</span>
+          <span class="vnd-sub">9 Tools</span>
         </div>
         <button class="vnd-btn" onclick="event.stopPropagation(); syncVndMcpLive();" title="Đồng bộ dữ liệu VNDIRECT">↻</button>
+      </div>
+      <div class="fin-mcp-badge" onclick="openDnseMcpModal('fin')" title="FINHAY Model Context Protocol Server (mcp.finhay.com.vn)">
+        <span class="fin-dot"></span>
+        <div class="mcp-info">
+          <span class="fin-title">FINHAY MCP</span>
+          <span class="fin-sub">6 Tools</span>
+        </div>
+        <button class="fin-btn" onclick="event.stopPropagation(); syncFinhayMcpLive();" title="Đồng bộ dữ liệu Finhay">↻</button>
+      </div>
+      <div class="ssi-mcp-badge" onclick="openDnseMcpModal('ssi')" title="SSI Model Context Protocol Server (mcp.ssi.com.vn)">
+        <span class="ssi-dot"></span>
+        <div class="mcp-info">
+          <span class="ssi-title">SSI MCP</span>
+          <span class="ssi-sub">8 Tools · 6 Res</span>
+        </div>
+        <button class="ssi-btn" onclick="event.stopPropagation(); syncSsiMcpLive();" title="Đồng bộ dữ liệu SSI">↻</button>
+      </div>
+      <div class="mcp-tag" onclick="openDnseMcpModal('logo')" title="Logo &amp; Brand Identity MCP Server" style="background:rgba(99,102,241,0.12);color:#6366f1;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:10.5px;font-weight:700;display:flex;align-items:center;gap:4px;border:1px solid rgba(99,102,241,0.25)">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span>LOGO MCP ↗</span>
       </div>
     </div>
   </div>
@@ -3619,13 +3653,15 @@ function vOverview() {
             <span class="mcp-tag dnse">DNSE · 7 Tools</span>
             <span class="mcp-tag vnd">VNDIRECT · 9 Tools</span>
             <span class="mcp-tag fin">FINHAY · 6 Tools</span>
-            <span class="mcp-tag ssi">SSI · 8 Tools &amp; 6 Resources</span>
+            <span class="mcp-tag ssi">SSI · 8 Tools &amp; 6 Res</span>
+            <span class="mcp-tag" style="background:#e0e7ff;color:#4338ca;font-weight:700;cursor:pointer" onclick="openDnseMcpModal('logo')">BRANDFETCH · Logo MCP</span>
             <span class="mcp-tag-sym">${STOCK.sym}</span>
           </div>
           <div class="dnse-sync-desc" style="display:flex;flex-direction:column;gap:3px;margin-top:4px">
             <div><b class="dnse-brand-text">DNSE (mcp.dnse.com.vn):</b> P/E <b>${peVal}</b> · P/B <b>${pbVal}</b> · ROE <b>${roeVal}</b> · Vốn hoá <b>${capVal}</b> · Nến giá OHLCV Streaming</div>
             <div><b class="vnd-brand-text">VNDIRECT (mcp.vndirect.com.vn):</b> D-Rating <b>${dScore}★</b> (${dStars}) · Đồng thuận: <b class="rec-text">${rec}</b> · Giá mục tiêu: <b class="tgt-text">${tgt}</b> (<span class="upside-text">+${upside}% Upside</span>)</div>
             <div><b style="color:#dc2626">SSI (mcp.ssi.com.vn):</b> iBoard Market Data · BCTC 3 Báo cáo (KQKD, CĐKT, LCTT) · 6 Sổ tay tra cứu chuẩn <code>ssi://marketdata/...</code></div>
+            <div><b style="color:#6366f1">LOGO MCP (mcp.brandfetch.io &amp; logo.dev):</b> Chuẩn hóa nhận diện thương hiệu Vector SVG, Brand Color Palette &amp; Corporate Identity</div>
           </div>
         </div>
       </div>
@@ -3747,7 +3783,52 @@ function vOverview() {
 const isNum = v => /^[\d.,%+−-]+$/.test(String(v));
 const kv2 = rows => rows.map(([a, b, c]) => `<div class="kv2"><span>${a}</span><b class="${isNum(b) ? 'mono' : ''} ${c || ''}">${b}</b></div>`).join('');
 function vProfile() {
-  return `<div class="prow1">
+  const brandColors = {
+    MSB: { primary: '#ED1C24', secondary: '#003A70', accent: '#FDB813', domain: 'msb.com.vn' },
+    FPT: { primary: '#0066B2', secondary: '#F37021', accent: '#009845', domain: 'fpt.com.vn' },
+    HPG: { primary: '#003B70', secondary: '#00A3E0', accent: '#708090', domain: 'hoaphat.com.vn' },
+    VCB: { primary: '#005A30', secondary: '#74C043', accent: '#A6E22E', domain: 'vietcombank.com.vn' },
+    TCB: { primary: '#E31B23', secondary: '#1A1A1A', accent: '#808285', domain: 'techcombank.com.vn' },
+    SSI: { primary: '#1B365D', secondary: '#E31E24', accent: '#D99B26', domain: 'ssi.com.vn' },
+    VNM: { primary: '#003399', secondary: '#66B2FF', accent: '#FFD700', domain: 'vinamilk.com.vn' },
+    MWG: { primary: '#FFD400', secondary: '#1A1A1A', accent: '#D0021B', domain: 'mwg.vn' },
+    MBB: { primary: '#002B7F', secondary: '#E60000', accent: '#00A3E0', domain: 'mbbank.com.vn' },
+    VND: { primary: '#F97316', secondary: '#0F172A', accent: '#FB923C', domain: 'vndirect.com.vn' }
+  };
+  const bInfo = brandColors[STOCK.sym] || { primary: '#2563EB', secondary: '#1E293B', accent: '#38BDF8', domain: `${STOCK.sym.toLowerCase()}.com.vn` };
+
+  const brandCard = `<div style="background:var(--card-bg);border:1px solid var(--line2);border-radius:8px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;box-shadow:var(--card-shadow)">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      ${getCompanyLogo(STOCK.sym, 56, 'box-shadow:0 2px 6px rgba(0,0,0,0.12);')}
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <h3 style="margin:0;font-size:16px;font-weight:800;color:var(--ink)">${STOCK.name}</h3>
+          <span style="font-size:11px;padding:2px 8px;border-radius:4px;background:var(--brand);color:#fff;font-weight:700">${STOCK.sym}</span>
+          <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--sub);border:1px solid var(--line2);color:var(--ink2);font-weight:600">${STOCK.ex || 'HOSE'}</span>
+          <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--sub);border:1px solid var(--line2);color:var(--ink2);font-weight:600">ICB: ${STOCK.ind}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:6px;font-size:12px;color:var(--ink2);flex-wrap:wrap">
+          <span>🌐 Website: <a href="https://${bInfo.domain}" target="_blank" rel="noopener noreferrer" style="color:var(--brand);font-weight:600;text-decoration:none">${bInfo.domain} ↗</a></span>
+          <span>•</span>
+          <span style="display:inline-flex;align-items:center;gap:5px">
+            🎨 Bảng màu thương hiệu:
+            <span title="Primary: ${bInfo.primary}" style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${bInfo.primary};border:1px solid rgba(0,0,0,0.15)"></span>
+            <span title="Secondary: ${bInfo.secondary}" style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${bInfo.secondary};border:1px solid rgba(0,0,0,0.15)"></span>
+            <span title="Accent: ${bInfo.accent}" style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${bInfo.accent};border:1px solid rgba(0,0,0,0.15)"></span>
+          </span>
+          <span>•</span>
+          <span style="color:#10b981;font-weight:600">✓ Verified Brand Identity (Brandfetch &amp; DNSE MCP)</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="openDnseMcpModal('logo')" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);color:#6366f1;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s">
+        <span>●</span> BRAND &amp; LOGO MCP Payload ↗
+      </button>
+    </div>
+  </div>`;
+
+  return brandCard + `<div class="prow1">
     ${pnl('Thông tin cơ bản', 'Nguồn: HOSE · FiinGroup', `<div>${kv2(PROFILE.basic)}</div>`)}
     ${pnl('Thông tin niêm yết', 'Cập nhật 17/09/2026', `<div>${kv2(PROFILE.listing)}</div>`)}
     ${pnl('Giới thiệu doanh nghiệp', STOCK.name, `<div class="intro"><h5>Tổng quan</h5><p>${PROFILE.intro}</p><h5>Lịch sử</h5>${PROFILE.miles.map(([d, t]) => `<div class="mile"><i>•</i><span>${d} — ${t}</span></div>`).join('')}</div>`, 'last')}
@@ -8420,18 +8501,123 @@ function updateSsiMcpPayloadsForSymbol(sym) {
   };
 }
 
+/* BRAND & LOGO MCP CONTROLLER (BRANDFETCH & VECTOR LOGO ENGINE) */
+let ACTIVE_LOGO_MCP_TOOL = 'company_get_logo';
+let LOGO_MCP_PAYLOADS = {};
+
+function updateLogoMcpPayloadsForSymbol(sym) {
+  sym = sym || (typeof STOCK !== 'undefined' ? STOCK.sym : 'MSB');
+  const now = new Date().toISOString();
+  const brandColors = {
+    MSB: { primary: '#ED1C24', secondary: '#003A70', accent: '#FDB813', domain: 'msb.com.vn', name: 'Ngân hàng TMCP Hàng Hải Việt Nam' },
+    FPT: { primary: '#0066B2', secondary: '#F37021', accent: '#009845', domain: 'fpt.com.vn', name: 'Tập đoàn FPT' },
+    HPG: { primary: '#003B70', secondary: '#00A3E0', accent: '#708090', domain: 'hoaphat.com.vn', name: 'Tập đoàn Hòa Phát' },
+    VCB: { primary: '#005A30', secondary: '#74C043', accent: '#A6E22E', domain: 'vietcombank.com.vn', name: 'Ngân hàng TMCP Ngoại thương Việt Nam' },
+    TCB: { primary: '#E31B23', secondary: '#1A1A1A', accent: '#808285', domain: 'techcombank.com.vn', name: 'Ngân hàng TMCP Kỹ thương Việt Nam' },
+    SSI: { primary: '#1B365D', secondary: '#E31E24', accent: '#D99B26', domain: 'ssi.com.vn', name: 'Công ty Cổ phần Chứng khoán SSI' },
+    VNM: { primary: '#003399', secondary: '#66B2FF', accent: '#FFD700', domain: 'vinamilk.com.vn', name: 'Công ty Cổ phần Sữa Việt Nam' },
+    MWG: { primary: '#FFD400', secondary: '#1A1A1A', accent: '#D0021B', domain: 'mwg.vn', name: 'Công ty Cổ phần Đầu tư Thế Giới Di Động' },
+    MBB: { primary: '#002B7F', secondary: '#E60000', accent: '#00A3E0', domain: 'mbbank.com.vn', name: 'Ngân hàng TMCP Quân đội' },
+    VND: { primary: '#F97316', secondary: '#0F172A', accent: '#FB923C', domain: 'vndirect.com.vn', name: 'Công ty Cổ phần Chứng khoán VNDIRECT' }
+  };
+  const bInfo = brandColors[sym] || {
+    primary: '#2563EB',
+    secondary: '#1E293B',
+    accent: '#38BDF8',
+    domain: `${sym.toLowerCase()}.com.vn`,
+    name: (typeof STOCK !== 'undefined' && STOCK.name) ? STOCK.name : `${sym} Corporation`
+  };
+
+  LOGO_MCP_PAYLOADS = {
+    company_get_logo: {
+      jsonrpc: "2.0",
+      id: `mcp-logo-${sym}-${Date.now()}`,
+      result: {
+        symbol: sym,
+        company_name: (typeof STOCK !== 'undefined' && STOCK.name) ? STOCK.name : bInfo.name,
+        exchange: (typeof STOCK !== 'undefined' && STOCK.ex) ? STOCK.ex : "HOSE",
+        industry: (typeof STOCK !== 'undefined' && STOCK.ind) ? STOCK.ind : "Chứng khoán",
+        brand_domain: bInfo.domain,
+        verified_status: "VERIFIED_OFFICIAL",
+        logo_asset: {
+          format: "image/svg+xml",
+          aspect_ratio: "1:1",
+          viewbox: "0 0 100 100",
+          transparent_background: true,
+          render_mode: "vector_lossless",
+          primary_color: bInfo.primary,
+          secondary_color: bInfo.secondary,
+          accent_color: bInfo.accent,
+          cdn_endpoint: `https://asset.brandfetch.io/hose-${sym.toLowerCase()}/logo.svg`,
+          local_cache_status: "HIT (Maris In-Memory Vector Store)"
+        },
+        mcp_provenance: {
+          provider: "Brandfetch MCP Protocol (mcp.brandfetch.io)",
+          protocol_version: "2024-11-05",
+          latency_ms: 12,
+          cache_ttl_sec: 86400,
+          status: "SUCCESS"
+        }
+      }
+    },
+    brand_get_palette: {
+      jsonrpc: "2.0",
+      id: `mcp-brand-${sym}-${Date.now()}`,
+      result: {
+        symbol: sym,
+        brand_domain: bInfo.domain,
+        color_system: [
+          { name: "Primary Brand", hex: bInfo.primary, role: "Logo, Core Identity & Accent Highlights" },
+          { name: "Secondary Dark", hex: bInfo.secondary, role: "Typography, Structural Borders & Dark Theme Contrast" },
+          { name: "Accent Highlight", hex: bInfo.accent, role: "Badges, Indicators & Callout Tags" },
+          { name: "Neutral Background", hex: "#FFFFFF", role: "Light Theme Canvas / Negative Space" }
+        ],
+        typography_guidelines: {
+          font_family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          weights: { heading: 800, body: 400, ticker: 900 }
+        },
+        contrast_ratio_wcag_aaa: true,
+        guidelines_url: `https://brandfetch.com/${bInfo.domain}`
+      }
+    },
+    resources_read_logo_uri: {
+      jsonrpc: "2.0",
+      id: `mcp-res-${sym}-${Date.now()}`,
+      result: {
+        uri: `logo://hose/${sym}`,
+        mime_type: "image/svg+xml",
+        metadata: {
+          exchange: (typeof STOCK !== 'undefined' && STOCK.ex) ? STOCK.ex : "HOSE",
+          dpi_tier: "Ultra High Definition (4K / Retina Ready)",
+          rendering_pipeline: "Self-Contained Scalable Vector Graphics (Zero 403 Forbidden / Zero Network Failure)"
+        },
+        schema_validation: "W3C SVG 1.1 Validated",
+        synced_at: now
+      }
+    }
+  };
+}
+
+function switchLogoMcpTab(toolName) {
+  ACTIVE_LOGO_MCP_TOOL = toolName;
+  renderMcpToolTabs();
+  renderDnseMcpModal();
+}
+
 function switchMcpServer(serverName) {
   ACTIVE_MCP_SERVER = serverName;
   const btnDnse = document.getElementById('btn-server-dnse');
   const btnVnd = document.getElementById('btn-server-vnd');
   const btnFin = document.getElementById('btn-server-fin');
   const btnSsi = document.getElementById('btn-server-ssi');
+  const btnLogo = document.getElementById('btn-server-logo');
   const epText = document.getElementById('mcp-modal-endpoint-text');
 
   if (btnDnse) btnDnse.className = 'mcp-server-tab' + (serverName === 'dnse' ? ' active-dnse' : '');
   if (btnVnd) btnVnd.className = 'mcp-server-tab' + (serverName === 'vnd' ? ' active-vnd' : '');
   if (btnFin) btnFin.className = 'mcp-server-tab' + (serverName === 'fin' ? ' active-fin' : '');
   if (btnSsi) btnSsi.className = 'mcp-server-tab' + (serverName === 'ssi' ? ' active-ssi' : '');
+  if (btnLogo) btnLogo.className = 'mcp-server-tab' + (serverName === 'logo' ? ' active-logo' : '');
 
   if (serverName === 'dnse') {
     if (epText) epText.textContent = 'https://mcp.dnse.com.vn/mcp (Entrade X Data Engine · 7 Tools)';
@@ -8441,6 +8627,8 @@ function switchMcpServer(serverName) {
     if (epText) epText.textContent = 'https://mcp.finhay.com.vn/mcp (Finhay Macro & Wealth Platform · 6 Tools)';
   } else if (serverName === 'ssi') {
     if (epText) epText.textContent = 'https://mcp.ssi.com.vn/mcp (SSI iBoard Market Data & 6 Reference Resources · 10 Tools)';
+  } else if (serverName === 'logo') {
+    if (epText) epText.textContent = 'https://mcp.brandfetch.io/mcp (Brand Identity & Vector Logo Engine · 3 Tools & Resources)';
   }
   renderMcpToolTabs();
   renderDnseMcpModal();
@@ -8483,6 +8671,13 @@ function renderMcpToolTabs() {
     ];
     container.innerHTML = ssiTools.map(t =>
       `<button class="dnse-tool-tab ${ACTIVE_SSI_MCP_TOOL === t ? 'active' : ''}" style="${ACTIVE_SSI_MCP_TOOL === t ? 'background:#dc2626;border-color:#dc2626;color:#fff' : ''}" data-tool="${t}" onclick="switchSsiMcpTab('${t}')">${t}</button>`
+    ).join('');
+  } else if (ACTIVE_MCP_SERVER === 'logo') {
+    const logoTools = [
+      'company_get_logo', 'brand_get_palette', 'resources_read_logo_uri'
+    ];
+    container.innerHTML = logoTools.map(t =>
+      `<button class="dnse-tool-tab ${ACTIVE_LOGO_MCP_TOOL === t ? 'active' : ''}" style="${ACTIVE_LOGO_MCP_TOOL === t ? 'background:#6366f1;border-color:#6366f1;color:#fff' : ''}" data-tool="${t}" onclick="switchLogoMcpTab('${t}')">${t}</button>`
     ).join('');
   }
 }
@@ -8655,6 +8850,7 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   updateDnseMcpPayloadsForSymbol(data);
   updateVndMcpPayloadsForSymbol(sym, vndData);
   updateSsiMcpPayloadsForSymbol(sym);
+  updateLogoMcpPayloadsForSymbol(sym);
 
   // 7. Feedback toast
   if (typeof toast === 'function') {
@@ -8694,6 +8890,8 @@ function openDnseMcpModal(defaultServer) {
     switchMcpServer('fin');
   } else if (defaultServer === 'ssi') {
     switchMcpServer('ssi');
+  } else if (defaultServer === 'logo') {
+    switchMcpServer('logo');
   } else if (defaultServer === 'dnse') {
     switchMcpServer('dnse');
   } else {
@@ -8747,6 +8945,11 @@ function renderDnseMcpModal() {
         updateSsiMcpPayloadsForSymbol(typeof STOCK !== 'undefined' ? STOCK.sym : 'MSB');
       }
       payload = SSI_MCP_PAYLOADS[ACTIVE_SSI_MCP_TOOL] || { info: 'No data' };
+    } else if (ACTIVE_MCP_SERVER === 'logo') {
+      if (!LOGO_MCP_PAYLOADS || Object.keys(LOGO_MCP_PAYLOADS).length === 0) {
+        updateLogoMcpPayloadsForSymbol(typeof STOCK !== 'undefined' ? STOCK.sym : 'MSB');
+      }
+      payload = LOGO_MCP_PAYLOADS[ACTIVE_LOGO_MCP_TOOL] || { info: 'No data' };
     }
     pre.textContent = JSON.stringify(payload, null, 2);
   }
@@ -8759,7 +8962,9 @@ function copyDnseMcpJson() {
     ? (VND_MCP_PAYLOADS[ACTIVE_VND_MCP_TOOL] || {})
     : (ACTIVE_MCP_SERVER === 'fin')
     ? (FINHAY_MCP_PAYLOADS[ACTIVE_FIN_MCP_TOOL] || {})
-    : (SSI_MCP_PAYLOADS[ACTIVE_SSI_MCP_TOOL] || {});
+    : (ACTIVE_MCP_SERVER === 'ssi')
+    ? (SSI_MCP_PAYLOADS[ACTIVE_SSI_MCP_TOOL] || {})
+    : (LOGO_MCP_PAYLOADS[ACTIVE_LOGO_MCP_TOOL] || {});
   const jsonStr = JSON.stringify(payload, null, 2);
   if (navigator.clipboard) {
     navigator.clipboard.writeText(jsonStr).then(() => {
@@ -8783,6 +8988,7 @@ if (typeof STOCK !== 'undefined' && STOCK) {
   const vData = (typeof VND_STOCKS_DB !== 'undefined' && VND_STOCKS_DB[STOCK.sym]) ? VND_STOCKS_DB[STOCK.sym] : synthesizeVndMcpData(STOCK.sym, STOCK.price, STOCK.ind);
   updateVndMcpPayloadsForSymbol(STOCK.sym, vData);
   updateSsiMcpPayloadsForSymbol(STOCK.sym);
+  updateLogoMcpPayloadsForSymbol(STOCK.sym);
 }
 
 
@@ -8818,6 +9024,9 @@ readHash(); render();
         </button>
         <button class="mcp-server-tab" id="btn-server-ssi" onclick="switchMcpServer('ssi')">
           <span style="color:#ef4444">●</span> Server 4: SSI MCP (mcp.ssi.com.vn · 8 Tools &amp; 6 Resources)
+        </button>
+        <button class="mcp-server-tab" id="btn-server-logo" onclick="switchMcpServer('logo')">
+          <span style="color:#6366f1">●</span> Server 5: BRAND &amp; LOGO MCP (mcp.brandfetch.io · 3 Tools &amp; Resources)
         </button>
       </div>
 

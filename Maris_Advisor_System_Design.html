@@ -2240,6 +2240,260 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
 <script>
 const MSB_LOGO = 'data:image/webp;base64,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';
 
+/* ================= COMPANY LOGOS REPOSITORY (INSTITUTIONAL GRADE) ================= */
+function getCompanyLogo(sym, size = 32, extraStyle = '') {
+  if (!sym) return '';
+  sym = String(sym).toUpperCase().trim();
+  const r = Math.round(size * 0.22);
+
+  if (sym === 'MSB' && typeof MSB_LOGO !== 'undefined' && MSB_LOGO) {
+    return `<img src="${MSB_LOGO}" alt="MSB" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;object-fit:cover;flex-shrink:0;background:#fff;border:1px solid rgba(0,0,0,0.08);${extraStyle}">`;
+  }
+
+  const LOGOS = {
+    FPT: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;background:#fff;border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <g transform="translate(6, 4)">
+        <rect x="18" y="22" width="15" height="38" rx="7.5" transform="rotate(25 25 41)" fill="#0066B2"/>
+        <rect x="39" y="22" width="15" height="38" rx="7.5" transform="rotate(25 46 41)" fill="#F37021"/>
+        <rect x="60" y="22" width="15" height="38" rx="7.5" transform="rotate(25 67 41)" fill="#009845"/>
+        <text x="44" y="84" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="24" fill="#0066B2" text-anchor="middle" letter-spacing="1">FPT</text>
+      </g>
+    </svg>`,
+
+    HPG: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#003B70"/>
+      <polygon points="26,56 37,28 47,28 36,56" fill="#00A3E0"/>
+      <polygon points="42,56 53,28 63,28 52,56" fill="#00A3E0"/>
+      <polygon points="58,56 69,28 79,28 68,56" fill="#00A3E0"/>
+      <text x="50" y="80" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">HÒA PHÁT</text>
+    </svg>`,
+
+    VCB: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#005A30"/>
+      <path d="M50 18 C64 18, 76 29, 76 43 C76 58, 50 74, 50 74 C50 74, 24 58, 24 43 C24 29, 36 18, 50 18 Z" fill="none" stroke="#74C043" stroke-width="7" stroke-linecap="round"/>
+      <path d="M50 22 C60 22, 70 31, 70 42 C70 53, 50 67, 50 67" fill="none" stroke="#A6E22E" stroke-width="3"/>
+      <text x="50" y="49" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="15" fill="#FFFFFF" text-anchor="middle">VCB</text>
+      <text x="50" y="88" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="700" font-size="9" fill="#93C5FD" text-anchor="middle" letter-spacing="1">VIETCOMBANK</text>
+    </svg>`,
+
+    TCB: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;background:#fff;border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <g transform="translate(14, 10)">
+        <polygon points="36,4 56,24 40,40 20,20" fill="#ED1C24"/>
+        <polygon points="52,20 72,40 56,56 36,36" fill="#ED1C24"/>
+        <polygon points="20,20 36,36 20,52 4,36" fill="#ED1C24"/>
+        <polygon points="36,36 56,56 40,72 20,52" fill="#ED1C24"/>
+        <polygon points="36,24 48,36 36,48 24,36" fill="#1e293b"/>
+      </g>
+      <text x="50" y="88" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="12" fill="#ED1C24" text-anchor="middle" letter-spacing="0.5">TECHCOMBANK</text>
+    </svg>`,
+
+    SSI: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#142C5B"/>
+      <path d="M25 42 C25 30, 45 30, 50 42 C55 30, 75 30, 75 42 C75 54, 55 54, 50 42 C45 54, 25 54, 25 42 Z" fill="#FDB813" stroke="#FF9E1B" stroke-width="2.5"/>
+      <circle cx="50" cy="42" r="4.5" fill="#FFFFFF"/>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="26" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">SSI</text>
+    </svg>`,
+
+    VNM: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#0B2F87"/>
+      <path d="M22 45 C22 28, 78 28, 78 45 C78 62, 22 62, 22 45 Z" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+      <path d="M50 22 C55 13, 65 15, 65 21 C65 27, 54 26, 50 22 Z" fill="#22C55E"/>
+      <text x="50" y="50" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">VINAMILK</text>
+      <text x="50" y="79" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="700" font-size="15" fill="#93C5FD" text-anchor="middle" letter-spacing="2">VNM</text>
+    </svg>`,
+
+    MBB: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#002878"/>
+      <g transform="translate(50, 36)">
+        <polygon points="0,-18 4,-6 16,-6 6,1 10,13 0,6 -10,13 -6,1 -16,-6 -4,-6" fill="#EE1C25"/>
+        <polygon points="0,-14 3,-4 12,-4 5,1 8,10 0,5" fill="#FF5252"/>
+      </g>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="26" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">MB</text>
+    </svg>`,
+
+    MWG: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#FFD200"/>
+      <circle cx="50" cy="38" r="22" fill="#111827"/>
+      <circle cx="50" cy="28" r="4.5" fill="#FFD200"/>
+      <path d="M43 36 C43 33, 57 33, 57 36 L54 45 L46 45 Z" fill="#FFD200"/>
+      <path d="M42 45 L46 52 L54 52 L58 45" stroke="#FFD200" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <text x="50" y="80" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="20" fill="#111827" text-anchor="middle" letter-spacing="1">MWG</text>
+    </svg>`,
+
+    VIC: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#D6001C"/>
+      <circle cx="50" cy="40" r="25" fill="none" stroke="#FFD100" stroke-width="3"/>
+      <path d="M32 37 Q50 28 68 37 Q50 56 32 37 Z" fill="#FFD100"/>
+      <text x="50" y="81" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">VINGROUP</text>
+    </svg>`,
+
+    VHM: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#1B365D"/>
+      <path d="M32 30 L41 56 L50 38 L59 56 L68 30" fill="none" stroke="#C5A059" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="50" cy="26" r="3.5" fill="#C5A059"/>
+      <text x="50" y="80" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">VINHOMES</text>
+    </svg>`,
+
+    VND: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;background:#fff;border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <circle cx="50" cy="38" r="22" fill="none" stroke="#F58220" stroke-width="5.5" stroke-dasharray="100 25"/>
+      <polygon points="66,23 76,31 64,35" fill="#F58220"/>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="18" fill="#F58220" text-anchor="middle" letter-spacing="1">VNDIRECT</text>
+    </svg>`,
+
+    ACB: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#003DA5"/>
+      <text x="44" y="58" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="32" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">ACB</text>
+      <circle cx="68" cy="46" r="5.5" fill="#00A3E0"/>
+      <text x="50" y="82" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="700" font-size="10" fill="#93C5FD" text-anchor="middle" letter-spacing="1">ASIA COMM BANK</text>
+    </svg>`,
+
+    VPB: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;background:#fff;border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <g transform="translate(50, 36)">
+        <path d="M0 -20 C7 -20 12 -10 9 0 C3 0 0 -10 0 -20 Z" fill="#009E49"/>
+        <path d="M16 -7 C22 0 18 9 7 7 C5 1 9 -4 16 -7 Z" fill="#009E49"/>
+        <path d="M11 12 C9 19 -1 21 -3 10 C0 7 7 7 11 12 Z" fill="#009E49"/>
+        <path d="M-12 9 C-19 3 -18 -7 -7 -3 C-5 2 -7 7 -12 9 Z" fill="#009E49"/>
+        <path d="M-9 -14 C-3 -21 5 -18 1 -9 C-2 -7 -5 -10 -9 -14 Z" fill="#ED1B24"/>
+      </g>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="20" fill="#009E49" text-anchor="middle">VPBank</text>
+    </svg>`,
+
+    CTG: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#004B87"/>
+      <circle cx="50" cy="38" r="20" fill="none" stroke="#D62027" stroke-width="4.5"/>
+      <rect x="43" y="31" width="14" height="14" fill="#004B87" stroke="#D62027" stroke-width="3.5"/>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">VIETINBANK</text>
+    </svg>`,
+
+    BID: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#008542"/>
+      <g transform="translate(50, 35)">
+        <circle cx="0" cy="0" r="5" fill="#F5B800"/>
+        <ellipse cx="0" cy="-12" rx="4" ry="7" fill="#F5B800"/>
+        <ellipse cx="11" cy="-4" rx="7" ry="4" fill="#F5B800" transform="rotate(35 11 -4)"/>
+        <ellipse cx="8" cy="9" rx="7" ry="4" fill="#F5B800" transform="rotate(75 8 9)"/>
+        <ellipse cx="-8" cy="9" rx="7" ry="4" fill="#F5B800" transform="rotate(-75 -8 9)"/>
+        <ellipse cx="-11" cy="-4" rx="7" ry="4" fill="#F5B800" transform="rotate(-35 -11 -4)"/>
+      </g>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">BIDV</text>
+    </svg>`,
+
+    DGC: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#005BAA"/>
+      <polygon points="50,16 75,58 25,58" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linejoin="round"/>
+      <circle cx="50" cy="40" r="7" fill="#FACC15"/>
+      <text x="50" y="82" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">DGC</text>
+    </svg>`,
+
+    GAS: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#004380"/>
+      <path d="M42 50 C35 45 35 34 42 27 C45 32 49 34 47 40 C52 32 56 21 52 16 C61 23 65 37 57 46 C54 50 47 52 42 50 Z" fill="#00A3E0"/>
+      <path d="M46 48 C42 44 42 37 46 33 C48 37 52 39 50 42 C52 40 54 37 52 33 C56 37 57 44 54 48 Z" fill="#E31B23"/>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">GAS</text>
+    </svg>`,
+
+    MSN: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#0060AA"/>
+      <circle cx="50" cy="36" r="20" fill="#FFFFFF"/>
+      <path d="M37 44 C37 31 46 27 50 38 C54 27 63 31 63 44 Z" fill="#0060AA"/>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="20" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">MASAN</text>
+    </svg>`,
+
+    PNJ: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#1C2A59"/>
+      <polygon points="50,18 72,34 50,58 28,34" fill="#D4AF37" stroke="#F5D77F" stroke-width="2"/>
+      <polygon points="50,18 60,34 50,58 40,34" fill="#F5D77F"/>
+      <text x="50" y="80" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="22" fill="#D4AF37" text-anchor="middle" letter-spacing="2">PNJ</text>
+    </svg>`,
+
+    REE: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#003A80"/>
+      <polygon points="50,16 75,41 50,66 25,41" fill="none" stroke="#FFFFFF" stroke-width="4.5"/>
+      <circle cx="50" cy="41" r="10" fill="#00A3E0"/>
+      <text x="50" y="46" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="11" fill="#FFFFFF" text-anchor="middle">REE</text>
+      <text x="50" y="82" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="700" font-size="11" fill="#93C5FD" text-anchor="middle" letter-spacing="1">CORP</text>
+    </svg>`,
+
+    SAB: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#D2232A"/>
+      <circle cx="50" cy="38" r="22" fill="none" stroke="#F5B800" stroke-width="2.5"/>
+      <path d="M39 44 C43 31 57 31 61 44 C55 42 45 42 39 44 Z" fill="#F5B800"/>
+      <circle cx="50" cy="33" r="3.5" fill="#F5B800"/>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="20" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">SABECO</text>
+    </svg>`,
+
+    STB: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#004380"/>
+      <path d="M35 50 C35 34 65 39 65 26 C65 20 58 18 49 22" fill="none" stroke="#F5A623" stroke-width="6" stroke-linecap="round"/>
+      <path d="M65 30 C65 46 35 41 35 54 C35 60 42 62 51 58" fill="none" stroke="#F5A623" stroke-width="6" stroke-linecap="round"/>
+      <text x="50" y="80" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="15" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">SACOMBANK</text>
+    </svg>`,
+
+    HDB: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#EA1D25"/>
+      <path d="M26 40 Q50 18 74 40 Q50 32 26 40 Z" fill="#FFC600"/>
+      <circle cx="50" cy="25" r="3.5" fill="#FFFFFF"/>
+      <text x="50" y="76" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">HDBank</text>
+    </svg>`,
+
+    LPB: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#D9381E"/>
+      <circle cx="50" cy="36" r="20" fill="#F39C12"/>
+      <circle cx="50" cy="36" r="14" fill="#D9381E"/>
+      <text x="50" y="43" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="18" fill="#F39C12" text-anchor="middle">LP</text>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="18" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">LPBank</text>
+    </svg>`,
+
+    PVS: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#004F9F"/>
+      <polygon points="50,18 53,29 64,29 55,36 58,47 50,40 42,47 45,36 36,29 47,29" fill="#E52420"/>
+      <path d="M25 56 Q50 48 75 56" stroke="#FFD100" stroke-width="3.5" fill="none"/>
+      <text x="50" y="80" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">PVS</text>
+    </svg>`,
+
+    GVR: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#00873D"/>
+      <path d="M50 18 C61 27 66 42 50 58 C34 42 39 27 50 18 Z" fill="#FFFFFF"/>
+      <path d="M50 25 L50 51 M44 34 L50 40 M56 34 L50 40" stroke="#00873D" stroke-width="2" fill="none"/>
+      <text x="50" y="80" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">GVR</text>
+    </svg>`,
+
+    VCI: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#0A1C38"/>
+      <path d="M30 28 L50 60 L70 28 L58 28 L50 45 L42 28 Z" fill="#E5B842"/>
+      <text x="50" y="80" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">VIETCAP</text>
+    </svg>`,
+
+    SHS: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#003366"/>
+      <rect x="31" y="28" width="7" height="22" fill="#E60000"/>
+      <rect x="46" y="22" width="7" height="28" fill="#F5B800"/>
+      <rect x="61" y="16" width="7" height="34" fill="#00A3E0"/>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">SHS</text>
+    </svg>`,
+
+    VIX: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#C8102E"/>
+      <path d="M33 28 L50 52 L67 28 L59 28 L50 43 L41 28 Z" fill="#FFFFFF"/>
+      <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">VIX</text>
+    </svg>`
+  };
+
+  if (LOGOS[sym]) return LOGOS[sym];
+
+  // Deterministic branded monogram fallback for ETFs, warrants & other stocks
+  const hues = [205, 155, 30, 265, 345, 185, 45, 135, 225];
+  const h = hues[(sym.charCodeAt(0) * 7 + (sym.charCodeAt(1) || 0) * 3) % hues.length];
+  return `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+    <rect width="100" height="100" rx="${r}" fill="hsl(${h}, 65%, 28%)"/>
+    <circle cx="50" cy="38" r="18" fill="hsl(${h}, 75%, 45%)" opacity="0.3"/>
+    <text x="50" y="44" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle">${sym.slice(0, 3)}</text>
+    <text x="50" y="76" font-family="'IBM Plex Mono', monospace" font-weight="700" font-size="14" fill="hsl(${h}, 85%, 75%)" text-anchor="middle">${sym}</text>
+  </svg>`;
+}
+
+
+
 /* ================= DATA ================= */
 const fmtVN = (n, d = 0) => { const s = Math.abs(n).toFixed(d).split('.'); s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.'); return (n < 0 ? '−' : '') + s.join(','); };
 const sgn = (n, d = 1, suf = '%') => (n > 0 ? '+' : n < 0 ? '−' : '') + fmtVN(Math.abs(n), d) + suf;
@@ -3222,7 +3476,7 @@ function stockHeader() {
   const f = typeof inAnyWL === 'function' ? inAnyWL('MSB') : S.watch.has('MSB');
   const evs = STOCK.events.filter(e => S.evTop === 'Tất cả' || (S.evTop === 'Cổ tức' ? /cổ tức/i.test(e[1]) : S.evTop === 'ĐHĐCĐ & KQKD' ? /ĐHĐCĐ|kết quả/i.test(e[1]) : /ESOP|Niêm yết|nhà đầu tư/i.test(e[1])));
   return `<div class="stock-h">
-    <div class="logo-msb">${STOCK.sym === "MSB" ? `<img src="${MSB_LOGO}" alt="MSB" width="42" height="42">` : `<div style="width:42px;height:42px;border-radius:8px;background:var(--brand);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line2);">${STOCK.sym}</div>`}</div>
+    <div class="logo-msb">${getCompanyLogo(STOCK.sym, 42)}</div>
     <div class="sym-block">
       <div class="sym"><span class="dd" data-act="symmenu"><h1>${STOCK.sym}</h1>${I.chev}</span><span class="tg">${STOCK.ex}</span>
         <button class="follow ${f ? 'on' : ''}" data-act="follow" aria-haspopup="menu" data-tip="${typeof wlPickTip === 'function' ? esc(wlPickTip(STOCK.sym)) : ''}">${f ? I.bmf + 'Đang theo dõi' : I.bm + 'Theo dõi'}</button></div>
@@ -3556,7 +3810,7 @@ function vPeers() {
       </div>
     </div>
     <div class="tscroll" style="padding:8px"><table class="t peer-t"><thead><tr>${head.map((h, i) => `<th class="${i ? 'rt s' : ''} ${S.peerSort && S.peerSort[0] === i ? 'sorted' : ''}" ${i ? `data-act="peersort" data-v="${i}"` : ''}>${h}${S.peerSort && S.peerSort[0] === i ? (S.peerSort[1] > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('')}</tr></thead>
-    <tbody>${rows.map(r => { const cleanSym = String(r[0]).split(' ')[0].replace(/[^\w]/g, ''); const isCur = cleanSym === STOCK.sym; return `<tr class="${isCur ? 'hl' : 'click'}" ${!isCur ? `data-act="stock" data-v="${cleanSym}"` : ''}>${r.map((c, i) => `<td class="${i ? 'rt num' : ''} ${i && /^[+−]/.test(c) ? (c[0] === '+' ? 'up' : 'down') : i && !isCur ? 'ink2' : ''}">${c}</td>`).join('')}</tr>`; }).join('')}</tbody></table></div></div>`;
+    <tbody>${rows.map(r => { const cleanSym = String(r[0]).split(' ')[0].replace(/[^\w]/g, ''); const isCur = cleanSym === STOCK.sym; return `<tr class="${isCur ? 'hl' : 'click'}" ${!isCur ? `data-act="stock" data-v="${cleanSym}"` : ''}>${r.map((c, i) => `<td class="${i ? 'rt num' : ''} ${i && /^[+−]/.test(c) ? (c[0] === '+' ? 'up' : 'down') : i && !isCur ? 'ink2' : ''}">${i === 0 ? `<div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(cleanSym, 20)}<b>${c}</b></div>` : c}</td>`).join('')}</tr>`; }).join('')}</tbody></table></div></div>`;
 }
 
 function vEvents() {
@@ -3692,7 +3946,7 @@ function vAll() {
       <div class="ctabs-act"><button class="btn" style="padding:0 12px 0 8px" data-act="toast" data-msg="Kéo thả để sắp xếp cột sẽ có ở bản tiếp theo">${I.cols}Quản lý cột</button><button class="btn" style="padding:0 12px 0 8px" data-act="awatch">${I.bm}Thêm vào Watchlist</button></div></div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px"><span class="cap" style="text-transform:none">Kết quả</span><span class="muted" style="font-size:14px;line-height:20px">(${rows.length} mã CK)</span></div>
     <div class="tscroll" style="border:1px solid var(--line)"><table class="t upper hd lg all-t"><thead><tr><th style="width:32px;text-align:center"><span class="check ${allSel ? 'on' : ''}" data-act="aselall" role="checkbox" aria-checked="${allSel}" tabindex="0"></span></th>${th('t', 'Mã CK', '')}<th class="frz" data-tip="Datafeed FiinGroup · Organization · OrganName">Tên công ty</th><th ${tipAttr('ex')}>Sàn</th>${cs.map(c => th(c[0], c[1])).join('')}<th ${tipAttr('ind')}>Ngành</th></tr></thead>
-    <tbody>${rows.map(r => { const on = A.sel.has(r[0]); return `<tr class="click ${on ? 'sel' : ''}" data-act="stock" data-v="${r[0]}"><td style="text-align:center"><span class="check ${on ? 'on' : ''}" data-act="asel" data-v="${r[0]}" role="checkbox" aria-checked="${on}" tabindex="0"></span></td><td>${r[0]}</td><td class="frz ink2" style="max-width:168px;overflow:hidden;text-overflow:ellipsis" title="${esc(r[1])}">${r[1]}</td><td><span class="tg">${r[2]}</span></td>
+    <tbody>${rows.map(r => { const on = A.sel.has(r[0]); return `<tr class="click ${on ? 'sel' : ''}" data-act="stock" data-v="${r[0]}"><td style="text-align:center"><span class="check ${on ? 'on' : ''}" data-act="asel" data-v="${r[0]}" role="checkbox" aria-checked="${on}" tabindex="0"></span></td><td style="white-space:nowrap"><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(r[0], 20)}<b>${r[0]}</b></div></td><td class="frz ink2" style="max-width:168px;overflow:hidden;text-overflow:ellipsis" title="${esc(r[1])}">${r[1]}</td><td><span class="tg">${r[2]}</span></td>
       ${cs.map(c => { const x = c[2](r), k = c[4] ? c[4](r) : ''; return `<td class="rt ${k === 'sans' ? '' : 'num'} ${k === 'sans' ? '' : k}">${x == null && c[3] !== sgA ? '<span class="muted">—</span>' : c[3](x, r)}</td>`; }).join('')}
       <td class="ink2" style="max-width:226px;overflow:hidden;text-overflow:ellipsis">${r[11]}</td></tr>`; }).join('')}</tbody></table></div>
     ${A.sel.size ? `<div class="bulk" role="region" aria-label="Thao tác hàng loạt"><span>Đã chọn ${A.sel.size} mã</span><button class="btn pri" data-act="acmp" ${A.sel.size < 2 ? 'disabled style="opacity:.5"' : ''}>So sánh</button><button class="btn" data-act="awatch">Thêm vào Watchlist</button><button class="x" data-act="aclear">Bỏ chọn</button></div>` : ''}
@@ -4296,7 +4550,7 @@ function vCompare() {
     const pc = p.c > 0 ? 'up' : p.c < 0 ? 'down' : 'warn';
     const ps = (p.c > 0 ? '+' : '') + p.pct.toFixed(2) + '%';
     return `<div class="ccard">
-      <div class="av">${t.slice(0, 2)}</div>
+      <div style="display:flex;align-items:center;justify-content:center;margin-right:8px">${getCompanyLogo(t, 38)}</div>
       <div class="inf">
         <div class="rs">
           <b>${t}</b>
@@ -4657,9 +4911,12 @@ function vMarket() {
           </div>
           <div>
             ${MARKET_FOREIGN_TOP_BUY.map(b => `<div class="mkt-mover-row click" data-act="stock" data-v="${b.sym}">
-              <div>
-                <b style="color:var(--brand)">${b.sym}</b>
-                <span style="color:var(--ink3);font-size:11px;margin-left:6px">${b.name}</span>
+              <div style="display:flex;align-items:center;gap:8px">
+                ${getCompanyLogo(b.sym, 24)}
+                <div>
+                  <b style="color:var(--brand)">${b.sym}</b>
+                  <span style="color:var(--ink3);font-size:11px;margin-left:4px">${b.name}</span>
+                </div>
               </div>
               <div style="text-align:right">
                 <b style="color:var(--up);font-family:var(--mono)">${b.net_val}</b>
@@ -4677,9 +4934,12 @@ function vMarket() {
           </div>
           <div>
             ${MARKET_FOREIGN_TOP_SELL.map(s => `<div class="mkt-mover-row click" data-act="stock" data-v="${s.sym}">
-              <div>
-                <b style="color:var(--down)">${s.sym}</b>
-                <span style="color:var(--ink3);font-size:11px;margin-left:6px">${s.name}</span>
+              <div style="display:flex;align-items:center;gap:8px">
+                ${getCompanyLogo(s.sym, 24)}
+                <div>
+                  <b style="color:var(--down)">${s.sym}</b>
+                  <span style="color:var(--ink3);font-size:11px;margin-left:4px">${s.name}</span>
+                </div>
               </div>
               <div style="text-align:right">
                 <b style="color:var(--down);font-family:var(--mono)">${s.net_val}</b>
@@ -4727,7 +4987,7 @@ function vMarket() {
                 ['VPB', 'Ngân hàng VPBank', 'HOSE', '19.40', '+0.80%', '11.20 M', '217.2', '4.1★ KHẢ QUAN'],
                 ['VND', 'Chứng khoán VNDIRECT', 'HOSE', '15.20', '+1.35%', '10.50 M', '159.6', '4.0★ KHẢ QUAN']
               ].map(r => `<tr class="click" data-act="stock" data-v="${r[0]}">
-                <td><b style="color:var(--brand)">${r[0]}</b></td>
+                <td><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(r[0], 22)}<b style="color:var(--brand)">${r[0]}</b></div></td>
                 <td>${r[1]}</td>
                 <td><span style="font-size:11px;color:var(--ink3)">${r[2]}</span></td>
                 <td class="num" style="text-align:right"><b>${r[3]}</b></td>
@@ -4833,9 +5093,12 @@ function vMarket() {
               ['TCB', 'Techcombank', '+1.38 đ', '+2.10%', '#38bdf8'],
               ['MBB', 'Quân đội', '+1.10 đ', '+1.25%', '#38bdf8']
             ].map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m[0]}">
-              <div>
-                <b style="color:${m[4]}">${m[0]}</b>
-                <span style="color:var(--ink3);font-size:11px;margin-left:6px">${m[1]}</span>
+              <div style="display:flex;align-items:center;gap:8px">
+                ${getCompanyLogo(m[0], 24)}
+                <div>
+                  <b style="color:${m[4]}">${m[0]}</b>
+                  <span style="color:var(--ink3);font-size:11px;margin-left:4px">${m[1]}</span>
+                </div>
               </div>
               <div style="text-align:right">
                 <b style="color:#22c55e;font-family:var(--mono)">${m[2]}</b>
@@ -4851,9 +5114,12 @@ function vMarket() {
               ['GAS', 'PV Gas', '-0.38 đ', '-0.40%', '#f87171'],
               ['SAB', 'Sabeco', '-0.25 đ', '-0.50%', '#f87171']
             ].map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m[0]}">
-              <div>
-                <b style="color:${m[4]}">${m[0]}</b>
-                <span style="color:var(--ink3);font-size:11px;margin-left:6px">${m[1]}</span>
+              <div style="display:flex;align-items:center;gap:8px">
+                ${getCompanyLogo(m[0], 24)}
+                <div>
+                  <b style="color:${m[4]}">${m[0]}</b>
+                  <span style="color:var(--ink3);font-size:11px;margin-left:4px">${m[1]}</span>
+                </div>
               </div>
               <div style="text-align:right">
                 <b style="color:#ef4444;font-family:var(--mono)">${m[2]}</b>
@@ -4995,13 +5261,16 @@ function vMarketNews() {
   // Right sidebar widgets
   const divRowsHtml = DIVIDEND_CALENDAR.map(d => `
     <div class="mnews-div-row">
-      <div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <button class="mnews-tkr-chip" data-act="stock" data-v="${d.t}" style="padding:1px 6px;font-size:11px"><b>${d.t}</b></button>
-          <span style="font-weight:600;font-size:11.5px;color:var(--ink)">${d.val}</span>
-        </div>
-        <div style="font-size:10.5px;color:var(--ink3);margin-top:3px">
-          GDKHQ: <b style="color:var(--ink2)">${d.date}</b> · TT: ${d.payDate}
+      <div style="display:flex;align-items:center;gap:8px">
+        ${getCompanyLogo(d.t, 26)}
+        <div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button class="mnews-tkr-chip" data-act="stock" data-v="${d.t}" style="padding:1px 6px;font-size:11px"><b>${d.t}</b></button>
+            <span style="font-weight:600;font-size:11.5px;color:var(--ink)">${d.val}</span>
+          </div>
+          <div style="font-size:10.5px;color:var(--ink3);margin-top:3px">
+            GDKHQ: <b style="color:var(--ink2)">${d.date}</b> · TT: ${d.payDate}
+          </div>
         </div>
       </div>
       <span class="mcp-tag ${d.src.includes('VND') ? 'vnd' : 'ssi'}" style="font-size:9px;flex-shrink:0">${d.src.split(' ')[0]}</span>
@@ -5012,6 +5281,7 @@ function vMarketNews() {
     <div class="mnews-trend-row" data-act="stock" data-v="${t.s}">
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:11px;font-weight:700;color:var(--ink3);width:14px">${idx + 1}</span>
+        ${getCompanyLogo(t.s, 26)}
         <div>
           <div style="font-weight:700;color:var(--ink);font-size:12px">${t.s} <span style="font-weight:400;color:var(--ink3);font-size:11px">· ${t.n}</span></div>
           <div style="font-size:10.5px;color:var(--ink3);margin-top:2px">${t.count} tin tức · <span style="color:var(--up);font-weight:600">${t.pos}% tích cực</span></div>
@@ -5326,7 +5596,11 @@ let menuEl = null;
 function openMenu(anchor, items, cur, onPick) {
   closeMenu();
   const r = anchor.getBoundingClientRect(); menuEl = document.createElement('div'); menuEl.className = 'menu'; menuEl.style.position = 'fixed';
-  menuEl.innerHTML = items.map((it, i) => `<button data-i="${i}" class="${it === cur ? 'on' : ''}">${esc(it)}</button>`).join('');
+  menuEl.innerHTML = items.map((it, i) => {
+    const isTicker = /^[A-Z0-9]{3,8}$/.test(it);
+    const label = isTicker ? `<span style="display:inline-flex;align-items:center;gap:7px">${getCompanyLogo(it, 18)}<b>${esc(it)}</b></span>` : esc(it);
+    return `<button data-i="${i}" class="${it === cur ? 'on' : ''}">${label}</button>`;
+  }).join('');
   document.body.appendChild(menuEl);
   const w = menuEl.offsetWidth, h = menuEl.offsetHeight; menuEl.style.top = (r.bottom + 4 + h > window.innerHeight - 8 && r.top - h - 4 > 8 ? r.top - h - 4 : r.bottom + 4) + 'px'; menuEl.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.right - w)) + 'px';
   if (r.left + w < window.innerWidth - 8 && r.right - w < 8) menuEl.style.left = r.left + 'px';
@@ -5699,7 +5973,7 @@ qIn.addEventListener('input', () => {
   const st = UNI.filter(u => u[0].toLowerCase().startsWith(q) || u[1].toLowerCase().includes(q)).slice(0, 5).map(u => ({ k: 's', t: u[0], l: u[1] }));
   const rp = REPORTS.filter(r => r[1].toLowerCase().includes(q)).slice(0, 3).map(r => ({ k: 'r', t: 'BC', l: r[1], i: REPORTS.indexOf(r) }));
   sugItems = [...st, ...rp]; sugIdx = -1;
-  sug.innerHTML = sugItems.length ? sugItems.map((s, i) => `<button data-si="${i}"><b>${s.t}</b><span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.l)}</span></button>`).join('') : '<p class="muted" style="margin:8px;font-size:12px">Không tìm thấy kết quả</p>';
+  sug.innerHTML = sugItems.length ? sugItems.map((s, i) => `<button data-si="${i}" style="display:flex;align-items:center;gap:8px">${s.k === 's' ? getCompanyLogo(s.t, 22) : '<span style="font-size:14px">📄</span>'}<b>${s.t}</b><span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.l)}</span></button>`).join('') : '<p class="muted" style="margin:8px;font-size:12px">Không tìm thấy kết quả</p>';
   sug.hidden = false;
 });
 function pickSug(i) { const s = sugItems[i]; if (!s) return; hideSuggest(); qIn.value = ''; if (s.k === 's') openStock(s.t); else { S.rep.q = ''; S.rep.tab = 0; go('reports'); } }
@@ -5828,7 +6102,7 @@ function vAll() {
     <div class="stabs scr2-tabs" role="tablist">${['Tùy chọn lọc', ...Object.keys(COLSETS)].map(k => `<button role="tab" aria-selected="${A.cols === k}" class="${A.cols === k ? 'on' : ''}" data-act="colset" data-v="${k}">${k}</button>`).join('')}</div>
     <div class="scr2-res"><b>Kết quả</b><span>(${rows.length} mã CK)</span></div>
     <div class="tscroll" style="border:1px solid var(--line)"><table class="t upper hd lg all-t"><thead><tr><th style="width:32px;text-align:center"><span class="check ${allSel ? 'on' : ''}" data-act="aselall" role="checkbox" aria-checked="${allSel}" tabindex="0"></span></th>${th('t', 'Mã CK', '')}<th class="frz" style="width:168px" data-tip="Datafeed FiinGroup · Organization · OrganName">Tên công ty</th><th style="width:91px" ${tipAttr('ex')}>Sàn</th>${cs.map(c => th(c[0], c[0] === 'price' ? 'Giá (nghìn đ)' : c[1])).join('')}<th style="width:226px" ${tipAttr('ind')}>Ngành</th></tr></thead>
-    <tbody>${rows.map(r => { const on = A.sel.has(r[0]), w = inAnyWL(r[0]); return `<tr class="click ${on ? 'sel' : ''}" data-act="stock" data-v="${r[0]}"><td style="text-align:center"><span class="check ${on ? 'on' : ''}" data-act="asel" data-v="${r[0]}" role="checkbox" aria-checked="${on}" tabindex="0"></span></td><td>${r[0]}</td>
+    <tbody>${rows.map(r => { const on = A.sel.has(r[0]), w = inAnyWL(r[0]); return `<tr class="click ${on ? 'sel' : ''}" data-act="stock" data-v="${r[0]}"><td style="text-align:center"><span class="check ${on ? 'on' : ''}" data-act="asel" data-v="${r[0]}" role="checkbox" aria-checked="${on}" tabindex="0"></span></td><td style="white-space:nowrap"><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(r[0], 20)}<b>${r[0]}</b></div></td>
       <td class="frz ink2"><span class="nm1"><span title="${esc(r[1])}">${esc(r[1])}</span><button class="bmh ${w ? 'on' : ''}" data-act="addwatch" data-v="${r[0]}" aria-haspopup="menu" aria-label="Thêm ${r[0]} vào danh mục" data-tip="${esc(wlPickTip(r[0]))}">${I_BM16(w)}</button></span></td><td><span class="tg">${r[2]}</span></td>
       ${cs.map(c => { const x = c[2](r), k = c[4] ? c[4](r) : ''; return `<td class="rt ${k === 'sans' ? '' : 'num'} ${k === 'sans' ? '' : k}">${x == null && c[3] !== sgA ? '<span class="muted">–</span>' : c[3](x, r)}</td>`; }).join('')}
       <td class="ink2" style="max-width:226px;overflow:hidden;text-overflow:ellipsis">${r[11]}</td></tr>`; }).join('') || `<tr><td colspan="${cs.length + 5}" class="muted" style="padding:24px 12px;height:auto">Không có mã nào thoả tất cả điều kiện. Bỏ bớt một điều kiện để mở rộng kết quả.</td></tr>`}</tbody></table></div>
@@ -6062,7 +6336,7 @@ function wlOverviewTable(L) {
   const allSel = L.tickers.every(t => S.wlSel.has(t));
   return `<div class="tscroll wl-tbl"><table class="t upper hd lg wl-t" style="min-width:1490px"><thead><tr><th style="width:32px;text-align:center"><span class="check ${allSel ? 'on' : ''}" data-act="wlselall" role="checkbox" aria-checked="${allSel}" tabindex="0"></span></th>${wth('t', 'Mã CK', '', 'width:132px')}${wth('n', 'Tên doanh nghiệp', 'frz', 'width:168px')}<th style="width:80px">Sàn</th>${wth('p', 'Giá (nghìn)', 'rt', 'width:96px')}${wth('c', '+/−', 'rt', 'width:92px')}${wth('pct', '%', 'rt', 'width:84px')}${wth('kl', 'KL', 'rt', 'width:130px')}${wth('gt', 'GT (tỷ)', 'rt', 'width:110px')}<th class="ctr" style="width:188px">Biên độ ngày</th><th class="ctr" style="width:188px">Biên độ 52 tuần</th>${wth('ind', 'Ngành', '', 'width:150px')}<th class="fill"></th></tr></thead>
   <tbody>${wlSorted(L, key).map(t => { const s = ensureStock(t), on = S.wlSel.has(t), k = cc(s.c) || (s.c === 0 ? 'eq' : ''); if (s.type) return wlInstrRow(L, t, 'tq', on).html; return `<tr class="click ${on ? 'sel' : ''} ${s.susp ? 'susp' : ''}" data-act="stock" data-v="${t}">
-    <td style="text-align:center"><span class="check ${on ? 'on' : ''}" data-act="wlsel" data-v="${t}" role="checkbox" aria-checked="${on}" tabindex="0"></span></td><td>${t}</td>
+    <td style="text-align:center"><span class="check ${on ? 'on' : ''}" data-act="wlsel" data-v="${t}" role="checkbox" aria-checked="${on}" tabindex="0"></span></td><td style="white-space:nowrap"><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(t, 20)}<b>${t}</b></div></td>
     <td class="frz ink2"><span class="nm1"><span>${esc(s.n)}</span>${suspCell(s)}</span></td><td><span class="tg ${s.susp ? 'w' : ''}">${s.ex}</span></td>
     <td class="rt num ${k}">${fx2(s.p)}</td><td class="rt num ${k}">${sg2(s.c)}</td><td class="rt num ${k}">${sg2(s.pct, 2, '%')}</td><td class="rt num">${s.kl}</td><td class="rt num">${fx2(s.gt)}</td>
     <td class="ctr">${rng52(s.dl, s.dh, s.p)}</td><td class="ctr">${rng52(s.wl, s.wh, s.p)}</td><td class="ink2">${s.ind}</td><td class="fill"></td></tr>`; }).join('')}</tbody></table></div>`;

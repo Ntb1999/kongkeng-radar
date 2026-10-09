@@ -1507,6 +1507,63 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
   border-color: #6366f1;
 }
 
+/* REALTIME STREAMING ENGINE & TICK FLASHING */
+@keyframes flashGreen {
+  0% { background: rgba(34, 197, 94, 0.45); color: #15803d; transform: scale(1.04); }
+  100% { background: transparent; color: inherit; transform: scale(1); }
+}
+@keyframes flashRed {
+  0% { background: rgba(239, 68, 68, 0.45); color: #b91c1c; transform: scale(1.04); }
+  100% { background: transparent; color: inherit; transform: scale(1); }
+}
+.flash-up {
+  animation: flashGreen 0.75s cubic-bezier(0.1, 0.9, 0.2, 1);
+  border-radius: 4px;
+}
+.flash-down {
+  animation: flashRed 0.75s cubic-bezier(0.1, 0.9, 0.2, 1);
+  border-radius: 4px;
+}
+.live-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  animation: liveDotPing 1.6s infinite ease-in-out;
+  display: inline-block;
+}
+.live-paused-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+  display: inline-block;
+}
+@keyframes liveDotPing {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.35); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+.tape-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3.5px 6px;
+  font-size: 11px;
+  font-family: var(--mono);
+  border-bottom: 1px dashed var(--line);
+  animation: tapeFadeIn 0.3s ease-out;
+}
+@keyframes tapeFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rt-live-badge:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
 .ssi-mcp-badge {
   display: flex;
   align-items: center;
@@ -3475,6 +3532,181 @@ const TV_TOOLS = [
   ['Ẩn bản vẽ', tvi('<path d="M4.5 14s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="14" cy="14" r="2.5"/>')],
   ['Xoá bản vẽ', tvi('<path d="M8 9h12M11 9V7h6v2M9.5 9l1 13h7l1-13"/>')]
 ];
+/* ================= REALTIME STREAMING ENGINE (CLIENT-SIDE STREAM & WSS) ================= */
+let REALTIME_ACTIVE = true;
+let REALTIME_TIMER = null;
+let REALTIME_SPEED_MS = 2200;
+let HERO_SIDE_TAB = 'tape';
+let INTRADAY_LIVE_TICKS = [];
+
+function initRealtimeTicks(sym, basePrice) {
+  basePrice = basePrice || (typeof STOCK !== 'undefined' ? STOCK.price : 14250);
+  INTRADAY_LIVE_TICKS = [];
+  const now = new Date();
+  for (let i = 7; i >= 0; i--) {
+    const t = new Date(now.getTime() - i * 3200);
+    const tStr = `${t.getHours().toString().padStart(2, '0')}:${t.getMinutes().toString().padStart(2, '0')}:${t.getSeconds().toString().padStart(2, '0')}`;
+    const p = basePrice + (Math.floor(Math.random() * 3) - 1) * 50;
+    const v = Math.floor(Math.random() * 60 + 10) * 100;
+    const side = Math.random() > 0.4 ? 'buy' : 'sell';
+    INTRADAY_LIVE_TICKS.unshift({ time: tStr, price: p, vol: v, side: side });
+  }
+}
+
+function renderLiveTapeRows() {
+  if (!INTRADAY_LIVE_TICKS || INTRADAY_LIVE_TICKS.length === 0) {
+    initRealtimeTicks(typeof STOCK !== 'undefined' ? STOCK.sym : 'MSB', typeof STOCK !== 'undefined' ? STOCK.price : 14250);
+  }
+  return INTRADAY_LIVE_TICKS.map((t, idx) => `
+    <div class="tape-row" style="display:flex;align-items:center;justify-content:space-between;padding:3.5px 6px;border-bottom:1px dashed var(--line);font-size:11px;font-family:var(--mono);background:${idx === 0 ? 'rgba(34,197,94,0.06)' : 'transparent'}">
+      <span style="color:var(--ink3);font-size:10.5px">${t.time}</span>
+      <b style="color:${t.side === 'buy' ? 'var(--up)' : 'var(--down)'};font-size:11.5px">${fmtVN(t.price, 0)}</b>
+      <span style="font-weight:600;color:var(--ink)">${fmtVN(t.vol, 0)} CP</span>
+      <span style="font-size:9.5px;padding:1px 5px;border-radius:3px;font-weight:700;background:${t.side === 'buy' ? 'rgba(34,171,148,0.15)' : 'rgba(242,54,69,0.15)'};color:${t.side === 'buy' ? 'var(--up)' : 'var(--down)'}">
+        ${t.side === 'buy' ? 'MUA ↑' : 'BÁN ↓'}
+      </span>
+    </div>
+  `).join('');
+}
+
+function setHeroSideTab(tab) {
+  HERO_SIDE_TAB = tab;
+  rerender();
+}
+
+function toggleRealtimeStream() {
+  REALTIME_ACTIVE = !REALTIME_ACTIVE;
+  const btn = document.getElementById('btn-realtime-toggle');
+  const dot = document.getElementById('c360-live-dot');
+  const label = document.getElementById('c360-live-status-label');
+
+  if (REALTIME_ACTIVE) {
+    if (btn) {
+      btn.style.background = 'rgba(34,197,94,0.12)';
+      btn.style.borderColor = 'rgba(34,197,94,0.35)';
+      btn.style.color = '#16a34a';
+    }
+    if (dot) dot.className = 'live-pulse-dot';
+    if (label) label.textContent = 'REALTIME LIVE';
+    if (typeof toast === 'function') toast('● Đã BẬT luồng Realtime Streaming (~2s/tick)!');
+  } else {
+    if (btn) {
+      btn.style.background = 'rgba(148,163,184,0.15)';
+      btn.style.borderColor = 'var(--line2)';
+      btn.style.color = 'var(--ink3)';
+    }
+    if (dot) dot.className = 'live-paused-dot';
+    if (label) label.textContent = 'STREAM: TẠM DỪNG';
+    if (typeof toast === 'function') toast('⏸ Đã TẠM DỪNG luồng Realtime.');
+  }
+}
+
+function tickRealtime() {
+  if (!REALTIME_ACTIVE) return;
+  if (typeof S === 'undefined' || !S.route || !S.route.startsWith('c360')) return;
+  if (typeof STOCK === 'undefined' || !STOCK) return;
+
+  const oldPrice = STOCK.price;
+  const refPrice = (STOCK.price - STOCK.chg) || 14100;
+  const step = STOCK.price < 50000 ? 50 : 100;
+  const maxDelta = Math.round(refPrice * 0.07);
+  const ceilPrice = Math.round((refPrice + maxDelta) / step) * step;
+  const floorPrice = Math.round((refPrice - maxDelta) / step) * step;
+
+  // 45% unchanged, 28% +step, 27% -step
+  const rnd = Math.random();
+  let delta = 0;
+  if (rnd < 0.28) {
+    delta = step;
+  } else if (rnd < 0.55) {
+    delta = -step;
+  }
+  let newPrice = oldPrice + delta;
+  if (newPrice > ceilPrice) newPrice = ceilPrice;
+  if (newPrice < floorPrice) newPrice = floorPrice;
+
+  const tickVol = Math.floor(Math.random() * 80 + 5) * 100;
+  const side = (newPrice > oldPrice) ? 'buy' : (newPrice < oldPrice) ? 'sell' : (Math.random() > 0.45 ? 'buy' : 'sell');
+
+  STOCK.price = newPrice;
+  STOCK.chg = newPrice - refPrice;
+  STOCK.pct = (STOCK.chg / (refPrice || 1)) * 100;
+
+  // Add tick to live tape
+  const now = new Date();
+  const tStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+  INTRADAY_LIVE_TICKS.unshift({ time: tStr, price: newPrice, vol: tickVol, side: side });
+  if (INTRADAY_LIVE_TICKS.length > 10) INTRADAY_LIVE_TICKS.pop();
+
+  // 1. Update Price Header DOM with Flash
+  const priceEl = document.getElementById('c360-live-price');
+  const chgEl = document.getElementById('c360-live-chg');
+  if (priceEl) {
+    priceEl.textContent = fmtVN(newPrice, 0);
+    priceEl.classList.remove('flash-up', 'flash-down');
+    void priceEl.offsetWidth; // trigger reflow
+    if (newPrice > oldPrice) {
+      priceEl.classList.add('flash-up');
+    } else if (newPrice < oldPrice) {
+      priceEl.classList.add('flash-down');
+    }
+  }
+  if (chgEl) {
+    const isUp = STOCK.chg >= 0;
+    chgEl.className = 'c ' + (isUp ? 'up' : 'down');
+    chgEl.textContent = `${isUp ? '▲ +' : '▼ '}${fmtVN(Math.abs(STOCK.chg), 0)} (${isUp ? '+' : ''}${STOCK.pct.toFixed(2)}%)`;
+  }
+
+  // Update tvbid & tvask in TradingView header if present
+  const tvbidEl = document.getElementById('tvbid');
+  const tvaskEl = document.getElementById('tvask');
+  if (tvbidEl) tvbidEl.textContent = fmtVN(newPrice - step, 0);
+  if (tvaskEl) tvaskEl.textContent = fmtVN(newPrice, 0);
+
+  // 2. Update Candlestick Chart (last candle)
+  if (typeof CANDLES !== 'undefined' && CANDLES && CANDLES.length > 0) {
+    const last = CANDLES[CANDLES.length - 1];
+    last.c = newPrice;
+    if (newPrice > last.h) last.h = newPrice;
+    if (newPrice < last.l) last.l = newPrice;
+    last.v += tickVol;
+  }
+  if (typeof INTRA !== 'undefined' && INTRA && INTRA.length > 0) {
+    const lastI = INTRA[INTRA.length - 1];
+    lastI.c = newPrice;
+    if (newPrice > lastI.h) lastI.h = newPrice;
+    if (newPrice < lastI.l) lastI.l = newPrice;
+    lastI.v += tickVol;
+  }
+  if (typeof drawCandles === 'function') {
+    drawCandles();
+  }
+
+  // 3. Update Live Tape DOM
+  const tapeListEl = document.getElementById('hero-live-tape-list');
+  if (tapeListEl && HERO_SIDE_TAB === 'tape') {
+    tapeListEl.innerHTML = renderLiveTapeRows();
+  }
+
+  // 4. Update in-memory MCP Payloads
+  if (typeof updateDnseMcpPayloadsForSymbol === 'function') {
+    const dData = (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[STOCK.sym]) ? DNSE_STOCKS_DB[STOCK.sym] : null;
+    if (dData) { dData.price = newPrice; dData.chg = STOCK.chg; dData.pct = STOCK.pct; updateDnseMcpPayloadsForSymbol(dData); }
+  }
+  if (typeof updateSsiMcpPayloadsForSymbol === 'function') {
+    updateSsiMcpPayloadsForSymbol(STOCK.sym);
+  }
+  const modalEl = document.getElementById('modal-dnse-mcp');
+  if (modalEl && modalEl.classList.contains('open') && typeof renderDnseMcpModal === 'function') {
+    renderDnseMcpModal();
+  }
+}
+
+function startRealtimeEngine() {
+  if (REALTIME_TIMER) clearInterval(REALTIME_TIMER);
+  REALTIME_TIMER = setInterval(tickRealtime, REALTIME_SPEED_MS);
+}
+
 function stockHeader() {
   const m = STOCK.metrics, kl = rows => rows.map(([a, b, c]) => `<div class="kl"><span>${a}</span><span class="${c || ''}">${b}</span></div>`).join('');
   const cell = (t, rows) => `<div class="mc"><span class="cap">${t}</span><div class="kls">${kl(rows)}</div></div>`;
@@ -3496,7 +3728,15 @@ function stockHeader() {
         `).join('')}
       </div>
     </div>
-    <div class="price-b"><div class="p">${fmtVN(STOCK.price, 0)}</div><div class="c ${STOCK.chg >= 0 ? 'up' : 'down'}">${STOCK.chg >= 0 ? '▲ +' : '▼ '}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)</div></div>
+    <div class="price-b" style="display:flex;flex-direction:column;align-items:flex-end">
+      <div class="p" id="c360-live-price" style="transition:background 0.3s, color 0.2s;padding:0 4px;border-radius:4px">${fmtVN(STOCK.price, 0)}</div>
+      <div class="c ${STOCK.chg >= 0 ? 'up' : 'down'}" id="c360-live-chg">${STOCK.chg >= 0 ? '▲ +' : '▼ '}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)</div>
+      <div class="rt-live-badge" id="btn-realtime-toggle" onclick="toggleRealtimeStream()" title="Click để Bật / Tạm dừng luồng Realtime Streaming" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:12px;margin-top:4px;font-size:10px;font-weight:700;transition:all 0.2s;background:${REALTIME_ACTIVE ? 'rgba(34,197,94,0.12)' : 'rgba(148,163,184,0.15)'};border:1px solid ${REALTIME_ACTIVE ? 'rgba(34,197,94,0.35)' : 'var(--line2)'};color:${REALTIME_ACTIVE ? '#16a34a' : 'var(--ink3)'}">
+        <span class="${REALTIME_ACTIVE ? 'live-pulse-dot' : 'live-paused-dot'}" id="c360-live-dot"></span>
+        <span id="c360-live-status-label">${REALTIME_ACTIVE ? 'REALTIME LIVE' : 'STREAM: TẠM DỪNG'}</span>
+        <span style="font-size:9px;opacity:0.75" id="c360-live-tick-speed">~2s/tick</span>
+      </div>
+    </div>
     <div class="mcp-cluster" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
       <div class="dnse-mcp-badge" onclick="openDnseMcpModal('dnse')" title="DNSE Model Context Protocol Server (mcp.dnse.com.vn)">
         <span class="mcp-dot"></span>
@@ -3551,8 +3791,25 @@ function stockHeader() {
     </div>
     <div class="hero-side">
       <div class="m4"><div>${cell('Định giá &amp; lợi nhuận', m.val)}${cell('Thanh khoản', m.liq)}</div><div>${cell('Quy mô &amp; sở hữu', m.size)}${cell('NĐT nước ngoài', m.frn)}</div></div>
-      <div class="hero-ev"><div class="evh"><span class="cap">Sự kiện gần đây</span><button class="chip" data-act="evtop">${S.evTop} ${I.chev}</button></div>
-        <div class="ev-list">${evs.map(([d, t]) => `<div><b>${d}</b><span title="${esc(t)}">${t}</span></div>`).join('') || '<span class="muted">Không có sự kiện trong nhóm này.</span>'}</div></div>
+      <div class="hero-ev">
+        <div class="evh" style="display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8px">
+            <button onclick="setHeroSideTab('tape')" style="background:transparent;border:0;padding:2px 0;cursor:pointer;font-size:11.5px;font-weight:${HERO_SIDE_TAB==='tape'?'700':'500'};color:${HERO_SIDE_TAB==='tape'?'var(--brand)':'var(--ink3)'};display:inline-flex;align-items:center;gap:5px;border-bottom:2px solid ${HERO_SIDE_TAB==='tape'?'var(--brand)':'transparent'}">
+              <span class="live-pulse-dot" style="width:6px;height:6px"></span> KHỚP LỆNH LIVE TAPE
+            </button>
+            <span style="color:var(--line2)">|</span>
+            <button onclick="setHeroSideTab('ev')" style="background:transparent;border:0;padding:2px 0;cursor:pointer;font-size:11.5px;font-weight:${HERO_SIDE_TAB==='ev'?'700':'500'};color:${HERO_SIDE_TAB==='ev'?'var(--brand)':'var(--ink3)'};border-bottom:2px solid ${HERO_SIDE_TAB==='ev'?'var(--brand)':'transparent'}">
+              SỰ KIỆN GẦN ĐÂY
+            </button>
+          </div>
+          ${HERO_SIDE_TAB === 'tape' 
+            ? `<span style="font-size:10px;color:#16a34a;font-weight:700" id="live-tape-badge">● STREAM LIVE</span>` 
+            : `<button class="chip" data-act="evtop">${S.evTop} ${I.chev}</button>`}
+        </div>
+        ${HERO_SIDE_TAB === 'tape'
+          ? `<div class="ev-list" id="hero-live-tape-list" style="overflow-y:auto;max-height:160px;font-family:var(--mono);font-size:11px;padding-right:4px">${renderLiveTapeRows()}</div>`
+          : `<div class="ev-list">${evs.map(([d, t]) => `<div><b>${d}</b><span title="${esc(t)}">${t}</span></div>`).join('') || '<span class="muted">Không có sự kiện trong nhóm này.</span>'}</div>`}
+      </div>
     </div>
   </div>
   <div class="tabs" role="tablist">${C360_TABS.map(([k, l]) => { const rt = k ? 'c360-' + k : 'c360'; return `<button role="tab" class="${S.route === rt ? 'on' : ''}" data-go="${rt}">${l}</button>`; }).join('')}</div>`;
@@ -6063,6 +6320,9 @@ function openStock(t) {
   t = t.toUpperCase().trim();
   if (typeof fetchAndApplyDnseMcpData === 'function') {
     fetchAndApplyDnseMcpData(t);
+  }
+  if (typeof initRealtimeTicks === 'function' && typeof STOCK !== 'undefined') {
+    initRealtimeTicks(t, STOCK.price);
   }
   go('c360');
 }
@@ -8996,6 +9256,8 @@ if (typeof STOCK !== 'undefined' && STOCK) {
 const savedTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('maris_theme')) || 'light';
 setTheme(savedTheme, true);
 readHash(); render();
+initRealtimeTicks(STOCK.sym, STOCK.price);
+startRealtimeEngine();
 
 </script>
 

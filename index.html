@@ -2619,14 +2619,14 @@ const DNSE_MCP_META = {
 };
 
 let STOCK = {
-  sym: 'MSB', ex: 'HOSE', name: 'Ngân hàng TMCP Hàng Hải Việt Nam', ind: 'Ngân hàng', price: 14250, chg: 150, pct: 1.06,
-    metrics: {
-    liq: [['KLGD', '8.462.300 CP'], ['GTGD', '120,58 tỷ đồng']],
-    frn: [['Khối lượng ròng', '+512.400', 'up'], ['Giá trị ròng', '+7.302 triệu', 'up'], ['Room ngoại', '790.500.000 CP']],
-    val: [['EPS (TTM)', '1.923 đ'], ['P/E (TTM)', '7,41 lần'], ['P/B (TTM)', '1,08 lần'], ['ROE (TTM)', '14,8%', 'up'], ['NIM (Bán niên)', '3,70%', 'up'], ['CASA', '26,71%', 'up']],
-    size: [['Vốn hoá', '37,05 nghìn tỷ'], ['Vốn điều lệ', '26,00 nghìn tỷ'], ['VCSH', '34,02 nghìn tỷ'], ['SLCP lưu hành', '2,600 tỷ CP']]
+  sym: 'BID', ex: 'HOSE', name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam', ind: 'Ngân hàng', price: 33900, chg: 0, pct: 0, vol: 3762900, val_bil: 126.75,
+  metrics: {
+    liq: [['KLGD', '3.762.900 CP'], ['GTGD', '126,75 tỷ đồng']],
+    frn: [['Khối lượng ròng', '-351.850', 'down'], ['Giá trị ròng', '-11.928 triệu', 'down'], ['Room ngoại', '974.162.227 CP']],
+    val: [['EPS (TTM)', '3.139 đ'], ['P/E (TTM)', '10,80 lần'], ['P/B (TTM)', '1,85 lần'], ['ROE (TTM)', '17,5%', 'up'], ['Biên LN ròng', '14,2%', 'up'], ['Tỷ suất cổ tức', '4,5%', 'up']],
+    size: [['Vốn hoá', '238,60 nghìn tỷ'], ['Vốn điều lệ', '155,09 nghìn tỷ'], ['VCSH', '202,81 nghìn tỷ'], ['SLCP lưu hành', '7.040 tỷ']]
   },
-  events: [['18/09', 'ĐHĐCĐ thông qua kế hoạch tăng vốn điều lệ lên 37.440 tỷ'], ['25/09', 'GDKHQ trả cổ tức tỷ lệ 30% bằng cổ phiếu'], ['02/10', 'Ngày thanh toán cổ tức tiền mặt bổ sung'], ['09/10', 'Phát hành cổ phiếu ESOP cho CBNV năm 2026'], ['20/10', 'Công bố KQKD 9T: LNTT đạt 4.900 tỷ (72% kế hoạch)'], ['30/10', 'Niêm yết bổ sung cổ phiếu tăng vốn trên HOSE'], ['12/11', 'Gặp gỡ nhà đầu tư và chuyên viên phân tích định kỳ']]
+  events: [['18/09', 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh'], ['25/09', 'GDKHQ chi trả cổ tức cho cổ đông'], ['02/10', 'Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu'], ['20/10', 'Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026'], ['12/11', 'Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3']]
 };
 
 let FACTORS = [
@@ -2886,7 +2886,7 @@ const TV_MCP = {
 };
 
 /* candles */
-function makeCandles(targetPrice, seed) {
+function makeCandles(targetPrice, seed, chgVal) {
   const r = rng(seed || 7), out = []; const n = 1300;
   const targetPriceVal = targetPrice || (typeof STOCK !== 'undefined' && STOCK ? STOCK.price : 14250);
   const ratio = targetPriceVal / 14250;
@@ -2921,15 +2921,20 @@ function makeCandles(targetPrice, seed) {
   }
   const curP = targetPriceVal;
   const pv = out[n - 2];
-  const prevP = Math.round((curP * 0.99) / 50) * 50;
+  const chg = (chgVal != null) ? chgVal : (typeof STOCK !== 'undefined' && STOCK && STOCK.chg != null ? STOCK.chg : 0);
+  const prevP = chg != null ? (curP - chg) : Math.round((curP * 0.99) / 50) * 50;
   pv.c = prevP; pv.h = Math.max(pv.h, pv.o, prevP); pv.l = Math.min(pv.l, pv.o, prevP);
+  const isZeroChg = chg === 0;
+  const openP = isZeroChg ? Math.round((curP * 1.004) / 50) * 50 : (chg > 0 ? Math.round((prevP * 1.002) / 50) * 50 : Math.round((prevP * 0.998) / 50) * 50);
+  const hiP = Math.max(curP, prevP, openP, Math.round((curP * 1.006) / 50) * 50);
+  const loP = Math.min(curP, prevP, openP, Math.round((curP * 0.985) / 50) * 50);
   Object.assign(out[n - 1], {
     d: days[n - 1],
-    o: Math.round((curP * 0.995) / 50) * 50,
-    h: Math.round((curP * 1.008) / 50) * 50,
-    l: Math.round((curP * 0.992) / 50) * 50,
+    o: openP,
+    h: hiP,
+    l: loP,
     c: curP,
-    v: 8462300
+    v: (typeof STOCK !== 'undefined' && STOCK && STOCK.vol) ? STOCK.vol : 3762900
   });
   return out;
 }
@@ -2937,16 +2942,16 @@ let CANDLES = makeCandles();
 
 /* profile */
 let PROFILE = {
-  basic: [['Mã chứng khoán', 'MSB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '12/07/1991'], ['Vốn điều lệ', '26,00 nghìn tỷ đồng (Lộ trình 37,44 nghìn tỷ)'], ['Số lượng nhân sự', '6.284'], ['Số lượng chi nhánh', '63'], ['Số công ty con & liên kết', '3'], ['Đại diện pháp luật', 'Trần Minh Đức']],
-  listing: [['Ngày niêm yết', '23/12/2020'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '15.000'], ['Giá ngày GD đầu tiên', '18.000'], ['P/E (TTM)', '7,41 lần'], ['P/B (TTM)', '1,08 lần'], ['KL niêm yết lần đầu', '1.175.000.000'], ['KL đang niêm yết', '2.600.000.000 CP'], ['KL cổ phiếu lưu hành', '2.600.000.000 CP']],
-  intro: 'MSB là một trong những ngân hàng thương mại cổ phần đầu tiên tại Việt Nam, định vị ở phân khúc ngân hàng bán lẻ và doanh nghiệp vừa và nhỏ. Ngân hàng tập trung vào chiến lược số hoá kênh phân phối, mở rộng tỷ lệ tiền gửi không kỳ hạn (CASA) và phát triển nguồn thu ngoài lãi từ dịch vụ thanh toán, bảo hiểm liên kết và ngoại hối. Tỷ lệ an toàn vốn duy trì trên mức quy định của Ngân hàng Nhà nước trong các năm gần đây.',
-  miles: [['12/07/1991', 'Thành lập theo giấy phép của Ngân hàng Nhà nước, vốn điều lệ ban đầu 40 tỷ đồng.'], ['2015', 'Sáp nhập Ngân hàng TMCP Phát triển Mê Kông, nâng vốn điều lệ lên 11.750 tỷ đồng.'], ['23/12/2020', 'Niêm yết 1.175.000.000 cổ phiếu trên HOSE, giá tham chiếu 15.000 đồng.'], ['2023', 'Phát hành cổ phiếu trả cổ tức tỷ lệ 30%, vốn điều lệ đạt 20.000 tỷ đồng.'], ['2025', 'Hoàn tất tăng vốn điều lệ lên 26.350 tỷ đồng qua chia cổ tức bằng cổ phiếu và ESOP.']],
-  leaders: [['Nguyễn Hoàng Anh', 'Chủ tịch HĐQT'], ['Trần Minh Đức', 'Tổng Giám đốc'], ['Lê Thị Hồng', 'Trưởng Ban Kiểm soát'], ['Phạm Thu Trang', 'Phó Tổng Giám đốc'], ['Vũ Thị Lan', 'Kế toán trưởng']],
-  subs: [['Cty TNHH Quản lý nợ & Khai thác tài sản MSB', '100%', 'Quản lý nợ, xử lý tài sản', 'Công ty con'], ['Cty TNHH Cho thuê tài chính MSB', '100%', 'Cho thuê tài chính', 'Công ty con'], ['Cty Bảo hiểm Nhân thọ MSB', '35%', 'Bảo hiểm nhân thọ', 'Liên kết']]
+  basic: [['Mã chứng khoán', 'BID'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '26/04/1957'], ['Vốn điều lệ', '155,09 nghìn tỷ đồng'], ['Số lượng nhân sự', '28.500'], ['Số lượng chi nhánh', '190'], ['Số công ty con & liên kết', '10'], ['Đại diện pháp luật', 'Phan Đức Tú']],
+  listing: [['Ngày niêm yết', '24/01/2014'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '18.700'], ['Giá ngày GD đầu tiên', '18.700'], ['P/E (TTM)', '10,80 lần'], ['P/B (TTM)', '1,85 lần'], ['KL niêm yết lần đầu', '2.811.202.644'], ['KL đang niêm yết', '7.040.000.000 CP'], ['KL cổ phiếu lưu hành', '7.040.000.000 CP']],
+  intro: 'BIDV (Ngân hàng TMCP Đầu tư và Phát triển Việt Nam) là ngân hàng thương mại nhà nước lớn nhất Việt Nam xét theo tổng tài sản. Được thành lập từ năm 1957, BIDV giữ vai trò trụ cột trong việc cung cấp tín dụng cho các dự án hạ tầng kinh tế trọng điểm quốc gia, đồng thời phát triển mạnh mẽ mảng ngân hàng bán lẻ và chuyển đổi số toàn diện.',
+  miles: [['26/04/1957', 'Thành lập Ngân hàng Kiến thiết Việt Nam (tiền thân của BIDV).'], ['2011', 'Hoàn tất cổ phần hóa, bán đấu giá thành công cổ phần lần đầu ra công chúng (IPO).'], ['24/01/2014', 'Chính thức niêm yết cổ phiếu BID trên Sở GDCK TP.HCM (HOSE).'], ['2019', 'Phát hành thành công 15% vốn cổ phần cho cổ đông chiến lược KEB Hana Bank (Hàn Quốc).'], ['2026', 'Tổng tài sản vượt mốc 2,5 triệu tỷ đồng, tiếp tục giữ vị thế ngân hàng có quy mô lớn nhất hệ thống.']],
+  leaders: [['Phan Đức Tú', 'Chủ tịch HĐQT'], ['Lê Ngọc Lâm', 'Tổng Giám đốc'], ['Võ Bích Hà', 'Trưởng Ban Kiểm soát'], ['Trần Long', 'Phó Tổng Giám đốc'], ['Nguyễn Thị Quỳnh Giao', 'Phó Tổng Giám đốc']],
+  subs: [['Công ty Chứng khoán BIDV (BSC)', '79.9%', 'Môi giới & đầu tư chứng khoán', 'Công ty con'], ['Công ty Bảo hiểm BIDV (BIC)', '51%', 'Bảo hiểm phi nhân thọ', 'Công ty con'], ['Công ty Cho thuê tài chính BIDV (BLC)', '100%', 'Cho thuê tài chính', 'Công ty con']]
 };
 
 /* shareholders */
-let HOLDERS = [['Wealth Prosperity Investment Pte. Ltd.', 'Tổ chức', 'Nước ngoài', '263,00 triệu', '9,98%', '30/06/2026'], ['Tổng Công ty Bưu điện Việt Nam', 'Tổ chức', 'Trong nước', '160,00 triệu', '6,07%', '30/06/2026'], ['Nguyễn Hoàng Anh', 'Cá nhân', '—', '109,40 triệu', '4,15%', '30/06/2026'], ['Quỹ đầu tư Vietnam Holding', 'Tổ chức', 'Nước ngoài', '72,60 triệu', '2,76%', '18/06/2026'], ['Trần Minh Đức', 'Cá nhân', '—', '48,00 triệu', '1,82%', '30/06/2026'], ['Công đoàn Ngân hàng TMCP Hàng Hải', 'Tổ chức', 'Trong nước', '31,20 triệu', '1,18%', '21/11/2025']];
+let HOLDERS = [['Ngân hàng Nhà nước Việt Nam', 'Nhà nước', 'Trong nước', '5.702,40 triệu', '80,99%', '30/06/2026'], ['KEB Hana Bank', 'Tổ chức', 'Nước ngoài', '1.056,00 triệu', '15,00%', '30/06/2026'], ['Nhà đầu tư cá nhân & tổ chức khác', 'Đại chúng', 'Trong nước', '281,60 triệu', '4,01%', '30/06/2026']];
 const INSIDERS = [['Phạm Thu Trang', 'Phó Tổng Giám đốc', 'Bổ nhiệm', '12/08/2026', '0,05%'], ['Đỗ Văn Khoa', 'Thành viên HĐQT độc lập', 'Miễn nhiệm', '05/07/2026', '0,02%'], ['Vũ Thị Lan', 'Kế toán trưởng', 'Bổ nhiệm', '20/06/2026', '0,01%'], ['Trần Minh Đức', 'Tổng Giám đốc', 'Bổ nhiệm', '15/03/2026', '1,82%']];
 const OWNERSHIP = [['Nhà nước', 4.10, '#7CCBF5'], ['Nước ngoài', 30.10, '#14A6FA'], ['Khác', 65.80, '#0B5E8E']];
 const FOREIGN_OWN = [['Room tối đa', '30,00%'], ['Đã sở hữu', '30,10%', 'down'], ['Room còn lại', '790.500.000 CP'], ['KL mua ròng 5 phiên', '+1.284.500', 'up'], ['KL mua ròng 1 tháng', '−3.620.100', 'down']];
@@ -5131,9 +5136,15 @@ function tickRealtime() {
   if (typeof S === 'undefined' || !S.route || !S.route.startsWith('c360')) return;
   if (typeof STOCK === 'undefined' || !STOCK) return;
 
+  const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
+  if (!session.isOpen) {
+    // Ngoài giờ giao dịch hoặc cuối tuần: Giữ nguyên giá chốt phiên chính thức từ MCP, không tự động biến động giá
+    return;
+  }
+
   const oldPrice = STOCK.price;
   const refPrice = (STOCK.price - STOCK.chg) || 14100;
-  const step = STOCK.price < 50000 ? 50 : 100;
+  const step = STOCK.price < 10000 ? 10 : STOCK.price < 50000 ? 50 : 100;
   const maxDelta = Math.round(refPrice * 0.07);
   const ceilPrice = Math.round((refPrice + maxDelta) / step) * step;
   const floorPrice = Math.round((refPrice - maxDelta) / step) * step;
@@ -5177,16 +5188,25 @@ function tickRealtime() {
     }
   }
   if (chgEl) {
-    const isUp = STOCK.chg >= 0;
-    chgEl.className = 'c ' + (isUp ? 'up' : 'down');
-    chgEl.textContent = `${isUp ? '▲ +' : '▼ '}${fmtVN(Math.abs(STOCK.chg), 0)} (${isUp ? '+' : ''}${STOCK.pct.toFixed(2)}%)`;
+    const isZero = STOCK.chg === 0 || Math.abs(STOCK.chg) < 0.001;
+    if (isZero) {
+      chgEl.style.display = 'none';
+      chgEl.textContent = '';
+    } else {
+      chgEl.style.display = '';
+      const isUp = STOCK.chg > 0;
+      chgEl.className = 'c ' + (isUp ? 'up' : 'down');
+      chgEl.textContent = `${isUp ? '▲ +' : '▼ '}${fmtVN(Math.abs(STOCK.chg), 0)} (${isUp ? '+' : ''}${STOCK.pct.toFixed(2)}%)`;
+    }
   }
 
   // Update tvbid & tvask in TradingView header if present
   const tvbidEl = document.getElementById('tvbid');
   const tvaskEl = document.getElementById('tvask');
-  if (tvbidEl) tvbidEl.textContent = fmtVN(newPrice - step, 0);
-  if (tvaskEl) tvaskEl.textContent = fmtVN(newPrice, 0);
+  const bestBid = newPrice;
+  const bestAsk = newPrice + step;
+  if (tvbidEl) tvbidEl.textContent = fmtVN(bestBid, 0);
+  if (tvaskEl) tvaskEl.textContent = fmtVN(bestAsk, 0);
 
   // 2. Update Candlestick Chart (last candle)
   if (typeof CANDLES !== 'undefined' && CANDLES && CANDLES.length > 0) {
@@ -5249,6 +5269,14 @@ function stockHeader() {
   const cell = (t, rows) => `<div class="mc"><span class="cap">${t}</span><div class="kls">${kl(rows)}</div></div>`;
   const f = typeof inAnyWL === 'function' ? inAnyWL(STOCK.sym) : S.watch.has(STOCK.sym);
   const evs = STOCK.events.filter(e => S.evTop === 'Tất cả' || (S.evTop === 'Cổ tức' ? /cổ tức/i.test(e[1]) : S.evTop === 'ĐHĐCĐ & KQKD' ? /ĐHĐCĐ|kết quả/i.test(e[1]) : /ESOP|Niêm yết|nhà đầu tư/i.test(e[1])));
+  const curPrice = STOCK.price || 33900;
+  const isZeroChg = !STOCK.chg || Math.abs(STOCK.chg) < 0.001;
+  const chgClass = isZeroChg ? 'ref' : (STOCK.chg > 0 ? 'up' : 'down');
+  const chgSign = STOCK.chg > 0 ? '▲ +' : (STOCK.chg < 0 ? '▼ ' : '');
+  const chgTxt = isZeroChg ? '' : `${chgSign}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)`;
+  const tickStep = curPrice < 10000 ? 10 : curPrice < 50000 ? 50 : 100;
+  const bestBid = curPrice;
+  const bestAsk = curPrice + tickStep;
   return `<div class="stock-h">
     <div class="logo-msb">${getCompanyLogo(STOCK.sym, 42)}</div>
     <div class="sym-block">
@@ -5256,7 +5284,7 @@ function stockHeader() {
         <button class="follow ${f ? 'on' : ''}" data-act="follow" aria-haspopup="menu" data-tip="${typeof wlPickTip === 'function' ? esc(wlPickTip(STOCK.sym)) : ''}">${f ? I.bmf + 'Đang theo dõi' : I.bm + 'Theo dõi'}</button></div>
       <div class="sub-l"><span>${STOCK.name}</span><i></i><span>Ngành: ${STOCK.ind}</span></div>
     </div>
-    <div class="price-b"><div class="p" id="c360-live-price">${fmtVN(STOCK.price, 0)}</div><div class="c ${STOCK.chg >= 0 ? 'up' : 'down'}" id="c360-live-chg">${STOCK.chg >= 0 ? '▲ +' : '▼ '}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)</div></div>
+    <div class="price-b"><div class="p" id="c360-live-price">${fmtVN(curPrice, 0)}</div><div class="c ${chgClass}" id="c360-live-chg" style="${isZeroChg ? 'display:none;' : ''}">${chgTxt}</div></div>
   </div>
   <div class="hero">
     <div class="tv">
@@ -5275,9 +5303,9 @@ function stockHeader() {
             <div class="tv-vol">Khối lượng <span id="tvvol"></span></div>
             <div class="tv-trade" style="pointer-events:auto">
               <button class="tv-mode-btn" data-act="toggletvwidget" title="Chuyển đổi giữa Biểu đồ TradingView MCP và TradingView Widget Pro"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M10 17H6v-6H2V7h8v10Zm8 0h-4.67l4-10H22l-4 10Zm-4.67-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg><span id="tvmodetxt">${S_TV_VIEW_MODE === 'widget' ? 'Biểu đồ MCP' : 'TV Pro'}</span></button>
-              <button class="sell" data-act="toast" data-msg="Đặt lệnh bán mở ở ứng dụng giao dịch SBSI (ngoài phạm vi prototype)"><b id="tvbid">${fmtVN(STOCK.price - 50, 0)}</b>BÁN</button>
-              <span>50</span>
-              <button class="buy" data-act="toast" data-msg="Đặt lệnh mua mở ở ứng dụng giao dịch SBSI (ngoài phạm vi prototype)"><b id="tvask">${fmtVN(STOCK.price, 0)}</b>MUA</button>
+              <button class="sell" data-act="toast" data-msg="Đặt lệnh bán mở ở ứng dụng giao dịch SBSI (ngoài phạm vi prototype)"><b id="tvbid">${fmtVN(bestBid, 0)}</b>BÁN</button>
+              <span>${tickStep}</span>
+              <button class="buy" data-act="toast" data-msg="Đặt lệnh mua mở ở ứng dụng giao dịch SBSI (ngoài phạm vi prototype)"><b id="tvask">${fmtVN(bestAsk, 0)}</b>MUA</button>
             </div>
           </div>
         </div>
@@ -5428,14 +5456,16 @@ function drawCandles() {
   el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Biểu đồ TradingView MCP ${STOCK.sym} ${S.range}">${g}<rect id="chit" x="0" y="0" width="${W - padR}" height="${H - bot}" fill="transparent" style="cursor:crosshair"/></svg>`;
 
   const updateHeaderInfo = (d, prev, idx) => {
-    const ch = d.c - (prev ? prev.c : d.o), pc = ch / ((prev ? prev.c : d.o) || 1) * 100, k = d.c >= d.o ? 'up' : 'down', sg = ch > 0 ? '+' : ch < 0 ? '−' : '';
+    const ch = d.c - (prev ? prev.c : d.o), pc = ch / ((prev ? prev.c : d.o) || 1) * 100, k = d.c > (prev ? prev.c : d.o) ? 'up' : d.c < (prev ? prev.c : d.o) ? 'down' : 'ref', sg = ch > 0 ? '+' : ch < 0 ? '−' : '';
+    const isZero = !ch || Math.abs(ch) < 0.001;
     const dDate = d.d || new Date();
     const dateBadge = d.intra
       ? `${String(dDate.getHours()).padStart(2, '0')}:${String(dDate.getMinutes()).padStart(2, '0')}`
       : `${String(dDate.getDate()).padStart(2, '0')}/${String(dDate.getMonth() + 1).padStart(2, '0')}/${dDate.getFullYear()}`;
     const ohlcEl = document.getElementById('ohlc');
+    const chgBadge = isZero ? '' : `<b class="${k}">${sg}${fmtTV(Math.abs(ch))} (${sg}${Math.abs(pc).toFixed(2)}%)</b>`;
     if (ohlcEl) {
-      ohlcEl.innerHTML = `<span style="color:var(--ink3);font-family:var(--mono);margin-right:4px">${dateBadge}</span><span>O<b class="${k}">${fmtTV(d.o)}</b></span><span>H<b class="${k}">${fmtTV(d.h)}</b></span><span>L<b class="${k}">${fmtTV(d.l)}</b></span><span>C<b class="${k}">${fmtTV(d.c)}</b></span><b class="${k}">${sg}${fmtTV(Math.abs(ch))} (${sg}${Math.abs(pc).toFixed(2)}%)</b>`;
+      ohlcEl.innerHTML = `<span style="color:var(--ink3);font-family:var(--mono);margin-right:4px">${dateBadge}</span><span>O<b class="${k}">${fmtTV(d.o)}</b></span><span>H<b class="${k}">${fmtTV(d.h)}</b></span><span>L<b class="${k}">${fmtTV(d.l)}</b></span><span>C<b class="${k}">${fmtTV(d.c)}</b></span>${chgBadge}`;
     }
     const vv = document.getElementById('tvvol');
     if (vv) { vv.textContent = fmtVol(d.v); vv.className = k; }
@@ -7309,7 +7339,29 @@ function vPlaceholder(title) {
 const view = document.getElementById('view'), layer = document.getElementById('layer'), tip = document.getElementById('tip');
 const ROUTES = ['c360', 'c360-giaodich', 'c360-hoso', 'c360-codong', 'c360-taichinh', 'c360-cungnganh', 'c360-tintuc', 'c360-dulieu', 'screener', 'screener-all', 'compare', 'reports', 'watchlist', 'follow', 'market', 'mnews'];
 function go(r) { if (r === S.route && location.hash.slice(1) === r) return; location.hash = r; }
-function readHash() { let h = location.hash.slice(1); if (!h) { h = 'market'; location.hash = 'market'; } if (h === 'c360-giaodich') h = 'c360'; S.route = ROUTES.includes(h) || (/^wl\d+$/.test(h) && +h.slice(2) >= 1 && +h.slice(2) < WL.length) ? h : 'market'; }
+function readHash() {
+  let raw = location.hash.slice(1);
+  if (!raw) { raw = 'market'; location.hash = 'market'; }
+  let h = raw.split('?')[0].split('&')[0];
+  let symParam = null;
+  const hashQuery = raw.includes('?') ? raw.split('?')[1] : (location.search ? location.search.slice(1) : '');
+  if (hashQuery) {
+    const params = new URLSearchParams(hashQuery);
+    if (params.get('sym')) symParam = params.get('sym');
+  }
+  if (!symParam && raw.includes('/')) {
+    const parts = raw.split('/');
+    if (parts[0].startsWith('c360') && parts[1]) {
+      h = parts[0];
+      symParam = parts[1];
+    }
+  }
+  if (symParam && typeof openStock === 'function') {
+    openStock(symParam);
+  }
+  if (h === 'c360-giaodich') h = 'c360';
+  S.route = ROUTES.includes(h) || (/^wl\d+$/.test(h) && +h.slice(2) >= 1 && +h.slice(2) < WL.length) ? h : 'market';
+}
 let lastRoute = null;
 function render(keepScroll) {
   const r = S.route, y = window.scrollY;
@@ -7755,7 +7807,7 @@ qIn.addEventListener('input', () => {
       </div>
       ${s.p ? `<div style="text-align:right;flex:none;font-family:var(--mono);font-size:12px;margin-left:8px">
         <b style="color:var(--ink)">${fmtVN(s.p >= 1000 ? s.p : Math.round(s.p * 1000), 0)}</b>
-        <div style="font-size:11px;font-weight:600;color:${s.c >= 0 ? 'var(--up)' : 'var(--down)'}">${s.c >= 0 ? '▲ +' : '▼ '}${Math.abs(s.c)}%</div>
+        ${s.c ? `<div style="font-size:11px;font-weight:600;color:${s.c > 0 ? 'var(--up)' : 'var(--down)'}">${s.c > 0 ? '▲ +' : '▼ '}${Math.abs(s.c)}%</div>` : ''}
       </div>` : ''}
     </button>
   `).join('') : '<p class="muted" style="margin:8px;font-size:12px">Không tìm thấy cổ phiếu hoặc báo cáo phù hợp</p>';
@@ -7769,7 +7821,7 @@ function openStock(t) {
     fetchAndApplyDnseMcpData(t);
   }
   if (typeof makeCandles === 'function' && typeof STOCK !== 'undefined') {
-    CANDLES = makeCandles(STOCK.price, t.charCodeAt(0) * 11 + t.charCodeAt(1 || 0) * 3);
+    CANDLES = makeCandles(STOCK.price, t.charCodeAt(0) * 11 + t.charCodeAt(1 || 0) * 3, STOCK.chg);
     INTRA = null;
   }
   if (typeof initRealtimeTicks === 'function' && typeof STOCK !== 'undefined') {
@@ -8008,7 +8060,7 @@ const WLU = {};
   ['MWG', 'Thế Giới Di Động', 'HOSE', 63.40, 0.10, 0.16, '2,60 M', 164.84, 63.00, 64.10, 48.90, 72.60, 'Bán lẻ'],
   ['VIC', 'Tập đoàn Vingroup', 'HOSE', 211.60, -1.90, -0.89, '250,55 K', 53.02, 210.00, 214.50, 95.40, 231.80, 'Bất động sản'],
   ['VHM', 'Vinhomes', 'HOSE', 129.50, -1.50, -1.15, '438,18 K', 56.74, 128.70, 131.40, 38.20, 145.60, 'Bất động sản'],
-  ['BID', 'BIDV', 'HOSE', 34.80, 0.10, 0.29, '699,90 K', 24.36, 34.60, 35.10, 30.15, 42.70, 'Tài chính'],
+  ['BID', 'BIDV', 'HOSE', 33.90, 0, 0, '3,76 M', 126.75, 33.25, 34.10, 30.15, 42.70, 'Tài chính'],
   ['CTG', 'VietinBank', 'HOSE', 28.75, 0, 0, '1,11 M', 31.91, 28.55, 29.00, 24.30, 37.15, 'Tài chính'],
   ['TCB', 'Techcombank', 'HOSE', 28.20, -0.05, -0.18, '2,42 M', 68.24, 28.10, 28.55, 20.45, 32.80, 'Tài chính'],
   ['LPB', 'LPBank', 'HOSE', 54.70, 0.70, 1.30, '504,99 K', 27.62, 54.00, 55.20, 24.80, 59.30, 'Tài chính'],
@@ -14208,6 +14260,8 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
     chg: currentChg,
     pct: currentPct,
     mcpSource: 'Dual-MCP (DNSE + VNDIRECT)',
+    vol: data.vol || (STOCK.metrics?.liq?.[0]?.[1] ? parseInt(STOCK.metrics.liq[0][1].replace(/\D/g, '')) : 3762900),
+    val_bil: data.val_bil || 126.75,
     metrics: data.metrics,
     events: data.events || []
   });
@@ -14272,7 +14326,7 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   // 5. Invalidate intraday cache & re-generate price candles
   INTRA = null;
   const symSeed = sym.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  CANDLES = makeCandles(STOCK.price, symSeed);
+  CANDLES = makeCandles(STOCK.price, symSeed, STOCK.chg);
 
   // 6. Update ALL MCP Payloads (DNSE, VNDIRECT & SSI)
   try { updateDnseMcpPayloadsForSymbol(data); } catch (e) { console.warn('DNSE MCP err:', e); }

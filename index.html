@@ -5958,16 +5958,16 @@ function drawCandles() {
       }
       el.innerHTML = '';
 
-      const isDark = typeof S !== 'undefined' && S.theme === 'dark';
+      const isDark = (typeof S !== 'undefined' && S.theme === 'dark') || (document.documentElement.getAttribute('data-theme') === 'dark');
       const chartWidth = Math.max(280, el.clientWidth || 600);
-      const chartHeight = Math.max(240, el.clientHeight || 340);
+      const chartHeight = Math.max(240, el.clientHeight || 508);
 
       tvChartInstance = window.LightweightCharts.createChart(el, {
         width: chartWidth,
         height: chartHeight,
         layout: {
-          background: { type: 'solid', color: isDark ? '#131722' : '#ffffff' },
-          textColor: isDark ? '#d1d4dc' : '#191919',
+          background: { type: 'solid', color: isDark ? '#0b0f19' : '#ffffff' },
+          textColor: isDark ? '#94a3b8' : '#191919',
           fontFamily: "'Google Sans Flex', -apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif",
           fontSize: 11,
         },
@@ -8668,6 +8668,7 @@ const A = {
 function setTheme(t, silent) {
   if (t !== 'dark') t = 'light';
   document.documentElement.setAttribute('data-theme', t);
+  if (typeof S !== 'undefined') S.theme = t;
   try { localStorage.setItem('maris_theme', t); } catch(e){}
   const btn = document.getElementById('theme-toggle');
   const icon = document.getElementById('theme-icon');
@@ -8683,6 +8684,7 @@ function setTheme(t, silent) {
       if (btn) btn.title = 'Chuyển sang giao diện Tối';
     }
   }
+  if (typeof drawCandles === 'function') drawCandles();
   if (!silent && typeof toast === 'function') {
     toast(t === 'dark' ? '🌙 Chuyển sang giao diện Tối (Dark mode)' : '☀️ Chuyển sang giao diện Sáng (Light mode)');
   }

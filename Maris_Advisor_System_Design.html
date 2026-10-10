@@ -2699,14 +2699,21 @@ const DNSE_MCP_META = {
 };
 
 let STOCK = {
-  sym: 'BID', ex: 'HOSE', name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam', ind: 'Ngân hàng', price: 33900, chg: 0, pct: 0, vol: 3762900, val_bil: 126.75,
+  sym: 'MSB', ex: 'HOSE', name: 'Ngân hàng TMCP Hàng hải Việt Nam', ind: 'Ngân hàng', price: 14600, ref: 14750, chg: -150, pct: -1.02, vol: 21380000, val_bil: 312.15,
+  open: 14750, high: 14950, low: 14500, close: 14600, ceil: 15750, floor: 13750, avg: 14650,
   metrics: {
-    liq: [['KLGD', '3.762.900 CP'], ['GTGD', '126,75 tỷ đồng']],
-    frn: [['Khối lượng ròng', '-351.850', 'down'], ['Giá trị ròng', '-11.928 triệu', 'down'], ['Room ngoại', '974.162.227 CP']],
-    val: [['EPS (TTM)', '3.139 đ'], ['P/E (TTM)', '10,80 lần'], ['P/B (TTM)', '1,85 lần'], ['ROE (TTM)', '17,5%', 'up'], ['Biên LN ròng', '14,2%', 'up'], ['Tỷ suất cổ tức', '4,5%', 'up']],
-    size: [['Vốn hoá', '238,60 nghìn tỷ'], ['Vốn điều lệ', '155,09 nghìn tỷ'], ['VCSH', '202,81 nghìn tỷ'], ['SLCP lưu hành', '7.040 tỷ']]
+    liq: [['KLGD', '21.380.000 CP'], ['GTGD', '312,15 tỷ đồng']],
+    frn: [['Khối lượng ròng', '+400.000', 'up'], ['Giá trị ròng', '+5.850 triệu', 'up'], ['Room ngoại', '495.210.000 CP']],
+    val: [['EPS (TTM)', '1.973 đ'], ['P/E (TTM)', '7,40 lần'], ['P/B (TTM)', '1,08 lần'], ['ROE (TTM)', '14,8%', 'up'], ['Biên LN ròng', '22,4%', 'up'], ['Tỷ suất cổ tức', '5,3%', 'up']],
+    size: [['Vốn hoá', '54,66 nghìn tỷ'], ['Vốn điều lệ', '26.000 tỷ'], ['VCSH', '34.250 tỷ'], ['SLCP lưu hành', '2.600 triệu']]
   },
-  events: [['18/09', 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh'], ['25/09', 'GDKHQ chi trả cổ tức cho cổ đông'], ['02/10', 'Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu'], ['20/10', 'Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026'], ['12/11', 'Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3']]
+  events: [
+    ['18/09', 'MSB lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh & tăng vốn điều lệ'],
+    ['25/09', 'GDKHQ chi trả cổ tức bằng tiền mặt tỷ lệ 15% cho cổ đông'],
+    ['02/10', 'Ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức'],
+    ['20/10', 'Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026'],
+    ['12/11', 'Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3']
+  ]
 };
 
 let FACTORS = [
@@ -2729,10 +2736,22 @@ let RADAR = { axes: ['Chất lượng tài sản', 'Sinh lời', 'Vốn chủ s�
 let POSITION = [['ROE (TTM)', '~14,8%', 'Top 40%'], ['NIM', '~3,70%', 'Top 25%'], ['Tỷ lệ CASA', '~26,71%', 'Top 15%'], ['Tỷ lệ nợ xấu (NPL)', '~2,88%', 'Top 30%'], ['Tăng trưởng tín dụng', '~14,2%', 'Top 25%'], ['Tỷ lệ CIR', '~30,9%', 'Top 20%']];
 
 /* trading */
-let PERF = [['1 tuần', 2.14, 1.13, 14350, 13900], ['1 tháng', 5.42, 5.08, 14350, 13450], ['3 tháng', 11.80, 9.70, 14350, 12600], ['6 tháng', 18.25, 22.42, 14350, 11250], ['52 tuần', 31.20, 26.93, 14350, 10150], ['Từ đầu năm', 24.60, 26.93, 14350, 10900]];
+let PERF = [['1 tuần', 2.82, 1.13, 14950, 14200], ['1 tháng', 11.45, 5.08, 14950, 13100], ['3 tháng', 9.16, 9.70, 14950, 13350], ['6 tháng', 44.20, 22.42, 14950, 10100], ['52 tuần', 28.35, 26.93, 14950, 11350], ['Từ đầu năm', 41.29, 26.93, 14950, 10300]];
 const TNEWS = [['Doanh nghiệp', 'MSB đặt mục tiêu LNTT 2026 tăng 20% so với năm trước'], ['Cổ tức', 'MSB chốt quyền trả cổ tức tiền mặt tỷ lệ 15% quý 4'], ['Thị trường', 'Nhóm ngân hàng dẫn dắt đà tăng VN-Index đầu tuần'], ['Thị trường', 'Khối ngoại mua ròng trở lại cổ phiếu ngân hàng sau 5 tuần bán'], ['Doanh nghiệp', 'MSB ký kết hợp tác chiến lược bancassurance với đối tác bảo hiểm'], ['Doanh nghiệp', 'MSB ra mắt gói tài trợ vốn lưu động cho doanh nghiệp SME'], ['Doanh nghiệp', 'MSB hoàn tất triển khai nền tảng ngân hàng số mới cho khách hàng cá nhân']];
-const DEPTH = [[12400, 14250, 14300, 9800], [25600, 14200, 14350, 18200], [48900, 14150, 14400, 31500]];
-const TICKS = [['14:45:02', 400, 14300, 225, 1.60, 'M'], ['14:45:00', 600, 14250, 175, 1.24, 'M'], ['14:44:58', 500, 14250, 175, 1.24, 'B'], ['14:44:55', 1200, 14250, 175, 1.24, 'M'], ['14:44:52', 300, 14200, 125, 0.89, 'B'], ['14:44:50', 500, 14250, 175, 1.24, 'M'], ['14:44:47', 100, 14250, 175, 1.24, 'B'], ['14:44:45', 2500, 14300, 225, 1.60, 'M'], ['14:44:41', 400, 14250, 175, 1.24, 'B'], ['14:44:38', 700, 14200, 125, 0.89, 'B'], ['14:44:35', 100, 14200, 125, 0.89, 'B']];
+const DEPTH = [[245800, 14600, 14650, 310500], [412000, 14550, 14700, 286000], [580200, 14500, 14750, 125400]];
+const TICKS = [
+  ['14:45:02', 85000, 14600, -150, -1.02, 'B'],
+  ['14:45:00', 12500, 14600, -150, -1.02, 'B'],
+  ['14:44:58', 35000, 14650, -100, -0.68, 'M'],
+  ['14:44:55', 42000, 14600, -150, -1.02, 'B'],
+  ['14:44:52', 18500, 14600, -150, -1.02, 'B'],
+  ['14:44:50', 50000, 14650, -100, -0.68, 'M'],
+  ['14:44:47', 15000, 14600, -150, -1.02, 'B'],
+  ['14:44:45', 68000, 14600, -150, -1.02, 'B'],
+  ['14:44:41', 22000, 14650, -100, -0.68, 'M'],
+  ['14:44:38', 95000, 14600, -150, -1.02, 'B'],
+  ['14:44:35', 30000, 14600, -150, -1.02, 'B']
+];
 const SLOTS = ['09:15', '09:30', '09:45', '10:00', '10:15', '10:30', '10:45', '11:00', '11:15', '11:30', '13:00', '13:15', '13:30', '13:45', '14:00', '14:15', '14:30', '14:45'];
 const FOREIGN = {
   'Khối ngoại': [32000, 76000, 118000, 62000, -28000, -24000, -14000, 55000, 84000, 70000, 36000, 24000, -46000, -72000, 38000, 68000, 44000, 36400],
@@ -2774,7 +2793,7 @@ function clearTvDrawings() {
 
 function addTvHorizontalLine(p) {
   if (!tvCandleSeries) return;
-  const price = p || (typeof STOCK !== 'undefined' ? STOCK.price : 33900);
+  const price = p || (typeof STOCK !== 'undefined' ? STOCK.price : 14600);
   try {
     const pl = tvCandleSeries.createPriceLine({
       price: price,
@@ -3035,8 +3054,8 @@ const TV_MCP = {
 /* candles */
 function makeCandles(targetPrice, seed, chgVal) {
   const r = rng(seed || 7), out = []; const n = 1300;
-  const targetPriceVal = targetPrice || (typeof STOCK !== 'undefined' && STOCK ? STOCK.price : 14250);
-  const ratio = targetPriceVal / 14250;
+  const targetPriceVal = targetPrice || (typeof STOCK !== 'undefined' && STOCK ? STOCK.price : 14600);
+  const ratio = targetPriceVal / 14600;
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const days = [new Date(today)];
@@ -3081,7 +3100,7 @@ function makeCandles(targetPrice, seed, chgVal) {
     h: hiP,
     l: loP,
     c: curP,
-    v: (typeof STOCK !== 'undefined' && STOCK && STOCK.vol) ? STOCK.vol : 3762900
+    v: (typeof STOCK !== 'undefined' && STOCK && STOCK.vol) ? STOCK.vol : 21380000
   });
   return out;
 }
@@ -3089,16 +3108,22 @@ let CANDLES = makeCandles();
 
 /* profile */
 let PROFILE = {
-  basic: [['Mã chứng khoán', 'BID'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '26/04/1957'], ['Vốn điều lệ', '155,09 nghìn tỷ đồng'], ['Số lượng nhân sự', '28.500'], ['Số lượng chi nhánh', '190'], ['Số công ty con & liên kết', '10'], ['Đại diện pháp luật', 'Phan Đức Tú']],
-  listing: [['Ngày niêm yết', '24/01/2014'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '18.700'], ['Giá ngày GD đầu tiên', '18.700'], ['P/E (TTM)', '10,80 lần'], ['P/B (TTM)', '1,85 lần'], ['KL niêm yết lần đầu', '2.811.202.644'], ['KL đang niêm yết', '7.040.000.000 CP'], ['KL cổ phiếu lưu hành', '7.040.000.000 CP']],
-  intro: 'BIDV (Ngân hàng TMCP Đầu tư và Phát triển Việt Nam) là ngân hàng thương mại nhà nước lớn nhất Việt Nam xét theo tổng tài sản. Được thành lập từ năm 1957, BIDV giữ vai trò trụ cột trong việc cung cấp tín dụng cho các dự án hạ tầng kinh tế trọng điểm quốc gia, đồng thời phát triển mạnh mẽ mảng ngân hàng bán lẻ và chuyển đổi số toàn diện.',
-  miles: [['26/04/1957', 'Thành lập Ngân hàng Kiến thiết Việt Nam (tiền thân của BIDV).'], ['2011', 'Hoàn tất cổ phần hóa, bán đấu giá thành công cổ phần lần đầu ra công chúng (IPO).'], ['24/01/2014', 'Chính thức niêm yết cổ phiếu BID trên Sở GDCK TP.HCM (HOSE).'], ['2019', 'Phát hành thành công 15% vốn cổ phần cho cổ đông chiến lược KEB Hana Bank (Hàn Quốc).'], ['2026', 'Tổng tài sản vượt mốc 2,5 triệu tỷ đồng, tiếp tục giữ vị thế ngân hàng có quy mô lớn nhất hệ thống.']],
-  leaders: [['Phan Đức Tú', 'Chủ tịch HĐQT'], ['Lê Ngọc Lâm', 'Tổng Giám đốc'], ['Võ Bích Hà', 'Trưởng Ban Kiểm soát'], ['Trần Long', 'Phó Tổng Giám đốc'], ['Nguyễn Thị Quỳnh Giao', 'Phó Tổng Giám đốc']],
-  subs: [['Công ty Chứng khoán BIDV (BSC)', '79.9%', 'Môi giới & đầu tư chứng khoán', 'Công ty con'], ['Công ty Bảo hiểm BIDV (BIC)', '51%', 'Bảo hiểm phi nhân thọ', 'Công ty con'], ['Công ty Cho thuê tài chính BIDV (BLC)', '100%', 'Cho thuê tài chính', 'Công ty con']]
+  basic: [['Mã chứng khoán', 'MSB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '12/07/1991'], ['Vốn điều lệ', '26,00 nghìn tỷ đồng'], ['Số lượng nhân sự', '6.840'], ['Số lượng chi nhánh', '263'], ['Số công ty con & liên kết', '3'], ['Đại diện pháp luật', 'Trần Minh Đức']],
+  listing: [['Ngày niêm yết', '23/12/2020'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '15.000'], ['Giá ngày GD đầu tiên', '18.000'], ['P/E (TTM)', '7,40 lần'], ['P/B (TTM)', '1,08 lần'], ['KL niêm yết lần đầu', '1.175.000.000'], ['KL đang niêm yết', '2.600.000.000 CP'], ['KL cổ phiếu lưu hành', '2.600.000.000 CP']],
+  intro: 'Ngân hàng Thương mại Cổ phần Hàng hải Việt Nam (MSB, ISIN: VN000000MSB9) cung cấp các dịch vụ ngân hàng thương mại, bán lẻ và doanh nghiệp. Thành lập ngày 12/07/1991, có trụ sở chính tại Hà Nội, Việt Nam. MSB tiên phong chuyển đổi số toàn diện và tối ưu CASA.',
+  miles: [['12/07/1991', 'Thành lập theo giấy phép NHNN, là một trong những ngân hàng TMCP đầu tiên tại Việt Nam.'], ['2015', 'Sáp nhập Ngân hàng TMCP Phát triển Mê Kông (MDB), mở rộng mạnh mẽ mạng lưới.'], ['23/12/2020', 'Chính thức niêm yết cổ phiếu MSB trên Sở GDCK TP.HCM (HOSE).'], ['2023', 'Hoàn tất tăng vốn điều lệ lên 20.000 tỷ đồng, nâng cao tỷ lệ an toàn vốn CAR.'], ['2026', 'Vốn hóa thị trường đạt 54,66 nghìn tỷ đồng, tăng trưởng tín dụng bán lẻ & SME bứt phá.']],
+  leaders: [['Trần Anh Tuấn', 'Chủ tịch HĐQT'], ['Nguyễn Hoàng Linh', 'Tổng Giám đốc'], ['Phạm Thị Thành', 'Trưởng Ban Kiểm soát'], ['Nguyễn Thế Minh', 'Phó Tổng Giám đốc'], ['Vũ Thị Lan', 'Kế toán trưởng']],
+  subs: [['Cty TNHH Quản lý nợ & Khai thác tài sản MSB', '100%', 'Quản lý nợ, xử lý tài sản', 'Công ty con'], ['Cty TNHH MTV Cho thuê tài chính MSB', '100%', 'Cho thuê tài chính', 'Công ty con'], ['Cty CP Bảo hiểm MSB', '35%', 'Bảo hiểm liên kết', 'Công ty liên kết']]
 };
 
 /* shareholders */
-let HOLDERS = [['Ngân hàng Nhà nước Việt Nam', 'Nhà nước', 'Trong nước', '5.702,40 triệu', '80,99%', '30/06/2026'], ['KEB Hana Bank', 'Tổ chức', 'Nước ngoài', '1.056,00 triệu', '15,00%', '30/06/2026'], ['Nhà đầu tư cá nhân & tổ chức khác', 'Đại chúng', 'Trong nước', '281,60 triệu', '4,01%', '30/06/2026']];
+let HOLDERS = [
+  ['Tập đoàn Bưu chính Viễn thông Việt Nam (VNPT)', 'Nhà nước', 'Trong nước', '157,30 triệu', '6,05%', '30/06/2026'],
+  ['Wealth Prosperity Investment Pte. Ltd.', 'Tổ chức', 'Nước ngoài', '259,50 triệu', '9,98%', '30/06/2026'],
+  ['Quỹ đầu tư Vietnam Holding', 'Tổ chức', 'Nước ngoài', '72,60 triệu', '2,79%', '18/06/2026'],
+  ['Cổ đông nội bộ & sáng lập', 'Cá nhân', 'Trong nước', '109,40 triệu', '4,21%', '30/06/2026'],
+  ['Đại chúng & cổ đông khác', 'Đại chúng', 'Trong nước', '2.001,20 triệu', '76,97%', '30/06/2026']
+];
 const INSIDERS = [['Phạm Thu Trang', 'Phó Tổng Giám đốc', 'Bổ nhiệm', '12/08/2026', '0,05%'], ['Đỗ Văn Khoa', 'Thành viên HĐQT độc lập', 'Miễn nhiệm', '05/07/2026', '0,02%'], ['Vũ Thị Lan', 'Kế toán trưởng', 'Bổ nhiệm', '20/06/2026', '0,01%'], ['Trần Minh Đức', 'Tổng Giám đốc', 'Bổ nhiệm', '15/03/2026', '1,82%']];
 const OWNERSHIP = [['Nhà nước', 4.10, '#7CCBF5'], ['Nước ngoài', 30.10, '#14A6FA'], ['Khác', 65.80, '#0B5E8E']];
 const FOREIGN_OWN = [['Room tối đa', '30,00%'], ['Đã sở hữu', '30,10%', 'down'], ['Room còn lại', '790.500.000 CP'], ['KL mua ròng 5 phiên', '+1.284.500', 'up'], ['KL mua ròng 1 tháng', '−3.620.100', 'down']];
@@ -3152,7 +3177,7 @@ function annualRows(key) {
   });
 }
 let PEERS = {
-  'Tổng quan': [['Doanh nghiệp', 'Vốn hoá', 'P/E', 'P/B', 'ROE', 'NIM', 'CASA'], [['MSB', '37.050 tỷ', '7,41', '1,08', '14,8%', '3,70%', '26,71%'], ['TCB', '178.400 tỷ', '8,90', '1,60', '19,4%', '4,20%', '39,50%'], ['MBB', '125.800 tỷ', '6,20', '1,25', '21,2%', '4,50%', '37,20%'], ['ACB', '102.600 tỷ', '7,40', '1,40', '20,1%', '3,90%', '22,40%'], ['VCB', '495.200 tỷ', '14,20', '2,80', '21,5%', '3,20%', '32,10%'], ['VPB', '148.900 tỷ', '9,60', '1,30', '16,8%', '5,40%', '16,50%']]],
+  'Tổng quan': [['Doanh nghiệp', 'Vốn hoá', 'P/E', 'P/B', 'ROE', 'NIM', 'CASA'], [['MSB', '54.660 tỷ', '7,40', '1,08', '14,8%', '3,70%', '26,71%'], ['TCB', '178.400 tỷ', '8,90', '1,60', '19,4%', '4,20%', '39,50%'], ['MBB', '125.800 tỷ', '6,20', '1,25', '21,2%', '4,50%', '37,20%'], ['ACB', '102.600 tỷ', '7,40', '1,40', '20,1%', '3,90%', '22,40%'], ['VCB', '495.200 tỷ', '14,20', '2,80', '21,5%', '3,20%', '32,10%'], ['VPB', '148.900 tỷ', '9,60', '1,30', '16,8%', '5,40%', '16,50%']]],
   'Biến động giá': [['Doanh nghiệp', '1 tuần', '1 tháng', '3 tháng', 'Từ đầu năm', '1 năm'], [['MSB', '+2,14%', '+5,42%', '+11,80%', '+24,60%', '+31,20%'], ['VCB', '−0,40%', '+1,90%', '+4,20%', '+8,70%', '+12,40%'], ['TCB', '+1,60%', '+6,80%', '+14,50%', '+29,30%', '+38,60%'], ['ACB', '+0,80%', '+3,20%', '+7,90%', '+15,40%', '+19,80%'], ['VPB', '−1,20%', '+2,40%', '+9,10%', '+18,20%', '+22,50%']]],
   'Định giá': [['Doanh nghiệp', 'P/E', 'P/B', 'P/S', 'EV/EBITDA', 'Tỷ suất cổ tức'], [['MSB', '6,80', '1,15', '2,35', '9,20', '5,3%'], ['VCB', '14,20', '2,80', '4,10', '13,60', '1,2%'], ['TCB', '8,90', '1,60', '3,05', '10,40', '2,8%'], ['ACB', '7,40', '1,40', '2,68', '9,80', '3,5%'], ['VPB', '9,60', '1,30', '2,90', '11,10', '4,1%']]],
   'Sinh lời': [['Doanh nghiệp', 'ROE', 'ROA', 'NIM', 'CIR', 'Biên LN ròng'], [['MSB', '18,2%', '2,04%', '3,92%', '34,0%', '39,9%'], ['VCB', '21,5%', '1,86%', '3,15%', '31,2%', '44,6%'], ['TCB', '19,4%', '2,42%', '4,28%', '32,8%', '42,1%'], ['ACB', '20,1%', '2,18%', '3,86%', '33,4%', '41,3%'], ['VPB', '16,8%', '1,74%', '5,10%', '38,6%', '34,2%']]]
@@ -5217,7 +5242,7 @@ let HERO_SIDE_TAB = 'tape';
 let INTRADAY_LIVE_TICKS = [];
 
 function initRealtimeTicks(sym, basePrice) {
-  basePrice = basePrice || (typeof STOCK !== 'undefined' ? STOCK.price : 14250);
+  basePrice = basePrice || (typeof STOCK !== 'undefined' ? STOCK.price : 14600);
   INTRADAY_LIVE_TICKS = [];
   const now = new Date();
   for (let i = 7; i >= 0; i--) {
@@ -5232,7 +5257,7 @@ function initRealtimeTicks(sym, basePrice) {
 
 function renderLiveTapeRows() {
   if (!INTRADAY_LIVE_TICKS || INTRADAY_LIVE_TICKS.length === 0) {
-    initRealtimeTicks(typeof STOCK !== 'undefined' ? STOCK.sym : 'MSB', typeof STOCK !== 'undefined' ? STOCK.price : 14250);
+    initRealtimeTicks(typeof STOCK !== 'undefined' ? STOCK.sym : 'MSB', typeof STOCK !== 'undefined' ? STOCK.price : 14600);
   }
   return INTRADAY_LIVE_TICKS.map((t, idx) => `
     <div class="tape-row" style="display:flex;align-items:center;justify-content:space-between;padding:3.5px 6px;border-bottom:1px dashed var(--line);font-size:11px;font-family:var(--mono);background:${idx === 0 ? 'rgba(34,197,94,0.06)' : 'transparent'}">
@@ -5412,7 +5437,7 @@ function startRealtimeEngine() {
 }
 
 function renderMcpOrderBook() {
-  const curPrice = STOCK.price || 33900;
+  const curPrice = STOCK.price || 14600;
   const vn30 = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[STOCK.sym]) ? VN30_DATA_FEED[STOCK.sym] : null;
   const ref = STOCK.ref || (vn30 ? vn30.ref : curPrice);
   const tickStep = curPrice < 10000 ? 10 : curPrice < 50000 ? 50 : 100;
@@ -5432,6 +5457,9 @@ function renderMcpOrderBook() {
   const a1Vol = Math.round((curPrice * 11.4) % 320000 + 110000);
   const a2Vol = Math.round((curPrice * 15.3) % 260000 + 85000);
   const a3Vol = Math.round((curPrice * 8.6) % 240000 + 65000);
+
+  const highVal = STOCK.high || (vn30 && vn30.high) || (curPrice + tickStep * 2);
+  const lowVal = STOCK.low || (vn30 && vn30.low) || (curPrice - tickStep * 2);
 
   const totalBidVol = b1Vol + b2Vol + b3Vol + 380000;
   const totalAskVol = a1Vol + a2Vol + a3Vol + 310000;
@@ -5507,8 +5535,8 @@ function renderMcpOrderBook() {
             <div class="mcp-dom-bar buy" style="width:${b2Bar}%"></div>
             <span>${fmtVN(b2Vol, 0)}</span>
           </td>
-          <td style="text-align:center;color:var(--ink2);font-size:10px">Cao: <b class="up">${fmtVN(curPrice + tickStep * 2, 0)}</b></td>
-          <td style="text-align:center;color:var(--ink2);font-size:10px">Thấp: <b class="down">${fmtVN(curPrice - tickStep * 2, 0)}</b></td>
+          <td style="text-align:center;color:var(--ink2);font-size:10px">Cao: <b class="up">${fmtVN(highVal, 0)}</b></td>
+          <td style="text-align:center;color:var(--ink2);font-size:10px">Thấp: <b class="down">${fmtVN(lowVal, 0)}</b></td>
           <td style="color:${getColorClass(a2)}">${fmtVN(a2, 0)}</td>
           <td>
             <div class="mcp-dom-bar sell" style="width:${a2Bar}%"></div>
@@ -5585,12 +5613,12 @@ function stockHeader() {
   // Session price & levels strip from MCP
   const vn30Info = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[STOCK.sym]) ? VN30_DATA_FEED[STOCK.sym] : null;
   const ref = STOCK.ref || (vn30Info ? vn30Info.ref : curPrice);
-  const ceil = Math.round(ref * 1.07 / tickStep) * tickStep;
-  const floor = Math.round(ref * 0.93 / tickStep) * tickStep;
-  const openPrice = STOCK.open || ref;
-  const highPrice = STOCK.high || Math.max(curPrice, openPrice, curPrice + tickStep * 2);
-  const lowPrice = STOCK.low || Math.min(curPrice, openPrice, curPrice - tickStep * 2);
-  const avgPrice = Math.round((highPrice + lowPrice + curPrice) / 3);
+  const ceil = STOCK.ceil || (vn30Info && vn30Info.ceil) || Math.floor(ref * 1.07 / tickStep) * tickStep;
+  const floor = STOCK.floor || (vn30Info && vn30Info.floor) || Math.ceil(ref * 0.93 / tickStep) * tickStep;
+  const openPrice = STOCK.open || (vn30Info && vn30Info.open) || ref;
+  const highPrice = STOCK.high || (vn30Info && vn30Info.high) || Math.max(curPrice, openPrice, curPrice + tickStep * 2);
+  const lowPrice = STOCK.low || (vn30Info && vn30Info.low) || Math.min(curPrice, openPrice, curPrice - tickStep * 2);
+  const avgPrice = STOCK.avg || (vn30Info && vn30Info.avg) || Math.round((highPrice + lowPrice + curPrice) / 3);
   const volStr = STOCK.vol ? (STOCK.vol >= 1e6 ? (STOCK.vol / 1e6).toFixed(2) + 'M' : fmtVN(STOCK.vol)) : (vn30Info ? (vn30Info.vol / 1e6).toFixed(2) + 'M' : '1.45M');
   const valStr = STOCK.val_bil ? STOCK.val_bil.toFixed(2) + ' tỷ' : (vn30Info ? vn30Info.val_bil.toFixed(2) + ' tỷ' : '49,42 tỷ');
   const frnBuy = Math.round((curPrice * 7.4) % 250000 + 150000);
@@ -7401,7 +7429,7 @@ const MARKET_FOREIGN_TOP_BUY = [
   { sym: 'HPG', name: 'Tập đoàn Hòa Phát', net_val: '+165.2 tỷ', vol: '+6.250.000 CP', price: '20.10', pct: -0.25 },
   { sym: 'FPT', name: 'Công ty Cổ phần FPT', net_val: '+116.3 tỷ', vol: '+840.200 CP', price: '57.90', pct: -3.02 },
   { sym: 'TCB', name: 'Ngân hàng Techcombank', net_val: '+85.4 tỷ', vol: '+3.440.000 CP', price: '32.35', pct: 1.41 },
-  { sym: 'MSB', name: 'Ngân hàng TMCP Hàng Hải', net_val: '+48.5 tỷ', vol: '+3.400.000 CP', price: '14.25', pct: 1.06 },
+  { sym: 'MSB', name: 'Ngân hàng TMCP Hàng hải Việt Nam', net_val: '+5.85 tỷ', vol: '+400.000 CP', price: '14.60', pct: -1.02 },
   { sym: 'MWG', name: 'Thế Giới Di Động', net_val: '+42.1 tỷ', vol: '+618.000 CP', price: '75.90', pct: -0.26 },
   { sym: 'SSI', name: 'Chứng khoán SSI', net_val: '+38.6 tỷ', vol: '+1.180.000 CP', price: '19.00', pct: -0.26 },
   { sym: 'VNM', name: 'Vinamilk', net_val: '+29.4 tỷ', vol: '+442.000 CP', price: '57.70', pct: -0.35 },
@@ -7586,7 +7614,7 @@ function vMarket() {
               ${[
                 ['FPT', 'Công ty Cổ phần FPT', 'HOSE', '138.50', '+1.84%', '4.82 M', '665.4', '4.8★ MUA'],
                 ['HPG', 'Tập đoàn Hòa Phát', 'HOSE', '26.40', '+2.33%', '24.15 M', '637.5', '4.5★ MUA'],
-                ['MSB', 'Ngân hàng TMCP Hàng Hải', 'HOSE', '14.25', '+1.06%', '8.46 M', '120.5', '4.2★ MUA'],
+                ['MSB', 'Ngân hàng TMCP Hàng hải Việt Nam', 'HOSE', '14.60', '-1.02%', '21.38 M', '312.2', '4.4★ MUA'],
                 ['TCB', 'Ngân hàng Techcombank', 'HOSE', '24.80', '+2.10%', '12.45 M', '308.2', '4.5★ MUA'],
                 ['SSI', 'Chứng khoán SSI', 'HOSE', '32.80', '+1.95%', '9.18 M', '301.1', '4.3★ MUA'],
                 ['VCB', 'Vietcombank', 'HOSE', '92.00', '+1.10%', '2.14 M', '196.8', '4.6★ KHẢ QUAN'],
@@ -8894,7 +8922,7 @@ const WLU = {};
   ['LPB', 'LPBank', 'HOSE', 40.70, 0.05, 0.12, '2,10 M', 85.47, 40.40, 41.20, 24.80, 59.30, 'Tài chính'],
   ['GVR', 'Cao su Việt Nam', 'HOSE', 32.85, -1.00, -2.95, '3,50 M', 114.98, 32.50, 34.00, 21.60, 36.90, 'CN chế biến'],
   ['ACB', 'Ngân hàng ACB', 'HOSE', 20.15, -0.20, -0.98, '11,57 M', 234.76, 20.00, 20.45, 18.10, 26.40, 'Tài chính'],
-  ['MSB', 'Ngân hàng TMCP Hàng Hải', 'HOSE', 14.25, 0.15, 1.06, '8,46 M', 120.58, 14.05, 14.30, 10.15, 14.35, 'Tài chính'],
+  ['MSB', 'Ngân hàng TMCP Hàng hải Việt Nam', 'HOSE', 14.60, -0.15, -1.02, '21,38 M', 312.15, 14.50, 14.95, 13.75, 15.75, 'Tài chính'],
   ['SSI', 'Chứng khoán SSI', 'HOSE', 19.00, -0.05, -0.26, '15,20 M', 288.80, 18.85, 19.25, 16.10, 38.20, 'Tài chính'],
   ['GAS', 'PV GAS', 'HOSE', 80.70, -1.30, -1.59, '1,10 M', 88.77, 80.20, 82.50, 58.90, 89.10, 'Dầu khí'],
   ['PNJ', 'Vàng bạc Đá quý Phú Nhuận', 'HOSE', 96.80, 0.30, 0.31, '1,53 M', 148.10, 96.10, 97.50, 78.40, 104.20, 'Bán lẻ'],
@@ -11073,50 +11101,57 @@ const VN30_DATA_FEED = {
   },
   "MSB": {
     "sym": "MSB",
-    "name": "Ngân hàng TMCP Hàng Hải Việt Nam",
+    "name": "Ngân hàng TMCP Hàng hải Việt Nam",
     "ex": "HOSE",
     "ind": "Ngân hàng",
-    "price": 14250,
-    "ref": 14100,
-    "chg": 150,
-    "pct": 1.06,
-    "vol": 8462300,
-    "val_bil": 120.58,
+    "price": 14600,
+    "ref": 14750,
+    "chg": -150,
+    "pct": -1.02,
+    "vol": 21380000,
+    "val_bil": 312.15,
+    "open": 14750,
+    "high": 14950,
+    "low": 14500,
+    "close": 14600,
+    "ceil": 15750,
+    "floor": 13750,
+    "avg": 14650,
     "metrics": {
       "liq": [
         [
           "KLGD",
-          "8.462.300 CP"
+          "21.380.000 CP"
         ],
         [
           "GTGD",
-          "120,58 tỷ đồng"
+          "312,15 tỷ đồng"
         ]
       ],
       "frn": [
         [
           "Khối lượng ròng",
-          "+512.400",
+          "+400.000",
           "up"
         ],
         [
           "Giá trị ròng",
-          "+7.302 triệu",
+          "+5.850 triệu",
           "up"
         ],
         [
           "Room ngoại",
-          "790.500.000 CP"
+          "495.210.000 CP"
         ]
       ],
       "val": [
         [
           "EPS (TTM)",
-          "3.374 đ"
+          "1.973 đ"
         ],
         [
           "P/E (TTM)",
-          "7,41 lần"
+          "7,40 lần"
         ],
         [
           "P/B (TTM)",
@@ -11129,46 +11164,46 @@ const VN30_DATA_FEED = {
         ],
         [
           "Biên LN ròng",
-          "14,2%",
+          "22,4%",
           "up"
         ],
         [
           "Tỷ suất cổ tức",
-          "4,5%",
+          "5,3%",
           "up"
         ]
       ],
       "size": [
         [
           "Vốn hoá",
-          "37,05 nghìn tỷ"
+          "54,66 nghìn tỷ"
         ],
         [
           "Vốn điều lệ",
-          "24,08 nghìn tỷ"
+          "26.000 tỷ"
         ],
         [
           "VCSH",
-          "31,49 nghìn tỷ"
+          "34.250 tỷ"
         ],
         [
           "SLCP lưu hành",
-          "2.600 tỷ"
+          "2.600 triệu"
         ]
       ]
     },
     "events": [
       [
         "18/09",
-        "Ngân hàng TMCP Hàng Hải Việt Nam lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+        "MSB lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh & tăng vốn điều lệ"
       ],
       [
         "25/09",
-        "GDKHQ chi trả cổ tức cho cổ đông"
+        "GDKHQ chi trả cổ tức bằng tiền mặt tỷ lệ 15% cho cổ đông"
       ],
       [
         "02/10",
-        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+        "Ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức"
       ],
       [
         "20/10",
@@ -13255,18 +13290,18 @@ const VN30_DATA_FEED = {
 
 const DNSE_STOCKS_DB = {
   MSB: {
-    sym: 'MSB', ex: 'HOSE', name: 'Ngân hàng TMCP Hàng Hải Việt Nam', ind: 'Ngân hàng',
-    price: 14250, chg: 150, pct: 1.06,
+    sym: 'MSB', ex: 'HOSE', name: 'Ngân hàng TMCP Hàng hải Việt Nam', ind: 'Ngân hàng',
+    price: 14600, ref: 14750, chg: -150, pct: -1.02, vol: 21380000, val_bil: 312.15,
     metrics: {
-      liq: [['KLGD', '8.462.300 CP'], ['GTGD', '120,58 tỷ đồng']],
-      frn: [['Khối lượng ròng', '+512.400', 'up'], ['Giá trị ròng', '+7.302 triệu', 'up'], ['Room ngoại', '790.500.000 CP']],
-      val: [['EPS (TTM)', '1.923 đ'], ['P/E (TTM)', '7,41 lần'], ['P/B (TTM)', '1,08 lần'], ['ROE (TTM)', '14,8%', 'up'], ['NIM (Bán niên)', '3,70%', 'up'], ['CASA', '26,71%', 'up']],
-      size: [['Vốn hoá', '37,05 nghìn tỷ'], ['Vốn điều lệ', '26,00 nghìn tỷ'], ['VCSH', '34,02 nghìn tỷ'], ['SLCP lưu hành', '2,600 tỷ CP']]
+      liq: [['KLGD', '21.380.000 CP'], ['GTGD', '312,15 tỷ đồng']],
+      frn: [['Khối lượng ròng', '+400.000', 'up'], ['Giá trị ròng', '+5.850 triệu', 'up'], ['Room ngoại', '495.210.000 CP']],
+      val: [['EPS (TTM)', '1.973 đ'], ['P/E (TTM)', '7,40 lần'], ['P/B (TTM)', '1,08 lần'], ['ROE (TTM)', '14,8%', 'up'], ['NIM (Bán niên)', '3,70%', 'up'], ['CASA', '26,71%', 'up']],
+      size: [['Vốn hoá', '54,66 nghìn tỷ'], ['Vốn điều lệ', '26,00 nghìn tỷ'], ['VCSH', '34,25 nghìn tỷ'], ['SLCP lưu hành', '2,600 tỷ CP']]
     },
     factors: [
       { t: 'Chất lượng tài chính', w: 25, s: 76, lb: 'TÍCH CỰC', b: ['Nợ xấu (NPL) 2,88% & bao phủ 63%', 'ROA 1,52%, ROE 14,8%', 'Hệ số an toàn CAR > 12,5%'], n: 'Chất lượng tài sản và an toàn vốn.' },
       { t: 'Tăng trưởng', w: 20, s: 85, lb: 'RẤT TÍCH CỰC', b: ['Tín dụng tăng 14,2% YoY', 'Thu nhập ngoài lãi tăng 22%', 'LNTT 9T đạt 4.900 tỷ'], n: 'Tốc độ tăng trưởng của quy mô và lợi nhuận.' },
-      { t: 'Định giá', w: 25, s: 78, lb: 'TÍCH CỰC', b: ['P/E 7,41 lần vs ngành 8,90', 'P/B 1,08 lần (percentile 42%)', 'Tỷ suất cổ tức ~5,5%'], n: 'Mức giá hiện tại so với giá trị nội tại.' },
+      { t: 'Định giá', w: 25, s: 78, lb: 'TÍCH CỰC', b: ['P/E 7,40 lần vs ngành 8,90', 'P/B 1,08 lần (percentile 42%)', 'Tỷ suất cổ tức ~5,3%'], n: 'Mức giá hiện tại so với giá trị nội tại.' },
       { t: 'Sức khỏe tài chính', w: 15, s: 68, lb: 'TÍCH CỰC', b: ['Thanh khoản dồi dào, LDR an toàn', 'CASA 26,71% thuộc top đầu', 'Dòng tiền HĐKD tăng 28,5%'], n: 'Sức mạnh dòng tiền và cấu trúc huy động.' },
       { t: 'Rủi ro', w: 15, s: 42, lb: 'TRUNG TÍNH', b: ['Kiểm soát nợ xấu nhóm BĐS', 'Chi phí dự phòng trong kế hoạch', 'Đa dạng hóa danh mục tín dụng'], n: 'Mức độ rủi ro — điểm càng cao rủi ro càng thấp.' }
     ],
@@ -13278,21 +13313,21 @@ const DNSE_STOCKS_DB = {
     changes: [['Tăng trưởng tín dụng', 14.2, '%'], ['Lợi nhuận trước thuế', 12.8, '%'], ['NIM', 3.70, '%'], ['Tỷ lệ nợ xấu (NPL)', 2.88, '%'], ['Tỷ lệ CASA', 26.71, '%'], ['Dòng tiền HĐKD', 28.5, '%']],
     radar: { axes: ['Chất lượng tài sản', 'Sinh lời', 'Vốn chủ sở hữu', 'Huy động vốn', 'Thanh khoản', 'Quản trị'], current: [75, 82, 68, 78, 72, 70], ind: [66, 68, 62, 66, 64, 63] },
     position: [['ROE (TTM)', '14,8%', 'Top 40%'], ['NIM', '3,70%', 'Top 25%'], ['Tỷ lệ CASA', '26,71%', 'Top 15%'], ['Tỷ lệ nợ xấu (NPL)', '2,88%', 'Top 30%'], ['Tăng trưởng tín dụng', '14,2%', 'Top 25%'], ['Tỷ lệ CIR', '30,9%', 'Top 20%']],
-    perf: [['1 tuần', 2.14, 1.13, 14350, 13900], ['1 tháng', 5.42, 5.08, 14350, 13450], ['3 tháng', 11.80, 9.70, 14350, 12600], ['6 tháng', 18.25, 22.42, 14350, 11250], ['52 tuần', 31.20, 26.93, 14350, 10150], ['Từ đầu năm', 24.60, 26.93, 14350, 10900]],
+    perf: [['1 tuần', 2.82, 1.13, 14950, 14200], ['1 tháng', 11.45, 5.08, 14950, 13100], ['3 tháng', 9.16, 9.70, 14950, 13350], ['6 tháng', 44.20, 22.42, 14950, 10100], ['52 tuần', 28.35, 26.93, 14950, 11350], ['Từ đầu năm', 41.29, 26.93, 14950, 10300]],
     profile: {
-      basic: [['Mã chứng khoán', 'MSB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '12/07/1991'], ['Vốn điều lệ', '26,00 nghìn tỷ đồng'], ['Số lượng nhân sự', '6.284'], ['Số lượng chi nhánh', '63'], ['Số công ty con', '3'], ['Đại diện pháp luật', 'Trần Minh Đức']],
-      listing: [['Ngày niêm yết', '23/12/2020'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '15.000'], ['P/E (TTM)', '7,41 lần'], ['P/B (TTM)', '1,08 lần'], ['KL niêm yết', '2.600.000.000 CP'], ['KL lưu hành', '2.600.000.000 CP']],
-      intro: 'MSB là ngân hàng thương mại cổ phần tư nhân đầu tiên tại Việt Nam, tập trung phục vụ bán lẻ và SME với chiến lược số hóa mạnh mẽ và mở rộng CASA.',
-      miles: [['12/07/1991', 'Thành lập tại Hải Phòng, vốn điều lệ 40 tỷ đồng'], ['2015', 'Sáp nhập MDB, nâng vốn điều lệ lên 11.750 tỷ đồng'], ['23/12/2020', 'Niêm yết trên HOSE'], ['2026', 'Mục tiêu LNTT 6.800 tỷ đồng, nâng vốn lên 37.440 tỷ đồng']],
-      leaders: [['Nguyễn Hoàng Anh', 'Chủ tịch HĐQT'], ['Trần Minh Đức', 'Tổng Giám đốc'], ['Lê Thị Hồng', 'Trưởng BKS'], ['Phạm Thu Trang', 'Phó TGĐ'], ['Vũ Thị Lan', 'Kế toán trưởng']],
+      basic: [['Mã chứng khoán', 'MSB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '12/07/1991'], ['Vốn điều lệ', '26,00 nghìn tỷ đồng'], ['Số lượng nhân sự', '6.840'], ['Số lượng chi nhánh', '263'], ['Số công ty con', '3'], ['Đại diện pháp luật', 'Trần Minh Đức']],
+      listing: [['Ngày niêm yết', '23/12/2020'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '15.000'], ['P/E (TTM)', '7,40 lần'], ['P/B (TTM)', '1,08 lần'], ['KL niêm yết', '2.600.000.000 CP'], ['KL lưu hành', '2.600.000.000 CP']],
+      intro: 'Ngân hàng TMCP Hàng hải Việt Nam (MSB) là một trong những ngân hàng TMCP tư nhân đầu tiên tại Việt Nam, phục vụ khách hàng cá nhân, SME và doanh nghiệp lớn.',
+      miles: [['12/07/1991', 'Thành lập tại Hải Phòng, vốn điều lệ 40 tỷ đồng'], ['2015', 'Sáp nhập MDB, nâng vốn điều lệ lên 11.750 tỷ đồng'], ['23/12/2020', 'Niêm yết trên HOSE'], ['2026', 'Vốn hóa thị trường đạt 54,66 nghìn tỷ đồng']],
+      leaders: [['Trần Anh Tuấn', 'Chủ tịch HĐQT'], ['Nguyễn Hoàng Linh', 'Tổng Giám đốc'], ['Phạm Thị Thành', 'Trưởng BKS'], ['Nguyễn Thế Minh', 'Phó TGĐ'], ['Vũ Thị Lan', 'Kế toán trưởng']],
       subs: [['Cty Quản lý nợ & Khai thác TS MSB', '100%', 'Xử lý nợ'], ['Cty Cho thuê tài chính MSB', '100%', 'Cho thuê tài chính'], ['Bảo hiểm Nhân thọ MSB', '35%', 'Bảo hiểm']]
     },
     peers: {
-      'Tổng quan': [['Doanh nghiệp', 'Vốn hoá', 'P/E', 'P/B', 'ROE', 'NIM', 'CASA'], [['MSB', '37.050 tỷ', '7,41', '1,08', '14,8%', '3,70%', '26,71%'], ['TCB', '174.600 tỷ', '8,65', '1,55', '19,4%', '4,30%', '40,50%'], ['MBB', '128.400 tỷ', '6,15', '1,22', '21,6%', '4,60%', '38,40%'], ['ACB', '114.300 tỷ', '7,20', '1,42', '20,8%', '3,95%', '23,40%'], ['VCB', '514.200 tỷ', '13,90', '2,75', '21,8%', '3,25%', '34,20%'], ['VPB', '153.800 tỷ', '9,80', '1,18', '12,8%', '5,60%', '16,80%']]],
-      'Biến động giá': [['Doanh nghiệp', '1 tuần', '1 tháng', '3 tháng', 'Từ đầu năm', '1 năm'], [['MSB', '+2,14%', '+5,42%', '+11,80%', '+24,60%', '+31,20%'], ['VCB', '−0,40%', '+1,90%', '+4,20%', '+8,70%', '+12,40%'], ['TCB', '+1,60%', '+6,80%', '+14,50%', '+29,30%', '+38,60%'], ['ACB', '+0,80%', '+3,20%', '+7,90%', '+15,40%', '+19,80%'], ['VPB', '−1,20%', '+2,40%', '+9,10%', '+18,20%', '+22,50%']]],
-      'Định giá': [['Doanh nghiệp', 'P/E', 'P/B', 'P/S', 'EV/EBITDA', 'Tỷ suất cổ tức'], [['MSB', '7,41', '1,08', '2,35', '9,20', '5,5%'], ['VCB', '13,90', '2,75', '4,10', '13,60', '1,2%'], ['TCB', '8,65', '1,55', '3,05', '10,40', '2,8%'], ['ACB', '7,20', '1,42', '2,68', '9,80', '3,5%'], ['VPB', '9,80', '1,18', '2,90', '11,10', '4,1%']]]
+      'Tổng quan': [['Doanh nghiệp', 'Vốn hoá', 'P/E', 'P/B', 'ROE', 'NIM', 'CASA'], [['MSB', '54.660 tỷ', '7,40', '1,08', '14,8%', '3,70%', '26,71%'], ['TCB', '174.600 tỷ', '8,65', '1,55', '19,4%', '4,30%', '40,50%'], ['MBB', '128.400 tỷ', '6,15', '1,22', '21,6%', '4,60%', '38,40%'], ['ACB', '114.300 tỷ', '7,20', '1,42', '20,8%', '3,95%', '23,40%'], ['VCB', '514.200 tỷ', '13,90', '2,75', '21,8%', '3,25%', '34,20%'], ['VPB', '153.800 tỷ', '9,80', '1,18', '12,8%', '5,60%', '16,80%']]],
+      'Biến động giá': [['Doanh nghiệp', '1 tuần', '1 tháng', '3 tháng', 'Từ đầu năm', '1 năm'], [['MSB', '+2,82%', '+11,45%', '+9,16%', '+41,29%', '+28,35%'], ['VCB', '−0,40%', '+1,90%', '+4,20%', '+8,70%', '+12,40%'], ['TCB', '+1,60%', '+6,80%', '+14,50%', '+29,30%', '+38,60%'], ['ACB', '+0,80%', '+3,20%', '+7,90%', '+15,40%', '+19,80%'], ['VPB', '−1,20%', '+2,40%', '+9,10%', '+18,20%', '+22,50%']]],
+      'Định giá': [['Doanh nghiệp', 'P/E', 'P/B', 'P/S', 'EV/EBITDA', 'Tỷ suất cổ tức'], [['MSB', '7,40', '1,08', '2,35', '9,20', '5,3%'], ['VCB', '13,90', '2,75', '4,10', '13,60', '1,2%'], ['TCB', '8,65', '1,55', '3,05', '10,40', '2,8%'], ['ACB', '7,20', '1,42', '2,68', '9,80', '3,5%'], ['VPB', '9,80', '1,18', '2,90', '11,10', '4,1%']]]
     },
-    events: [['18/09', 'ĐHĐCĐ thông qua kế hoạch tăng vốn điều lệ lên 37.440 tỷ'], ['25/09', 'GDKHQ trả cổ tức tỷ lệ 30% bằng cổ phiếu'], ['02/10', 'Ngày thanh toán cổ tức tiền mặt bổ sung'], ['09/10', 'Phát hành cổ phiếu ESOP cho CBNV'], ['20/10', 'Công bố KQKD 9T: LNTT đạt 4.900 tỷ (72% kế hoạch)'], ['30/10', 'Niêm yết bổ sung cổ phiếu tăng vốn trên HOSE']]
+    events: [['18/09', 'ĐHĐCĐ thông qua kế hoạch tăng vốn điều lệ'], ['25/09', 'GDKHQ trả cổ tức tiền mặt 15%'], ['02/10', 'Ngày đăng ký cuối cùng nhận cổ tức'], ['20/10', 'Công bố KQKD 9T: LNTT tăng trưởng mạnh'], ['12/11', 'Hội nghị gặp gỡ NĐT và chuyên viên phân tích']]
   },
 
   FPT: {

@@ -2586,13 +2586,28 @@ const cls = n => n > 0 ? 'up' : n < 0 ? 'down' : '';
 function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+const getLiveDateString = (d) => {
+  d = d || new Date();
+  const day = String(d.getDate()).padStart(2, '0');
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  return `${day}/${m}/${d.getFullYear()}`;
+};
+const getLiveTimeHMS = (d) => {
+  d = d || new Date();
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const s = String(d.getSeconds()).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+};
+const getLiveTimeString = (d) => `${getLiveTimeHMS(d)} UTC+7`;
+
 /* === NGUỒN DỮ LIỆU ĐỒNG BỘ TỪ DNSE MCP SERVER (mcp.dnse.com.vn) === */
 const DNSE_MCP_META = {
   endpoint: 'https://mcp.dnse.com.vn/mcp',
   status: 'ONLINE',
   protocolVersion: '2024-11-05',
   authMethod: 'OAuth 2.0 PKCE (Entrade X Feed)',
-  lastSynced: '08/10/2026 22:15:00 UTC+7',
+  get lastSynced() { return `${getLiveDateString()} ${getLiveTimeHMS()} UTC+7`; },
   tools: [
     'company_get_profile',
     'financial_get_index',
@@ -2768,16 +2783,18 @@ const TV_MCP = {
     if (rangeStr === '1Ngày') {
       rawBars = intraday();
     } else {
-      const n = { '5Ngày': 5, '1Tháng': 22, '3Tháng': 66, '6 tháng': 130, 'YTD': CANDLES.filter(c => c.d.getFullYear() === 2026).length, '1Năm': 250, '5Năm': 1300, 'Tất cả': 1300 }[rangeStr || '1Năm'] || 250;
+      const curYear = new Date().getFullYear();
+      const n = { '5Ngày': 5, '1Tháng': 22, '3Tháng': 66, '6 tháng': 130, 'YTD': CANDLES.filter(c => c.d.getFullYear() === curYear).length, '1Năm': 250, '5Năm': 1300, 'Tất cả': 1300 }[rangeStr || '1Năm'] || 250;
       const d = CANDLES.slice(-n);
       if (n > 400) {
         for (let i = 0; i < d.length; i += 5) {
           const g = d.slice(i, i + 5);
+          const lastG = g[g.length - 1];
           rawBars.push({
-            d: g[0].d,
-            t: Math.floor(g[0].d.getTime() / 1000),
+            d: lastG.d,
+            t: Math.floor(lastG.d.getTime() / 1000),
             o: g[0].o,
-            c: g[g.length - 1].c,
+            c: lastG.c,
             h: Math.max(...g.map(x => x.h)),
             l: Math.min(...g.map(x => x.l)),
             v: g.reduce((a, x) => a + x.v, 0)
@@ -2873,8 +2890,18 @@ function makeCandles(targetPrice, seed) {
   const r = rng(seed || 7), out = []; const n = 1300;
   const targetPriceVal = targetPrice || (typeof STOCK !== 'undefined' && STOCK ? STOCK.price : 14250);
   const ratio = targetPriceVal / 14250;
-  const d0 = new Date(2021, 8, 20);
-  const days = []; for (let d = new Date(d0); days.length < n; d.setDate(d.getDate() + 1)) { const w = d.getDay(); if (w && w < 6) days.push(new Date(d)); }
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const days = [new Date(today)];
+  let cur = new Date(today);
+  cur.setDate(cur.getDate() - 1);
+  while (days.length < n) {
+    const w = cur.getDay();
+    if (w !== 0 && w !== 6) {
+      days.unshift(new Date(cur));
+    }
+    cur.setDate(cur.getDate() - 1);
+  }
   const k0 = n - 520;
   const old = t => 11800 - 1800 * Math.sin(t * 3.1) * (1 - t) + 2600 * Math.pow(t, 1.7);
   const path = i => i >= k0 ? old((i - k0) / 519) : (u => 15600 - 7200 * Math.sin(u * 2.2) * (u < .55 ? 1 : 1) + 3200 * Math.pow(u, 2.4) - 1500 * u)(i / k0) * (i / k0 > .92 ? 1 : 1);
@@ -2897,6 +2924,7 @@ function makeCandles(targetPrice, seed) {
   const prevP = Math.round((curP * 0.99) / 50) * 50;
   pv.c = prevP; pv.h = Math.max(pv.h, pv.o, prevP); pv.l = Math.min(pv.l, pv.o, prevP);
   Object.assign(out[n - 1], {
+    d: days[n - 1],
     o: Math.round((curP * 0.995) / 50) * 50,
     h: Math.round((curP * 1.008) / 50) * 50,
     l: Math.round((curP * 0.992) / 50) * 50,
@@ -4772,7 +4800,7 @@ const dFmt = n => { const x = new Date(n), z = v => String(v).padStart(2, '0'); 
 const WD = ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
 const dWd = n => WD[new Date(n).getUTCDay()];
 const DAY = 864e5;
-const SIM_TODAY = dParse('08/10/2026');
+const SIM_TODAY = (() => { const n = new Date(); return Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()); })();
 /* CW: ud = tài sản cơ sở, iss = tổ chức phát hành, k = giá thực hiện, r = tỷ lệ chuyển đổi (r:1),
    ltd = ngày giao dịch cuối cùng, mat = ngày đáo hạn, pay = ngày thanh toán, sp = giá thanh toán do TCPH công bố (spd = ngày công bố),
    last = giá đóng cửa phiên cuối, mt = giá trị/CW Maris Trading hiển thị khi chờ thanh toán, mtDone = ngày Maris Trading ghi nhận thanh toán vào tài khoản */
@@ -5164,6 +5192,7 @@ function tickRealtime() {
   if (typeof CANDLES !== 'undefined' && CANDLES && CANDLES.length > 0) {
     const last = CANDLES[CANDLES.length - 1];
     last.c = newPrice;
+    last.d = new Date();
     if (newPrice > last.h) last.h = newPrice;
     if (newPrice < last.l) last.l = newPrice;
     last.v += tickVol;
@@ -5171,6 +5200,7 @@ function tickRealtime() {
   if (typeof INTRA !== 'undefined' && INTRA && INTRA.length > 0) {
     const lastI = INTRA[INTRA.length - 1];
     lastI.c = newPrice;
+    lastI.d = new Date();
     if (newPrice > lastI.h) lastI.h = newPrice;
     if (newPrice < lastI.l) lastI.l = newPrice;
     lastI.v += tickVol;
@@ -5199,9 +5229,19 @@ function tickRealtime() {
   }
 }
 
+function updateTvClock() {
+  const el = document.getElementById('tv-clock');
+  if (el) el.textContent = getLiveTimeString();
+  const c = document.getElementById('clock');
+  if (c && !c.dataset.locked) c.textContent = getLiveTimeHMS();
+}
+
 function startRealtimeEngine() {
   if (REALTIME_TIMER) clearInterval(REALTIME_TIMER);
   REALTIME_TIMER = setInterval(tickRealtime, REALTIME_SPEED_MS);
+  if (!window._TV_CLOCK_TIMER) {
+    window._TV_CLOCK_TIMER = setInterval(updateTvClock, 1000);
+  }
 }
 
 function stockHeader() {
@@ -5247,7 +5287,7 @@ function stockHeader() {
           <span class="sp"></span>
           <button class="tv-ind-toggle ${S_TV_INDICATORS.sma20 ? 'on' : ''}" data-act="togglesma" title="Bật/Tắt đường chỉ báo MA 20 và MA 50">MA 20/50</button>
           <span class="tv-mcp-status" title="Kết nối máy chủ TradingView MCP (https://mcp.tradingview.com/mcp)"><span class="tv-dot-live"></span><b>TV-MCP</b> ${STOCK.ex}:${STOCK.sym}</span>
-          <span class="mono">14:45:02 UTC+7</span><span class="adj">ADJ</span>
+          <span class="mono" id="tv-clock">${typeof getLiveTimeString === 'function' ? getLiveTimeString() : '13:14:34 UTC+7'}</span><span class="adj">ADJ</span>
         </div>
       </div>
     </div>
@@ -5266,7 +5306,8 @@ let INTRA = null;
 function intraday() {
   if (INTRA) return INTRA;
   const r = rng(31), last = CANDLES[CANDLES.length - 1], prev = CANDLES[CANDLES.length - 2].c, out = []; let p = prev;
-  const d = new Date(2026, 8, 17, 9, 0);
+  const now = new Date();
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 0);
   for (let i = 0; i < 54; i++) {
     const t = new Date(d.getTime() + i * 5 * 60000 + (i >= 30 ? 90 * 60000 : 0));
     const target = prev + (last.c - prev) * (i / 53);
@@ -5388,7 +5429,14 @@ function drawCandles() {
 
   const updateHeaderInfo = (d, prev, idx) => {
     const ch = d.c - (prev ? prev.c : d.o), pc = ch / ((prev ? prev.c : d.o) || 1) * 100, k = d.c >= d.o ? 'up' : 'down', sg = ch > 0 ? '+' : ch < 0 ? '−' : '';
-    document.getElementById('ohlc').innerHTML = `<span>O<b class="${k}">${fmtTV(d.o)}</b></span><span>H<b class="${k}">${fmtTV(d.h)}</b></span><span>L<b class="${k}">${fmtTV(d.l)}</b></span><span>C<b class="${k}">${fmtTV(d.c)}</b></span><b class="${k}">${sg}${fmtTV(Math.abs(ch))} (${sg}${Math.abs(pc).toFixed(2)}%)</b>`;
+    const dDate = d.d || new Date();
+    const dateBadge = d.intra
+      ? `${String(dDate.getHours()).padStart(2, '0')}:${String(dDate.getMinutes()).padStart(2, '0')}`
+      : `${String(dDate.getDate()).padStart(2, '0')}/${String(dDate.getMonth() + 1).padStart(2, '0')}/${dDate.getFullYear()}`;
+    const ohlcEl = document.getElementById('ohlc');
+    if (ohlcEl) {
+      ohlcEl.innerHTML = `<span style="color:var(--ink3);font-family:var(--mono);margin-right:4px">${dateBadge}</span><span>O<b class="${k}">${fmtTV(d.o)}</b></span><span>H<b class="${k}">${fmtTV(d.h)}</b></span><span>L<b class="${k}">${fmtTV(d.l)}</b></span><span>C<b class="${k}">${fmtTV(d.c)}</b></span><b class="${k}">${sg}${fmtTV(Math.abs(ch))} (${sg}${Math.abs(pc).toFixed(2)}%)</b>`;
+    }
     const vv = document.getElementById('tvvol');
     if (vv) { vv.textContent = fmtVol(d.v); vv.className = k; }
     const indEl = document.getElementById('tv-indicators-val');
@@ -5543,7 +5591,7 @@ function vProfile() {
 
   return brandCard + `<div class="prow1">
     ${pnl('Thông tin cơ bản', 'Nguồn: HOSE · FiinGroup', `<div>${kv2(PROFILE.basic)}</div>`)}
-    ${pnl('Thông tin niêm yết', 'Cập nhật 17/09/2026', `<div>${kv2(PROFILE.listing)}</div>`)}
+    ${pnl('Thông tin niêm yết', 'Cập nhật ' + getLiveDateString(), `<div>${kv2(PROFILE.listing)}</div>`)}
     ${pnl('Giới thiệu doanh nghiệp', STOCK.name, `<div class="intro"><h5>Tổng quan</h5><p>${PROFILE.intro}</p><h5>Lịch sử</h5>${PROFILE.miles.map(([d, t]) => `<div class="mile"><i>•</i><span>${d} — ${t}</span></div>`).join('')}</div>`, 'last')}
   </div>
   <div class="prow2">
@@ -5565,7 +5613,7 @@ function vHolders() {
     </div>
     <div class="side376">
       ${pnl('Khối lượng cơ cấu sở hữu', '30/06/2026', `<div class="donut-wrap"><div id="donut">${donut(OWNERSHIP, 130)}</div><div class="legs">${OWNERSHIP.map((o, i) => `<div class="leg-row" data-seg="${i}"><i style="background:${o[2]}"></i>${o[0]}<b>${fmtVN(o[1], 2)}%</b></div>`).join('')}</div></div>`, 'last')}
-      ${pnl('Sở hữu nước ngoài', 'Cập nhật 17/09/2026', `<div class="kvs12">${FOREIGN_OWN.map(([a, b, c]) => `<div class="kv2"><span>${a}</span><b class="${/CP$/.test(b) ? '' : 'mono'} ${c || ''}">${b}</b></div>`).join('')}</div>`, 'last')}
+      ${pnl('Sở hữu nước ngoài', 'Cập nhật ' + getLiveDateString(), `<div class="kvs12">${FOREIGN_OWN.map(([a, b, c]) => `<div class="kv2"><span>${a}</span><b class="${/CP$/.test(b) ? '' : 'mono'} ${c || ''}">${b}</b></div>`).join('')}</div>`, 'last')}
     </div>
   </div>`;
 }
@@ -5730,7 +5778,7 @@ function vAll() {
     <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:16px">
       <div style="display:flex;flex-direction:column;gap:4px"><button data-go="screener" style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--ink2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg>Quay lại</button>
         <div style="display:flex;align-items:center;gap:4px"><button style="display:flex;align-items:center;gap:4px;font-size:20px;line-height:28px;font-weight:600" data-act="savedmenu">${A.name || 'Tất cả cổ phiếu'} <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg></button><button class="btn ghost" data-act="savefilter">${I.save}Lưu</button></div></div>
-      <div class="live" style="padding-bottom:8px"><i></i>Cập nhật <span class="mono" id="clock">10:24:35</span> <span class="mono">29/07/2026</span><button data-act="refresh" aria-label="Làm mới">${I.ref}</button></div>
+      <div class="live" style="padding-bottom:8px"><i></i>Cập nhật <span class="mono" id="clock">${getLiveTimeHMS()}</span> <span class="mono">${getLiveDateString()}</span><button data-act="refresh" aria-label="Làm mới">${I.ref}</button></div>
     </div>
     <div class="fchips" style="margin-bottom:16px">
       ${A.chips.map((c, i) => `<span class="fc2"><span>${c[0]}${c[1] ? ` <b>${c[1]}</b>` : ''}${c[3] ? ` <span class="bdg">${c[3]}</span>` : ''}</span><button data-act="rmchip" data-v="${i}" aria-label="Bỏ điều kiện ${esc(c[0])}">${I.x}</button></span>`).join('')}
@@ -7347,7 +7395,7 @@ const A = {
   },
   fseg: el => { S.fSeg = el.dataset.v; rerender(); },
   tnewscat: el => openMenu(el, ['Tất cả', 'Doanh nghiệp', 'Cổ tức', 'Thị trường'], S.tnewsCat, v => { S.tnewsCat = v; rerender(); }),
-  news: el => modal(`<div class="m-h"><h3>${esc(el.dataset.t)}</h3><button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button></div><div class="m-b"><p class="muted" style="margin:0 0 10px;font-size:12px">MSB · Nguồn: Maris News · 17/09/2026</p><p style="margin:0;line-height:1.65;color:var(--ink2)">Bản tin đầy đủ hiển thị tại đây trong sản phẩm thật. Prototype dùng nội dung tóm tắt để minh hoạ luồng đọc tin từ Company 360 mà không rời khỏi trang mã cổ phiếu.</p></div><div class="m-f"><button class="btn" data-act="closemodal">Đóng</button></div>`),
+  news: el => modal(`<div class="m-h"><h3>${esc(el.dataset.t)}</h3><button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button></div><div class="m-b"><p class="muted" style="margin:0 0 10px;font-size:12px">${STOCK.sym} · Nguồn: Maris News · ${getLiveDateString()}</p><p style="margin:0;line-height:1.65;color:var(--ink2)">Bản tin đầy đủ hiển thị tại đây trong sản phẩm thật. Prototype dùng nội dung tóm tắt để minh hoạ luồng đọc tin từ Company 360 mà không rời khỏi trang mã cổ phiếu.</p></div><div class="m-f"><button class="btn" data-act="closemodal">Đóng</button></div>`),
   shseg: el => { S.shSeg = el.dataset.v; rerender(); },
   finsub: el => { S.finSub = el.dataset.v; rerender(); },
   finper: el => { S.finPer = el.dataset.v === 'Năm' ? 'y' : 'q'; rerender(); },
@@ -7819,7 +7867,7 @@ const SCR_SUGG = [
   { name: 'Công ty có giá trị vốn hóa thấp nhưng có hiệu quả tốt', chips: [ch('mc', '< 200 nghìn tỷ', { hi: 200 }), ch('roe', '> 15%', { v: 15 })], sort: ['mc', 1], cols: 'Khả năng sinh lời' }
 ];
 const cloneChips = cs => cs.map(c => Object.assign({}, c, c.set ? { set: c.set.slice() } : {}));
-Object.assign(S.all, { name: 'Tất cả cổ phiếu', savedIdx: 0, chips: cloneChips(SCR_DEF), cols: 'Tùy chọn lọc', sort: ['mc', -1], sel: new Set(['HPG', 'GAS', 'VNM']), clock: '10:24:35' });
+Object.assign(S.all, { name: 'Tất cả cổ phiếu', savedIdx: 0, chips: cloneChips(SCR_DEF), cols: 'Tùy chọn lọc', sort: ['mc', -1], sel: new Set(['HPG', 'GAS', 'VNM']), clock: getLiveTimeHMS() });
 const chipLbl = c => c.lbl || CHIPK[c.k][0];
 function scrCols() {
   if (S.all.cols !== 'Tùy chọn lọc') return COLSETS[S.all.cols];
@@ -7845,7 +7893,7 @@ function vAll() {
   const sel = [...A.sel];
   return `<div class="page scr2">
     <div class="scr2-h"><div class="scr2-t"><button class="wl-title" data-act="savedmenu">${esc(A.name)} ${I.chev}</button><button class="btn ghost" data-act="savefilter">${I_CLOUD}Lưu</button></div>
-      <div class="live"><i></i>Cập nhật <span class="mono">${A.clock}</span> <span class="mono">29/07/2026</span><button data-act="refresh" aria-label="Làm mới">${I.ref}</button></div></div>
+      <div class="live"><i></i>Cập nhật <span class="mono">${A.clock || getLiveTimeHMS()}</span> <span class="mono">${getLiveDateString()}</span><button data-act="refresh" aria-label="Làm mới">${I.ref}</button></div></div>
     <div class="fchips scr2-chips">${chips}<span class="scr2-acts"><button class="btn" style="padding:0 12px 0 8px" data-act="drawer">${I_PLUS20}Thêm điều kiện</button>${A.chips.length ? '<button class="btn plain" data-act="clearchips">Xóa tất cả</button>' : ''}</span></div>
     <div class="stabs scr2-tabs" role="tablist">${['Tùy chọn lọc', ...Object.keys(COLSETS)].map(k => `<button role="tab" aria-selected="${A.cols === k}" class="${A.cols === k ? 'on' : ''}" data-act="colset" data-v="${k}">${k}</button>`).join('')}</div>
     <div class="scr2-res"><b>Kết quả</b><span>(${rows.length} mã CK)</span></div>

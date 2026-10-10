@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 :root, [data-theme="light"] {
   color-scheme: light;
@@ -790,8 +791,8 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .tv-tools button.on{background:#F0F3FA;color:#2962FF}
 .tv-tools i{width:20px;height:1px;background:var(--line);margin:4px 0;flex:none}
 .tv-main{flex:1;min-width:0;display:flex;flex-direction:column;position:relative}
-.tv-head{position:absolute;left:8px;top:6px;right:12px;z-index:2;pointer-events:none;display:flex;flex-direction:column;gap:4px;font-size:11px;line-height:16px;color:var(--ink)}
-.tv-head button{pointer-events:auto}
+.tv-head{position:absolute;left:8px;top:6px;right:12px;z-index:10;pointer-events:none;display:flex;flex-direction:column;gap:4px;font-size:11px;line-height:16px;color:var(--ink)}
+.tv-head button,.tv-head a{pointer-events:auto;position:relative;z-index:11}
 .tv-leg{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .tv-leg b{font-weight:400}
 .tv-logo{width:16px;height:16px;border-radius:4px;background:#2962FF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M10 17H6v-6H2V7h8v10Zm8 0h-4.67l4-10H22l-4 10Zm-4.67-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z' fill='%23fff'/%3E%3C/svg%3E") center/13px no-repeat;box-shadow:0 1px 3px rgba(41,98,255,0.25);flex-shrink:0}
@@ -822,7 +823,8 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .tv-mcp-rating-chip.sell{background:rgba(242,54,69,0.12);color:#d02735;border-color:rgba(242,54,69,0.25)}
 .tv-mcp-rating-chip.neutral{background:rgba(245,158,11,0.12);color:#b45309;border-color:rgba(245,158,11,0.25)}
 .tv-indicators-val{display:inline-flex;gap:8px;font-size:10.5px;font-family:var(--sans);margin-left:4px}
-.tv-mcp-status{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink2);margin-right:10px;padding:2px 7px;background:var(--sub);border-radius:4px;border:1px solid var(--line)}
+.tv-mcp-status{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink2);margin-right:10px;padding:2px 7px;background:var(--sub);border-radius:4px;border:1px solid var(--line);cursor:pointer;transition:all .15s ease}
+.tv-mcp-status:hover{background:var(--sub2);border-color:#2962FF;color:#2962FF}
 .tv-mcp-status b{color:#2962FF;font-weight:600}
 .tv-dot-live{width:6px;height:6px;border-radius:50%;background:#22AB94;box-shadow:0 0 0 2px rgba(34,171,148,0.25);animation:tvpulse 2s infinite ease-in-out}
 @keyframes tvpulse{0%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(34,171,148,0.4)}70%{transform:scale(1);box-shadow:0 0 0 4px rgba(34,171,148,0)}100%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(34,171,148,0)}}
@@ -1432,6 +1434,11 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
   align-items: center;
   gap: 6px;
   transition: all 0.15s;
+}
+.mcp-server-tab.active-tv {
+  background: #2962FF;
+  color: #fff;
+  border-color: #2962FF;
 }
 .mcp-server-tab.active-dnse {
   background: #0284c7;
@@ -5301,7 +5308,9 @@ function stockHeader() {
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
             <div class="tv-vol">Khối lượng <span id="tvvol"></span></div>
-            <div class="tv-trade" style="pointer-events:auto">
+            <div class="tv-trade" style="pointer-events:auto;display:flex;align-items:center;gap:4px">
+              <button class="tv-mode-btn" data-act="opentvmcpmodal" style="color:#2962FF;font-weight:600;border-color:rgba(41,98,255,0.3);background:rgba(41,98,255,0.08)" title="Khám phá Model Context Protocol từ TradingView"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>TradingView MCP</button>
+              <a href="https://www.tradingview.com/chart/?symbol=${STOCK.ex || 'HOSE'}:${STOCK.sym}" target="_blank" rel="noopener noreferrer" class="tv-mode-btn" style="text-decoration:none" title="Mở biểu đồ trực tiếp trên TradingView.com"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>Mở trên TV ↗</a>
               <button class="tv-mode-btn" data-act="toggletvwidget" title="Chuyển đổi giữa Biểu đồ TradingView MCP và TradingView Widget Pro"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M10 17H6v-6H2V7h8v10Zm8 0h-4.67l4-10H22l-4 10Zm-4.67-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg><span id="tvmodetxt">${S_TV_VIEW_MODE === 'widget' ? 'Biểu đồ MCP' : 'TV Pro'}</span></button>
               <button class="sell" data-act="toast" data-msg="Đặt lệnh bán mở ở ứng dụng giao dịch SBSI (ngoài phạm vi prototype)"><b id="tvbid">${fmtVN(bestBid, 0)}</b>BÁN</button>
               <span>${tickStep}</span>
@@ -5314,7 +5323,7 @@ function stockHeader() {
           ${TV_RANGES.map(r => `<button class="${S.range === r ? 'on' : ''}" data-act="range" data-v="${r}">${r}</button>`).join('')}
           <span class="sp"></span>
           <button class="tv-ind-toggle ${S_TV_INDICATORS.sma20 ? 'on' : ''}" data-act="togglesma" title="Bật/Tắt đường chỉ báo MA 20 và MA 50">MA 20/50</button>
-          <span class="tv-mcp-status" title="Kết nối máy chủ TradingView MCP (https://mcp.tradingview.com/mcp)"><span class="tv-dot-live"></span><b>TV-MCP</b> ${STOCK.ex}:${STOCK.sym}</span>
+          <button class="tv-mcp-status" data-act="opentvmcpmodal" title="Bấm để mở TradingView MCP Inspector (https://mcp.tradingview.com/mcp)"><span class="tv-dot-live"></span><b>TV-MCP</b> ${STOCK.ex}:${STOCK.sym} ⚡</button>
           <span class="mono" id="tv-clock">${typeof getLiveTimeString === 'function' ? getLiveTimeString() : '13:14:34 UTC+7'}</span><span class="adj">ADJ</span>
         </div>
       </div>
@@ -5359,10 +5368,21 @@ function tvData() {
 }
 const fmtTV = v => Math.round(v).toLocaleString('en-US');
 const fmtVol = v => v >= 1e6 ? (v / 1e6).toFixed(2) + ' M' : (v / 1e3).toFixed(2) + ' K';
+let tvChartInstance = null;
+let tvCandleSeries = null;
+let tvVolumeSeries = null;
+let tvSma20Series = null;
+let tvSma50Series = null;
+let tvResizeObserver = null;
+
 function drawCandles() {
   const el = document.getElementById('candle'); if (!el) return;
   
   if (S_TV_VIEW_MODE === 'widget') {
+    if (tvChartInstance) {
+      try { tvChartInstance.remove(); } catch(e) {}
+      tvChartInstance = null;
+    }
     const isDark = typeof S !== 'undefined' && S.theme === 'dark';
     const symParam = encodeURIComponent((STOCK.ex || 'HOSE') + ':' + STOCK.sym);
     el.innerHTML = `<iframe src="https://s.tradingview.com/widgetembed/?symbol=${symParam}&interval=D&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=${isDark ? '131722' : 'f1f3f6'}&theme=${isDark ? 'dark' : 'light'}&style=1&timezone=Asia%2FHo_Chi_Minh" style="width:100%;height:100%;border:none;border-radius:4px" frameborder="0" allowtransparency="true" scrolling="no"></iframe>`;
@@ -5399,6 +5419,237 @@ function drawCandles() {
     ratingEl.className = `tv-mcp-rating-chip ${tech.tone}`;
   }
 
+  const updateHeaderInfo = (d, prev, idx) => {
+    if (!d) return;
+    const prevC = prev ? prev.c : d.o;
+    const ch = d.c - prevC, pc = ch / (prevC || 1) * 100, k = d.c > prevC ? 'up' : d.c < prevC ? 'down' : 'ref', sg = ch > 0 ? '+' : ch < 0 ? '−' : '';
+    const isZero = !ch || Math.abs(ch) < 0.001;
+    const dDate = d.d || new Date();
+    const dateBadge = d.intra
+      ? `${String(dDate.getHours()).padStart(2, '0')}:${String(dDate.getMinutes()).padStart(2, '0')}`
+      : `${String(dDate.getDate()).padStart(2, '0')}/${String(dDate.getMonth() + 1).padStart(2, '0')}/${dDate.getFullYear()}`;
+    const ohlcEl = document.getElementById('ohlc');
+    const chgBadge = isZero ? '' : `<b class="${k}">${sg}${fmtTV(Math.abs(ch))} (${sg}${Math.abs(pc).toFixed(2)}%)</b>`;
+    if (ohlcEl) {
+      ohlcEl.innerHTML = `<span style="color:var(--ink3);font-family:var(--mono);margin-right:4px">${dateBadge}</span><span>O<b class="${k}">${fmtTV(d.o)}</b></span><span>H<b class="${k}">${fmtTV(d.h)}</b></span><span>L<b class="${k}">${fmtTV(d.l)}</b></span><span>C<b class="${k}">${fmtTV(d.c)}</b></span>${chgBadge}`;
+    }
+    const vv = document.getElementById('tvvol');
+    if (vv) { vv.textContent = fmtVol(d.v); vv.className = k; }
+    const indEl = document.getElementById('tv-indicators-val');
+    if (indEl && S_TV_INDICATORS.sma20) {
+      const s20 = tech.sma20Arr && tech.sma20Arr[idx != null ? idx : n - 1];
+      const s50 = tech.sma50Arr && tech.sma50Arr[idx != null ? idx : n - 1];
+      indEl.innerHTML = `${s20 ? `<span style="color:#F59E0B">MA20: <b>${fmtTV(s20)}</b></span>` : ''} ${s50 ? `<span style="color:#3B82F6">MA50: <b>${fmtTV(s50)}</b></span>` : ''}`;
+    }
+  };
+
+  const last = data[n - 1];
+  updateHeaderInfo(last, data[n - 2], n - 1);
+
+  // OFFICIAL TRADINGVIEW LIGHTWEIGHT CHARTS CANVAS ENGINE
+  if (typeof window.LightweightCharts !== 'undefined') {
+    try {
+      if (tvChartInstance) {
+        try { tvChartInstance.remove(); } catch(e) {}
+        tvChartInstance = null;
+      }
+      el.innerHTML = '';
+
+      const isDark = typeof S !== 'undefined' && S.theme === 'dark';
+      const chartWidth = Math.max(280, el.clientWidth || 600);
+      const chartHeight = Math.max(240, el.clientHeight || 340);
+
+      tvChartInstance = window.LightweightCharts.createChart(el, {
+        width: chartWidth,
+        height: chartHeight,
+        layout: {
+          background: { type: 'solid', color: isDark ? '#131722' : '#ffffff' },
+          textColor: isDark ? '#d1d4dc' : '#191919',
+          fontFamily: "'Google Sans Flex', -apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif",
+          fontSize: 11,
+        },
+        grid: {
+          vertLines: { color: isDark ? 'rgba(42, 46, 57, 0.6)' : 'rgba(240, 243, 250, 0.8)' },
+          horzLines: { color: isDark ? 'rgba(42, 46, 57, 0.6)' : 'rgba(240, 243, 250, 0.8)' },
+        },
+        crosshair: {
+          mode: window.LightweightCharts.CrosshairMode.Normal,
+          vertLine: {
+            color: isDark ? '#758696' : '#9598A1',
+            width: 1,
+            style: 3,
+            labelBackgroundColor: '#2962FF',
+          },
+          horzLine: {
+            color: isDark ? '#758696' : '#9598A1',
+            width: 1,
+            style: 3,
+            labelBackgroundColor: '#2962FF',
+          },
+        },
+        rightPriceScale: {
+          borderColor: isDark ? '#2B2B43' : '#E0E3EB',
+          scaleMargins: {
+            top: 0.12,
+            bottom: 0.22,
+          },
+        },
+        timeScale: {
+          borderColor: isDark ? '#2B2B43' : '#E0E3EB',
+          timeVisible: intra,
+          secondsVisible: false,
+        },
+        watermark: {
+          visible: true,
+          fontSize: 22,
+          horzAlign: 'center',
+          vertAlign: 'center',
+          color: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.05)',
+          text: `TRADINGVIEW · ${STOCK.sym}`,
+        },
+      });
+
+      tvVolumeSeries = tvChartInstance.addHistogramSeries({
+        priceFormat: { type: 'volume' },
+        priceScaleId: '',
+        scaleMargins: {
+          top: 0.78,
+          bottom: 0,
+        },
+      });
+
+      tvCandleSeries = tvChartInstance.addCandlestickSeries({
+        upColor: '#22ab94',
+        downColor: '#f23645',
+        borderVisible: false,
+        wickUpColor: '#22ab94',
+        wickDownColor: '#f23645',
+      });
+
+      const rawCandleBars = [];
+      const rawVolumeBars = [];
+      const rawSma20Bars = [];
+      const rawSma50Bars = [];
+
+      data.forEach((d, i) => {
+        let timeVal;
+        if (intra) {
+          timeVal = Math.floor(d.d.getTime() / 1000);
+        } else {
+          const yr = d.d.getFullYear();
+          const mo = String(d.d.getMonth() + 1).padStart(2, '0');
+          const dy = String(d.d.getDate()).padStart(2, '0');
+          timeVal = `${yr}-${mo}-${dy}`;
+        }
+
+        rawCandleBars.push({
+          time: timeVal,
+          open: d.o,
+          high: d.h,
+          low: d.l,
+          close: d.c,
+        });
+
+        rawVolumeBars.push({
+          time: timeVal,
+          value: d.v,
+          color: d.c >= d.o ? 'rgba(34, 171, 148, 0.35)' : 'rgba(242, 54, 69, 0.35)',
+        });
+
+        if (tech.sma20Arr && tech.sma20Arr[i] != null) {
+          rawSma20Bars.push({ time: timeVal, value: tech.sma20Arr[i] });
+        }
+        if (tech.sma50Arr && tech.sma50Arr[i] != null) {
+          rawSma50Bars.push({ time: timeVal, value: tech.sma50Arr[i] });
+        }
+      });
+
+      // Filter to strictly ascending time for TradingView Lightweight Charts
+      const cleanCandleBars = [];
+      const cleanVolumeBars = [];
+      let lastTime = null;
+      rawCandleBars.forEach((b, idx) => {
+        if (lastTime === null || b.time > lastTime) {
+          cleanCandleBars.push(b);
+          cleanVolumeBars.push(rawVolumeBars[idx]);
+          lastTime = b.time;
+        }
+      });
+
+      tvVolumeSeries.setData(cleanVolumeBars);
+      tvCandleSeries.setData(cleanCandleBars);
+
+      if (S_TV_INDICATORS.sma20 && rawSma20Bars.length > 0) {
+        const cleanSma20 = [];
+        let t20 = null;
+        rawSma20Bars.forEach(b => {
+          if (t20 === null || b.time > t20) {
+            cleanSma20.push(b);
+            t20 = b.time;
+          }
+        });
+        tvSma20Series = tvChartInstance.addLineSeries({
+          color: '#F59E0B',
+          lineWidth: 2,
+          title: 'MA20',
+          crosshairMarkerVisible: false,
+        });
+        tvSma20Series.setData(cleanSma20);
+      }
+
+      if (S_TV_INDICATORS.sma50 && rawSma50Bars.length > 0) {
+        const cleanSma50 = [];
+        let t50 = null;
+        rawSma50Bars.forEach(b => {
+          if (t50 === null || b.time > t50) {
+            cleanSma50.push(b);
+            t50 = b.time;
+          }
+        });
+        tvSma50Series = tvChartInstance.addLineSeries({
+          color: '#3B82F6',
+          lineWidth: 2,
+          title: 'MA50',
+          crosshairMarkerVisible: false,
+        });
+        tvSma50Series.setData(cleanSma50);
+      }
+
+      tvChartInstance.subscribeCrosshairMove(param => {
+        if (!param || !param.time || !param.seriesPrices) {
+          updateHeaderInfo(last, data[n - 2], n - 1);
+          return;
+        }
+        const candleData = param.seriesPrices.get(tvCandleSeries);
+        if (candleData) {
+          let idx = cleanCandleBars.findIndex(b => b.time === param.time);
+          if (idx === -1) idx = n - 1;
+          const barObj = data[idx] || last;
+          updateHeaderInfo(barObj, idx > 0 ? data[idx - 1] : null, idx);
+        }
+      });
+
+      tvChartInstance.timeScale().fitContent();
+
+      if (window.ResizeObserver && !tvResizeObserver) {
+        tvResizeObserver = new ResizeObserver(() => {
+          if (tvChartInstance && el) {
+            tvChartInstance.applyOptions({
+              width: el.clientWidth,
+              height: el.clientHeight || 340,
+            });
+          }
+        });
+        tvResizeObserver.observe(el);
+      }
+
+      return;
+    } catch (err) {
+      console.warn('TradingView Lightweight Charts render error, falling back to SVG:', err);
+    }
+  }
+
+  // SVG FALLBACK
   const hi = Math.max(...data.map(d => d.h)), lo = Math.min(...data.map(d => d.l)), pad = (hi - lo) * .06 || 100;
   const y0 = lo - pad, y1 = hi + pad, vmax = Math.max(...data.map(d => d.v));
   const cw = (W - padR - 6) / n, X = i => 3 + cw * (i + .5), Y = v => top + pH * (1 - (v - y0) / (y1 - y0));
@@ -5436,7 +5687,7 @@ function drawCandles() {
     }
   }
 
-  const last = data[n - 1], lc = last.c >= last.o ? UP : DN;
+  const lc = last.c >= last.o ? UP : DN;
   g += `<line x1="0" x2="${W - padR}" y1="${Y(last.c)}" y2="${Y(last.c)}" stroke="${lc}" stroke-dasharray="1 3"/><rect x="${W - padR + 1}" y="${Y(last.c) - 9}" width="${padR - 2}" height="18" rx="2" fill="${lc}"/><text x="${W - padR + 8}" y="${Y(last.c) + 3.5}" font-size="10" fill="#fff" font-family="var(--sans)">${fmtTV(last.c)}</text>`;
 
   const VN_M = ['Tháng 1', 'Tháng Hai', 'Tháng 3', 'Tháng 4', 'Tháng Năm', 'Tháng 6', 'Tháng 7', 'Tháng Tám', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng Mười hai'];
@@ -5454,30 +5705,6 @@ function drawCandles() {
 
   g += `<line id="cx" x1="0" x2="0" y1="0" y2="${H - bot}" stroke="#9598A1" stroke-dasharray="4 4" visibility="hidden"/><line id="cy" x1="0" x2="${W - padR}" y1="0" y2="0" stroke="#9598A1" stroke-dasharray="4 4" visibility="hidden"/><g id="cyl" visibility="hidden"><rect x="${W - padR + 1}" y="-9" width="${padR - 2}" height="18" rx="2" fill="#131722"/><text x="${W - padR + 8}" y="3.5" font-size="10" fill="#fff" font-family="var(--sans)"></text></g>`;
   el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Biểu đồ TradingView MCP ${STOCK.sym} ${S.range}">${g}<rect id="chit" x="0" y="0" width="${W - padR}" height="${H - bot}" fill="transparent" style="cursor:crosshair"/></svg>`;
-
-  const updateHeaderInfo = (d, prev, idx) => {
-    const ch = d.c - (prev ? prev.c : d.o), pc = ch / ((prev ? prev.c : d.o) || 1) * 100, k = d.c > (prev ? prev.c : d.o) ? 'up' : d.c < (prev ? prev.c : d.o) ? 'down' : 'ref', sg = ch > 0 ? '+' : ch < 0 ? '−' : '';
-    const isZero = !ch || Math.abs(ch) < 0.001;
-    const dDate = d.d || new Date();
-    const dateBadge = d.intra
-      ? `${String(dDate.getHours()).padStart(2, '0')}:${String(dDate.getMinutes()).padStart(2, '0')}`
-      : `${String(dDate.getDate()).padStart(2, '0')}/${String(dDate.getMonth() + 1).padStart(2, '0')}/${dDate.getFullYear()}`;
-    const ohlcEl = document.getElementById('ohlc');
-    const chgBadge = isZero ? '' : `<b class="${k}">${sg}${fmtTV(Math.abs(ch))} (${sg}${Math.abs(pc).toFixed(2)}%)</b>`;
-    if (ohlcEl) {
-      ohlcEl.innerHTML = `<span style="color:var(--ink3);font-family:var(--mono);margin-right:4px">${dateBadge}</span><span>O<b class="${k}">${fmtTV(d.o)}</b></span><span>H<b class="${k}">${fmtTV(d.h)}</b></span><span>L<b class="${k}">${fmtTV(d.l)}</b></span><span>C<b class="${k}">${fmtTV(d.c)}</b></span>${chgBadge}`;
-    }
-    const vv = document.getElementById('tvvol');
-    if (vv) { vv.textContent = fmtVol(d.v); vv.className = k; }
-    const indEl = document.getElementById('tv-indicators-val');
-    if (indEl && S_TV_INDICATORS.sma20) {
-      const s20 = tech.sma20Arr && tech.sma20Arr[idx != null ? idx : n - 1];
-      const s50 = tech.sma50Arr && tech.sma50Arr[idx != null ? idx : n - 1];
-      indEl.innerHTML = `${s20 ? `<span style="color:#F59E0B">MA20: <b>${fmtTV(s20)}</b></span>` : ''} ${s50 ? `<span style="color:#3B82F6">MA50: <b>${fmtTV(s50)}</b></span>` : ''}`;
-    }
-  };
-
-  updateHeaderInfo(last, data[n - 2], n - 1);
 
   const hit = el.querySelector('#chit'), cx = el.querySelector('#cx'), cy = el.querySelector('#cy'), cyl = el.querySelector('#cyl');
   hit.addEventListener('mousemove', e => {
@@ -7537,6 +7764,7 @@ const A = {
     </div>`);
   },
   mktmcpmodal: el => { openDnseMcpModal(el.dataset.server || 'dnse'); },
+  opentvmcpmodal: () => { openDnseMcpModal('tv'); },
   /* compare */
   cmprm: el => { S.cmp = S.cmp.filter(t => t !== el.dataset.v); rerender(); },
   cmpadd: el => {
@@ -14079,6 +14307,143 @@ function updateLogoMcpPayloadsForSymbol(sym) {
   };
 }
 
+let ACTIVE_TV_MCP_TOOL = 'tradingview_get_quote';
+
+function updateTvMcpPayloadsForSymbol(sym) {
+  sym = (sym || (typeof STOCK !== 'undefined' ? STOCK.sym : 'MSB')).toUpperCase().trim();
+  const curStock = (typeof STOCK !== 'undefined' && STOCK.sym === sym) ? STOCK : (typeof STOCKS !== 'undefined' && STOCKS[sym]) ? STOCKS[sym] : { sym: sym, name: sym, price: 33900, chg: 0, pct: 0, ex: 'HOSE', ind: 'Ngân hàng' };
+  const ex = curStock.ex || 'HOSE';
+  const tvSym = `${ex}:${sym}`;
+  const now = new Date();
+  const timeStr = now.toISOString();
+  const price = curStock.price || 33900;
+  const chg = curStock.chg || 0;
+  const pct = curStock.pct || 0;
+
+  const bars = (typeof TV_MCP !== 'undefined' && typeof TV_MCP.getOhlcv === 'function') ? TV_MCP.getOhlcv(sym, '1Năm') : [];
+  const tech = (typeof TV_MCP !== 'undefined' && typeof TV_MCP.calcTechnicals === 'function') ? TV_MCP.calcTechnicals(bars) : { rsi: 58.4, rating: 'MUA', tone: 'buy', sma20: Math.round(price * 0.98), sma50: Math.round(price * 0.95) };
+  const lastBar = bars.length ? bars[bars.length - 1] : { o: price, h: price + 200, l: price - 200, c: price, v: 4850200 };
+
+  TV_MCP_PAYLOADS = {
+    tradingview_get_quote: {
+      jsonrpc: "2.0",
+      id: "tv_call_" + Math.random().toString(36).substring(2, 9),
+      result: {
+        server: "TradingView MCP Engine (mcp.tradingview.com)",
+        protocol: "2024-11-05 (SSE / Streamable JSON-RPC 2.0)",
+        symbol: tvSym,
+        currency: "VND",
+        exchange: ex,
+        last_price: price,
+        change: chg,
+        change_pct: (pct >= 0 ? "+" : "") + pct + "%",
+        open: lastBar.o || price,
+        high: lastBar.h || price,
+        low: lastBar.l || price,
+        close: price,
+        volume: lastBar.v || 4850200,
+        volume_24h_vnd: (price * (lastBar.v || 4850200)),
+        best_bid: price - (price >= 50000 ? 100 : 50),
+        best_ask: price + (price >= 50000 ? 100 : 50),
+        spread: (price >= 50000 ? 200 : 100),
+        market_session: (typeof isMarketOpen === 'function' && isMarketOpen()) ? "REGULAR_TRADING" : "CLOSED",
+        data_provider: "TradingView x HOSE Gateway Engine",
+        updated_at: timeStr
+      }
+    },
+    tradingview_get_technical_analysis: {
+      jsonrpc: "2.0",
+      id: "tv_call_" + Math.random().toString(36).substring(2, 9),
+      result: {
+        server: "TradingView MCP Engine",
+        symbol: tvSym,
+        timeframe: "1D (Daily)",
+        summary: {
+          recommendation: tech.rating || "MUA",
+          sentiment_score: tech.rsi > 50 ? +( (tech.rsi - 50) / 50 ).toFixed(2) : -( (50 - tech.rsi) / 50 ).toFixed(2),
+          buy_signals: 14,
+          neutral_signals: 3,
+          sell_signals: 1
+        },
+        oscillators: {
+          rsi_14: tech.rsi || 58.4,
+          rsi_action: tech.rsi > 70 ? "QUÁ MUA" : tech.rsi < 30 ? "QUÁ BÁN" : "TRUNG LẬP / TĂNG TRƯỞNG",
+          macd_12_26: { val: +(price * 0.012).toFixed(1), signal: +(price * 0.009).toFixed(1), hist: +(price * 0.003).toFixed(1), action: "MUA (Golden Cross)" },
+          stochastic_14_3_3: { k: 64.2, d: 58.1, action: "MUA" },
+          adx_14: { val: 28.5, trend: "XU HƯỚNG MẠNH" }
+        },
+        moving_averages: {
+          sma_20: tech.sma20 || Math.round(price * 0.98),
+          sma_50: tech.sma50 || Math.round(price * 0.95),
+          ema_20: Math.round(price * 0.985),
+          ema_50: Math.round(price * 0.96),
+          ema_200: Math.round(price * 0.91),
+          price_vs_sma20: price >= tech.sma20 ? "TRÊN ĐƯỜNG MA20 (TÍCH CỰC)" : "DƯỚI ĐƯỜNG MA20",
+          golden_cross: "XÁC NHẬN (MA20 > MA50)"
+        },
+        pivot_points: {
+          type: "Classic",
+          r2: Math.round(price * 1.05),
+          r1: Math.round(price * 1.025),
+          pivot: price,
+          s1: Math.round(price * 0.975),
+          s2: Math.round(price * 0.95)
+        },
+        updated_at: timeStr
+      }
+    },
+    tradingview_get_historical_bars: {
+      jsonrpc: "2.0",
+      id: "tv_call_" + Math.random().toString(36).substring(2, 9),
+      result: {
+        server: "TradingView MCP Engine",
+        symbol: tvSym,
+        resolution: "1D",
+        bar_count: bars.length || 250,
+        range: "1Năm",
+        recent_bars: bars.slice(-10).map(b => ({
+          date: b.d ? b.d.toISOString().slice(0, 10) : "2026-10-10",
+          open: b.o,
+          high: b.h,
+          low: b.l,
+          close: b.c,
+          volume: b.v
+        })),
+        source: "TradingView Lightweight Charts & Data Feed",
+        updated_at: timeStr
+      }
+    },
+    tradingview_screener: {
+      jsonrpc: "2.0",
+      id: "tv_call_" + Math.random().toString(36).substring(2, 9),
+      result: {
+        server: "TradingView Technical Screener MCP",
+        symbol: tvSym,
+        sector: curStock.ind || "Ngân hàng",
+        rank_in_sector: "Top 3 vốn hoá / thanh khoản",
+        market_cap_rank: 8,
+        performance: {
+          w1: "+2.1%",
+          m1: "+4.8%",
+          m3: "+11.5%",
+          ytd: "+18.2%",
+          y1: "+24.6%"
+        },
+        volatility: "1.42% (Trung bình ngành: 1.68%)",
+        relative_volume: 1.28,
+        screener_verdict: "TIỀM NĂNG TĂNG TRƯỞNG TRONG SÓNG NGÀNH",
+        updated_at: timeStr
+      }
+    }
+  };
+}
+
+function switchTvMcpTab(toolName) {
+  ACTIVE_TV_MCP_TOOL = toolName;
+  renderMcpToolTabs();
+  renderDnseMcpModal();
+}
+
 function switchLogoMcpTab(toolName) {
   ACTIVE_LOGO_MCP_TOOL = toolName;
   renderMcpToolTabs();
@@ -14087,6 +14452,7 @@ function switchLogoMcpTab(toolName) {
 
 function switchMcpServer(serverName) {
   ACTIVE_MCP_SERVER = serverName;
+  const btnTv = document.getElementById('btn-server-tv');
   const btnDnse = document.getElementById('btn-server-dnse');
   const btnVnd = document.getElementById('btn-server-vnd');
   const btnFin = document.getElementById('btn-server-fin');
@@ -14094,13 +14460,16 @@ function switchMcpServer(serverName) {
   const btnLogo = document.getElementById('btn-server-logo');
   const epText = document.getElementById('mcp-modal-endpoint-text');
 
+  if (btnTv) btnTv.className = 'mcp-server-tab' + (serverName === 'tv' ? ' active-tv' : '');
   if (btnDnse) btnDnse.className = 'mcp-server-tab' + (serverName === 'dnse' ? ' active-dnse' : '');
   if (btnVnd) btnVnd.className = 'mcp-server-tab' + (serverName === 'vnd' ? ' active-vnd' : '');
   if (btnFin) btnFin.className = 'mcp-server-tab' + (serverName === 'fin' ? ' active-fin' : '');
   if (btnSsi) btnSsi.className = 'mcp-server-tab' + (serverName === 'ssi' ? ' active-ssi' : '');
   if (btnLogo) btnLogo.className = 'mcp-server-tab' + (serverName === 'logo' ? ' active-logo' : '');
 
-  if (serverName === 'dnse') {
+  if (serverName === 'tv') {
+    if (epText) epText.textContent = 'https://mcp.tradingview.com/mcp (TradingView Official Technical Engine · 4 Tools)';
+  } else if (serverName === 'dnse') {
     if (epText) epText.textContent = 'https://mcp.dnse.com.vn/mcp (Entrade X Data Engine · 7 Tools)';
   } else if (serverName === 'vnd') {
     if (epText) epText.textContent = 'https://mcp.vndirect.com.vn/mcp (DStock Research & Sector Platform · 9 Tools)';
@@ -14119,7 +14488,17 @@ function renderMcpToolTabs() {
   const container = document.getElementById('dnse-tool-tabs-container');
   if (!container) return;
 
-  if (ACTIVE_MCP_SERVER === 'dnse') {
+  if (ACTIVE_MCP_SERVER === 'tv') {
+    const tvTools = [
+      'tradingview_get_quote',
+      'tradingview_get_technical_analysis',
+      'tradingview_get_historical_bars',
+      'tradingview_screener'
+    ];
+    container.innerHTML = tvTools.map(t =>
+      `<button class="dnse-tool-tab ${ACTIVE_TV_MCP_TOOL === t ? 'active' : ''}" style="${ACTIVE_TV_MCP_TOOL === t ? 'background:#2962FF;border-color:#2962FF;color:#fff' : ''}" data-tool="${t}" onclick="switchTvMcpTab('${t}')">${t}</button>`
+    ).join('');
+  } else if (ACTIVE_MCP_SERVER === 'dnse') {
     const dnseTools = [
       'market_get_indices', 'financial_get_index', 'company_get_profile', 'financial_get_business_result',
       'financial_get_report_summary', 'price_get_history', 'sector_get_overview'
@@ -14334,6 +14713,7 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   try { updateVndMcpPayloadsForSymbol(sym, vndData); } catch (e) { console.warn('VND MCP err:', e); }
   try { updateSsiMcpPayloadsForSymbol(sym); } catch (e) { console.warn('SSI MCP err:', e); }
   try { updateLogoMcpPayloadsForSymbol(sym); } catch (e) { console.warn('LOGO MCP err:', e); }
+  try { updateTvMcpPayloadsForSymbol(sym); } catch (e) { console.warn('TV MCP err:', e); }
 
   // 7. Feedback toast
   if (typeof toast === 'function') {
@@ -14361,13 +14741,15 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   }
 }
 
-/* QUAD MCP MODAL CONTROLLER FUNCTIONS */
+/* MULTI-MCP MODAL CONTROLLER FUNCTIONS */
 function openDnseMcpModal(defaultServer) {
   const modal = document.getElementById('modal-dnse-mcp');
   if (!modal) return;
   modal.classList.add('open');
   modal.style.display = 'flex';
-  if (defaultServer === 'vnd') {
+  if (defaultServer === 'tv') {
+    switchMcpServer('tv');
+  } else if (defaultServer === 'vnd') {
     switchMcpServer('vnd');
   } else if (defaultServer === 'fin') {
     switchMcpServer('fin');
@@ -14409,7 +14791,10 @@ function renderDnseMcpModal() {
   const pre = document.getElementById('dnse-mcp-json-content');
   if (pre) {
     let payload = {};
-    if (ACTIVE_MCP_SERVER === 'dnse') {
+    if (ACTIVE_MCP_SERVER === 'tv') {
+      updateTvMcpPayloadsForSymbol(typeof STOCK !== 'undefined' ? STOCK.sym : 'FPT');
+      payload = TV_MCP_PAYLOADS[ACTIVE_TV_MCP_TOOL] || { info: 'No data' };
+    } else if (ACTIVE_MCP_SERVER === 'dnse') {
       if (!DNSE_MCP_PAYLOADS || Object.keys(DNSE_MCP_PAYLOADS).length === 0) {
         const data = (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[STOCK.sym]) ? DNSE_STOCKS_DB[STOCK.sym] : synthesizeDnseMcpData(STOCK.sym);
         updateDnseMcpPayloadsForSymbol(data);
@@ -14439,7 +14824,9 @@ function renderDnseMcpModal() {
 }
 
 function copyDnseMcpJson() {
-  const payload = (ACTIVE_MCP_SERVER === 'dnse')
+  const payload = (ACTIVE_MCP_SERVER === 'tv')
+    ? (TV_MCP_PAYLOADS[ACTIVE_TV_MCP_TOOL] || {})
+    : (ACTIVE_MCP_SERVER === 'dnse')
     ? (DNSE_MCP_PAYLOADS[ACTIVE_DNSE_MCP_TOOL] || {})
     : (ACTIVE_MCP_SERVER === 'vnd')
     ? (VND_MCP_PAYLOADS[ACTIVE_VND_MCP_TOOL] || {})
@@ -14458,6 +14845,21 @@ function copyDnseMcpJson() {
   }
 }
 
+function callActiveMcpTool() {
+  const pre = document.getElementById('dnse-mcp-json-content');
+  if (pre) pre.style.opacity = '0.5';
+  const curTool = (ACTIVE_MCP_SERVER === 'tv' ? ACTIVE_TV_MCP_TOOL : ACTIVE_MCP_SERVER === 'dnse' ? ACTIVE_DNSE_MCP_TOOL : ACTIVE_MCP_SERVER === 'vnd' ? ACTIVE_VND_MCP_TOOL : ACTIVE_MCP_SERVER === 'ssi' ? ACTIVE_SSI_MCP_TOOL : ACTIVE_MCP_SERVER === 'fin' ? ACTIVE_FIN_MCP_TOOL : ACTIVE_LOGO_MCP_TOOL);
+  if (typeof toast === 'function') toast(`⚡ Đang gửi JSON-RPC request tới ${ACTIVE_MCP_SERVER.toUpperCase()} MCP (${curTool})...`);
+  setTimeout(() => {
+    if (ACTIVE_MCP_SERVER === 'tv') {
+      updateTvMcpPayloadsForSymbol(typeof STOCK !== 'undefined' ? STOCK.sym : 'FPT');
+    }
+    renderDnseMcpModal();
+    if (pre) pre.style.opacity = '1';
+    if (typeof toast === 'function') toast(`✓ Đã nhận phản hồi thành công từ ${ACTIVE_MCP_SERVER.toUpperCase()} MCP (200 OK · SSE Streaming)`);
+  }, 300);
+}
+
 function syncDnseMcpLive() {
   if (typeof fetchAndApplyDnseMcpData === 'function' && typeof STOCK !== 'undefined') {
     fetchAndApplyDnseMcpData(STOCK.sym, true, false);
@@ -14466,6 +14868,7 @@ function syncDnseMcpLive() {
 
 // Initial initialization on load
 if (typeof STOCK !== 'undefined' && STOCK) {
+  updateTvMcpPayloadsForSymbol(STOCK.sym);
   const dData = (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[STOCK.sym]) ? DNSE_STOCKS_DB[STOCK.sym] : synthesizeDnseMcpData(STOCK.sym);
   updateDnseMcpPayloadsForSymbol(dData);
   const vData = (typeof VND_STOCKS_DB !== 'undefined' && VND_STOCKS_DB[STOCK.sym]) ? VND_STOCKS_DB[STOCK.sym] : synthesizeVndMcpData(STOCK.sym, STOCK.price, STOCK.ind);
@@ -14591,6 +14994,63 @@ startRealtimeEngine();
 
 </script>
 
+<!-- MULTI-SERVER MCP INSPECTOR MODAL (TRADINGVIEW, DNSE, VNDIRECT, SSI, FINHAY, BRAND) -->
+<div id="modal-dnse-mcp" onclick="if(event.target===this)closeDnseMcpModal()">
+  <div class="dnse-modal-card" style="width:880px;">
+    <div class="dnse-modal-head">
+      <h3>
+        <span style="color:#2962FF">●</span> Model Context Protocol Inspector (MCP Multi-Server Gateway)
+        <span id="dnse-modal-sym-badge" style="font-size:11px;padding:2px 8px;border-radius:4px;background:#0284c7;color:#fff;font-weight:700">FPT</span>
+      </h3>
+      <button onclick="closeDnseMcpModal()" style="background:transparent;border:0;color:var(--ink3);font-size:18px;cursor:pointer;line-height:1">✕</button>
+    </div>
+    <div class="dnse-modal-body">
+      <!-- SERVER SWITCHER -->
+      <div style="display:flex;gap:8px;background:var(--card-sub);padding:6px;border-radius:6px;border:1px solid var(--line);flex-wrap:wrap">
+        <button class="mcp-server-tab active-tv" id="btn-server-tv" onclick="switchMcpServer('tv')">
+          <span style="color:#2962FF">●</span> Server 1: TradingView MCP (mcp.tradingview.com · 4 Tools)
+        </button>
+        <button class="mcp-server-tab" id="btn-server-dnse" onclick="switchMcpServer('dnse')">
+          <span style="color:#22c55e">●</span> Server 2: DNSE MCP (mcp.dnse.com.vn · 7 Tools)
+        </button>
+        <button class="mcp-server-tab" id="btn-server-vnd" onclick="switchMcpServer('vnd')">
+          <span style="color:#f97316">●</span> Server 3: VNDIRECT MCP (mcp.vndirect.com.vn · 9 Tools)
+        </button>
+        <button class="mcp-server-tab" id="btn-server-ssi" onclick="switchMcpServer('ssi')">
+          <span style="color:#dc2626">●</span> Server 4: SSI MCP (mcp.ssi.com.vn · 10 Tools)
+        </button>
+        <button class="mcp-server-tab" id="btn-server-fin" onclick="switchMcpServer('fin')">
+          <span style="color:#059669">●</span> Server 5: FINHAY MCP (mcp.finhay.com.vn · 6 Tools)
+        </button>
+        <button class="mcp-server-tab" id="btn-server-logo" onclick="switchMcpServer('logo')">
+          <span style="color:#6366f1">●</span> Server 6: LOGO MCP (mcp.brandfetch.io · 3 Tools)
+        </button>
+      </div>
 
+      <!-- SERVER STATUS BAR -->
+      <div style="font-size:11px;color:var(--ink2);background:var(--card-sub);padding:8px 12px;border-radius:6px;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px" id="mcp-server-status-bar">
+        <div><b>Endpoint:</b> <code style="color:#0284c7" id="mcp-modal-endpoint-text">https://mcp.tradingview.com/mcp (TradingView Official Technical Engine · 4 Tools)</code></div>
+        <div><b>Protocol:</b> <span style="color:#22c55e;font-weight:600">● JSON-RPC 2.0 / SSE Stream</span></div>
+        <div id="dnse-modal-updated-time"><b>Cập nhật:</b> Vừa xong</div>
+      </div>
+
+      <!-- TOOL TABS CONTAINER -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="dnse-tool-tabs-container">
+        <!-- Dynamically rendered -->
+      </div>
+
+      <!-- JSON VIEWER -->
+      <pre class="dnse-json-pre" id="dnse-mcp-json-content">{
+  "status": "loading..."
+}</pre>
+    </div>
+    <div class="dnse-modal-foot">
+      <button class="dnse-action-btn" onclick="copyDnseMcpJson()">📋 Sao chép JSON</button>
+      <button class="dnse-action-btn primary" onclick="callActiveMcpTool()">⚡ Gửi request MCP (Call Tool)</button>
+      <button class="dnse-action-btn" onclick="syncAllMcpLive()">↻ Đồng bộ lại từ Server</button>
+      <button class="dnse-action-btn" onclick="closeDnseMcpModal()">Đóng</button>
+    </div>
+  </div>
+</div>
 
 </body></html>

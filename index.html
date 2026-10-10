@@ -211,25 +211,28 @@ table.t{width:100%;border-collapse:collapse;font-size:12px;line-height:16px}
 .t.lg td.num,.t.lg .num{font-size:14px}
 
 /* ---------- Company 360 header ---------- */
-.stock-h{display:flex;align-items:center;align-self:stretch;gap:16px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.stock-h{display:flex;align-items:center;justify-content:space-between;align-self:stretch;gap:16px;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--bg)}
 .logo-msb{width:42px;height:42px;border-radius:50%;overflow:hidden;flex:none;background:var(--bg);box-shadow:inset 0 0 0 1px var(--line)}
 .logo-msb img{width:42px;height:42px;display:block}
 .sym-block{display:flex;flex-direction:column;gap:4px;flex:none;min-width:0}
 .sym{display:flex;align-items:center;gap:8px}
-.sym h1{margin:0;font-size:20px;font-weight:600;letter-spacing:0;line-height:28px}
+.sym h1{margin:0;font-size:22px;font-weight:700;letter-spacing:0;line-height:28px}
 .sym .dd{display:flex;align-items:center;gap:4px;cursor:pointer;position:relative}
 .sym .dd svg{width:16px;height:16px}
-.sub-l{display:flex;align-items:center;gap:12px;color:var(--ink2);font-size:14px;line-height:20px;white-space:nowrap}
+.sub-l{display:flex;align-items:center;gap:12px;color:var(--ink2);font-size:13.5px;line-height:20px;white-space:nowrap}
 .sub-l span+span{color:var(--ink3)}
 .sub-l i{width:1px;height:11px;background:var(--line2);flex:none}
-.follow{height:30px;padding:2px 12px 2px 4px;border:1px solid #E6E6E6;border-radius:9999px;display:inline-flex;align-items:center;gap:0;font-size:12px;line-height:16px;font-weight:500;background:var(--hover);margin-left:auto}
-.follow svg{width:16px;height:16px;margin:4px}
+.follow{height:28px;padding:2px 12px 2px 6px;border:1px solid var(--line2);border-radius:9999px;display:inline-flex;align-items:center;gap:2px;font-size:12px;line-height:16px;font-weight:500;background:var(--hover);margin-left:8px}
+.follow svg{width:14px;height:14px;margin-right:2px}
 .follow:hover{background:var(--sub)}
 .follow.on{background:var(--brand-soft);border-color:transparent;color:var(--brand)}
 .follow.on svg{stroke:var(--brand)}
-.price-b{flex:none;padding-left:24px;border-left:1px solid var(--line);color:var(--up)}
-.price-b .p{font-family:var(--mono);font-size:24px;font-weight:600;line-height:36px}
-.price-b .c{font-family:var(--mono);font-size:12px;font-weight:500;line-height:16px}
+.price-b{flex:none;margin-left:auto;text-align:right;border-left:0;padding-left:0;display:flex;flex-direction:column;align-items:flex-end}
+.price-b .p{font-family:var(--mono);font-size:28px;font-weight:700;line-height:34px;color:var(--ink)}
+.price-b .c{font-family:var(--mono);font-size:13px;font-weight:600;line-height:16px;margin-top:2px}
+.price-b .c.up{color:var(--up)}
+.price-b .c.down{color:var(--down)}
+.price-b .c.ref{color:var(--warn)}
 .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) 460px;border-bottom:1px solid var(--line)}
 .metrics>div{padding:16px 20px;border-right:1px solid var(--line);min-width:0;display:flex;flex-direction:column;gap:12px}
 .metrics>div:last-child{border-right:0;padding-bottom:0}
@@ -782,7 +785,7 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .sb a.new svg{stroke:var(--ink)}
 .sb a.new:hover{background:var(--sub2)}
 /* hero: chart + metrics */
-.hero{display:flex;height:500px;border-bottom:1px solid var(--line)}
+.hero{display:flex;height:540px;border-bottom:1px solid var(--line)}
 .tv{flex:1;min-width:0;display:flex;border-right:1px solid var(--line)}
 .tv-tools{width:34px;flex:none;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;overflow:hidden}
 .tv-tools button{width:28px;height:28px;border-radius:4px;display:grid;place-items:center;color:#131722;flex:none}
@@ -867,7 +870,28 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .tv-icon-btn{width:26px;height:24px;border-radius:4px;border:1px solid var(--line);background:var(--sub);display:flex;align-items:center;justify-content:center;color:var(--ink2);cursor:pointer}
 .tv-icon-btn:hover{background:var(--sub2);color:var(--ink);border-color:#2962FF}
 
-.tv-sub-bar{height:25px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 8px;background:var(--bg);font-size:11px;color:var(--ink);gap:6px;overflow-x:auto;scrollbar-width:none}
+.tv-sub-bar{height:30px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 10px;background:var(--bg);font-size:11px;color:var(--ink);gap:8px;overflow-x:auto;scrollbar-width:none}
+.tv-quick-trade-wrap{display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0}
+.tv-qt-btn{height:22px;padding:0 8px;border-radius:4px;border:none;font-family:var(--mono);font-size:10.5px;font-weight:700;color:#ffffff;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .12s ease}
+.tv-qt-btn.sell{background:#EF4444}
+.tv-qt-btn.sell:hover{background:#DC2626}
+.tv-qt-btn.buy{background:#2563EB}
+.tv-qt-btn.buy:hover{background:#1D4ED8}
+.tv-qt-btn .lbl{font-size:9px;font-weight:800;opacity:0.95}
+.tv-qt-qty{height:22px;min-width:30px;padding:0 4px;background:var(--sub);border:1px solid var(--line);border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--ink)}
+.hero-claude-wrap{flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto}
+.hero-claude-wrap .m4{flex-shrink:0;border-bottom:1px solid var(--line)}
+.hero-claude-wrap .hero-ev{flex:1;min-height:190px;padding:12px 18px 8px;display:flex;flex-direction:column;gap:10px}
+.mcp-ob-session-strip{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 10px;background:var(--sub);border:1px solid var(--line);border-radius:4px;font-size:10.5px;overflow-x:auto;scrollbar-width:none}
+.mcp-ob-session-strip .mmb-item{display:flex;flex-direction:column;align-items:center;gap:1px;flex:none}
+.mcp-ob-session-strip .lbl{font-size:9px;color:var(--ink3);font-weight:600;text-transform:uppercase}
+.mcp-ob-session-strip .val{font-family:var(--mono);font-size:11px;font-weight:600}
+.mcp-ob-session-strip .val.ceil{color:#9333EA}
+.mcp-ob-session-strip .val.floor{color:#0284C7}
+.mcp-ob-session-strip .val.ref{color:#EAB308}
+.mcp-ob-session-strip .val.up{color:#16A34A}
+.mcp-ob-session-strip .val.down{color:#DC2626}
+.mcp-ob-session-strip .mmb-sep{width:1px;height:16px;background:var(--line2);flex-shrink:0}
 .tv-sub-left{display:flex;align-items:center;gap:8px;white-space:nowrap}
 .tv-stat-sym{color:var(--ink2);font-weight:500}
 
@@ -2779,7 +2803,7 @@ let S_TV_INDICATORS = { sma20: true, sma50: true, ema9: false, ema21: false, bba
 let S_TV_STYLE = 'candle'; // 'candle' | 'line' | 'area'
 let S_TV_TF = '1D'; // '1m' | '5m' | '15m' | '1H' | '1D' | '1W' | '1M'
 let S_TV_VIEW_MODE = 'native'; // 'native' | 'widget'
-let S_HERO_SIDE_TAB = 'orderbook'; // 'orderbook' | 'metrics' | 'events'
+let S_HERO_SIDE_TAB = 'metrics'; // 'orderbook' | 'metrics' | 'events'
 let tvUserPriceLines = [];
 
 function clearTvDrawings() {
@@ -5439,9 +5463,20 @@ function startRealtimeEngine() {
 function renderMcpOrderBook() {
   const curPrice = STOCK.price || 14600;
   const vn30 = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[STOCK.sym]) ? VN30_DATA_FEED[STOCK.sym] : null;
-  const ref = STOCK.ref || (vn30 ? vn30.ref : curPrice);
+  const ref = (STOCK.ref && STOCK.sym === (vn30 ? vn30.sym : STOCK.sym)) ? STOCK.ref : (vn30 ? vn30.ref : curPrice);
   const tickStep = curPrice < 10000 ? 10 : curPrice < 50000 ? 50 : 100;
-  
+  const ex = STOCK.ex || 'HOSE';
+  const exPct = (ex === 'UPCOM' ? 0.15 : ex === 'HNX' ? 0.10 : 0.07);
+
+  const ceil = (STOCK.ceil && STOCK.sym === (vn30 ? vn30.sym : STOCK.sym)) ? STOCK.ceil : Math.floor(ref * (1 + exPct) / tickStep) * tickStep;
+  const floor = (STOCK.floor && STOCK.sym === (vn30 ? vn30.sym : STOCK.sym)) ? STOCK.floor : Math.ceil(ref * (1 - exPct) / tickStep) * tickStep;
+  const openPrice = (STOCK.open && STOCK.sym === (vn30 ? vn30.sym : STOCK.sym)) ? STOCK.open : ref;
+  const highVal = (STOCK.high && STOCK.sym === (vn30 ? vn30.sym : STOCK.sym)) ? STOCK.high : Math.min(ceil, Math.max(curPrice, openPrice, ref + tickStep * 2));
+  const lowVal = (STOCK.low && STOCK.sym === (vn30 ? vn30.sym : STOCK.sym)) ? STOCK.low : Math.max(floor, Math.min(curPrice, openPrice, ref - tickStep * 2));
+  const avgPrice = (STOCK.avg && STOCK.sym === (vn30 ? vn30.sym : STOCK.sym)) ? STOCK.avg : Math.round(((highVal + lowVal + curPrice) / 3) / tickStep) * tickStep;
+  const volStr = STOCK.vol ? (STOCK.vol >= 1e6 ? (STOCK.vol / 1e6).toFixed(2) + 'M' : fmtVN(STOCK.vol)) : '1.45M';
+  const valStr = STOCK.val_bil ? STOCK.val_bil.toFixed(2) + ' tỷ' : '49.42 tỷ';
+
   const b1 = curPrice;
   const b2 = b1 - tickStep;
   const b3 = b2 - tickStep;
@@ -5457,9 +5492,6 @@ function renderMcpOrderBook() {
   const a1Vol = Math.round((curPrice * 11.4) % 320000 + 110000);
   const a2Vol = Math.round((curPrice * 15.3) % 260000 + 85000);
   const a3Vol = Math.round((curPrice * 8.6) % 240000 + 65000);
-
-  const highVal = STOCK.high || (vn30 && vn30.high) || (curPrice + tickStep * 2);
-  const lowVal = STOCK.low || (vn30 && vn30.low) || (curPrice - tickStep * 2);
 
   const totalBidVol = b1Vol + b2Vol + b3Vol + 380000;
   const totalAskVol = a1Vol + a2Vol + a3Vol + 310000;
@@ -5493,6 +5525,20 @@ function renderMcpOrderBook() {
   const getColorClass = (p) => p > ref ? 'up' : p < ref ? 'down' : 'ref';
 
   return `<div class="mcp-ob-wrap">
+    <!-- Market Session Levels Strip (MCP Realtime Feed) -->
+    <div class="mcp-ob-session-strip">
+      <div class="mmb-item"><span class="lbl">Trần</span><b class="val ceil">${fmtVN(ceil, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">Sàn</span><b class="val floor">${fmtVN(floor, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">TC</span><b class="val ref">${fmtVN(ref, 0)}</b></div>
+      <div class="mmb-sep"></div>
+      <div class="mmb-item"><span class="lbl">Mở</span><b class="val">${fmtVN(openPrice, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">Cao</span><b class="val up">${fmtVN(highVal, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">Thấp</span><b class="val down">${fmtVN(lowVal, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">TB</span><b class="val">${fmtVN(avgPrice, 0)}</b></div>
+      <div class="mmb-sep"></div>
+      <div class="mmb-item"><span class="lbl">Tổng KL</span><b class="val">${volStr}</b></div>
+      <div class="mmb-item"><span class="lbl">Tổng GT</span><b class="val">${valStr}</b></div>
+    </div>
     <!-- Depth Ratio Bar -->
     <div class="mcp-ob-ratio-bar">
       <div class="mcp-ob-ratio-labels">
@@ -5612,13 +5658,15 @@ function stockHeader() {
 
   // Session price & levels strip from MCP
   const vn30Info = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[STOCK.sym]) ? VN30_DATA_FEED[STOCK.sym] : null;
-  const ref = STOCK.ref || (vn30Info ? vn30Info.ref : curPrice);
-  const ceil = STOCK.ceil || (vn30Info && vn30Info.ceil) || Math.floor(ref * 1.07 / tickStep) * tickStep;
-  const floor = STOCK.floor || (vn30Info && vn30Info.floor) || Math.ceil(ref * 0.93 / tickStep) * tickStep;
-  const openPrice = STOCK.open || (vn30Info && vn30Info.open) || ref;
-  const highPrice = STOCK.high || (vn30Info && vn30Info.high) || Math.max(curPrice, openPrice, curPrice + tickStep * 2);
-  const lowPrice = STOCK.low || (vn30Info && vn30Info.low) || Math.min(curPrice, openPrice, curPrice - tickStep * 2);
-  const avgPrice = STOCK.avg || (vn30Info && vn30Info.avg) || Math.round((highPrice + lowPrice + curPrice) / 3);
+  const ex = STOCK.ex || 'HOSE';
+  const exPct = (ex === 'UPCOM' ? 0.15 : ex === 'HNX' ? 0.10 : 0.07);
+  const ref = (STOCK.ref && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.ref : (vn30Info ? vn30Info.ref : curPrice);
+  const ceil = (STOCK.ceil && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.ceil : Math.floor(ref * (1 + exPct) / tickStep) * tickStep;
+  const floor = (STOCK.floor && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.floor : Math.ceil(ref * (1 - exPct) / tickStep) * tickStep;
+  const openPrice = (STOCK.open && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.open : ref;
+  const highPrice = (STOCK.high && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.high : Math.min(ceil, Math.max(curPrice, openPrice, ref + tickStep * 2));
+  const lowPrice = (STOCK.low && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.low : Math.max(floor, Math.min(curPrice, openPrice, ref - tickStep * 2));
+  const avgPrice = (STOCK.avg && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.avg : Math.round(((highPrice + lowPrice + curPrice) / 3) / tickStep) * tickStep;
   const volStr = STOCK.vol ? (STOCK.vol >= 1e6 ? (STOCK.vol / 1e6).toFixed(2) + 'M' : fmtVN(STOCK.vol)) : (vn30Info ? (vn30Info.vol / 1e6).toFixed(2) + 'M' : '1.45M');
   const valStr = STOCK.val_bil ? STOCK.val_bil.toFixed(2) + ' tỷ' : (vn30Info ? vn30Info.val_bil.toFixed(2) + ' tỷ' : '49,42 tỷ');
   const frnBuy = Math.round((curPrice * 7.4) % 250000 + 150000);
@@ -5631,24 +5679,6 @@ function stockHeader() {
       <div class="sym"><span class="dd" data-act="symmenu"><h1>${STOCK.sym}</h1>${I.chev}</span><span class="tg">${STOCK.ex}</span>
         <button class="follow ${f ? 'on' : ''}" data-act="follow" aria-haspopup="menu" data-tip="${typeof wlPickTip === 'function' ? esc(wlPickTip(STOCK.sym)) : ''}">${f ? I.bmf + 'Đang theo dõi' : I.bm + 'Theo dõi'}</button></div>
       <div class="sub-l"><span>${STOCK.name}</span><i></i><span>Ngành: ${STOCK.ind}</span></div>
-    </div>
-    <!-- Market Matched Price & Session Levels Strip (MCP Realtime Feed) -->
-    <div class="mkt-match-bar">
-      <div class="mmb-item"><span class="lbl">Trần</span><b class="val ceil">${fmtVN(ceil, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">Sàn</span><b class="val floor">${fmtVN(floor, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">TC</span><b class="val ref">${fmtVN(ref, 0)}</b></div>
-      <div class="mmb-sep"></div>
-      <div class="mmb-item"><span class="lbl">Mở</span><b class="val">${fmtVN(openPrice, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">Cao</span><b class="val up">${fmtVN(highPrice, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">Thấp</span><b class="val down">${fmtVN(lowPrice, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">TB</span><b class="val">${fmtVN(avgPrice, 0)}</b></div>
-      <div class="mmb-sep"></div>
-      <div class="mmb-item"><span class="lbl">Tổng KL</span><b class="val">${volStr}</b></div>
-      <div class="mmb-item"><span class="lbl">Tổng GT</span><b class="val">${valStr}</b></div>
-      <div class="mmb-sep"></div>
-      <div class="mmb-item"><span class="lbl">NN Mua</span><b class="val up">${fmtVN(frnBuy, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">NN Bán</span><b class="val down">${fmtVN(frnSell, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">NN Ròng</span><b class="val ${frnNet >= 0 ? 'up' : 'down'}">${frnNet >= 0 ? '+' : ''}${fmtVN(frnNet, 0)}</b></div>
     </div>
     <div class="price-b">
       <div class="p" id="c360-live-price">${fmtVN(curPrice, 0)}</div>
@@ -5715,15 +5745,27 @@ function stockHeader() {
           </div>
         </div>
 
-        <!-- 2. Non-overlapping Dedicated OHLC & Status Bar -->
+        <!-- 2. Claude Artifact & TradingView Integrated Bar (OHLC + Quick Trade Widget) -->
         <div class="tv-sub-bar">
           <div class="tv-sub-left">
             <span class="tv-stat-sym"><b>${STOCK.name}</b> · <span id="tvint">${S_TV_TF}</span> · <span style="font-family:var(--mono);color:var(--brand);font-weight:600">${STOCK.ex}:${STOCK.sym}</span></span>
             <span id="tv-mcp-rating-chip" class="tv-mcp-rating-chip buy" title="Chỉ số kỹ thuật TradingView MCP">MUA (RSI: 58.4)</span>
             <span class="tv-dot"></span>
             <span id="ohlc" class="tv-ohlc"></span>
-            <div class="tv-vol">KL <span id="tvvol"></span></div>
+            <div class="tv-vol">KL <span id="tvvol">${volStr}</span></div>
             <span id="tv-indicators-val" class="tv-indicators-val"></span>
+          </div>
+          <!-- Quick Buy / Sell Trading Action Widget (Synchronized with Claude Artifact) -->
+          <div class="tv-quick-trade-wrap">
+            <button class="tv-qt-btn sell" title="Đặt lệnh Bán nhanh" onclick="toast('Lệnh BÁN nhanh ${STOCK.sym}: ${fmtVN(bestBid, 0)} (KL: 50)')">
+              <span class="p">${fmtVN(bestBid, 0)}</span>
+              <span class="lbl">BÁN</span>
+            </button>
+            <div class="tv-qt-qty" title="Khối lượng mặc định">50</div>
+            <button class="tv-qt-btn buy" title="Đặt lệnh Mua nhanh" onclick="toast('Lệnh MUA nhanh ${STOCK.sym}: ${fmtVN(bestAsk, 0)} (KL: 50)')">
+              <span class="p">${fmtVN(bestAsk, 0)}</span>
+              <span class="lbl">MUA</span>
+            </button>
           </div>
         </div>
 
@@ -5741,21 +5783,34 @@ function stockHeader() {
       </div>
     </div>
 
-    <!-- Right Side: Tabbed Container (Order Book MCP | Metrics | Events) -->
+    <!-- Right Side: Claude-Native Metrics & Events + MCP Order Book Tabs -->
     <div class="hero-side">
       <div class="hero-side-tabs" role="tablist">
-        <button class="hero-side-tab ${S_HERO_SIDE_TAB === 'orderbook' ? 'on' : ''}" data-act="herosidetab" data-v="orderbook">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:4px"><path d="M3 3h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3z"/></svg>Sổ lệnh &amp; Khớp lệnh MCP
-        </button>
-        <button class="hero-side-tab ${S_HERO_SIDE_TAB === 'metrics' ? 'on' : ''}" data-act="herosidetab" data-v="metrics">
+        <button class="hero-side-tab ${S_HERO_SIDE_TAB === 'metrics' ? 'on' : ''}" data-act="herosidetab" data-v="metrics" title="Chỉ số cơ bản &amp; Sự kiện theo thiết kế Claude Artifact">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:4px"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>Chỉ số &amp; Định giá
         </button>
-        <button class="hero-side-tab ${S_HERO_SIDE_TAB === 'events' ? 'on' : ''}" data-act="herosidetab" data-v="events">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:4px"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>Sự kiện gần đây
+        <button class="hero-side-tab ${S_HERO_SIDE_TAB === 'orderbook' ? 'on' : ''}" data-act="herosidetab" data-v="orderbook" title="Sổ lệnh chuyên sâu &amp; Khớp lệnh trực tiếp qua MCP">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:4px"><path d="M3 3h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3z"/></svg>Sổ lệnh &amp; Khớp lệnh MCP
         </button>
       </div>
       <div class="hero-side-content">
-        ${S_HERO_SIDE_TAB === 'orderbook' ? renderMcpOrderBook() : S_HERO_SIDE_TAB === 'metrics' ? `<div class="m4"><div>${cell('Định giá &amp; lợi nhuận', m.val)}${cell('Thanh khoản', m.liq)}</div><div>${cell('Quy mô &amp; sở hữu', m.size)}${cell('NĐT nước ngoài', m.frn)}</div></div>` : `<div class="hero-ev"><div class="evh"><span>Sự kiện gần đây</span><button class="chip" data-act="evtop">${S.evTop} ${I.chev}</button></div><div class="ev-list">${evs.map(([d, t]) => `<div><b>${d}</b><span title="${esc(t)}">${t}</span></div>`).join('') || '<span class="muted">Không có sự kiện trong nhóm này.</span>'}</div></div>`}
+        ${S_HERO_SIDE_TAB === 'orderbook' ? renderMcpOrderBook() : `
+          <div class="hero-claude-wrap">
+            <div class="m4">
+              <div>${cell('Định giá &amp; lợi nhuận', m.val)}${cell('Thanh khoản', m.liq)}</div>
+              <div>${cell('Quy mô &amp; sở hữu', m.size)}${cell('NĐT nước ngoài', m.frn)}</div>
+            </div>
+            <div class="hero-ev">
+              <div class="evh">
+                <span style="font-size:12px;font-weight:600;text-transform:uppercase;color:var(--ink3);letter-spacing:0.3px">Sự kiện gần đây</span>
+                <button class="chip" data-act="evtop" style="font-size:11px;padding:2px 8px">${S.evTop} ${I.chev}</button>
+              </div>
+              <div class="ev-list">
+                ${evs.map(([d, t]) => `<div><b>${d}</b><span title="${esc(t)}">${t}</span></div>`).join('') || '<span class="muted">Không có sự kiện trong nhóm này.</span>'}
+              </div>
+            </div>
+          </div>
+        `}
       </div>
     </div>
   </div>
@@ -8126,6 +8181,18 @@ function readHash() {
   if (hashQuery) {
     const params = new URLSearchParams(hashQuery);
     if (params.get('sym')) symParam = params.get('sym');
+    if (params.get('theme')) {
+      const th = params.get('theme');
+      document.documentElement.setAttribute('data-theme', th);
+      if (typeof S !== 'undefined') S.theme = th;
+      const tIcon = document.getElementById('theme-icon');
+      const tLabel = document.getElementById('theme-label');
+      if (tIcon) tIcon.textContent = th === 'dark' ? '🌙' : '☀️';
+      if (tLabel) tLabel.textContent = th === 'dark' ? 'Tối' : 'Sáng';
+    }
+    if (params.get('sideTab')) {
+      S_HERO_SIDE_TAB = params.get('sideTab');
+    }
   }
   if (!symParam && raw.includes('/')) {
     const parts = raw.split('/');
@@ -15265,17 +15332,37 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
     currentChg += tickShift;
     currentPct = +((currentChg / (currentPrice - currentChg || 1)) * 100).toFixed(2);
   }
+  const ex = data.ex || 'HOSE';
+  const tickStep = currentPrice < 10000 ? 10 : currentPrice < 50000 ? 50 : 100;
+  const exPct = (ex === 'UPCOM' ? 0.15 : ex === 'HNX' ? 0.10 : 0.07);
+
+  const ref = data.ref || (data.chg != null ? (currentPrice - currentChg) : currentPrice);
+  const ceil = data.ceil || Math.floor(ref * (1 + exPct) / tickStep) * tickStep;
+  const floor = data.floor || Math.ceil(ref * (1 - exPct) / tickStep) * tickStep;
+  const openPrice = data.open || (ref + (currentChg > 0 ? tickStep : currentChg < 0 ? -tickStep : 0));
+  const highPrice = data.high || Math.min(ceil, Math.max(currentPrice, openPrice, ref + tickStep * 2));
+  const lowPrice = data.low || Math.max(floor, Math.min(currentPrice, openPrice, ref - tickStep * 2));
+  const avgPrice = data.avg || Math.round(((highPrice + lowPrice + currentPrice) / 3) / tickStep) * tickStep;
+
   Object.assign(STOCK, {
     sym: data.sym,
-    ex: data.ex,
+    ex: ex,
     name: data.name,
     ind: data.ind,
     price: currentPrice,
+    ref: ref,
+    ceil: ceil,
+    floor: floor,
+    open: openPrice,
+    high: highPrice,
+    low: lowPrice,
+    avg: avgPrice,
+    close: currentPrice,
     chg: currentChg,
     pct: currentPct,
     mcpSource: 'Dual-MCP (DNSE + VNDIRECT)',
     vol: data.vol || (STOCK.metrics?.liq?.[0]?.[1] ? parseInt(STOCK.metrics.liq[0][1].replace(/\D/g, '')) : 3762900),
-    val_bil: data.val_bil || 126.75,
+    val_bil: data.val_bil || +(data.vol * currentPrice / 1e9).toFixed(2) || 126.75,
     metrics: data.metrics,
     events: data.events || []
   });

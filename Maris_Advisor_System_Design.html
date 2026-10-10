@@ -3278,9 +3278,9 @@ const UNI = [
     "Ngân hàng TMCP Hàng Hải Việt Nam",
     "Ngân hàng",
     "HOSE",
-    25.0,
-    0.0,
-    3420,
+    14.25,
+    1.06,
+    8462,
     [
       89,
       79,
@@ -4068,13 +4068,13 @@ const ALL = [
     "MSB",
     "Ngân hàng TMCP Hàng Hải Việt Nam",
     "HOSE",
-    25000,
-    0.0,
-    "3.42 M",
-    85.5,
+    14250,
+    1.06,
+    "8.46 M",
+    120.58,
     37.05,
     7.41,
-    3374,
+    1923,
     1.08,
     "Ngân hàng"
   ],
@@ -6580,50 +6580,51 @@ function getLiveTradingSessionInfo() {
 
 let MARKET_INDICES = [
   {
-    name: 'VN-INDEX', ex: 'HOSE', score: 1738.97, chg: -14.42, pct: -0.82,
-    vol: '1.185.4M', val: '31.420 tỷ',
-    adv: 142, ceiling: 8, ref: 58, dec: 285, floor: 6,
+    name: 'VN-INDEX', ex: 'HOSE', score: 1735.09, chg: -3.88, pct: -0.22,
+    vol: '911.2M', val: '27.543 tỷ',
+    adv: 168, ceiling: 9, ref: 64, dec: 232, floor: 4,
     mcp_src: 'DNSE',
-    spark: [1754.2, 1752.1, 1748.5, 1746.0, 1742.3, 1745.8, 1740.1, 1738.97]
+    spark: [1742.5, 1740.1, 1736.8, 1731.2, 1733.5, 1738.0, 1733.4, 1735.09]
   },
   {
-    name: 'VN30-INDEX', ex: 'HOSE', score: 1877.00, chg: -17.20, pct: -0.91,
-    vol: '445.8M', val: '16.850 tỷ',
-    adv: 6, ceiling: 1, ref: 2, dec: 22, floor: 0,
+    name: 'VN30-INDEX', ex: 'HOSE', score: 1873.40, chg: -3.60, pct: -0.20,
+    vol: '382.5M', val: '15.420 tỷ',
+    adv: 11, ceiling: 0, ref: 2, dec: 17, floor: 0,
     mcp_src: 'DNSE',
-    spark: [1895.4, 1892.0, 1888.6, 1885.2, 1880.0, 1883.5, 1878.2, 1877.00]
+    spark: [1880.2, 1877.5, 1874.1, 1869.8, 1871.2, 1875.6, 1872.1, 1873.40]
   },
   {
-    name: 'HNX-INDEX', ex: 'HNX', score: 256.22, chg: -3.60, pct: -1.39,
-    vol: '98.5M', val: '2.450 tỷ',
-    adv: 62, ceiling: 4, ref: 51, dec: 118, floor: 3,
+    name: 'HNX-INDEX', ex: 'HNX', score: 256.22, chg: -1.12, pct: -0.43,
+    vol: '84.2M', val: '1.980 tỷ',
+    adv: 65, ceiling: 4, ref: 58, dec: 112, floor: 3,
     mcp_src: 'DNSE',
-    spark: [260.1, 259.4, 258.0, 257.5, 256.8, 257.1, 256.22]
+    spark: [258.5, 258.0, 257.4, 256.8, 257.0, 256.22]
   },
   {
-    name: 'UPCOM-INDEX', ex: 'UPCOM', score: 125.49, chg: 0.20, pct: 0.16,
-    vol: '62.4M', val: '980 tỷ',
-    adv: 165, ceiling: 14, ref: 95, dec: 132, floor: 2,
+    name: 'UPCOM-INDEX', ex: 'UPCOM', score: 125.49, chg: 0.15, pct: 0.12,
+    vol: '58.6M', val: '860 tỷ',
+    adv: 162, ceiling: 12, ref: 98, dec: 128, floor: 2,
     mcp_src: 'DNSE',
     spark: [125.1, 125.2, 125.35, 125.3, 125.42, 125.49]
   }
 ];
 
 let MARKET_SECTORS = [
-  { name: 'Công nghệ thông tin', pct: 2.40, val: '1.240 tỷ', leader: 'FPT (+1.84%)' },
-  { name: 'Thép & Kim loại', pct: 2.15, val: '2.680 tỷ', leader: 'HPG (+2.33%)' },
-  { name: 'Chứng khoán', pct: 1.92, val: '2.150 tỷ', leader: 'SSI (+1.95%)' },
-  { name: 'Ngân hàng', pct: 1.85, val: '6.850 tỷ', leader: 'MSB (+1.06%), TCB (+2.1%)' },
-  { name: 'Bán lẻ', pct: 1.50, val: '1.420 tỷ', leader: 'MWG (+1.65%)' },
-  { name: 'Hóa chất & Phân bón', pct: 1.12, val: '980 tỷ', leader: 'DGC (+2.40%)' },
-  { name: 'Xây dựng & Vật liệu', pct: 0.85, val: '740 tỷ', leader: 'VCG (+1.20%)' },
-  { name: 'Dầu khí', pct: 0.65, val: '890 tỷ', leader: 'PVS (+1.50%)' },
-  { name: 'Thực phẩm & Tiêu dùng', pct: 0.35, val: '1.150 tỷ', leader: 'VNM (+0.45%)' },
-  { name: 'Bất động sản', pct: -0.45, val: '3.850 tỷ', leader: 'KDH (+0.5%), VHM (-1.2%)' }
+  { name: 'Ngân hàng', pct: 0.72, val: '8.450 tỷ', leader: 'HDB (+3.94%), TCB (+1.41%)' },
+  { name: 'Thực phẩm & Tiêu dùng', pct: 0.28, val: '1.450 tỷ', leader: 'VNM (-0.35%), MSN (-0.26%)' },
+  { name: 'Bán lẻ', pct: -0.26, val: '1.420 tỷ', leader: 'MWG (-0.26%), PNJ (+0.31%)' },
+  { name: 'Chứng khoán', pct: -0.32, val: '2.150 tỷ', leader: 'SSI (-0.26%)' },
+  { name: 'Thép & Kim loại', pct: -0.45, val: '2.680 tỷ', leader: 'HPG (-0.25%)' },
+  { name: 'Xây dựng & Vật liệu', pct: -0.65, val: '740 tỷ', leader: 'VCG (-0.80%)' },
+  { name: 'Bất động sản', pct: -0.85, val: '4.150 tỷ', leader: 'VHM (+0.46%), VIC (-1.10%)' },
+  { name: 'Dầu khí', pct: -1.25, val: '890 tỷ', leader: 'GAS (-1.59%), BSR (-2.97%)' },
+  { name: 'Hóa chất & Cao su', pct: -1.95, val: '980 tỷ', leader: 'GVR (-2.95%)' },
+  { name: 'Công nghệ thông tin', pct: -3.02, val: '1.680 tỷ', leader: 'FPT (-3.02%)' }
 ];
 
 function syncMarketDataTick(isManual) {
   const session = getLiveTradingSessionInfo();
+  if (!session.isOpen && !isManual) return;
   MARKET_INDICES.forEach(idx => {
     const delta = +((Math.random() * 1.2 - 0.6).toFixed(2));
     idx.score = +(idx.score + delta).toFixed(2);
@@ -6648,22 +6649,22 @@ function syncMarketDataTick(isManual) {
 }
 
 const MARKET_FOREIGN_TOP_BUY = [
-  { sym: 'HPG', name: 'Tập đoàn Hòa Phát', net_val: '+165.2 tỷ', vol: '+6.250.000 CP', price: '26.40', pct: 2.33 },
-  { sym: 'FPT', name: 'Công ty Cổ phần FPT', net_val: '+116.3 tỷ', vol: '+840.200 CP', price: '138.50', pct: 1.84 },
-  { sym: 'TCB', name: 'Ngân hàng Techcombank', net_val: '+85.4 tỷ', vol: '+3.440.000 CP', price: '24.80', pct: 2.10 },
+  { sym: 'HPG', name: 'Tập đoàn Hòa Phát', net_val: '+165.2 tỷ', vol: '+6.250.000 CP', price: '20.10', pct: -0.25 },
+  { sym: 'FPT', name: 'Công ty Cổ phần FPT', net_val: '+116.3 tỷ', vol: '+840.200 CP', price: '57.90', pct: -3.02 },
+  { sym: 'TCB', name: 'Ngân hàng Techcombank', net_val: '+85.4 tỷ', vol: '+3.440.000 CP', price: '32.35', pct: 1.41 },
   { sym: 'MSB', name: 'Ngân hàng TMCP Hàng Hải', net_val: '+48.5 tỷ', vol: '+3.400.000 CP', price: '14.25', pct: 1.06 },
-  { sym: 'MWG', name: 'Thế Giới Di Động', net_val: '+42.1 tỷ', vol: '+618.000 CP', price: '68.20', pct: 1.65 },
-  { sym: 'SSI', name: 'Chứng khoán SSI', net_val: '+38.6 tỷ', vol: '+1.180.000 CP', price: '32.80', pct: 1.95 },
-  { sym: 'VNM', name: 'Vinamilk', net_val: '+29.4 tỷ', vol: '+442.000 CP', price: '66.50', pct: 0.45 },
-  { sym: 'MBB', name: 'Ngân hàng Quân đội', net_val: '+24.5 tỷ', vol: '+1.020.000 CP', price: '24.10', pct: 1.25 }
+  { sym: 'MWG', name: 'Thế Giới Di Động', net_val: '+42.1 tỷ', vol: '+618.000 CP', price: '75.90', pct: -0.26 },
+  { sym: 'SSI', name: 'Chứng khoán SSI', net_val: '+38.6 tỷ', vol: '+1.180.000 CP', price: '19.00', pct: -0.26 },
+  { sym: 'VNM', name: 'Vinamilk', net_val: '+29.4 tỷ', vol: '+442.000 CP', price: '57.70', pct: -0.35 },
+  { sym: 'MBB', name: 'Ngân hàng Quân đội', net_val: '+24.5 tỷ', vol: '+1.020.000 CP', price: '19.05', pct: 0.79 }
 ];
 
 const MARKET_FOREIGN_TOP_SELL = [
-  { sym: 'VHM', name: 'Vinhomes', net_val: '-82.4 tỷ', vol: '-1.890.000 CP', price: '43.50', pct: -1.25 },
-  { sym: 'VRE', name: 'Vincom Retail', net_val: '-45.1 tỷ', vol: '-2.450.000 CP', price: '18.40', pct: -1.60 },
-  { sym: 'VIC', name: 'Vingroup', net_val: '-38.2 tỷ', vol: '-910.000 CP', price: '42.10', pct: -0.95 },
-  { sym: 'MSN', name: 'Masan Group', net_val: '-29.8 tỷ', vol: '-395.000 CP', price: '75.20', pct: -0.65 },
-  { sym: 'PDR', name: 'Phát Đạt', net_val: '-18.5 tỷ', vol: '-850.000 CP', price: '21.80', pct: -1.80 }
+  { sym: 'VHM', name: 'Vinhomes', net_val: '-82.4 tỷ', vol: '-1.890.000 CP', price: '66.00', pct: 0.46 },
+  { sym: 'VRE', name: 'Vincom Retail', net_val: '-45.1 tỷ', vol: '-2.450.000 CP', price: '23.15', pct: 0.22 },
+  { sym: 'VIC', name: 'Vingroup', net_val: '-38.2 tỷ', vol: '-910.000 CP', price: '225.50', pct: -1.10 },
+  { sym: 'MSN', name: 'Masan Group', net_val: '-29.8 tỷ', vol: '-395.000 CP', price: '75.80', pct: -0.26 },
+  { sym: 'BID', name: 'Ngân hàng BIDV', net_val: '-11.9 tỷ', vol: '-351.850 CP', price: '33.90', pct: 0.00 }
 ];
 
 const GLOBAL_INDICES = [
@@ -8052,23 +8053,23 @@ Object.assign(A, {
 /* ================= DANH MỤC (WATCHLIST · WL-01) ================= */
 const WLU = {};
 [
-  ['VNM', 'Vinamilk', 'HOSE', 58.50, 0.60, 1.04, '811,36 K', 47.46, 57.90, 58.80, 50.20, 68.40, 'Tiêu dùng'],
-  ['HPG', 'Tập đoàn Hòa Phát', 'HOSE', 20.35, 0, 0, '5,70 M', 116.00, 20.20, 20.55, 17.80, 29.45, 'Khoáng sản'],
-  ['FPT', 'Tập đoàn FPT', 'HOSE', 62.00, -0.20, -0.32, '1,20 M', 74.40, 61.80, 62.60, 56.30, 78.90, 'Công nghệ'],
-  ['VCB', 'Vietcombank', 'HOSE', 53.90, -0.10, -0.19, '502,07 K', 27.06, 53.70, 54.30, 48.60, 65.20, 'Tài chính', 'Đình chỉ giao dịch'],
-  ['MBB', 'MB Bank', 'HOSE', 21.65, 0, 0, '3,72 M', 80.54, 21.50, 21.90, 17.25, 24.80, 'Tài chính'],
-  ['MWG', 'Thế Giới Di Động', 'HOSE', 63.40, 0.10, 0.16, '2,60 M', 164.84, 63.00, 64.10, 48.90, 72.60, 'Bán lẻ'],
-  ['VIC', 'Tập đoàn Vingroup', 'HOSE', 211.60, -1.90, -0.89, '250,55 K', 53.02, 210.00, 214.50, 95.40, 231.80, 'Bất động sản'],
-  ['VHM', 'Vinhomes', 'HOSE', 129.50, -1.50, -1.15, '438,18 K', 56.74, 128.70, 131.40, 38.20, 145.60, 'Bất động sản'],
+  ['VNM', 'Vinamilk', 'HOSE', 57.70, -0.20, -0.35, '2,85 M', 164.45, 57.20, 58.20, 50.20, 68.40, 'Tiêu dùng'],
+  ['HPG', 'Tập đoàn Hòa Phát', 'HOSE', 20.10, -0.05, -0.25, '18,50 M', 371.85, 20.00, 20.45, 17.80, 29.45, 'Khoáng sản'],
+  ['FPT', 'Tập đoàn FPT', 'HOSE', 57.90, -1.80, -3.02, '6,20 M', 358.98, 57.50, 59.80, 56.30, 78.90, 'Công nghệ'],
+  ['VCB', 'Vietcombank', 'HOSE', 56.70, 0.10, 0.18, '1,50 M', 85.05, 56.40, 57.10, 48.60, 65.20, 'Tài chính'],
+  ['MBB', 'MB Bank', 'HOSE', 19.05, 0.15, 0.79, '14,20 M', 270.51, 18.90, 19.25, 17.25, 24.80, 'Tài chính'],
+  ['MWG', 'Thế Giới Di Động', 'HOSE', 75.90, -0.20, -0.26, '5,60 M', 425.04, 75.50, 76.80, 48.90, 82.60, 'Bán lẻ'],
+  ['VIC', 'Tập đoàn Vingroup', 'HOSE', 225.50, -2.50, -1.10, '1,85 M', 417.18, 224.00, 229.00, 95.40, 241.80, 'Bất động sản'],
+  ['VHM', 'Vinhomes', 'HOSE', 66.00, 0.30, 0.46, '3,40 M', 224.40, 65.40, 67.00, 38.20, 145.60, 'Bất động sản'],
   ['BID', 'BIDV', 'HOSE', 33.90, 0, 0, '3,76 M', 126.75, 33.25, 34.10, 30.15, 42.70, 'Tài chính'],
-  ['CTG', 'VietinBank', 'HOSE', 28.75, 0, 0, '1,11 M', 31.91, 28.55, 29.00, 24.30, 37.15, 'Tài chính'],
-  ['TCB', 'Techcombank', 'HOSE', 28.20, -0.05, -0.18, '2,42 M', 68.24, 28.10, 28.55, 20.45, 32.80, 'Tài chính'],
-  ['LPB', 'LPBank', 'HOSE', 54.70, 0.70, 1.30, '504,99 K', 27.62, 54.00, 55.20, 24.80, 59.30, 'Tài chính'],
-  ['GVR', 'Cao su Việt Nam', 'HOSE', 26.15, 0.15, 0.58, '238,67 K', 6.24, 25.90, 26.40, 21.60, 34.90, 'CN chế biến'],
-  ['ACB', 'Ngân hàng ACB', 'HOSE', 24.80, 0.10, 0.40, '3,05 M', 75.61, 24.60, 25.00, 21.10, 28.40, 'Tài chính'],
+  ['CTG', 'VietinBank', 'HOSE', 29.50, 0.30, 1.03, '6,80 M', 200.60, 29.10, 29.80, 24.30, 37.15, 'Tài chính'],
+  ['TCB', 'Techcombank', 'HOSE', 32.35, 0.45, 1.41, '8,40 M', 271.74, 31.90, 32.60, 20.45, 34.80, 'Tài chính'],
+  ['LPB', 'LPBank', 'HOSE', 40.70, 0.05, 0.12, '2,10 M', 85.47, 40.40, 41.20, 24.80, 59.30, 'Tài chính'],
+  ['GVR', 'Cao su Việt Nam', 'HOSE', 32.85, -1.00, -2.95, '3,50 M', 114.98, 32.50, 34.00, 21.60, 36.90, 'CN chế biến'],
+  ['ACB', 'Ngân hàng ACB', 'HOSE', 20.15, -0.20, -0.98, '11,57 M', 234.76, 20.00, 20.45, 18.10, 26.40, 'Tài chính'],
   ['MSB', 'Ngân hàng TMCP Hàng Hải', 'HOSE', 14.25, 0.15, 1.06, '8,46 M', 120.58, 14.05, 14.30, 10.15, 14.35, 'Tài chính'],
-  ['SSI', 'Chứng khoán SSI', 'HOSE', 33.45, 0.35, 1.06, '12,84 M', 429.50, 33.00, 33.60, 24.10, 38.20, 'Tài chính'],
-  ['GAS', 'PV GAS', 'HOSE', 66.60, -0.30, -0.45, '125,88 K', 8.38, 66.30, 67.20, 58.90, 82.10, 'Dầu khí'],
+  ['SSI', 'Chứng khoán SSI', 'HOSE', 19.00, -0.05, -0.26, '15,20 M', 288.80, 18.85, 19.25, 16.10, 38.20, 'Tài chính'],
+  ['GAS', 'PV GAS', 'HOSE', 80.70, -1.30, -1.59, '1,10 M', 88.77, 80.20, 82.50, 58.90, 89.10, 'Dầu khí'],
   ['PNJ', 'Vàng bạc Đá quý Phú Nhuận', 'HOSE', 96.80, 0.30, 0.31, '1,53 M', 148.10, 96.10, 97.50, 78.40, 104.20, 'Bán lẻ'],
   ['REE', 'Cơ Điện Lạnh REE', 'HOSE', 68.20, 0, 0, '942,10 K', 64.25, 67.80, 68.60, 59.40, 74.10, 'Tiện ích'],
   ['DGC', 'Hóa chất Đức Giang', 'HOSE', 104.50, 1.00, 0.96, '2,03 M', 212.10, 103.20, 105.10, 84.60, 128.70, 'Hóa chất']
@@ -10248,37 +10249,37 @@ const VN30_DATA_FEED = {
     "name": "Ngân hàng TMCP Hàng Hải Việt Nam",
     "ex": "HOSE",
     "ind": "Ngân hàng",
-    "price": 25000,
-    "ref": 25000,
-    "chg": 0,
-    "pct": 0.0,
-    "vol": 3420000,
-    "val_bil": 85.5,
+    "price": 14250,
+    "ref": 14100,
+    "chg": 150,
+    "pct": 1.06,
+    "vol": 8462300,
+    "val_bil": 120.58,
     "metrics": {
       "liq": [
         [
           "KLGD",
-          "3.420.000 CP"
+          "8.462.300 CP"
         ],
         [
           "GTGD",
-          "85,50 tỷ đồng"
+          "120,58 tỷ đồng"
         ]
       ],
       "frn": [
         [
           "Khối lượng ròng",
-          "+150.000",
+          "+512.400",
           "up"
         ],
         [
           "Giá trị ròng",
-          "+3.750 triệu",
+          "+7.302 triệu",
           "up"
         ],
         [
           "Room ngoại",
-          "50.000.000 CP"
+          "790.500.000 CP"
         ]
       ],
       "val": [

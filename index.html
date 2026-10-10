@@ -2817,7 +2817,8 @@ function clearTvDrawings() {
 
 function addTvHorizontalLine(p) {
   if (!tvCandleSeries) return;
-  const price = p || (typeof STOCK !== 'undefined' ? STOCK.price : 14600);
+  let price = p || (typeof STOCK !== 'undefined' ? STOCK.price : 14.6);
+  if (price >= 500) price = +(price / 1000).toFixed(2);
   try {
     const pl = tvCandleSeries.createPriceLine({
       price: price,
@@ -2825,7 +2826,7 @@ function addTvHorizontalLine(p) {
       lineWidth: 2,
       lineStyle: 2,
       axisLabelVisible: true,
-      title: `Mốc ${fmtVN(price, 0)}`,
+      title: `Mốc ${Number(price).toFixed(2)}`,
     });
     tvUserPriceLines.push(pl);
   } catch(e) {}
@@ -2866,7 +2867,7 @@ const TV_MCP = {
       if (i < 19) { sma20Arr.push(null); continue; }
       let sum = 0;
       for (let j = i - 19; j <= i; j++) sum += closes[j];
-      sma20Arr.push(Math.round(sum / 20));
+      sma20Arr.push(Math.round((sum / 20) * 100) / 100);
     }
     
     // SMA 50
@@ -2875,7 +2876,7 @@ const TV_MCP = {
       if (i < 49) { sma50Arr.push(null); continue; }
       let sum = 0;
       for (let j = i - 49; j <= i; j++) sum += closes[j];
-      sma50Arr.push(Math.round(sum / 50));
+      sma50Arr.push(Math.round((sum / 50) * 100) / 100);
     }
 
     // EMA 9 & EMA 21
@@ -2892,7 +2893,7 @@ const TV_MCP = {
         } else {
           prev = closes[i] * k + prev * (1 - k);
         }
-        out.push(Math.round(prev));
+        out.push(Math.round(prev * 100) / 100);
       }
       return out;
     };
@@ -2908,8 +2909,8 @@ const TV_MCP = {
       const mean = sma20Arr[i];
       for (let j = i - 19; j <= i; j++) sumSq += Math.pow(closes[j] - mean, 2);
       const std = Math.sqrt(sumSq / 20);
-      bbUpperArr.push(Math.round(mean + 2 * std));
-      bbLowerArr.push(Math.round(mean - 2 * std));
+      bbUpperArr.push(Math.round((mean + 2 * std) * 100) / 100);
+      bbLowerArr.push(Math.round((mean - 2 * std) * 100) / 100);
     }
 
     // RSI 14
@@ -5757,13 +5758,13 @@ function stockHeader() {
           </div>
           <!-- Quick Buy / Sell Trading Action Widget (Synchronized with Claude Artifact) -->
           <div class="tv-quick-trade-wrap">
-            <button class="tv-qt-btn sell" title="Đặt lệnh Bán nhanh" onclick="toast('Lệnh BÁN nhanh ${STOCK.sym}: ${fmtVN(bestBid, 0)} (KL: 50)')">
-              <span class="p">${fmtVN(bestBid, 0)}</span>
+            <button class="tv-qt-btn sell" title="Đặt lệnh Bán nhanh" onclick="toast('Lệnh BÁN nhanh ${STOCK.sym}: ${(bestBid >= 500 ? (bestBid / 1000).toFixed(2) : Number(bestBid).toFixed(2))} (KL: 50)')">
+              <span class="p">${(bestBid >= 500 ? (bestBid / 1000).toFixed(2) : Number(bestBid).toFixed(2))}</span>
               <span class="lbl">BÁN</span>
             </button>
             <div class="tv-qt-qty" title="Khối lượng mặc định">50</div>
-            <button class="tv-qt-btn buy" title="Đặt lệnh Mua nhanh" onclick="toast('Lệnh MUA nhanh ${STOCK.sym}: ${fmtVN(bestAsk, 0)} (KL: 50)')">
-              <span class="p">${fmtVN(bestAsk, 0)}</span>
+            <button class="tv-qt-btn buy" title="Đặt lệnh Mua nhanh" onclick="toast('Lệnh MUA nhanh ${STOCK.sym}: ${(bestAsk >= 500 ? (bestAsk / 1000).toFixed(2) : Number(bestAsk).toFixed(2))} (KL: 50)')">
+              <span class="p">${(bestAsk >= 500 ? (bestAsk / 1000).toFixed(2) : Number(bestAsk).toFixed(2))}</span>
               <span class="lbl">MUA</span>
             </button>
           </div>
@@ -5844,7 +5845,11 @@ function tvData() {
   const w = []; for (let i = 0; i < d.length; i += 5) { const g = d.slice(i, i + 5); w.push({ d: g[0].d, o: g[0].o, c: g[g.length - 1].c, h: Math.max(...g.map(x => x.h)), l: Math.min(...g.map(x => x.l)), v: g.reduce((a, x) => a + x.v, 0) }); }
   return w;
 }
-const fmtTV = v => Math.round(v).toLocaleString('en-US');
+const fmtTV = v => {
+  if (v == null || isNaN(v)) return '0.00';
+  const val = Math.abs(v) >= 500 ? (v / 1000) : v;
+  return Number(val).toFixed(2);
+};
 const fmtVol = v => v >= 1e6 ? (v / 1e6).toFixed(2) + ' M' : (v / 1e3).toFixed(2) + ' K';
 let tvChartInstance = null;
 let tvCandleSeries = null;
@@ -5885,7 +5890,17 @@ function drawCandles() {
 
   const UP = '#22AB94', DN = '#F23645';
   const W = Math.max(280, el.clientWidth), H = Math.max(240, el.clientHeight), padR = 62, top = 64, bot = 24, pH = H - top - bot;
-  const data = tvData(), n = data.length, intra = !!data[0].intra;
+  const rawData = tvData(), n = rawData.length, intra = !!rawData[0].intra;
+  const isRawDong = rawData.length > 0 && (rawData[0].c >= 500 || rawData[rawData.length - 1].c >= 500);
+  const data = rawData.map(d => ({
+    d: d.d,
+    intra: d.intra,
+    o: isRawDong ? +(d.o / 1000).toFixed(2) : d.o,
+    h: isRawDong ? +(d.h / 1000).toFixed(2) : d.h,
+    l: isRawDong ? +(d.l / 1000).toFixed(2) : d.l,
+    c: isRawDong ? +(d.c / 1000).toFixed(2) : d.c,
+    v: d.v,
+  }));
   const intervalLabel = intra ? '5m' : n > 400 || S.range === '5Năm' || S.range === 'Tất cả' ? '1W' : '1D';
   const intEl = document.getElementById('tvint');
   if (intEl) intEl.textContent = intervalLabel;
@@ -5961,6 +5976,9 @@ function drawCandles() {
           fontFamily: "'Google Sans Flex', -apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif",
           fontSize: 11,
         },
+        localization: {
+          priceFormatter: price => Number(price).toFixed(2),
+        },
         grid: {
           vertLines: { color: isDark ? 'rgba(42, 46, 57, 0.6)' : 'rgba(240, 243, 250, 0.8)' },
           horzLines: { color: isDark ? 'rgba(42, 46, 57, 0.6)' : 'rgba(240, 243, 250, 0.8)' },
@@ -6006,6 +6024,7 @@ function drawCandles() {
         tvVolumeSeries = tvChartInstance.addHistogramSeries({
           priceFormat: { type: 'volume' },
           priceScaleId: '',
+          lastValueVisible: false,
           scaleMargins: {
             top: 0.78,
             bottom: 0,
@@ -6020,7 +6039,7 @@ function drawCandles() {
           color: '#2962FF',
           lineWidth: 2,
           crosshairMarkerVisible: true,
-          priceFormat: { type: 'price', precision: 0, minMove: 10 },
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
         });
       } else if (S_TV_STYLE === 'area') {
         tvCandleSeries = tvChartInstance.addAreaSeries({
@@ -6028,7 +6047,7 @@ function drawCandles() {
           bottomColor: 'rgba(41, 98, 255, 0.02)',
           lineColor: '#2962FF',
           lineWidth: 2,
-          priceFormat: { type: 'price', precision: 0, minMove: 10 },
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
         });
       } else {
         tvCandleSeries = tvChartInstance.addCandlestickSeries({
@@ -6037,6 +6056,7 @@ function drawCandles() {
           borderVisible: false,
           wickUpColor: '#22ab94',
           wickDownColor: '#f23645',
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
         });
       }
 
@@ -6129,6 +6149,7 @@ function drawCandles() {
           lineWidth: 2,
           title: 'MA20',
           crosshairMarkerVisible: false,
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
         });
         tvSma20Series.setData(cleanSma20);
       }
@@ -6148,6 +6169,7 @@ function drawCandles() {
           lineWidth: 2,
           title: 'MA50',
           crosshairMarkerVisible: false,
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
         });
         tvSma50Series.setData(cleanSma50);
       }
@@ -6167,6 +6189,7 @@ function drawCandles() {
           lineWidth: 1.5,
           title: 'EMA9',
           crosshairMarkerVisible: false,
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
         });
         tvEma9Series.setData(cleanEma9);
       }
@@ -6186,6 +6209,7 @@ function drawCandles() {
           lineWidth: 1.5,
           title: 'EMA21',
           crosshairMarkerVisible: false,
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
         });
         tvEma21Series.setData(cleanEma21);
       }
@@ -6208,6 +6232,7 @@ function drawCandles() {
           lineStyle: 2,
           title: 'BB Up',
           crosshairMarkerVisible: false,
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
         });
         tvBbUpSeries.setData(cleanBbUp);
         const tvBbLowSeries = tvChartInstance.addLineSeries({
@@ -6216,6 +6241,7 @@ function drawCandles() {
           lineStyle: 2,
           title: 'BB Low',
           crosshairMarkerVisible: false,
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
         });
         tvBbLowSeries.setData(cleanBbLow);
       }
@@ -6255,7 +6281,7 @@ function drawCandles() {
   }
 
   // SVG FALLBACK
-  const hi = Math.max(...data.map(d => d.h)), lo = Math.min(...data.map(d => d.l)), pad = (hi - lo) * .06 || 100;
+  const hi = Math.max(...data.map(d => d.h)), lo = Math.min(...data.map(d => d.l)), pad = (hi - lo) * .06 || 0.1;
   const y0 = lo - pad, y1 = hi + pad, vmax = Math.max(...data.map(d => d.v));
   const cw = (W - padR - 6) / n, X = i => 3 + cw * (i + .5), Y = v => top + pH * (1 - (v - y0) / (y1 - y0));
   let g = '';

@@ -3725,8 +3725,8 @@ function stockHeader() {
       <span>Cổ phiếu</span> <span>›</span> <span>Tài chính</span> <span>›</span> <span>${STOCK.ind === 'Ngân hàng' ? 'Tài chính ngân hàng' : STOCK.ind}</span> <span>›</span> <b style="color:var(--ink)">${STOCK.sym}</b>
     </div>
 
-    <!-- MAIN HEADER ROW -->
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px">
+    <!-- TOP ROW: TITLE & PRICE -->
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
       <!-- LEFT: CIRCULAR LOGO + TITLES -->
       <div style="display:flex;align-items:center;gap:14px;min-width:0">
         <div class="logo-msb" style="display:flex;align-items:center">${getCompanyLogo(STOCK.sym, 52)}</div>
@@ -3749,55 +3749,59 @@ function stockHeader() {
             <span style="padding:2px 8px;border-radius:4px;background:rgba(2,132,199,0.12);color:#0284c7;font-size:11px;font-weight:600">Tài chính</span>
             <span style="padding:2px 8px;border-radius:4px;background:rgba(2,132,199,0.12);color:#0284c7;font-size:11px;font-weight:600">${STOCK.ind === 'Ngân hàng' ? 'Tài chính ngân hàng' : STOCK.ind}</span>
           </div>
-          <!-- QUICK TICKER SWITCHER -->
-          <div class="c360-quick-switch" style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap">
-            <span style="font-size:11px;color:var(--ink3)">Mã nhanh:</span>
-            ${['MSB', 'FPT', 'HPG', 'VCB', 'TCB', 'SSI', 'VNM', 'MWG', 'MBB', 'VND'].map(tk => `
-              <button class="c360-quick-btn ${tk === STOCK.sym ? 'on' : ''}" onclick="openStock('${tk}')" style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:6px;border:1px solid ${tk === STOCK.sym ? 'var(--brand)' : 'var(--line)'};background:${tk === STOCK.sym ? 'rgba(234,88,12,0.12)' : 'var(--card)'};font-size:11px;font-weight:${tk === STOCK.sym ? '700' : '600'};color:${tk === STOCK.sym ? 'var(--brand)' : 'var(--ink)'};cursor:pointer">
-                ${getCompanyLogo(tk, 15)}
-                <span>${tk}</span>
-              </button>
-            `).join('')}
-          </div>
         </div>
       </div>
 
-      <!-- RIGHT: REALTIME PRICE & MCP CLUSTER -->
-      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-        <div class="price-b" style="display:flex;flex-direction:column;align-items:flex-end">
-          <div class="p" id="c360-live-price" style="transition:background 0.3s, color 0.2s;padding:0 4px;border-radius:4px">${fmtVN(STOCK.price, 0)}</div>
-          <div class="c ${STOCK.chg >= 0 ? 'up' : 'down'}" id="c360-live-chg">${STOCK.chg >= 0 ? '▲ +' : '▼ '}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)</div>
-          <div class="rt-live-badge" id="btn-realtime-toggle" onclick="toggleRealtimeStream()" title="Click để Bật / Tạm dừng luồng Realtime Streaming" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:12px;margin-top:4px;font-size:10px;font-weight:700;transition:all 0.2s;background:${REALTIME_ACTIVE ? 'rgba(34,197,94,0.12)' : 'rgba(148,163,184,0.15)'};border:1px solid ${REALTIME_ACTIVE ? 'rgba(34,197,94,0.35)' : 'var(--line2)'};color:${REALTIME_ACTIVE ? '#16a34a' : 'var(--ink3)'}">
-            <span class="${REALTIME_ACTIVE ? 'live-pulse-dot' : 'live-paused-dot'}" id="c360-live-dot"></span>
-            <span id="c360-live-status-label">${REALTIME_ACTIVE ? 'REALTIME LIVE' : 'STREAM: TẠM DỪNG'}</span>
-            <span style="font-size:9px;opacity:0.75" id="c360-live-tick-speed">~2s/tick</span>
-          </div>
+      <!-- RIGHT: REALTIME PRICE -->
+      <div class="price-b" style="display:flex;flex-direction:column;align-items:flex-end">
+        <div class="p" id="c360-live-price" style="transition:background 0.3s, color 0.2s;padding:0 4px;border-radius:4px">${fmtVN(STOCK.price, 0)}</div>
+        <div class="c ${STOCK.chg >= 0 ? 'up' : 'down'}" id="c360-live-chg">${STOCK.chg >= 0 ? '▲ +' : '▼ '}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)</div>
+        <div class="rt-live-badge" id="btn-realtime-toggle" onclick="toggleRealtimeStream()" title="Click để Bật / Tạm dừng luồng Realtime Streaming" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:12px;margin-top:4px;font-size:10px;font-weight:700;transition:all 0.2s;background:${REALTIME_ACTIVE ? 'rgba(34,197,94,0.12)' : 'rgba(148,163,184,0.15)'};border:1px solid ${REALTIME_ACTIVE ? 'rgba(34,197,94,0.35)' : 'var(--line2)'};color:${REALTIME_ACTIVE ? '#16a34a' : 'var(--ink3)'}">
+          <span class="${REALTIME_ACTIVE ? 'live-pulse-dot' : 'live-paused-dot'}" id="c360-live-dot"></span>
+          <span id="c360-live-status-label">${REALTIME_ACTIVE ? 'REALTIME LIVE' : 'STREAM: TẠM DỪNG'}</span>
+          <span style="font-size:9px;opacity:0.75" id="c360-live-tick-speed">~2s/tick</span>
         </div>
-        <div class="mcp-cluster" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <div class="dnse-mcp-badge" onclick="openDnseMcpModal('dnse')" title="DNSE Model Context Protocol Server (mcp.dnse.com.vn)">
-            <span class="mcp-dot"></span>
-            <div class="mcp-info"><span class="mcp-title">DNSE MCP</span><span class="mcp-sub">7 Tools</span></div>
-            <button class="mcp-btn" onclick="event.stopPropagation(); syncDnseMcpLive();" title="Đồng bộ dữ liệu DNSE">↻</button>
-          </div>
-          <div class="vnd-mcp-badge" onclick="openDnseMcpModal('vnd')" title="VNDIRECT Model Context Protocol Server (mcp.vndirect.com.vn)">
-            <span class="vnd-dot"></span>
-            <div class="mcp-info"><span class="vnd-title">VND MCP</span><span class="vnd-sub">9 Tools</span></div>
-            <button class="vnd-btn" onclick="event.stopPropagation(); syncVndMcpLive();" title="Đồng bộ dữ liệu VNDIRECT">↻</button>
-          </div>
-          <div class="fin-mcp-badge" onclick="openDnseMcpModal('fin')" title="FINHAY Model Context Protocol Server (mcp.finhay.com.vn)">
-            <span class="fin-dot"></span>
-            <div class="mcp-info"><span class="fin-title">FINHAY MCP</span><span class="fin-sub">6 Tools</span></div>
-            <button class="fin-btn" onclick="event.stopPropagation(); syncFinhayMcpLive();" title="Đồng bộ dữ liệu Finhay">↻</button>
-          </div>
-          <div class="ssi-mcp-badge" onclick="openDnseMcpModal('ssi')" title="SSI Model Context Protocol Server (mcp.ssi.com.vn)">
-            <span class="ssi-dot"></span>
-            <div class="mcp-info"><span class="ssi-title">SSI MCP</span><span class="ssi-sub">8 Tools · 6 Res</span></div>
-            <button class="ssi-btn" onclick="event.stopPropagation(); syncSsiMcpLive();" title="Đồng bộ dữ liệu SSI">↻</button>
-          </div>
-          <div class="mcp-tag" onclick="openDnseMcpModal('logo')" title="Logo &amp; Brand Identity MCP Server" style="background:rgba(99,102,241,0.12);color:#6366f1;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:10.5px;font-weight:700;display:flex;align-items:center;gap:4px;border:1px solid rgba(99,102,241,0.25)">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            <span>LOGO MCP ↗</span>
-          </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW: QUICK TICKER SWITCHER + MCP CLUSTER -->
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding-top:6px;border-top:1px dashed var(--line)">
+      <!-- QUICK TICKER SWITCHER -->
+      <div class="c360-quick-switch" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="font-size:11px;color:var(--ink3)">Mã nhanh:</span>
+        ${['MSB', 'FPT', 'HPG', 'VCB', 'TCB', 'SSI', 'VNM', 'MWG', 'MBB', 'VND'].map(tk => `
+          <button class="c360-quick-btn ${tk === STOCK.sym ? 'on' : ''}" onclick="openStock('${tk}')" style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:6px;border:1px solid ${tk === STOCK.sym ? 'var(--brand)' : 'var(--line)'};background:${tk === STOCK.sym ? 'rgba(234,88,12,0.12)' : 'var(--card)'};font-size:11px;font-weight:${tk === STOCK.sym ? '700' : '600'};color:${tk === STOCK.sym ? 'var(--brand)' : 'var(--ink)'};cursor:pointer">
+            ${getCompanyLogo(tk, 15)}
+            <span>${tk}</span>
+          </button>
+        `).join('')}
+      </div>
+
+      <!-- MCP CLUSTER -->
+      <div class="mcp-cluster" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <div class="dnse-mcp-badge" onclick="openDnseMcpModal('dnse')" title="DNSE Model Context Protocol Server (mcp.dnse.com.vn)">
+          <span class="mcp-dot"></span>
+          <div class="mcp-info"><span class="mcp-title">DNSE MCP</span><span class="mcp-sub">7 Tools</span></div>
+          <button class="mcp-btn" onclick="event.stopPropagation(); syncDnseMcpLive();" title="Đồng bộ dữ liệu DNSE">↻</button>
+        </div>
+        <div class="vnd-mcp-badge" onclick="openDnseMcpModal('vnd')" title="VNDIRECT Model Context Protocol Server (mcp.vndirect.com.vn)">
+          <span class="vnd-dot"></span>
+          <div class="mcp-info"><span class="vnd-title">VND MCP</span><span class="vnd-sub">9 Tools</span></div>
+          <button class="vnd-btn" onclick="event.stopPropagation(); syncVndMcpLive();" title="Đồng bộ dữ liệu VNDIRECT">↻</button>
+        </div>
+        <div class="fin-mcp-badge" onclick="openDnseMcpModal('fin')" title="FINHAY Model Context Protocol Server (mcp.finhay.com.vn)">
+          <span class="fin-dot"></span>
+          <div class="mcp-info"><span class="fin-title">FINHAY MCP</span><span class="fin-sub">6 Tools</span></div>
+          <button class="fin-btn" onclick="event.stopPropagation(); syncFinhayMcpLive();" title="Đồng bộ dữ liệu Finhay">↻</button>
+        </div>
+        <div class="ssi-mcp-badge" onclick="openDnseMcpModal('ssi')" title="SSI Model Context Protocol Server (mcp.ssi.com.vn)">
+          <span class="ssi-dot"></span>
+          <div class="mcp-info"><span class="ssi-title">SSI MCP</span><span class="ssi-sub">8 Tools · 6 Res</span></div>
+          <button class="ssi-btn" onclick="event.stopPropagation(); syncSsiMcpLive();" title="Đồng bộ dữ liệu SSI">↻</button>
+        </div>
+        <div class="mcp-tag" onclick="openDnseMcpModal('logo')" title="Logo &amp; Brand Identity MCP Server" style="background:rgba(99,102,241,0.12);color:#6366f1;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:10.5px;font-weight:700;display:flex;align-items:center;gap:4px;border:1px solid rgba(99,102,241,0.25)">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <span>LOGO MCP ↗</span>
         </div>
       </div>
     </div>

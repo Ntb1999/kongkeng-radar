@@ -1328,7 +1328,7 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
 
 /* ================= DNSE MCP LIVE INTEGRATION ================= */
 
-/* VNDIRECT MCP BADGE & DUAL SERVER SWITCHER */
+/* VNDIRECT Research BADGE & DUAL SERVER SWITCHER */
 .mcp-cluster {
   display: flex;
   align-items: center;
@@ -2671,7 +2671,7 @@ let CANDLES = makeCandles();
 
 /* profile */
 let PROFILE = {
-  basic: [['Mã chứng khoán', 'MSB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '12/07/1991'], ['Vốn điều lệ', '26,00 nghìn tỷ đồng (Lộ trình 37,44 nghìn tỷ)'], ['Số lượng nhân sự', '6.284'], ['Số lượng chi nhánh', '63'], ['Số công ty con & liên kết', '3'], ['Đại diện pháp luật', 'Trần Minh Đức']],
+  basic: [['Mã chứng khoán', 'MSB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '12/07/1991'], ['Vốn điều lệ', '26,00 nghìn tỷ đồng (Lộ trình 37,44 nghìn tỷ)'], ['Số lượng nhân sự', '6.284'], ['Số lượng chi nhánh', '63'], ['Số công ty con & liên kết', '3'], ['Đại diện pháp luật', 'Trần Minh Đức']],
   listing: [['Ngày niêm yết', '23/12/2020'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '15.000'], ['Giá ngày GD đầu tiên', '18.000'], ['P/E TTM (DNSE)', '7,41 lần'], ['P/B TTM (DNSE)', '1,08 lần'], ['KL niêm yết lần đầu', '1.175.000.000'], ['KL đang niêm yết', '2.600.000.000 CP'], ['KL cổ phiếu lưu hành', '2.600.000.000 CP']],
   intro: 'MSB là một trong những ngân hàng thương mại cổ phần đầu tiên tại Việt Nam, định vị ở phân khúc ngân hàng bán lẻ và doanh nghiệp vừa và nhỏ. Ngân hàng tập trung vào chiến lược số hoá kênh phân phối, mở rộng tỷ lệ tiền gửi không kỳ hạn (CASA) và phát triển nguồn thu ngoài lãi từ dịch vụ thanh toán, bảo hiểm liên kết và ngoại hối. Tỷ lệ an toàn vốn duy trì trên mức quy định của Ngân hàng Nhà nước trong các năm gần đây.',
   miles: [['12/07/1991', 'Thành lập theo giấy phép của Ngân hàng Nhà nước, vốn điều lệ ban đầu 40 tỷ đồng.'], ['2015', 'Sáp nhập Ngân hàng TMCP Phát triển Mê Kông, nâng vốn điều lệ lên 11.750 tỷ đồng.'], ['23/12/2020', 'Niêm yết 1.175.000.000 cổ phiếu trên HOSE, giá tham chiếu 15.000 đồng.'], ['2023', 'Phát hành cổ phiếu trả cổ tức tỷ lệ 30%, vốn điều lệ đạt 20.000 tỷ đồng.'], ['2025', 'Hoàn tất tăng vốn điều lệ lên 26.350 tỷ đồng qua chia cổ tức bằng cổ phiếu và ESOP.']],
@@ -2841,14 +2841,14 @@ const CMP_POOL = new Proxy(CMP_TARGET_STORE, {
 });
 
 const CMP_SECTIONS = [
-  ["VNDIRECT D-Rating & Sức mạnh Doanh nghiệp", "Đánh giá toàn diện sức mạnh cơ bản, định giá, kỹ thuật và dòng tiền D-Money (VND MCP)", [
+  ["VNDIRECT D-Rating & Sức mạnh Doanh nghiệp", "Đánh giá toàn diện sức mạnh cơ bản, định giá, kỹ thuật và dòng tiền D-Money (VNDIRECT)", [
     { l: "Điểm D-Rating tổng thể (sao)", k: "vnd", hl: true },
     { l: "Trụ cột 1: Sức mạnh cơ bản (/100)", k: "vnd", hl: true },
     { l: "Trụ cột 2: Định giá hấp dẫn (/100)", k: "vnd", hl: true },
     { l: "Trụ cột 3: Xu hướng kỹ thuật (/100)", k: "vnd", hl: true },
     { l: "Trụ cột 4: Dòng tiền D-Money", k: "vnd" }
   ]],
-  ["Kỳ vọng & Đồng thuận Mục tiêu", "Đồng thuận khuyến nghị phân tích và định giá dự phóng Forward Valuation từ VND MCP", [
+  ["Kỳ vọng & Đồng thuận Mục tiêu", "Đồng thuận khuyến nghị phân tích và định giá dự phóng Forward Valuation từ VNDIRECT Research & Đồng thuận CTCK", [
     { l: "Khuyến nghị đồng thuận", k: "vnd" },
     { l: "Số CTCK khuyến nghị", k: "vnd" },
     { l: "Giá mục tiêu 12 tháng (nghìn đ)", k: "vnd", hl: true },
@@ -2858,7 +2858,7 @@ const CMP_SECTIONS = [
     { l: "Định giá DCF chiết khấu (nghìn đ)", k: "vnd" },
     { l: "Định giá PEG (lần)", k: "vnd" }
   ]],
-  ["Thị trường & Giá", "Dữ liệu khớp lệnh realtime và trạng thái thanh khoản từ DNSE MCP", [
+  ["Thị trường & Giá", "Dữ liệu khớp lệnh realtime và trạng thái thanh khoản theo thời gian thực", [
     { l: "Giá hiện tại (nghìn đ)", k: "dnse" },
     { l: "Thay đổi trong ngày (nghìn đ)", k: "dnse" },
     { l: "Thay đổi trong ngày (%)", k: "dnse" },
@@ -2874,7 +2874,7 @@ const CMP_SECTIONS = [
     { l: "Sàn niêm yết", k: "dnse" },
     { l: "Ngành", k: "dnse" }
   ]],
-  ["Định giá Hiện hành", "Bộ chỉ số định giá P/E, P/B, EV/EBITDA từ DNSE MCP", [
+  ["Định giá Hiện hành", "Bộ chỉ số định giá P/E, P/B, EV/EBITDA theo thời gian thực", [
     { l: "P/E (lần)", k: "dnse", hl: true },
     { l: "P/B (lần)", k: "dnse", hl: true },
     { l: "P/S (lần)", k: "dnse" },
@@ -3041,7 +3041,7 @@ const MARKET_NEWS = [
     content: 'HĐQT CTCP FPT vừa thông qua nghị quyết chi trả cổ tức tiền mặt đợt 1 năm 2026 với tỷ lệ 15% mệnh giá (mỗi cổ phiếu nhận 1.500 đồng). Ngày giao dịch không hưởng quyền (GDKHQ) là 15/10/2026 và ngày thanh toán là 30/10/2026.<br><br>FPT duy trì chính sách trả cổ tức tiền mặt đều đặn kết hợp cổ tức bằng cổ phiếu hàng năm nhờ dòng tiền thuần từ hoạt động kinh doanh (Operating Cash Flow) luôn thặng dư trên 7.000 tỷ đồng mỗi năm.',
     category: 'Cổ tức',
     time: '10:50 Hôm nay',
-    source: 'VNDIRECT MCP Events',
+    source: 'VNDIRECT Research Events',
     sentiment: 'TÍCH CỰC',
     impact: 'Trung bình',
     tickers: [{ s: 'FPT', c: 1.8 }],
@@ -3111,7 +3111,7 @@ const MARKET_NEWS = [
     content: 'Ủy ban Chứng khoán Nhà nước đã có văn bản thông báo nhận đầy đủ hồ sơ phát hành cổ phiếu để trả cổ tức của CTCP Tập đoàn Hòa Phát. Với tỷ lệ thực hiện 10:1 (cổ đông sở hữu 10 cổ phiếu nhận thêm 1 cổ phiếu mới), nguồn vốn thực hiện lấy từ lợi nhuận sau thuế chưa phân phối lũy kế trên BCTC kiểm toán.',
     category: 'Cổ tức',
     time: 'Hôm qua',
-    source: 'VNDIRECT MCP Events',
+    source: 'VNDIRECT Research Events',
     sentiment: 'TÍCH CỰC',
     impact: 'Trung bình',
     tickers: [{ s: 'HPG', c: 1.45 }],
@@ -3153,7 +3153,7 @@ const MARKET_NEWS = [
     content: 'Động thái tăng vốn quy mô lớn này đã được Chính phủ và Ngân hàng Nhà nước phê duyệt chủ trương, nhằm gia tăng năng lực tài chính và bảo đảm hệ số an toàn vốn CAR theo chuẩn mực Basel III. Sau đợt chia cổ tức cổ phiếu, VCB cũng sẽ triển khai phương án phát hành riêng lẻ 6.5% vốn cho nhà đầu tư tài chính chiến lược nước ngoài.',
     category: 'Cổ tức',
     time: '08/10',
-    source: 'VNDIRECT MCP Events',
+    source: 'VNDIRECT Research Events',
     sentiment: 'TÍCH CỰC',
     impact: 'Cao',
     tickers: [{ s: 'VCB', c: 0.82 }],
@@ -3247,11 +3247,11 @@ const MARKET_NEWS = [
 ];
 
 const DIVIDEND_CALENDAR = [
-  { t: 'FPT', date: '15/10/2026', type: 'Tiền mặt', val: '1.500 đ/cp (15%)', payDate: '30/10/2026', src: 'VNDIRECT MCP' },
+  { t: 'FPT', date: '15/10/2026', type: 'Tiền mặt', val: '1.500 đ/cp (15%)', payDate: '30/10/2026', src: 'VNDIRECT Research' },
   { t: 'HPG', date: '18/10/2026', type: 'Cổ phiếu', val: 'Tỷ lệ 10% (10:1)', payDate: '15/11/2026', src: 'SSI MCP' },
-  { t: 'VCB', date: '22/10/2026', type: 'Cổ phiếu', val: 'Tỷ lệ 38.8%', payDate: '30/11/2026', src: 'VNDIRECT MCP' },
+  { t: 'VCB', date: '22/10/2026', type: 'Cổ phiếu', val: 'Tỷ lệ 38.8%', payDate: '30/11/2026', src: 'VNDIRECT Research' },
   { t: 'MSB', date: '25/10/2026', type: 'Hỗn hợp', val: '15% CP + 500 đ tiền mặt', payDate: '10/11/2026', src: 'SSI MCP' },
-  { t: 'TCB', date: '28/10/2026', type: 'Tiền mặt', val: '1.500 đ/cp (15%)', payDate: '15/11/2026', src: 'VNDIRECT MCP' },
+  { t: 'TCB', date: '28/10/2026', type: 'Tiền mặt', val: '1.500 đ/cp (15%)', payDate: '15/11/2026', src: 'VNDIRECT Research' },
   { t: 'VNM', date: '02/11/2026', type: 'Tiền mặt', val: '2.000 đ/cp (20%)', payDate: '20/11/2026', src: 'SSI MCP' }
 ];
 
@@ -3764,9 +3764,8 @@ function stockHeader() {
       </div>
     </div>
 
-    <!-- BOTTOM ROW: QUICK TICKER SWITCHER + MCP CLUSTER -->
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding-top:6px;border-top:1px dashed var(--line)">
-      <!-- QUICK TICKER SWITCHER -->
+    <!-- BOTTOM ROW: QUICK TICKER SWITCHER -->
+    <div style="display:flex;align-items:center;gap:8px;padding-top:6px;border-top:1px dashed var(--line);flex-wrap:wrap">
       <div class="c360-quick-switch" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
         <span style="font-size:11px;color:var(--ink3)">Mã nhanh:</span>
         ${['MSB', 'FPT', 'HPG', 'VCB', 'TCB', 'SSI', 'VNM', 'MWG', 'MBB', 'VND'].map(tk => `
@@ -3775,34 +3774,6 @@ function stockHeader() {
             <span>${tk}</span>
           </button>
         `).join('')}
-      </div>
-
-      <!-- MCP CLUSTER -->
-      <div class="mcp-cluster" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-        <div class="dnse-mcp-badge" onclick="openDnseMcpModal('dnse')" title="DNSE Model Context Protocol Server (mcp.dnse.com.vn)">
-          <span class="mcp-dot"></span>
-          <div class="mcp-info"><span class="mcp-title">DNSE MCP</span><span class="mcp-sub">7 Tools</span></div>
-          <button class="mcp-btn" onclick="event.stopPropagation(); syncDnseMcpLive();" title="Đồng bộ dữ liệu DNSE">↻</button>
-        </div>
-        <div class="vnd-mcp-badge" onclick="openDnseMcpModal('vnd')" title="VNDIRECT Model Context Protocol Server (mcp.vndirect.com.vn)">
-          <span class="vnd-dot"></span>
-          <div class="mcp-info"><span class="vnd-title">VND MCP</span><span class="vnd-sub">9 Tools</span></div>
-          <button class="vnd-btn" onclick="event.stopPropagation(); syncVndMcpLive();" title="Đồng bộ dữ liệu VNDIRECT">↻</button>
-        </div>
-        <div class="fin-mcp-badge" onclick="openDnseMcpModal('fin')" title="FINHAY Model Context Protocol Server (mcp.finhay.com.vn)">
-          <span class="fin-dot"></span>
-          <div class="mcp-info"><span class="fin-title">FINHAY MCP</span><span class="fin-sub">6 Tools</span></div>
-          <button class="fin-btn" onclick="event.stopPropagation(); syncFinhayMcpLive();" title="Đồng bộ dữ liệu Finhay">↻</button>
-        </div>
-        <div class="ssi-mcp-badge" onclick="openDnseMcpModal('ssi')" title="SSI Model Context Protocol Server (mcp.ssi.com.vn)">
-          <span class="ssi-dot"></span>
-          <div class="mcp-info"><span class="ssi-title">SSI MCP</span><span class="ssi-sub">8 Tools · 6 Res</span></div>
-          <button class="ssi-btn" onclick="event.stopPropagation(); syncSsiMcpLive();" title="Đồng bộ dữ liệu SSI">↻</button>
-        </div>
-        <div class="mcp-tag" onclick="openDnseMcpModal('logo')" title="Logo &amp; Brand Identity MCP Server" style="background:rgba(99,102,241,0.12);color:#6366f1;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:10.5px;font-weight:700;display:flex;align-items:center;gap:4px;border:1px solid rgba(99,102,241,0.25)">
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          <span>LOGO MCP ↗</span>
-        </div>
       </div>
     </div>
   </div>
@@ -3931,32 +3902,7 @@ function vOverview() {
     const tgt = vnd ? vnd.consensus.target_price_fmt : '---';
     const upside = vnd ? vnd.consensus.upside_pct : '20.0';
 
-    return `<div class="dnse-sync-banner">
-      <div class="dnse-sync-left">
-        <span class="dnse-icon">⚡</span>
-        <div>
-          <div class="dnse-sync-title" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <span>Đã kết nối <b>QUAD-MCP MULTI-SOURCE</b></span>
-            <span class="mcp-tag dnse">DNSE · 7 Tools</span>
-            <span class="mcp-tag vnd">VNDIRECT · 9 Tools</span>
-            <span class="mcp-tag fin">FINHAY · 6 Tools</span>
-            <span class="mcp-tag ssi">SSI · 8 Tools &amp; 6 Res</span>
-            <span class="mcp-tag" style="background:#e0e7ff;color:#4338ca;font-weight:700;cursor:pointer" onclick="openDnseMcpModal('logo')">BRANDFETCH · Logo MCP</span>
-            <span class="mcp-tag-sym">${STOCK.sym}</span>
-          </div>
-          <div class="dnse-sync-desc" style="display:flex;flex-direction:column;gap:3px;margin-top:4px">
-            <div><b class="dnse-brand-text">DNSE (mcp.dnse.com.vn):</b> P/E <b>${peVal}</b> · P/B <b>${pbVal}</b> · ROE <b>${roeVal}</b> · Vốn hoá <b>${capVal}</b> · Nến giá OHLCV Streaming</div>
-            <div><b class="vnd-brand-text">VNDIRECT (mcp.vndirect.com.vn):</b> D-Rating <b>${dScore}★</b> (${dStars}) · Đồng thuận: <b class="rec-text">${rec}</b> · Giá mục tiêu: <b class="tgt-text">${tgt}</b> (<span class="upside-text">+${upside}% Upside</span>)</div>
-            <div><b style="color:#dc2626">SSI (mcp.ssi.com.vn):</b> iBoard Market Data · BCTC 3 Báo cáo (KQKD, CĐKT, LCTT) · 6 Sổ tay tra cứu chuẩn <code>ssi://marketdata/...</code></div>
-            <div><b style="color:#6366f1">LOGO MCP (mcp.brandfetch.io &amp; logo.dev):</b> Chuẩn hóa nhận diện thương hiệu Vector SVG, Brand Color Palette &amp; Corporate Identity</div>
-          </div>
-        </div>
-      </div>
-      <div class="dnse-sync-actions">
-        <button class="dnse-action-btn" onclick="openDnseMcpModal('all')">Xem JSON Payload MCP (30 Tools &amp; 6 Resources)</button>
-        <button class="dnse-action-btn primary" onclick="syncAllMcpLive()">↻ Đồng bộ tất cả 4 MCP</button>
-      </div>
-    </div>
+    return `
 
     <!-- THẺ THÔNG TIN CHUYÊN SÂU VNDIRECT D-RATING & CONSENSUS (THEO MARIS SYSTEM DESIGN) -->
     ${vnd ? `<div class="mcp-cards-row" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));gap:12px;margin-bottom:12px">
@@ -3964,7 +3910,7 @@ function vOverview() {
       <div class="mcp-card">
         <div class="mcp-card-head">
           <span class="mcp-card-title vnd">
-            <span>🟠</span> VNDIRECT D-RATING
+            <span>⭐</span> XẾP HẠNG ĐẦU TƯ D-RATING
           </span>
           <span class="mcp-card-badge">${vnd.drating.stars} (${vnd.drating.score}/5.0)</span>
         </div>
@@ -4011,14 +3957,14 @@ function vOverview() {
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center">
         <span class="cap">Thay đổi đáng chú ý</span>
-        <span style="font-size:9.5px;padding:1px 5px;border-radius:3px;background:rgba(2,132,199,0.12);color:#0284c7;font-weight:700">DNSE MCP</span>
+        
       </div>
       <div class="chg-list" style="margin-top:6px">${CHANGES.map(([l, v, u]) => `<div><span>${l}</span><span class="v ${cls(v)}">${v > 0 ? '▲' : '▼'} ${sgn(v, 1, u)}<small>YoY</small></span></div>`).join('')}</div>
     </div>
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center">
         <span class="cap">Sức khỏe tài chính</span>
-        <span style="font-size:9.5px;padding:1px 5px;border-radius:3px;background:rgba(2,132,199,0.12);color:#0284c7;font-weight:700">DNSE MCP</span>
+        
       </div>
       <div style="margin-top:8px">${radar()}</div>
       <div class="legend"><span><i style="background:#009253"></i>${curSym} (${curScore})</span><span><i style="background:#E58E02"></i>Trung bình ngành (${indScore})</span></div>
@@ -4026,7 +3972,7 @@ function vOverview() {
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center">
         <span class="cap">Định giá tương quan</span>
-        <span style="font-size:9.5px;padding:1px 5px;border-radius:3px;background:rgba(234,88,12,0.12);color:#ea580c;font-weight:700">VND MCP · Valuation</span>
+        
       </div>
       <div class="kpi4">
         <div><span>P/B hiện tại</span><b>${fmtVN(valData.pbVal, 2)}</b></div>
@@ -4104,7 +4050,7 @@ function vProfile() {
             <span title="Accent: ${bInfo.accent}" style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${bInfo.accent};border:1px solid rgba(0,0,0,0.15)"></span>
           </span>
           <span>•</span>
-          <span style="color:#10b981;font-weight:600">✓ Verified Brand Identity (Brandfetch &amp; DNSE MCP)</span>
+          <span style="color:#10b981;font-weight:600">✓ Nhận diện thương hiệu &amp; Hồ sơ doanh nghiệp chính thức</span>
         </div>
       </div>
     </div>
@@ -4151,7 +4097,7 @@ function vFinance() {
   return `<div class="fin">
     <div class="fin-l">
       <div style="padding:8px 8px 0">${stabs(subs, S.finSub, 'finsub')}</div>
-      <div class="fin-bar">${segCtl(['Quý', 'Năm'], yr ? 'Năm' : 'Quý', 'finper')}<span style="display:inline-flex;align-items:center;gap:6px"><span class="mcp-tag ssi" style="cursor:pointer;font-size:10px" onclick="openDnseMcpModal('ssi')">SSI MCP · BCTC 3 Báo cáo &amp; Chỉ số ↗</span><span class="r">${k.unit}</span></span></div>
+      <div class="fin-bar">${segCtl(['Quý', 'Năm'], yr ? 'Năm' : 'Quý', 'finper')}<span style="display:inline-flex;align-items:center;gap:6px"><span class="tag" style="cursor:pointer;font-size:10px" onclick="openDnseMcpModal('ssi')">SSI MCP · BCTC 3 Báo cáo &amp; Chỉ số ↗</span><span class="r">${k.unit}</span></span></div>
       <div class="tscroll"><table class="t fin-t"><thead><tr><th rowspan="2" style="width:240px;min-width:200px">Chỉ tiêu</th>${heads.map(h => `<th colspan="2" class="per">${h}</th>`).join('')}</tr><tr>${heads.map(() => `<th class="g0">Giá trị</th><th class="gr">±% kỳ trước</th>`).join('')}</tr></thead>
       <tbody>${rows.map(r => `<tr><td>${r[0]}</td>${r.slice(1).map(cell).join('')}</tr>`).join('')}</tbody></table></div>
     </div>
@@ -4603,11 +4549,11 @@ function fmtCmp(o, row) {
   return { h: s, c: col };
 }
 
-const srcTip = r => `data-tip="${r.k === 'dnse' ? 'DNSE MCP Server · ' + esc(r.l) : r.k === 'vnd' ? 'VNDIRECT MCP Server · ' + esc(r.l) : r.k === 'fin' ? 'Finhay Market Data · ' + esc(r.l) : r.src ? 'Datafeed FiinGroup · ' + esc(r.src) : ''}" class="srcl"`;
+const srcTip = r => `data-tip="${r.k === 'dnse' ? 'Dữ liệu DNSE · ' + esc(r.l) : r.k === 'vnd' ? 'VNDIRECT Research Server · ' + esc(r.l) : r.k === 'fin' ? 'Finhay Market Data · ' + esc(r.l) : r.src ? 'Datafeed FiinGroup · ' + esc(r.src) : ''}" class="srcl"`;
 
 const srcTag = r => {
-  if (r.k === 'dnse') return `<span class="src" style="background:#0284c7;color:#fff" data-tip="DNSE MCP Server (mcp.dnse.com.vn)">DNSE</span>`;
-  if (r.k === 'vnd') return `<span class="src" style="background:#ea580c;color:#fff" data-tip="VNDIRECT MCP Server (mcp.vndirect.com.vn)">VND</span>`;
+  if (r.k === 'dnse') return `<span class="src" style="background:#0284c7;color:#fff" data-tip="Dữ liệu giá & giao dịch DNSE">DNSE</span>`;
+  if (r.k === 'vnd') return `<span class="src" style="background:#ea580c;color:#fff" data-tip="VNDIRECT Research Server (mcp.vndirect.com.vn)">VND</span>`;
   if (r.k === 'fin') return `<span class="src" style="background:#059669;color:#fff" data-tip="Finhay Market Data">FIN</span>`;
   if (r.k === 'p') return `<span class="src p" data-tip="${SRC_P}">Giá SBSI</span>`;
   if (r.k === 'x') return `<span class="src x" data-tip="${SRC_X}">Ngoài datafeed</span>`;
@@ -4700,7 +4646,7 @@ function renderCmpDratingView(T) {
 
   return `<div style="margin-top:16px">
     <div style="margin-bottom:12px;font-size:13px;color:var(--ink2)">
-      Mô hình xếp hạng <b>DStock D-Rating độc quyền từ VNDIRECT MCP</b> chấm điểm định lượng 4 trụ cột từ 0–100 điểm và tổng hợp xếp hạng từ 1 đến 5 sao.
+      Mô hình xếp hạng <b>DStock D-Rating độc quyền từ VNDIRECT Research</b> chấm điểm định lượng 4 trụ cột từ 0–100 điểm và tổng hợp xếp hạng từ 1 đến 5 sao.
     </div>
     <div class="cmp-dr-grid">${cardsHtml}</div>
   </div>`;
@@ -4753,7 +4699,7 @@ function renderCmpValuationView(T) {
 
   return `<div style="margin-top:16px">
     <div style="margin-bottom:12px;font-size:13px;color:var(--ink2)">
-      Tổng hợp định giá dự phóng và đồng thuận từ <b>VNDIRECT Research MCP & các CTCK hàng đầu</b>.
+      Tổng hợp định giá dự phóng và đồng thuận từ <b>VNDIRECT Research & các CTCK hàng đầu</b>.
     </div>
     <div class="cmp-val-grid">${cardsHtml}</div>
   </div>`;
@@ -4805,7 +4751,7 @@ function renderCmpPerfView(T) {
 
   return `<div class="cmp-perf-wrap">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
-      <div style="font-size:14px;font-weight:600">Biểu đồ Tương quan Hiệu suất Giá (% Normalized từ DNSE & Finhay MCP)</div>
+      <div style="font-size:14px;font-weight:600">Biểu đồ Tương quan Hiệu suất Giá (% Chuẩn hóa)</div>
       <div class="cmp-perf-periods">
         ${['1W', '1M', '3M', '6M', '1Y', 'YTD'].map(per => `<button class="cmp-period-btn ${period === per ? 'active' : ''}" data-act="cmpperiod" data-v="${per}">${per}</button>`).join('')}
       </div>
@@ -4923,7 +4869,7 @@ function vCompare() {
         <div class="rs">
           <b>${t}</b>
           <span class="ex">${p.ex}</span>
-          <span class="cmp-drating-badge" title="D-Rating VNDIRECT MCP">${dScore}★ ${rec.split(' ')[0]}</span>
+          <span class="cmp-drating-badge" title="Xếp hạng D-Rating VNDIRECT">${dScore}★ ${rec.split(' ')[0]}</span>
         </div>
         <p>${p.n}</p>
         <div class="pr">${p.p.toFixed(2)}<small class="${pc}">${ps}</small></div>
@@ -4952,29 +4898,11 @@ function vCompare() {
 
   return `<div class="page" style="padding-bottom:32px">
     <div class="ph1" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:12px">
         <h2 style="margin:0">So sánh cổ phiếu</h2>
-        <div class="cmp-mcp-cluster">
-          <div class="dnse-mcp-badge" data-act="cmpmcpmodal" data-server="dnse" title="Thanh tra DNSE MCP Payload cho các mã đang so sánh" style="cursor:pointer;margin-left:0">
-            <span class="mcp-dot"></span>
-            <div class="mcp-info">
-              <span class="mcp-title">DNSE MCP LIVE</span>
-              <span class="mcp-sub">mcp.dnse.com.vn · 6 Tools</span>
-            </div>
-            <button class="mcp-btn" data-act="cmpsync" title="Đồng bộ lại từ DNSE MCP">↻</button>
-          </div>
-          <div class="vnd-mcp-badge" data-act="cmpmcpmodal" data-server="vnd" title="Thanh tra VNDIRECT MCP Payload cho các mã đang so sánh" style="cursor:pointer">
-            <span class="vnd-dot"></span>
-            <div class="mcp-info">
-              <span class="vnd-title">VND MCP LIVE</span>
-              <span class="vnd-sub">mcp.vndirect.com.vn · 6 Tools</span>
-            </div>
-            <button class="vnd-btn" data-act="cmpsync" title="Đồng bộ lại từ VND MCP">↻</button>
-          </div>
-        </div>
       </div>
       <div class="cmp-header-actions">
-        <button class="btn sm" data-act="cmpsync" title="Đồng bộ lại từ cả 2 MCP Servers">↻ Đồng bộ lại từ MCPs</button>
+        <button class="btn sm" data-act="cmpsync" title="Làm mới dữ liệu so sánh">↻ Làm mới</button>
         <button class="btn sm" data-act="cmpexport" title="Xuất ma trận so sánh dạng CSV">📥 Xuất CSV</button>
         ${S.cmpTab === 'all' ? `<button class="btn sm" data-act="cmpall">${S.cmpClosed.size ? 'Mở tất cả nhóm' : 'Thu gọn tất cả'}</button>` : ''}
       </div>
@@ -5017,16 +4945,11 @@ function vReports() {
   const pg = p => `<button class="${R.page === p ? 'on' : ''}" data-act="page" data-v="${p}">${p}</button>`;
   return `<div class="page flat" style="padding-bottom:40px">
     <div class="ph1 rep-h" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:12px">
         <h2 style="margin:0">Báo cáo &amp; Insights</h2>
-        <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span class="mcp-tag vnd" style="cursor:pointer;font-size:10px" onclick="openDnseMcpModal('vnd')" title="VNDIRECT MCP Research & Consensus">VNDIRECT MCP · 9 Tools ↗</span>
-          <span class="mcp-tag ssi" style="cursor:pointer;font-size:10px" onclick="openDnseMcpModal('ssi')" title="SSI MCP Nhận định ngành & rổ chỉ số">SSI MCP · 8 Tools &amp; 6 Res ↗</span>
-          <span class="mcp-tag fin" style="cursor:pointer;font-size:10px" onclick="openDnseMcpModal('fin')" title="FINHAY MCP Vĩ mô & Hàng hóa">FINHAY MCP · Vĩ mô ↗</span>
-        </div>
       </div>
       <button class="btn sm" onclick="syncReportsMcpLive()" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:4px 10px;border-radius:6px;cursor:pointer">
-        <span style="color:#22c55e">●</span> Đồng bộ live MCP
+        <span style="color:#22c55e">●</span> Làm mới báo cáo
       </button>
     </div>
     <div class="rep"><div class="rep-l">
@@ -5035,7 +4958,7 @@ function vReports() {
       <div class="tscroll"><table class="t upper rep-t"><thead><tr><th style="width:112px">Thời gian</th><th>Tiêu đề báo cáo</th><th style="width:104px">Loại</th><th style="width:112px">Khuyến nghị</th><th class="rt" style="width:100px">Giá mục tiêu</th><th class="rt" style="width:80px">Upside</th><th class="rt" style="width:88px">Trang</th></tr></thead>
       <tbody>${rows.map(r => `<tr class="click" data-act="report" data-v="${REPORTS.indexOf(REPORTS.find(x => x[1] === r[1]))}"><td class="muted">${r[0]}</td><td class="ti" title="${esc(r[1])}">${r[1]}</td><td class="ink2">${r[2]}</td><td>${r[3] === '—' ? '<span class="muted">—</span>' : `<span class="rec rec-${recKey(r[3])}">${r[3]}</span>`}</td><td class="rt ${r[4] ? 'num' : 'muted'}">${r[4] ? fmtVN(r[4]) : '—'}</td><td class="rt ${r[5] != null ? 'num ' + cls(r[5]) : 'muted'}">${r[5] != null ? (r[5] > 0 ? '+' : '-') + fmtVN(Math.abs(r[5]), 1) + '%' : '—'}</td><td class="rt num muted">${r[6]}</td></tr>`).join('') || `<tr><td colspan="7" class="muted" style="padding:24px 32px;height:auto">Không tìm thấy báo cáo khớp “${esc(R.q)}”.</td></tr>`}</tbody></table></div>
       <div class="pag"><span>Hiển thị ${rows.length ? (R.page - 1) * 20 + 1 : 0}–${(R.page - 1) * 20 + rows.length} trong ${fmtVN(total)} báo cáo</span><div class="r"><button data-act="page" data-v="${Math.max(1, R.page - 1)}" aria-label="Trang trước">‹</button>${[1, 2, 3].filter(p => p <= pages).map(pg).join('')}${pages > 4 ? `<span>…</span>${pg(pages)}` : ''}<button data-act="page" data-v="${Math.min(pages, R.page + 1)}" aria-label="Trang sau">›</button></div></div>
-      <div class="rep-foot"><span>Báo cáo do Khối Phân tích Maris và các đơn vị nghiên cứu đối tác (VNDIRECT Research, SSI Research, FiinGroup) phát hành; bản quyền thuộc về đơn vị phát hành. Nội dung mang tính tham khảo, không cấu thành khuyến nghị đầu tư.</span><span id="rep-updated-time">Cập nhật Quad-MCP Live · 13:15:30 09/10/2026</span></div>
+      <div class="rep-foot"><span>Báo cáo do Khối Phân tích Maris và các đơn vị nghiên cứu đối tác (VNDIRECT Research, SSI Research, FiinGroup) phát hành; bản quyền thuộc về đơn vị phát hành. Nội dung mang tính tham khảo, không cấu thành khuyến nghị đầu tư.</span><span id="rep-updated-time">Cập nhật tự động theo thời gian thực</span></div>
     </div>
     <aside class="rep-r">
       <div class="rblk"><div class="hd"><span class="cap" style="text-transform:none">Báo cáo nổi bật</span><button class="chip sp" data-act="repspan">${R.span} ${I.chev}</button></div>
@@ -5102,28 +5025,28 @@ let MARKET_INDICES = [
     name: 'VN-INDEX', ex: 'HOSE', score: 1738.97, chg: -14.42, pct: -0.82,
     vol: '1.185.4M', val: '31.420 tỷ',
     adv: 142, ceiling: 8, ref: 58, dec: 285, floor: 6,
-    mcp_src: 'DNSE MCP',
+    mcp_src: 'DNSE',
     spark: [1754.2, 1752.1, 1748.5, 1746.0, 1742.3, 1745.8, 1740.1, 1738.97]
   },
   {
     name: 'VN30-INDEX', ex: 'HOSE', score: 1877.00, chg: -17.20, pct: -0.91,
     vol: '445.8M', val: '16.850 tỷ',
     adv: 6, ceiling: 1, ref: 2, dec: 22, floor: 0,
-    mcp_src: 'DNSE MCP',
+    mcp_src: 'DNSE',
     spark: [1895.4, 1892.0, 1888.6, 1885.2, 1880.0, 1883.5, 1878.2, 1877.00]
   },
   {
     name: 'HNX-INDEX', ex: 'HNX', score: 256.22, chg: -3.60, pct: -1.39,
     vol: '98.5M', val: '2.450 tỷ',
     adv: 62, ceiling: 4, ref: 51, dec: 118, floor: 3,
-    mcp_src: 'DNSE MCP',
+    mcp_src: 'DNSE',
     spark: [260.1, 259.4, 258.0, 257.5, 256.8, 257.1, 256.22]
   },
   {
     name: 'UPCOM-INDEX', ex: 'UPCOM', score: 125.49, chg: 0.20, pct: 0.16,
     vol: '62.4M', val: '980 tỷ',
     adv: 165, ceiling: 14, ref: 95, dec: 132, floor: 2,
-    mcp_src: 'DNSE MCP',
+    mcp_src: 'DNSE',
     spark: [125.1, 125.2, 125.35, 125.3, 125.42, 125.49]
   }
 ];
@@ -5162,7 +5085,7 @@ function syncMarketDataTick(isManual) {
   });
 
   if (isManual && typeof toast === 'function') {
-    toast(`↻ TRIPLE-MCP LIVE: Đã đồng bộ lúc ${session.timeStr} từ DNSE (Chỉ số), VNDIRECT (D-Money) & FINHAY (Vĩ mô)`);
+    toast(`↻ Đã cập nhật dữ liệu thị trường lúc ${session.timeStr}`);
   }
 }
 
@@ -5186,15 +5109,24 @@ const MARKET_FOREIGN_TOP_SELL = [
 ];
 
 const GLOBAL_INDICES = [
+  // Chứng khoán Quốc tế
   { name: 'S&P 500', region: 'Mỹ', val: '5,785.40', chg: '+24.80', pct: '+0.43%', up: true },
   { name: 'Dow Jones', region: 'Mỹ', val: '42,512.00', chg: '+145.20', pct: '+0.34%', up: true },
   { name: 'Nasdaq 100', region: 'Mỹ', val: '18,295.60', chg: '+112.50', pct: '+0.62%', up: true },
   { name: 'Nikkei 225', region: 'Nhật Bản', val: '39,380.00', chg: '+220.00', pct: '+0.56%', up: true },
   { name: 'Hang Seng', region: 'Hồng Kông', val: '21,250.00', chg: '+380.00', pct: '+1.82%', up: true },
+  
+  // Hàng hóa & Ngoại tệ
   { name: 'Dầu Brent', region: 'Hàng hóa', val: '78.50 $/thùng', chg: '+1.25', pct: '+1.62%', up: true },
   { name: 'Vàng TG (Spot)', region: 'Kim loại', val: '2,658.40 $/oz', chg: '+8.50', pct: '+0.32%', up: true },
-  { name: 'Vàng SJC (Finhay)', region: 'Việt Nam', val: '85.00 tr/lượng', chg: '0.00', pct: '0.00%', up: true },
-  { name: 'Tỷ giá USD/VND', region: 'VCB', val: '24,850 đ', chg: '+15', pct: '+0.06%', up: true }
+  { name: 'Vàng SJC', region: 'Việt Nam', val: '85.00 tr/lượng', chg: '0.00', pct: '0.00%', up: true },
+  { name: 'Tỷ giá USD/VND', region: 'VCB FX', val: '24,850 đ', chg: '+15', pct: '+0.06%', up: true },
+
+  // Tiền mã hóa Quốc tế (Nguồn: Binance)
+  { name: 'Bitcoin (BTC/USDT)', region: 'Binance', val: '64,280.50 $', chg: '+1,350.20', pct: '+2.15%', up: true },
+  { name: 'Ethereum (ETH/USDT)', region: 'Binance', val: '2,586.20 $', chg: '+46.80', pct: '+1.84%', up: true },
+  { name: 'BNB (BNB/USDT)', region: 'Binance', val: '588.40 $', chg: '+17.80', pct: '+3.12%', up: true },
+  { name: 'Solana (SOL/USDT)', region: 'Binance', val: '154.60 $', chg: '+6.35', pct: '+4.28%', up: true }
 ];
 
 function renderSparklineSVG(pts, isUp) {
@@ -5226,7 +5158,7 @@ function vMarket() {
       <div class="mkt-idx-head">
         <div style="display:flex;align-items:center;gap:6px">
           <b style="font-size:15px">${idx.name}</b>
-          <span style="font-size:9.5px;padding:1px 5px;border-radius:3px;background:rgba(2,132,199,0.12);color:#0284c7;font-weight:700">DNSE MCP</span>
+          
         </div>
         <span style="font-size:11px;color:var(--ink3)">${idx.ex}</span>
       </div>
@@ -5275,7 +5207,7 @@ function vMarket() {
         <div class="mkt-box">
           <div class="mkt-box-title" style="color:var(--up)">
             <span>🟢 Top Khối Ngoại MUA RÒNG (Phiên hôm nay)</span>
-            <span style="font-size:11px;color:var(--ink3)">DNSE &amp; VND MCP</span>
+            <span style="font-size:11px;color:var(--ink3)">Thị trường</span>
           </div>
           <div>
             ${MARKET_FOREIGN_TOP_BUY.map(b => `<div class="mkt-mover-row click" data-act="stock" data-v="${b.sym}">
@@ -5298,7 +5230,7 @@ function vMarket() {
         <div class="mkt-box">
           <div class="mkt-box-title" style="color:var(--down)">
             <span>🔴 Top Khối Ngoại BÁN RÒNG (Phiên hôm nay)</span>
-            <span style="font-size:11px;color:var(--ink3)">DNSE &amp; VND MCP</span>
+            <span style="font-size:11px;color:var(--ink3)">Thị trường</span>
           </div>
           <div>
             ${MARKET_FOREIGN_TOP_SELL.map(s => `<div class="mkt-mover-row click" data-act="stock" data-v="${s.sym}">
@@ -5373,7 +5305,7 @@ function vMarket() {
   } else if (tab === 'global') {
     tabContent = `<div style="margin-top:16px">
       <div style="font-size:13px;color:var(--ink2);margin-bottom:12px">
-        Dữ liệu chỉ số thị trường thế giới, tỷ giá và hàng hóa chiến lược (Vàng, Dầu thô) kết nối qua <b>Finhay &amp; Macro MCP Data Feed</b>.
+        Dữ liệu chỉ số chứng khoán thế giới, hàng hóa chiến lược và thị trường tiền mã hóa theo thời gian thực (Nguồn: Quốc tế &amp; Binance).
       </div>
       <div class="mkt-global-grid">
         ${GLOBAL_INDICES.map(g => `<div class="mkt-global-card">
@@ -5420,7 +5352,7 @@ function vMarket() {
         <div class="mkt-box">
           <div class="mkt-box-title">
             <span>🔥 Hiệu Suất &amp; Dòng Tiền Theo Ngành (Sector Heatmap)</span>
-            <span style="font-size:11px;color:var(--ink3)">DNSE MCP Sector</span>
+            <span style="font-size:11px;color:var(--ink3)">Toàn thị trường</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px">
             ${MARKET_SECTORS.map(s => {
@@ -5502,68 +5434,17 @@ function vMarket() {
 
   return `<div class="page" style="padding-bottom:32px">
     <!-- Header -->
-    <div class="ph1" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <div class="ph1" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:12px">
         <h2 style="margin:0">Tổng quan thị trường</h2>
-        <div class="cmp-mcp-cluster">
-          <div class="dnse-mcp-badge" data-act="mktmcpmodal" data-server="dnse" title="Thanh tra DNSE MCP: Điểm số Chỉ số thị trường & Khớp lệnh" style="cursor:pointer;margin-left:0">
-            <span class="mcp-dot"></span>
-            <div class="mcp-info">
-              <span class="mcp-title">DNSE MCP LIVE</span>
-              <span class="mcp-sub">mcp.dnse.com.vn · market_get_indices</span>
-            </div>
-            <button class="mcp-btn" data-act="mktsync" title="Đồng bộ lại từ DNSE MCP">↻</button>
-          </div>
-          <div class="vnd-mcp-badge" data-act="mktmcpmodal" data-server="vnd" title="Thanh tra VNDIRECT MCP: D-Money & Phân bổ ngành" style="cursor:pointer">
-            <span class="vnd-dot"></span>
-            <div class="mcp-info">
-              <span class="vnd-title">VND MCP LIVE</span>
-              <span class="vnd-sub">mcp.vndirect.com.vn · D-Money & Phân bổ</span>
-            </div>
-            <button class="vnd-btn" data-act="mktsync" title="Đồng bộ lại từ VND MCP">↻</button>
-          </div>
-          <div class="fin-mcp-badge" data-act="mktmcpmodal" data-server="fin" title="Thanh tra FINHAY MCP: Vĩ mô, Vàng & Ngoại tệ" style="cursor:pointer">
-            <span class="fin-dot"></span>
-            <div class="mcp-info">
-              <span class="fin-title">FINHAY MCP LIVE</span>
-              <span class="fin-sub">mcp.finhay.com.vn · Vĩ mô & Vàng/FX</span>
-            </div>
-            <button class="fin-btn" data-act="mktsync" title="Đồng bộ lại từ FINHAY MCP">↻</button>
-          </div>
-          <div class="ssi-mcp-badge" data-act="mktmcpmodal" data-server="ssi" title="Thanh tra SSI MCP: iBoard Market Data & 6 Resources" style="cursor:pointer">
-            <span class="ssi-dot"></span>
-            <div class="mcp-info">
-              <span class="ssi-title">SSI MCP LIVE</span>
-              <span class="ssi-sub">mcp.ssi.com.vn · iBoard & Resources</span>
-            </div>
-            <button class="ssi-btn" data-act="mktsync" title="Đồng bộ lại từ SSI MCP">↻</button>
-          </div>
-        </div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <span style="font-size:12px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;background:var(--card-sub);padding:4px 10px;border-radius:4px;border:1px solid var(--line)">
           <span style="width:7px;height:7px;border-radius:50%;background:${session.isOpen ? 'var(--up)' : 'var(--warn)'}"></span>
           <b>${session.statusText}</b>
         </span>
-        <button class="btn sm" data-act="mktsync" title="Nhấn để kéo tick dữ liệu thời gian thực từ MCP">↻ Làm mới</button>
-        <button class="btn sm ghost" data-act="mcpdiag" title="Tìm hiểu cơ chế Realtime & Kiến trúc Sản phẩm">ℹ️ Chế độ Dữ liệu</button>
+        <button class="btn sm" data-act="mktsync" title="Nhấn để cập nhật dữ liệu thời gian thực">↻ Làm mới</button>
       </div>
-    </div>
-
-    <!-- Architecture & Prototype Mode Banner -->
-    <div class="dnse-sync-banner" style="margin-bottom:14px;padding:9px 14px;background:var(--card-sub);border:1px solid var(--line)">
-      <div class="dnse-sync-left">
-        <span style="font-size:14px">⚡</span>
-        <div style="font-size:11.5px;color:var(--ink2);line-height:1.45">
-          <b style="color:var(--ink)">Hệ sinh thái Quad-MCP:</b> 
-          <b style="color:#0284c7">DNSE</b> (Điểm số VN-Index, VN30, HNX, UPCOM) · 
-          <b style="color:#ea580c">VNDIRECT</b> (D-Money dòng tiền ngành &amp; Tác động chỉ số) · 
-          <b style="color:#059669">FINHAY</b> (Vĩ mô, Vàng SJC &amp; Thị trường Quốc tế) · 
-          <b style="color:#dc2626">SSI</b> (Market Data iBoard, BCTC 3 Báo cáo &amp; 6 Resources ssi://). 
-          Bấm <b>“↻ Làm mới”</b> để đồng bộ tick dữ liệu thời gian thực theo giờ máy tính <code style="color:var(--brand)">${session.timeStr}</code>.
-        </div>
-      </div>
-      <button class="dnse-action-btn" data-act="mcpdiag" style="padding:4px 10px;font-size:11px;flex-shrink:0">Chi tiết 4 MCP ↗</button>
     </div>
 
     <!-- Indices Cards -->
@@ -5641,7 +5522,7 @@ function vMarketNews() {
           </div>
         </div>
       </div>
-      <span class="mcp-tag ${d.src.includes('VND') ? 'vnd' : 'ssi'}" style="font-size:9px;flex-shrink:0">${d.src.split(' ')[0]}</span>
+      <span class="tag" style="font-size:9px;flex-shrink:0">${d.src.split(' ')[0]}</span>
     </div>
   `).join('');
 
@@ -5665,17 +5546,12 @@ function vMarketNews() {
   return `<div class="page flat mnews-page" style="padding-bottom:40px">
     <!-- Header -->
     <div class="ph1" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:12px">
         <h2 style="margin:0">Tin tức thị trường</h2>
-        <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span class="mcp-tag ssi" style="cursor:pointer;font-size:10px" onclick="openDnseMcpModal('ssi')" title="SSI MCP Market News & Announcements">SSI MCP · marketdata_list_company_news ↗</span>
-          <span class="mcp-tag vnd" style="cursor:pointer;font-size:10px" onclick="openDnseMcpModal('vnd')" title="VNDIRECT MCP Corporate Events & Flow">VNDIRECT MCP · Corporate Events ↗</span>
-          <span class="mcp-tag fin" style="cursor:pointer;font-size:10px" onclick="openDnseMcpModal('fin')" title="FINHAY MCP Macro & Commodities">FINHAY MCP · Vĩ mô & Hàng hóa ↗</span>
-        </div>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <button class="btn sm" onclick="syncMarketNewsMcpLive()" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:4px 10px;border-radius:6px;cursor:pointer">
-          <span style="color:#22c55e">●</span> Đồng bộ live MCP
+          <span style="color:#22c55e">●</span> Làm mới tin tức
         </button>
       </div>
     </div>
@@ -5689,9 +5565,9 @@ function vMarketNews() {
         <div style="width:1px;height:14px;background:var(--line)"></div>
         <div><span style="color:var(--ink3)">Sự kiện quyền & Cổ tức:</span> <b style="color:var(--brand);font-family:var(--mono)">12 sự kiện</b></div>
         <div style="width:1px;height:14px;background:var(--line)"></div>
-        <div><span style="color:var(--ink3)">Luồng dữ liệu:</span> <b style="color:#0284c7">SSI · VNDIRECT · FINHAY MCP Live</b></div>
+        <div><span style="color:var(--ink3)">Luồng dữ liệu:</span> <b style="color:#0284c7">Tổng hợp toàn thị trường</b></div>
       </div>
-      <div style="font-size:11px;color:var(--ink3)" id="mnews-updated-time">Cập nhật Quad-MCP Live · 14:15:20 09/10/2026</div>
+      <div style="font-size:11px;color:var(--ink3)" id="mnews-updated-time">Cập nhật tự động theo thời gian thực</div>
     </div>
 
     <!-- Category Tabs -->
@@ -5740,7 +5616,7 @@ function vMarketNews() {
               <div style="font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:6px">
                 <span>${heroStory.time}</span>
                 <span>·</span>
-                <span class="mcp-tag ssi" style="font-size:9.5px">${heroStory.source}</span>
+                <span class="tag" style="font-size:9.5px">${heroStory.source}</span>
               </div>
             </div>
 
@@ -5775,7 +5651,7 @@ function vMarketNews() {
                 <span>·</span>
                 <span class="tag" style="border-radius:3px">${n.category}</span>
                 <span class="mnews-sent-tag ${sentCls(n.sentiment)}">${n.sentiment}</span>
-                <span style="margin-left:auto;font-size:10.5px" class="mcp-tag ${n.mcpTool.includes('vnd') ? 'vnd' : (n.mcpTool.includes('fin') ? 'fin' : 'ssi')}">
+                <span style="margin-left:auto;font-size:10.5px" class="tag">
                   ${n.source}
                 </span>
               </div>
@@ -5818,7 +5694,7 @@ function vMarketNews() {
         <!-- Footer Note -->
         <div class="rep-foot mnews-foot">
           <span>Nguồn tin tức được tổng hợp và chuẩn hóa theo thời gian thực từ <b>SSI iBoard Market Data</b>, <b>VNDIRECT Research Corporate Events</b>, <b>Finhay Macro &amp; Wealth</b> và FiinTrade. Toàn bộ thông tin mang tính tham khảo và phân tích thị trường, không cấu thành lời chào mua bán chứng khoán.</span>
-          <span>Quad-MCP Ecosystem Engine v2.4</span>
+          
         </div>
       </div>
 
@@ -5830,7 +5706,7 @@ function vMarketNews() {
             <div class="mnews-widget-title">
               <span>📅</span> Lịch Cổ tức &amp; Sự kiện
             </div>
-            <span class="mcp-tag vnd" style="font-size:9.5px;cursor:pointer" onclick="openDnseMcpModal('vnd')">VNDIRECT MCP ↗</span>
+            
           </div>
           <div style="font-size:11px;color:var(--ink3);margin-bottom:10px">Các mã sắp đến ngày Giao dịch không hưởng quyền (GDKHQ):</div>
           ${divRowsHtml}
@@ -5842,7 +5718,7 @@ function vMarketNews() {
             <div class="mnews-widget-title">
               <span>🔥</span> Tâm điểm Tin tức &amp; Dòng tiền
             </div>
-            <span class="mcp-tag ssi" style="font-size:9.5px;cursor:pointer" onclick="openDnseMcpModal('ssi')">SSI MCP ↗</span>
+            
           </div>
           <div style="font-size:11px;color:var(--ink3);margin-bottom:8px">Top mã cổ phiếu được nhắc đến nhiều nhất trong 24 giờ qua:</div>
           <div style="border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg)">
@@ -5877,32 +5753,7 @@ function vMarketNews() {
           </div>
         </div>
 
-        <!-- Widget 4: Quad-MCP Feeds Connectivity Status -->
-        <div class="mnews-widget" style="border-bottom:0">
-          <div class="mnews-widget-head">
-            <div class="mnews-widget-title">
-              <span>⚡</span> Kết nối Quad-MCP Feeds
-            </div>
-            <button class="dnse-action-btn" style="padding:2px 8px;font-size:10px" data-act="mcpdiag">Chi tiết ↗</button>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px;font-size:11px">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--bg);border-radius:4px;border:1px solid var(--line)">
-              <span><b style="color:#dc2626">SSI MCP</b> · Tin tức iBoard &amp; Doanh nghiệp</span>
-              <span style="color:#22c55e;font-weight:600">● 15ms</span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--bg);border-radius:4px;border:1px solid var(--line)">
-              <span><b style="color:#ea580c">VNDIRECT MCP</b> · Sự kiện &amp; Quyền cổ tức</span>
-              <span style="color:#22c55e;font-weight:600">● 18ms</span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--bg);border-radius:4px;border:1px solid var(--line)">
-              <span><b style="color:#059669">FINHAY MCP</b> · Vĩ mô, Tỷ giá &amp; Vàng</span>
-              <span style="color:#22c55e;font-weight:600">● 12ms</span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--bg);border-radius:4px;border:1px solid var(--line)">
-              <span><b style="color:#0284c7">DNSE MCP</b> · Bảng giá &amp; Chỉ số Realtime</span>
-              <span style="color:#22c55e;font-weight:600">● 10ms</span>
-            </div>
-          </div>
+        
         </div>
       </aside>
     </div>
@@ -6051,7 +5902,7 @@ const A = {
   },
   mcpdiag: () => {
     modal(`<div class="m-h">
-      <h3>🔍 Cơ chế Realtime & Kiến trúc MCP trong Maris Advisor</h3>
+      <h3>🔍 Cơ chế Realtime & Cập nhật Dữ liệu trong Maris Advisor</h3>
       <button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button>
     </div>
     <div class="m-b" style="line-height:1.6;font-size:12.5px;color:var(--ink2)">
@@ -6062,7 +5913,7 @@ const A = {
       <p><b style="color:var(--ink)">1. Tại sao file Prototype hiện tại chưa realtime với sàn thật?</b><br>
       Trình duyệt áp dụng chính sách bảo mật Sandbox <b>CORS (Cross-Origin Resource Sharing)</b>, chặn toàn bộ các cuộc gọi API từ tệp web tĩnh ra ngoài server các công ty chứng khoán (như mcp.dnse.com.vn hoặc mcp.vndirect.com.vn) nếu không có Gateway xác thực trung gian.</p>
       
-      <p><b style="color:var(--ink)">2. Giao thức MCP (Model Context Protocol) hoạt động ở tầng nào?</b><br>
+      <p><b style="color:var(--ink)">2. Cơ chế truyền dẫn dữ liệu thị trường hoạt động như thế nào?</b><br>
       Theo chuẩn Anthropic MCP (2024-11-05), MCP Server chạy ở <b>Tầng Backend / Agent Host Gateway</b>. Nó đóng vai trò là cầu nối bảo mật giữa AI Assistant và các kho dữ liệu nội bộ của CTCK (DStock, Entrade X), chứ <i>không</i> phơi bày endpoint công khai cho trình duyệt web client gọi trần.</p>
       
       <p><b style="color:var(--ink)">3. Kiến trúc Luồng Dữ liệu ở Sản phẩm Thật (Production):</b><br>
@@ -6095,7 +5946,7 @@ const A = {
       const sym = v.split(' ')[0];
       if (sym && !S.cmp.includes(sym)) {
         S.cmp.push(sym);
-        toast(`⚡ DUAL-MCP: Đã nạp dữ liệu so sánh cho ${sym}`);
+        toast(`Đã cập nhật dữ liệu so sánh cho ${sym}`);
         rerender();
       }
     });
@@ -6107,7 +5958,7 @@ const A = {
       if (typeof CMP_MCP_CACHE !== 'undefined') delete CMP_MCP_CACHE[t];
       getCmpData(t);
     });
-    toast(`⚡ DUAL-MCP: Đã đồng bộ lại toàn bộ dữ liệu so sánh từ DNSE & VNDIRECT cho ${S.cmp.join(', ')}`);
+    toast(`Đã làm mới dữ liệu so sánh cho ${S.cmp.join(', ')}`);
     rerender();
   },
   cmpmcpmodal: el => {
@@ -6146,7 +5997,7 @@ const A = {
   report: el => {
     const idx = +el.dataset.v;
     const r = REPORTS[idx] || REPORTS[0];
-    const publisher = r[7] || (r[2] === 'Doanh nghiệp' ? 'VNDIRECT Research (mcp.vndirect.com.vn)' : (r[2] === 'Ngành' ? 'SSI Research & VNDIRECT' : 'VNDIRECT & Finhay Macro'));
+    const publisher = r[7] || (r[2] === 'Doanh nghiệp' ? 'VNDIRECT Research' : (r[2] === 'Ngành' ? 'SSI Research & VNDIRECT' : 'VNDIRECT & Finhay Macro'));
     const analyst = r[8] || 'Hoàng Minh Tâm (Senior Financial Analyst)';
     const thesis = r[9] || 'Báo cáo cung cấp đánh giá toàn diện về kết quả kinh doanh quý gần nhất, phân tích triển vọng ngành và định giá so sánh với các doanh nghiệp cùng phân khúc.';
     const mcpTool = r[10] || (r[4] ? 'vnd_get_consensus' : 'vnd_get_research_reports');
@@ -6155,7 +6006,7 @@ const A = {
     modal(`<div class="m-h">
       <div>
         <div class="muted" style="font-size:11.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span class="mcp-tag vnd" style="font-size:9.5px">${publisher.split('(')[0].trim()}</span>
+          <span class="tag" style="font-size:9.5px">${publisher.split('(')[0].trim()}</span>
           <span>${r[2]} · ${r[0]} · ${r[6]} trang</span>
         </div>
         <h3 style="margin:4px 0 0;font-size:16px;line-height:1.4">${esc(r[1])}</h3>
@@ -6168,7 +6019,7 @@ const A = {
           <div><span>Khuyến nghị</span><b class="rec rec-${recKey(r[3])}" style="font-family:var(--sans);font-size:15px">${r[3]}</b></div>
           <div><span>Giá mục tiêu</span><b>${fmtVN(r[4])} đ</b></div>
           <div><span>Upside kỳ vọng</span><b class="${cls(r[5])}">${sgn(r[5], 1)}%</b></div>
-          <div style="border-right:0"><span>Nguồn định giá</span><b style="color:#ea580c;font-size:11.5px">VNDIRECT MCP</b></div>
+          <div style="border-right:0"><span>Nguồn định giá</span><b style="color:#ea580c;font-size:11.5px">VNDIRECT Research</b></div>
         </div>` : r[3] !== '—' ? `
         <div style="margin:0 0 12px;padding:8px 12px;background:var(--card-sub);border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between">
           <span>Quan điểm ngành: <b class="rec rec-${recKey(r[3])}">${r[3]}</b></span>
@@ -6184,12 +6035,12 @@ const A = {
 
       <div style="margin-top:12px;padding:8px 12px;background:var(--card-sub);border-radius:6px;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px">
         <div><b>Chuyên viên phân tích:</b> <span class="ink2">${analyst}</span></div>
-        <div><b>MCP Endpoint:</b> <code style="color:#ea580c">mcp.vndirect.com.vn</code> · <code style="color:#0284c7">${mcpTool}</code></div>
+        <div><b>Tổ chức phát hành:</b> <span class="ink2">${publisher}</span></div>
       </div>
     </div>
     <div class="m-f">
       ${sym ? `<button class="btn" data-act="stock" data-v="${sym}">Mở Company 360 (${sym})</button>` : ''}
-      <button class="btn" onclick="closeLayer(); openDnseMcpModal('vnd');">Xem Payload MCP</button>
+      
       <button class="btn pri" data-act="toast" data-msg="Đã tải toàn văn báo cáo phân tích (PDF ${r[6]} trang)!">Tải báo cáo (PDF)</button>
     </div>`);
   },
@@ -6213,7 +6064,7 @@ const A = {
           <span>·</span>
           <span>${n.time}</span>
           <span>·</span>
-          <span class="mcp-tag ${n.mcpTool.includes('vnd') ? 'vnd' : (n.mcpTool.includes('fin') ? 'fin' : 'ssi')}">${n.source}</span>
+          <span class="tag">${n.source}</span>
         </div>
         <h3 style="margin:4px 0 0;font-size:16px;line-height:1.4">${esc(n.title)}</h3>
       </div>
@@ -6247,14 +6098,9 @@ const A = {
         ${n.content}
       </div>
 
-      <!-- Raw MCP Tool Call Preview Block -->
-      <div style="margin-top:14px;padding:10px 12px;background:var(--sub);border-radius:6px;border:1px solid var(--line);font-size:11px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <span style="font-weight:600;color:var(--ink)">Quad-MCP Data Source Origin:</span>
-          <code style="color:var(--brand)">${n.mcpTool}</code>
-        </div>
+      
         <div style="color:var(--ink3);line-height:1.4">
-          Dữ liệu được nạp tự động qua MCP Protocol từ nguồn chính thức của sàn HOSE, SSI, VNDIRECT &amp; FINHAY (latency &lt; 20ms).
+          Dữ liệu được cập nhật tự động từ các nguồn chính thức của HOSE, SSI, VNDIRECT & FINHAY.
         </div>
       </div>
     </div>
@@ -6301,7 +6147,7 @@ function setCompare(list) {
   }
   S.cmp = ok.slice(0, 5);
   S.cmpTab = 'all';
-  toast(`⚡ DUAL-MCP: Đã nạp dữ liệu so sánh cho ${S.cmp.join(', ')}`);
+  toast(`Đã nạp dữ liệu so sánh cho ${S.cmp.join(', ')}`);
   go('compare');
 }
 function redrawDrawer() { const b = layer.querySelector('.dr-b'), st = b ? b.scrollTop : 0; layer.innerHTML = drawerHTML(); bindDrawer(); const nb = layer.querySelector('.dr-b'); if (nb) nb.scrollTop = st; }
@@ -7265,7 +7111,7 @@ const DNSE_STOCKS_DB = {
     position: [['ROE (TTM)', '14,8%', 'Top 40%'], ['NIM', '3,70%', 'Top 25%'], ['Tỷ lệ CASA', '26,71%', 'Top 15%'], ['Tỷ lệ nợ xấu (NPL)', '2,88%', 'Top 30%'], ['Tăng trưởng tín dụng', '14,2%', 'Top 25%'], ['Tỷ lệ CIR', '30,9%', 'Top 20%']],
     perf: [['1 tuần', 2.14, 1.13, 14350, 13900], ['1 tháng', 5.42, 5.08, 14350, 13450], ['3 tháng', 11.80, 9.70, 14350, 12600], ['6 tháng', 18.25, 22.42, 14350, 11250], ['52 tuần', 31.20, 26.93, 14350, 10150], ['Từ đầu năm', 24.60, 26.93, 14350, 10900]],
     profile: {
-      basic: [['Mã chứng khoán', 'MSB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '12/07/1991'], ['Vốn điều lệ', '26,00 nghìn tỷ đồng'], ['Số lượng nhân sự', '6.284'], ['Số lượng chi nhánh', '63'], ['Số công ty con', '3'], ['Đại diện pháp luật', 'Trần Minh Đức']],
+      basic: [['Mã chứng khoán', 'MSB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '12/07/1991'], ['Vốn điều lệ', '26,00 nghìn tỷ đồng'], ['Số lượng nhân sự', '6.284'], ['Số lượng chi nhánh', '63'], ['Số công ty con', '3'], ['Đại diện pháp luật', 'Trần Minh Đức']],
       listing: [['Ngày niêm yết', '23/12/2020'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '15.000'], ['P/E TTM (DNSE)', '7,41 lần'], ['P/B TTM (DNSE)', '1,08 lần'], ['KL niêm yết', '2.600.000.000 CP'], ['KL lưu hành', '2.600.000.000 CP']],
       intro: 'MSB là ngân hàng thương mại cổ phần tư nhân đầu tiên tại Việt Nam, tập trung phục vụ bán lẻ và SME với chiến lược số hóa mạnh mẽ và mở rộng CASA.',
       miles: [['12/07/1991', 'Thành lập tại Hải Phòng, vốn điều lệ 40 tỷ đồng'], ['2015', 'Sáp nhập MDB, nâng vốn điều lệ lên 11.750 tỷ đồng'], ['23/12/2020', 'Niêm yết trên HOSE'], ['2026', 'Mục tiêu LNTT 6.800 tỷ đồng, nâng vốn lên 37.440 tỷ đồng']],
@@ -7306,7 +7152,7 @@ const DNSE_STOCKS_DB = {
     position: [['ROE (TTM)', '28,4%', 'Top 5%'], ['Tăng trưởng LN', '22,8%', 'Top 10%'], ['Biên LN ròng', '17,6%', 'Top 15%'], ['Vốn hoá', '198.600 tỷ', 'Top 5'], ['Thị phần CNTT', '#1 VN', 'Top 1'], ['Sức mạnh RS', '89', 'Top 8%']],
     perf: [['1 tuần', 2.80, 1.13, 140000, 134500], ['1 tháng', 8.60, 5.08, 140000, 127500], ['3 tháng', 24.50, 9.70, 140000, 111000], ['6 tháng', 45.20, 22.42, 140000, 95400], ['52 tuần', 72.80, 26.93, 140000, 80200], ['Từ đầu năm', 58.40, 26.93, 140000, 87500]],
     profile: {
-      basic: [['Mã chứng khoán', 'FPT'], ['Mã ngành ICB', '9530 · Phần mềm & Dịch vụ máy tính'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '13/09/1988'], ['Vốn điều lệ', '14,60 nghìn tỷ đồng'], ['Số lượng nhân sự', '73.200'], ['Số văn phòng toàn cầu', '82 chi nhánh (30 quốc gia)'], ['Số công ty con', '8'], ['Đại diện pháp luật', 'Trương Gia Bình']],
+      basic: [['Mã chứng khoán', 'FPT'], ['Mã ngành ICB', '9530 · Phần mềm & Dịch vụ máy tính'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '13/09/1988'], ['Vốn điều lệ', '14,60 nghìn tỷ đồng'], ['Số lượng nhân sự', '73.200'], ['Số văn phòng toàn cầu', '82 chi nhánh (30 quốc gia)'], ['Số công ty con', '8'], ['Đại diện pháp luật', 'Trương Gia Bình']],
       listing: [['Ngày niêm yết', '13/12/2006'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '40.000'], ['P/E TTM (DNSE)', '24,80 lần'], ['P/B TTM (DNSE)', '5,62 lần'], ['KL niêm yết', '1.460.000.000 CP'], ['KL lưu hành', '1.460.000.000 CP']],
       intro: 'Tập đoàn FPT là tập đoàn công nghệ hàng đầu Việt Nam, hoạt động trong 3 lĩnh vực cốt lõi: Công nghệ, Viễn thông và Giáo dục, vươn tầm nhà cung cấp dịch vụ CNTT đẳng cấp quốc tế.',
       miles: [['13/09/1988', 'Thành lập Công ty Công nghệ Chế biến Thực phẩm (tiền thân FPT)'], ['1999', 'Khởi xướng chiến lược xuất khẩu phần mềm toàn cầu'], ['13/12/2006', 'Niêm yết cổ phiếu trên sàn HOSE'], ['2024-2026', 'Đột phá chiến lược AI Factory, bán dẫn và đạt mốc 1 tỷ USD doanh thu phần mềm xuất khẩu']],
@@ -7347,7 +7193,7 @@ const DNSE_STOCKS_DB = {
     position: [['Thị phần thép XD', '38,2%', 'Top 1'], ['Vốn hoá', '170.200 tỷ', 'Top 6'], ['Sản lượng thép', '8,5M tấn', 'Top 1 ĐNA'], ['ROE (TTM)', '12,6%', 'Top 25%'], ['P/B', '1,48 lần', 'Top 30%'], ['Thanh khoản', '#1 VN', 'Top 1']],
     perf: [['1 tuần', 2.33, 1.13, 26800, 25800], ['1 tháng', 6.45, 5.08, 26800, 24800], ['3 tháng', 14.20, 9.70, 26800, 23100], ['6 tháng', 19.80, 22.42, 26800, 22000], ['52 tuần', 28.50, 26.93, 26800, 20500], ['Từ đầu năm', 22.40, 26.93, 26800, 21500]],
     profile: {
-      basic: [['Mã chứng khoán', 'HPG'], ['Mã ngành ICB', '1750 · Thép & Kim loại'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '20/08/1992'], ['Vốn điều lệ', '64,47 nghìn tỷ đồng'], ['Số lượng nhân sự', '32.500'], ['Nhà máy luyện thép', '4 khu liên hợp lớn'], ['Số công ty con', '4 tổng công ty'], ['Đại diện pháp luật', 'Trần Đình Long']],
+      basic: [['Mã chứng khoán', 'HPG'], ['Mã ngành ICB', '1750 · Thép & Kim loại'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '20/08/1992'], ['Vốn điều lệ', '64,47 nghìn tỷ đồng'], ['Số lượng nhân sự', '32.500'], ['Nhà máy luyện thép', '4 khu liên hợp lớn'], ['Số công ty con', '4 tổng công ty'], ['Đại diện pháp luật', 'Trần Đình Long']],
       listing: [['Ngày niêm yết', '15/11/2007'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '110.000'], ['P/E TTM (DNSE)', '12,40 lần'], ['P/B TTM (DNSE)', '1,48 lần'], ['KL niêm yết', '6.447.000.000 CP'], ['KL lưu hành', '6.447.000.000 CP']],
       intro: 'Tập đoàn Hòa Phát là tập đoàn sản xuất công nghiệp hàng đầu Việt Nam, nhà sản xuất thép thô lớn nhất Đông Nam Á với công suất hướng tới 14 triệu tấn/năm khi hoàn thành Dung Quất 2.',
       miles: [['20/08/1992', 'Khởi đầu từ Công ty TNHH Thiết bị Phụ tùng Hòa Phát'], ['15/11/2007', 'Niêm yết cổ phiếu HPG trên sàn HOSE'], ['2021', 'Vận hành toàn bộ 4 lò cao Khu liên hợp Hòa Phát Dung Quất 1'], ['2026', 'Hoàn tất xây dựng và chạy thử phân kỳ 1 Hòa Phát Dung Quất 2']],
@@ -7388,7 +7234,7 @@ const DNSE_STOCKS_DB = {
     position: [['Vốn hoá', '514.200 tỷ', 'Top 1'], ['Bao phủ nợ xấu', '230%', 'Top 1'], ['Tỷ lệ NPL', '0,98%', 'Thấp nhất'], ['Lợi nhuận', '#1 Toàn ngành', 'Top 1'], ['ROE', '21,8%', 'Top 15%'], ['CASA', '34,2%', 'Top 3']],
     perf: [['1 tuần', 1.32, 1.13, 93000, 90800], ['1 tháng', 3.80, 5.08, 93000, 88600], ['3 tháng', 8.50, 9.70, 93000, 84800], ['6 tháng', 14.20, 22.42, 93000, 80500], ['52 tuần', 21.40, 26.93, 93000, 75800], ['Từ đầu năm', 16.50, 26.93, 93000, 79000]],
     profile: {
-      basic: [['Mã chứng khoán', 'VCB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '01/04/1963'], ['Vốn điều lệ', '55,89 nghìn tỷ đồng'], ['Số lượng nhân sự', '23.800'], ['Số chi nhánh/PGD', '630'], ['Sở hữu Nhà nước', '74,8%'], ['Đại diện pháp luật', 'Nguyễn Thanh Tùng']],
+      basic: [['Mã chứng khoán', 'VCB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '01/04/1963'], ['Vốn điều lệ', '55,89 nghìn tỷ đồng'], ['Số lượng nhân sự', '23.800'], ['Số chi nhánh/PGD', '630'], ['Sở hữu Nhà nước', '74,8%'], ['Đại diện pháp luật', 'Nguyễn Thanh Tùng']],
       listing: [['Ngày niêm yết', '30/06/2009'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '60.000'], ['P/E TTM (DNSE)', '13,90 lần'], ['P/B TTM (DNSE)', '2,75 lần'], ['KL niêm yết', '5.589.000.000 CP'], ['KL lưu hành', '5.589.000.000 CP']],
       intro: 'Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank) là ngân hàng thương mại số 1 tại Việt Nam về quy mô lợi nhuận, vốn hoá và chất lượng tài sản, giữ vai trò chủ lực trong hệ thống tài chính quốc gia.',
       miles: [['01/04/1963', 'Thành lập Ngân hàng Ngoại thương Việt Nam'], ['30/06/2009', 'Chính thức niêm yết cổ phiếu trên sàn HOSE'], ['2019', 'Gia nhập câu lạc bộ 1 tỷ USD lợi nhuận trước thuế'], ['2026', 'Vốn hoá vượt 500 nghìn tỷ đồng, hoàn tất kế hoạch tăng vốn']],
@@ -7429,7 +7275,7 @@ const DNSE_STOCKS_DB = {
     position: [['CASA', '40,50%', 'Top 1'], ['ROA', '2,65%', 'Top 1'], ['Hệ số CAR', '15,2%', 'Top 1'], ['Vốn điều lệ', '70.450 tỷ', 'Top 2'], ['ROE', '19,4%', 'Top 20%'], ['P/E', '8,65', 'Hấp dẫn']],
     perf: [['1 tuần', 1.64, 1.13, 25200, 24200], ['1 tháng', 6.80, 5.08, 25200, 23200], ['3 tháng', 14.50, 9.70, 25200, 21600], ['6 tháng', 29.30, 22.42, 25200, 19200], ['52 tuần', 38.60, 26.93, 25200, 17800], ['Từ đầu năm', 32.50, 26.93, 25200, 18500]],
     profile: {
-      basic: [['Mã chứng khoán', 'TCB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '27/09/1993'], ['Vốn điều lệ', '70,45 nghìn tỷ đồng'], ['Số lượng nhân sự', '12.400'], ['Số chi nhánh/PGD', '315'], ['Số công ty con', '3'], ['Đại diện pháp luật', 'Jens Lottner']],
+      basic: [['Mã chứng khoán', 'TCB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '27/09/1993'], ['Vốn điều lệ', '70,45 nghìn tỷ đồng'], ['Số lượng nhân sự', '12.400'], ['Số chi nhánh/PGD', '315'], ['Số công ty con', '3'], ['Đại diện pháp luật', 'Jens Lottner']],
       listing: [['Ngày niêm yết', '04/06/2018'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '128.000'], ['P/E TTM (DNSE)', '8,65 lần'], ['P/B TTM (DNSE)', '1,55 lần'], ['KL niêm yết', '7.045.000.000 CP'], ['KL lưu hành', '7.045.000.000 CP']],
       intro: 'Techcombank là ngân hàng tư nhân hàng đầu Việt Nam với mô hình kinh doanh lấy khách hàng làm trọng tâm, tiên phong chuyển đổi số và phát triển hệ sinh thái tài chính toàn diện.',
       miles: [['27/09/1993', 'Thành lập Techcombank với vốn điều lệ 20 tỷ đồng'], ['04/06/2018', 'Niêm yết thành công trên sàn HOSE'], ['2023', 'Vốn chủ sở hữu vượt mốc 100.000 tỷ đồng'], ['2024-2026', 'Tăng vốn điều lệ lên 70.450 tỷ đồng thông qua phát hành cổ phiếu thưởng 100%']],
@@ -7470,7 +7316,7 @@ const DNSE_STOCKS_DB = {
     position: [['Thị phần ICT/CE', '48%', 'Top 1'], ['Vốn hoá', '99.800 tỷ', 'Top 10'], ['Doanh thu bán lẻ', '#1 VN', 'Top 1'], ['ROE', '18,5%', 'Top 25%'], ['Tăng trưởng LN', '85%', 'Top 5%'], ['Room ngoại', 'Full 49%', 'Top 1']],
     perf: [['1 tuần', 1.64, 1.13, 69500, 66800], ['1 tháng', 7.20, 5.08, 69500, 63400], ['3 tháng', 18.50, 9.70, 69500, 57200], ['6 tháng', 34.20, 22.42, 69500, 50800], ['52 tuần', 48.60, 26.93, 69500, 45600], ['Từ đầu năm', 42.10, 26.93, 69500, 47800]],
     profile: {
-      basic: [['Mã chứng khoán', 'MWG'], ['Mã ngành ICB', '5370 · Bán lẻ chuyên doanh'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '03/2004'], ['Vốn điều lệ', '14,63 nghìn tỷ đồng'], ['Số lượng nhân sự', '65.000'], ['Tổng số cửa hàng', '5.420'], ['Số công ty con', '6'], ['Đại diện pháp luật', 'Nguyễn Đức Tài']],
+      basic: [['Mã chứng khoán', 'MWG'], ['Mã ngành ICB', '5370 · Bán lẻ chuyên doanh'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '03/2004'], ['Vốn điều lệ', '14,63 nghìn tỷ đồng'], ['Số lượng nhân sự', '65.000'], ['Tổng số cửa hàng', '5.420'], ['Số công ty con', '6'], ['Đại diện pháp luật', 'Nguyễn Đức Tài']],
       listing: [['Ngày niêm yết', '14/07/2014'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '68.000'], ['P/E TTM (DNSE)', '21,50 lần'], ['P/B TTM (DNSE)', '3,80 lần'], ['KL niêm yết', '1.463.000.000 CP'], ['KL lưu hành', '1.463.000.000 CP']],
       intro: 'Thế Giới Di Động là nhà bán lẻ số 1 Việt Nam về doanh thu và mạng lưới, vận hành các chuỗi thegioididong.com, Điện Máy Xanh, Bách Hóa Xanh, Nhà thuốc An Khang và EraBlue.',
       miles: [['03/2004', 'Thành lập Công ty TNHH Thế Giới Di Động'], ['14/07/2014', 'Niêm yết thành công trên sàn HOSE'], ['2016-2020', 'Thần tốc mở rộng Điện Máy Xanh và thử nghiệm Bách Hóa Xanh'], ['2024-2026', 'Tái cơ cấu thành công, Bách Hóa Xanh chính thức có lãi ròng']],
@@ -7511,7 +7357,7 @@ const DNSE_STOCKS_DB = {
     position: [['Vốn điều lệ', '19.640 tỷ', 'Top 1'], ['Vốn hoá', '64.400 tỷ', 'Top 1 CTCK'], ['Dư nợ Margin', '20.500 tỷ', 'Top 1'], ['Thị phần HOSE', '9,8%', 'Top 2'], ['Thanh khoản CP', 'Top 5 VN', 'Top 5'], ['ROE', '13,2%', 'Top 25%']],
     perf: [['1 tuần', 2.18, 1.13, 33200, 31800], ['1 tháng', 6.80, 5.08, 33200, 30200], ['3 tháng', 16.40, 9.70, 33200, 27600], ['6 tháng', 24.50, 22.42, 33200, 25800], ['52 tuần', 36.80, 26.93, 33200, 23500], ['Từ đầu năm', 28.20, 26.93, 33200, 25200]],
     profile: {
-      basic: [['Mã chứng khoán', 'SSI'], ['Mã ngành ICB', '8780 · Dịch vụ đầu tư'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '12/1999'], ['Vốn điều lệ', '19,64 nghìn tỷ đồng'], ['Số lượng nhân sự', '1.850'], ['Số chi nhánh/PGD', '22'], ['Số công ty con', '2'], ['Đại diện pháp luật', 'Nguyễn Duy Hưng']],
+      basic: [['Mã chứng khoán', 'SSI'], ['Mã ngành ICB', '8780 · Dịch vụ đầu tư'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '12/1999'], ['Vốn điều lệ', '19,64 nghìn tỷ đồng'], ['Số lượng nhân sự', '1.850'], ['Số chi nhánh/PGD', '22'], ['Số công ty con', '2'], ['Đại diện pháp luật', 'Nguyễn Duy Hưng']],
       listing: [['Ngày niêm yết', '15/12/2006 (HASTC) / 29/10/2007 (HOSE)'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '180.000'], ['P/E TTM (DNSE)', '17,80 lần'], ['P/B TTM (DNSE)', '2,10 lần'], ['KL niêm yết', '1.964.000.000 CP'], ['KL lưu hành', '1.964.000.000 CP']],
       intro: 'Công ty Cổ phần Chứng khoán SSI là định chế tài chính dẫn đầu thị trường chứng khoán Việt Nam, cung cấp đầy đủ các dịch vụ môi giới, quản lý quỹ, ngân hàng đầu tư và tự doanh.',
       miles: [['12/1999', 'Thành lập Công ty Cổ phần Chứng khoán Sài Gòn vốn điều lệ 6 tỷ đồng'], ['29/10/2007', 'Chuyển niêm yết sang Sở GDCK TP.HCM (HOSE)'], ['2021', 'Vốn điều lệ vượt 15.000 tỷ đồng'], ['2026', 'Tăng vốn điều lệ lên gần 20.000 tỷ đồng, tiên phong nâng hạng thị trường']],
@@ -7552,7 +7398,7 @@ const DNSE_STOCKS_DB = {
     position: [['Thị phần sữa', '54%', 'Top 1'], ['Vốn hoá', '138.900 tỷ', 'Top 8'], ['ROE', '27,5%', 'Top 10%'], ['Tỷ suất cổ tức', '5,8%', 'Top 5%'], ['Biên LN gộp', '42,5%', 'Top 10%'], ['Xếp hạng tài chính', 'AAA', 'Top 1']],
     perf: [['1 tuần', -0.30, 1.13, 67500, 66000], ['1 tháng', 3.40, 5.08, 67500, 64200], ['3 tháng', 7.80, 9.70, 67500, 61500], ['6 tháng', 11.20, 22.42, 67500, 59500], ['52 tuần', 14.50, 26.93, 67500, 58000], ['Từ đầu năm', 9.80, 26.93, 67500, 60500]],
     profile: {
-      basic: [['Mã chứng khoán', 'VNM'], ['Mã ngành ICB', '3570 · Sản xuất thực phẩm'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '20/08/1976'], ['Vốn điều lệ', '20,90 nghìn tỷ đồng'], ['Số lượng nhân sự', '9.800'], ['Số trang trại bò sữa', '14 trang trại chuẩn quốc tế'], ['Số nhà máy', '13'], ['Đại diện pháp luật', 'Mai Kiều Liên']],
+      basic: [['Mã chứng khoán', 'VNM'], ['Mã ngành ICB', '3570 · Sản xuất thực phẩm'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '20/08/1976'], ['Vốn điều lệ', '20,90 nghìn tỷ đồng'], ['Số lượng nhân sự', '9.800'], ['Số trang trại bò sữa', '14 trang trại chuẩn quốc tế'], ['Số nhà máy', '13'], ['Đại diện pháp luật', 'Mai Kiều Liên']],
       listing: [['Ngày niêm yết', '19/01/2006'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '53.000'], ['P/E TTM (DNSE)', '14,20 lần'], ['P/B TTM (DNSE)', '3,90 lần'], ['KL niêm yết', '2.089.955.445 CP'], ['KL lưu hành', '2.089.955.445 CP']],
       intro: 'Vinamilk là doanh nghiệp sữa lớn nhất Việt Nam và thuộc top 40 công ty sữa lớn nhất thế giới, nắm giữ trên 50% thị phần sữa nội địa với mạng lưới phân phối hơn 230.000 điểm bán lẻ.',
       miles: [['20/08/1976', 'Thành lập Công ty Sữa - Cà phê Miền Nam'], ['19/01/2006', 'Niêm yết thành công trên sàn HOSE'], ['2017', 'Khai trương trang trại bò sữa hữu cơ đầu tiên tại Việt Nam'], ['2023-2026', 'Tái định vị toàn diện nhận diện thương hiệu, đẩy mạnh xuất khẩu']],
@@ -7593,7 +7439,7 @@ const DNSE_STOCKS_DB = {
     position: [['ROE', '20,8%', 'Top 15%'], ['P/E', '7,20 lần', 'Top 25%'], ['Tỷ lệ NPL', '1,21%', 'Top 5 an toàn'], ['Vốn hoá', '114.300 tỷ', 'Top 9'], ['Cổ tức', '25%/năm', 'Top đầu'], ['Room ngoại', 'Full 30%', 'Top 1']],
     perf: [['1 tuần', 1.19, 1.13, 26000, 25200], ['1 tháng', 3.20, 5.08, 26000, 24600], ['3 tháng', 7.90, 9.70, 26000, 23400], ['6 tháng', 15.40, 22.42, 26000, 21800], ['52 tuần', 19.80, 26.93, 26000, 20800], ['Từ đầu năm', 17.20, 26.93, 26000, 21400]],
     profile: {
-      basic: [['Mã chứng khoán', 'ACB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '04/06/1993'], ['Vốn điều lệ', '44,66 nghìn tỷ đồng'], ['Số lượng nhân sự', '13.500'], ['Số chi nhánh/PGD', '388'], ['Số công ty con', '3'], ['Đại diện pháp luật', 'Từ Tiến Phát']],
+      basic: [['Mã chứng khoán', 'ACB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '04/06/1993'], ['Vốn điều lệ', '44,66 nghìn tỷ đồng'], ['Số lượng nhân sự', '13.500'], ['Số chi nhánh/PGD', '388'], ['Số công ty con', '3'], ['Đại diện pháp luật', 'Từ Tiến Phát']],
       listing: [['Ngày niêm yết', '21/11/2006 (HNX) / 09/12/2020 (HOSE)'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '26.400'], ['P/E TTM (DNSE)', '7,20 lần'], ['P/B TTM (DNSE)', '1,42 lần'], ['KL niêm yết', '4.466.000.000 CP'], ['KL lưu hành', '4.466.000.000 CP']],
       intro: 'Ngân hàng TMCP Á Châu (ACB) là một trong những ngân hàng bán lẻ uy tín và an toàn nhất Việt Nam, định vị chất lượng dịch vụ chuẩn mực và quản trị rủi ro khắt khe.',
       miles: [['04/06/1993', 'Thành lập Ngân hàng Á Châu tại TP.HCM'], ['21/11/2006', 'Niêm yết trên Trung tâm GDCK Hà Nội (HNX)'], ['09/12/2020', 'Chuyển niêm yết sang Sở GDCK TP.HCM (HOSE)'], ['2026', 'Vốn điều lệ đạt 44.660 tỷ đồng, hoàn thành xuất sắc chiến lược 5 năm']],
@@ -7634,7 +7480,7 @@ const DNSE_STOCKS_DB = {
     position: [['Vốn điều lệ', '79.340 tỷ', 'Top 1'], ['Biên NIM', '5,60%', 'Top 1'], ['Vốn chủ sở hữu', '140.500 tỷ', 'Top 2'], ['Vốn hoá', '153.800 tỷ', 'Top 7'], ['P/B', '1,18 lần', 'Rất rẻ'], ['Hệ số CAR', '16,5%', 'Top 1']],
     perf: [['1 tuần', 1.31, 1.13, 19800, 19100], ['1 tháng', 4.20, 5.08, 19800, 18500], ['3 tháng', 9.80, 9.70, 19800, 17500], ['6 tháng', 18.20, 22.42, 19800, 16200], ['52 tuần', 22.50, 26.93, 19800, 15400], ['Từ đầu năm', 16.80, 26.93, 19800, 16400]],
     profile: {
-      basic: [['Mã chứng khoán', 'VPB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '12/08/1993'], ['Vốn điều lệ', '79,34 nghìn tỷ đồng'], ['Số lượng nhân sự', '28.500'], ['Số chi nhánh/PGD', '265'], ['Đối tác chiến lược', 'SMBC Nhật Bản (15%)'], ['Đại diện pháp luật', 'Nguyễn Đức Vinh']],
+      basic: [['Mã chứng khoán', 'VPB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '12/08/1993'], ['Vốn điều lệ', '79,34 nghìn tỷ đồng'], ['Số lượng nhân sự', '28.500'], ['Số chi nhánh/PGD', '265'], ['Đối tác chiến lược', 'SMBC Nhật Bản (15%)'], ['Đại diện pháp luật', 'Nguyễn Đức Vinh']],
       listing: [['Ngày niêm yết', '17/08/2017'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '39.000'], ['P/E TTM (DNSE)', '9,80 lần'], ['P/B TTM (DNSE)', '1,18 lần'], ['KL niêm yết', '7.933.923.600 CP'], ['KL lưu hành', '7.933.923.600 CP']],
       intro: 'VPBank là một trong những ngân hàng thương mại tư nhân lớn nhất Việt Nam với quy mô vốn điều lệ dẫn đầu hệ thống, năng động trong mảng bán lẻ, SME và tài chính tiêu dùng.',
       miles: [['12/08/1993', 'Thành lập Ngân hàng TMCP Các Doanh nghiệp Ngoài Quốc doanh Việt Nam'], ['17/08/2017', 'Niêm yết thành công trên sàn HOSE'], ['2023', 'Hoàn tất bán 15% cổ phần cho tập đoàn SMBC Nhật Bản thu về 1,5 tỷ USD'], ['2026', 'Giữ vững vị thế ngân hàng có vốn điều lệ lớn nhất Việt Nam']],
@@ -7675,7 +7521,7 @@ const DNSE_STOCKS_DB = {
     position: [['P/E (TTM)', '6,15 lần', 'Thấp nhất VN30'], ['ROE', '21,6%', 'Top 10%'], ['Tỷ lệ CASA', '38,4%', 'Top 2'], ['Vốn hoá', '128.400 tỷ', 'Top 8'], ['Số người dùng số', '28,5M', 'Top 1'], ['Room ngoại', 'Full 23,2%', 'Top 1']],
     perf: [['1 tuần', 1.47, 1.13, 24500, 23600], ['1 tháng', 5.40, 5.08, 24500, 22800], ['3 tháng', 12.80, 9.70, 24500, 21200], ['6 tháng', 28.40, 22.42, 24500, 18600], ['52 tuần', 34.20, 26.93, 24500, 17500], ['Từ đầu năm', 29.50, 26.93, 24500, 18200]],
     profile: {
-      basic: [['Mã chứng khoán', 'MBB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '04/11/1994'], ['Vốn điều lệ', '53,06 nghìn tỷ đồng'], ['Số lượng nhân sự', '16.800'], ['Số chi nhánh/PGD', '320'], ['Cổ đông lớn', 'Tập đoàn Viettel (19,1%)'], ['Đại diện pháp luật', 'Phạm Như Ánh']],
+      basic: [['Mã chứng khoán', 'MBB'], ['Mã ngành ICB', '8355 · Ngân hàng'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '04/11/1994'], ['Vốn điều lệ', '53,06 nghìn tỷ đồng'], ['Số lượng nhân sự', '16.800'], ['Số chi nhánh/PGD', '320'], ['Cổ đông lớn', 'Tập đoàn Viettel (19,1%)'], ['Đại diện pháp luật', 'Phạm Như Ánh']],
       listing: [['Ngày niêm yết', '01/11/2011'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '13.800'], ['P/E TTM (DNSE)', '6,15 lần'], ['P/B TTM (DNSE)', '1,22 lần'], ['KL niêm yết', '5.306.323.000 CP'], ['KL lưu hành', '5.306.323.000 CP']],
       intro: 'Ngân hàng TMCP Quân đội (MB) là một trong những định chế tài chính đa năng hàng đầu Việt Nam, trực thuộc Bộ Quốc phòng, dẫn đầu về công nghệ số hóa và phát triển hệ sinh thái.',
       miles: [['04/11/1994', 'Thành lập Ngân hàng TMCP Quân đội với vốn điều lệ 20 tỷ đồng'], ['01/11/2011', 'Niêm yết thành công trên sàn HOSE'], ['2020-2024', 'Đột phá ngân hàng số, thu hút hơn 25 triệu khách hàng'], ['2026', 'Hoàn tất các bước tiếp nhận chuyển giao bắt buộc ngân hàng OceanBank']],
@@ -7716,7 +7562,7 @@ const DNSE_STOCKS_DB = {
     position: [['P/B (MRQ)', '1,25 lần', 'Thấp nhất Top 5'], ['Thị phần HOSE', '6,5%', 'Top 4'], ['Dư nợ Margin', '10.800 tỷ', 'Top 5'], ['Vốn điều lệ', '15.250 tỷ', 'Top 3'], ['Thanh khoản CP', 'Top 10 VN', 'Top 10'], ['ROE', '11,8%', 'Top 35%']],
     perf: [['1 tuần', 1.33, 1.13, 15500, 14900], ['1 tháng', 4.20, 5.08, 15500, 14500], ['3 tháng', 9.80, 9.70, 15500, 13800], ['6 tháng', 14.50, 22.42, 15500, 13100], ['52 tuần', 18.20, 26.93, 15500, 12600], ['Từ đầu năm', 12.50, 26.93, 15500, 13400]],
     profile: {
-      basic: [['Mã chứng khoán', 'VND'], ['Mã ngành ICB', '8780 · Dịch vụ đầu tư'], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '16/11/2006'], ['Vốn điều lệ', '15,25 nghìn tỷ đồng'], ['Số lượng nhân sự', '1.450'], ['Số chi nhánh/PGD', '18'], ['Số công ty con', '2'], ['Đại diện pháp luật', 'Phạm Minh Hương']],
+      basic: [['Mã chứng khoán', 'VND'], ['Mã ngành ICB', '8780 · Dịch vụ đầu tư'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '16/11/2006'], ['Vốn điều lệ', '15,25 nghìn tỷ đồng'], ['Số lượng nhân sự', '1.450'], ['Số chi nhánh/PGD', '18'], ['Số công ty con', '2'], ['Đại diện pháp luật', 'Phạm Minh Hương']],
       listing: [['Ngày niêm yết', '30/03/2010 (HNX) / 18/08/2017 (HOSE)'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '24.500'], ['P/E TTM (DNSE)', '11,20 lần'], ['P/B TTM (DNSE)', '1,25 lần'], ['KL niêm yết', '1.525.882.530 CP'], ['KL lưu hành', '1.525.882.530 CP']],
       intro: 'Công ty Cổ phần Chứng khoán VNDIRECT là một trong những công ty chứng khoán hàng đầu Việt Nam, tiên phong trong sứ mệnh bình dân hóa dịch vụ tài chính và quản lý tài sản số.',
       miles: [['16/11/2006', 'Thành lập Công ty Cổ phần Chứng khoán VNDIRECT'], ['18/08/2017', 'Chuyển niêm yết sang Sở GDCK TP.HCM (HOSE)'], ['2021-2023', 'Tăng vốn điều lệ liên tục lên trên 12.000 tỷ đồng'], ['2026', 'Hoàn tất tăng vốn lên 15.258 tỷ đồng, nâng cấp hệ sinh thái DWEALTH']],
@@ -7772,7 +7618,7 @@ function synthesizeDnseMcpData(sym) {
     position: [['ROE (TTM)', roe, 'Top 30%'], ['P/E (TTM)', pe + ' lần', 'Top 35%'], ['P/B', pb + ' lần', 'Top 40%'], ['Vốn hoá', cap, 'Top ngành'], ['Thanh khoản', 'Tốt', 'Top 30%'], ['Biên LN', '12,5%', 'Top 25%']],
     perf: [['1 tuần', pct, 1.13, Math.round(price * 1.02), Math.round(price * 0.98)], ['1 tháng', 4.50, 5.08, Math.round(price * 1.05), Math.round(price * 0.95)], ['3 tháng', 11.20, 9.70, Math.round(price * 1.12), Math.round(price * 0.90)], ['6 tháng', 18.50, 22.42, Math.round(price * 1.20), Math.round(price * 0.85)], ['52 tuần', 25.40, 26.93, Math.round(price * 1.28), Math.round(price * 0.80)], ['Từ đầu năm', 19.80, 26.93, Math.round(price * 1.22), Math.round(price * 0.82)]],
     profile: {
-      basic: [['Mã chứng khoán', sym], ['Mã ngành ICB', ind], ['Nguồn cấp', 'DNSE MCP Server (mcp.dnse.com.vn)'], ['Năm thành lập', '2005'], ['Vốn điều lệ', '8,50 nghìn tỷ đồng'], ['Số lượng nhân sự', '4.200'], ['Trụ sở chính', 'TP. Hồ Chí Minh / Hà Nội'], ['Đại diện pháp luật', 'Hội đồng Quản trị ' + sym]],
+      basic: [['Mã chứng khoán', sym], ['Mã ngành ICB', ind], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '2005'], ['Vốn điều lệ', '8,50 nghìn tỷ đồng'], ['Số lượng nhân sự', '4.200'], ['Trụ sở chính', 'TP. Hồ Chí Minh / Hà Nội'], ['Đại diện pháp luật', 'Hội đồng Quản trị ' + sym]],
       listing: [['Ngày niêm yết', '15/06/2015'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '20.000'], ['P/E TTM (DNSE)', pe + ' lần'], ['P/B TTM (DNSE)', pb + ' lần'], ['KL niêm yết', '850.000.000 CP'], ['KL lưu hành', '850.000.000 CP']],
       intro: `${name} là doanh nghiệp hoạt động chủ lực trong lĩnh vực ${ind}, duy trì tăng trưởng ổn định và nền tảng tài chính lành mạnh trên sàn chứng khoán HOSE.`,
       miles: [['2005', 'Thành lập công ty'], ['2015', 'Niêm yết trên HOSE'], ['2023', 'Mở rộng quy mô hoạt động'], ['2026', 'Tăng tốc chuyển đổi số và nâng cao biên lợi nhuận']],
@@ -8339,7 +8185,7 @@ const VND_STOCKS_DB = {
   }
 };
 
-/* Auto-Synthesizer Fallback for VNDIRECT MCP */
+/* Auto-Synthesizer Fallback for VNDIRECT Research */
 function synthesizeVndMcpData(sym, price, ind) {
   sym = sym.toUpperCase().trim();
   price = price || 25000;
@@ -8384,7 +8230,7 @@ function synthesizeVndMcpData(sym, price, ind) {
   };
 }
 
-/* VNDIRECT MCP JSON PAYLOADS STORE */
+/* VNDIRECT Research JSON PAYLOADS STORE */
 let ACTIVE_MCP_SERVER = 'dnse'; // 'dnse' or 'vnd'
 let ACTIVE_VND_MCP_TOOL = 'vnd_get_drating';
 let VND_MCP_PAYLOADS = {};
@@ -9013,10 +8859,10 @@ function syncReportsMcpLive() {
   const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
   const timeEl = document.getElementById('rep-updated-time');
   if (timeEl) {
-    timeEl.textContent = `Cập nhật Quad-MCP Live · ${timeStr}`;
+    timeEl.textContent = `Cập nhật tự động · ${timeStr}`;
   }
   if (typeof toast === 'function') {
-    toast(`↻ Đã đồng bộ 1.152 báo cáo & khuyến nghị từ VNDIRECT MCP & SSI MCP (${timeStr})!`);
+    toast(`↻ Đã làm mới 1.152 báo cáo phân tích & khuyến nghị!`);
   }
   if (typeof rerender === 'function') {
     rerender();
@@ -9028,10 +8874,10 @@ function syncMarketNewsMcpLive() {
   const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
   const timeEl = document.getElementById('mnews-updated-time');
   if (timeEl) {
-    timeEl.textContent = `Cập nhật Quad-MCP Live · ${timeStr}`;
+    timeEl.textContent = `Cập nhật tự động · ${timeStr}`;
   }
   if (typeof toast === 'function') {
-    toast(`↻ Đã đồng bộ 148 tin tức thị trường & sự kiện từ SSI MCP, VNDIRECT & FINHAY (${timeStr})!`);
+    toast(`↻ Đã làm mới 148 tin tức & sự kiện thị trường!`);
   }
   if (typeof rerender === 'function') {
     rerender();
@@ -9145,13 +8991,13 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   // 7. Feedback toast
   if (typeof toast === 'function') {
     if (isManualDnse && isManualVnd) {
-      toast(`↻ DUAL-MCP: Đã đồng bộ mới nhất từ DNSE & VNDIRECT cho ${sym}`);
+      toast(`↻ Đã cập nhật dữ liệu mới nhất cho ${sym}`);
     } else if (isManualVnd) {
-      toast(`↻ VND MCP: Đã đồng bộ phân tích DStock từ mcp.vndirect.com.vn cho ${sym}`);
+      toast(`↻ Đã cập nhật phân tích cho ${sym}`);
     } else if (isManualDnse) {
-      toast(`↻ DNSE MCP: Đã đồng bộ dữ liệu giá từ mcp.dnse.com.vn cho ${sym}`);
+      toast(`↻ Đã cập nhật dữ liệu giá cho ${sym}`);
     } else {
-      toast(`⚡ QUAD-MCP: Đã kết nối & đồng bộ dữ liệu từ DNSE, VNDIRECT, FINHAY & SSI cho ${sym}`);
+      
     }
   }
 
@@ -9292,58 +9138,5 @@ startRealtimeEngine();
 </script>
 
 
-<!-- MODAL QUAD-MCP INSPECTOR (DNSE, VNDIRECT, FINHAY & SSI) -->
-<div id="modal-dnse-mcp" onclick="if(event.target===this)closeDnseMcpModal()">
-  <div class="dnse-modal-card" style="width:880px;">
-    <div class="dnse-modal-head">
-      <h3>
-        <span style="color:#22c55e">●</span> Model Context Protocol Inspector (Quad-MCP Live: DNSE · VNDIRECT · FINHAY · SSI)
-        <span id="dnse-modal-sym-badge" style="font-size:11px;padding:2px 8px;border-radius:4px;background:#0369a1;color:#e0f2fe;font-weight:700">MSB</span>
-      </h3>
-      <button onclick="closeDnseMcpModal()" style="background:transparent;border:0;color:var(--ink3);font-size:18px;cursor:pointer;line-height:1">✕</button>
-    </div>
-    <div class="dnse-modal-body">
-      <!-- SERVER SWITCHER -->
-      <div style="display:flex;gap:8px;background:var(--card-sub);padding:6px;border-radius:6px;border:1px solid var(--line);flex-wrap:wrap">
-        <button class="mcp-server-tab active-dnse" id="btn-server-dnse" onclick="switchMcpServer('dnse')">
-          <span style="color:#22c55e">●</span> Server 1: DNSE MCP (mcp.dnse.com.vn · 7 Tools)
-        </button>
-        <button class="mcp-server-tab" id="btn-server-vnd" onclick="switchMcpServer('vnd')">
-          <span style="color:#f97316">●</span> Server 2: VNDIRECT MCP (mcp.vndirect.com.vn · 9 Tools)
-        </button>
-        <button class="mcp-server-tab" id="btn-server-fin" onclick="switchMcpServer('fin')">
-          <span style="color:#10b981">●</span> Server 3: FINHAY MCP (mcp.finhay.com.vn · 6 Tools)
-        </button>
-        <button class="mcp-server-tab" id="btn-server-ssi" onclick="switchMcpServer('ssi')">
-          <span style="color:#ef4444">●</span> Server 4: SSI MCP (mcp.ssi.com.vn · 8 Tools &amp; 6 Resources)
-        </button>
-        <button class="mcp-server-tab" id="btn-server-logo" onclick="switchMcpServer('logo')">
-          <span style="color:#6366f1">●</span> Server 5: BRAND &amp; LOGO MCP (mcp.brandfetch.io · 3 Tools &amp; Resources)
-        </button>
-      </div>
 
-      <!-- SERVER STATUS BAR -->
-      <div style="font-size:11px;color:var(--ink2);background:var(--card-sub);padding:8px 12px;border-radius:6px;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px" id="mcp-server-status-bar">
-        <div><b>Endpoint:</b> <code style="color:#0284c7" id="mcp-modal-endpoint-text">https://mcp.dnse.com.vn/mcp (Entrade X Data Engine)</code></div>
-        <div><b>Status:</b> <span style="color:#22c55e;font-weight:600">● LIVE CONNECTED</span></div>
-        <div id="dnse-modal-updated-time"><b>Cập nhật:</b> Vừa xong</div>
-      </div>
-
-      <!-- TOOL TABS CONTAINER -->
-      <div style="display:flex;gap:6px;flex-wrap:wrap" id="dnse-tool-tabs-container">
-        <!-- Dynamically rendered -->
-      </div>
-
-      <!-- JSON VIEWER -->
-      <pre class="dnse-json-pre" id="dnse-mcp-json-content">{
-  "status": "loading..."
-}</pre>
-    </div>
-    <div class="dnse-modal-foot">
-      <button class="dnse-action-btn" onclick="copyDnseMcpJson()">📋 Sao chép JSON</button>
-      <button class="dnse-action-btn primary" onclick="syncAllMcpLive()">↻ Đồng bộ lại từ Servers</button>
-      <button class="dnse-action-btn" onclick="closeDnseMcpModal()">Đóng</button>
-    </div>
-  </div>
-</div>
 </body></html>

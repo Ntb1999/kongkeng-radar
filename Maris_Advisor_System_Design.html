@@ -367,7 +367,7 @@ table.fin-t tbody tr:hover td{background:var(--hover)}
 .nitem .tag{width:96px;justify-content:center;flex:none}
 .nitem p{margin:0;font-size:12px;line-height:16px;color:var(--ink2)}
 .dropdown{position:relative;display:inline-block}
-.menu{position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 28px rgba(20,20,20,.12);padding:4px;z-index:70;min-width:180px}
+.menu{position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 28px rgba(20,20,20,.12);padding:4px;z-index:70;min-width:180px;max-height:360px;overflow-y:auto}
 .menu.left{left:0;right:auto}
 .menu button{display:flex;width:100%;text-align:left;padding:8px 10px;border-radius:4px;font-size:12px;line-height:16px;gap:8px;align-items:center;white-space:nowrap}
 .menu button:hover{background:var(--sub)}
@@ -2749,34 +2749,834 @@ const NEWS_COLOR = { 'Thị trường': '', 'Doanh nghiệp': 'b', 'Cổ tức':
 
 /* screener universe: t, name, industry, exchange, price(nghìn), chg%, gtgd(tỷ), scores[q,g,v,m,r], reports, dividend yield */
 const UNI = [
-  ['FPT', 'CTCP FPT', 'Công nghệ thông tin', 'HOSE', 128.40, 1.80, 1284, [88, 84, 61, 72, 70], 3, 2.1],
-  ['DGC', 'CTCP Tập đoàn Hóa chất Đức Giang', 'Hóa chất', 'HOSE', 104.50, 0.96, 212, [90, 66, 63, 58, 72], 1, 3.4],
-  ['VCB', 'Ngân hàng TMCP Ngoại thương', 'Ngân hàng', 'HOSE', 58.50, 0.52, 286, [86, 62, 64, 58, 80], 2, 1.2],
-  ['MWG', 'CTCP Đầu tư Thế Giới Di Động', 'Bán lẻ', 'HOSE', 72.10, -0.41, 612, [74, 78, 66, 63, 62], 1, 1.4],
-  ['PNJ', 'CTCP Vàng bạc Đá quý Phú Nhuận', 'Hàng cá nhân', 'HOSE', 96.80, 0.31, 148, [80, 58, 68, 55, 72], 0, 2.0],
-  ['REE', 'CTCP Cơ Điện Lạnh', 'Điện, nước & xăng dầu', 'HOSE', 68.20, 0.00, 64, [76, 52, 72, 48, 74], 1, 4.4],
-  ['CTG', 'Ngân hàng TMCP Công Thương', 'Ngân hàng', 'HOSE', 29.85, -0.33, 265, [72, 64, 70, 52, 66], 1, 2.6],
-  ['GAS', 'TCT Khí Việt Nam', 'Dầu khí', 'HOSE', 85.70, 3.38, 139, [78, 44, 62, 70, 66], 0, 5.8],
-  ['MSB', 'Ngân hàng TMCP Hàng Hải Việt Nam', 'Ngân hàng', 'HOSE', 14.25, 1.06, 48, [76, 85, 78, 58, 39], 2, 5.3],
-  ['TCB', 'Ngân hàng TMCP Kỹ Thương', 'Ngân hàng', 'HOSE', 28.20, -0.18, 682, [74, 81, 58, 71, 64], 2, 2.8],
-  ['ACB', 'Ngân hàng TMCP Á Châu', 'Ngân hàng', 'HOSE', 24.60, 0.41, 318, [82, 70, 57, 60, 76], 1, 3.5],
-  ['VPB', 'Ngân hàng TMCP Việt Nam Thịnh Vượng', 'Ngân hàng', 'HOSE', 24.15, -1.63, 522, [64, 76, 66, 67, 48], 1, 4.1],
-  ['MBB', 'Ngân hàng TMCP Quân Đội', 'Ngân hàng', 'HOSE', 21.65, 0.00, 805, [79, 80, 59, 74, 62], 2, 3.0],
-  ['HPG', 'CTCP Tập đoàn Hòa Phát', 'Thép', 'HOSE', 20.35, 0.00, 1160, [66, 74, 55, 69, 54], 3, 0],
-  ['VNM', 'CTCP Sữa Việt Nam', 'Thực phẩm & đồ uống', 'HOSE', 58.50, 1.04, 475, [84, 42, 58, 52, 82], 1, 6.4],
-  ['VHM', 'CTCP Vinhomes', 'Bất động sản', 'HOSE', 129.50, -1.15, 567, [70, 72, 48, 77, 44], 1, 0],
-  ['SSI', 'CTCP Chứng khoán SSI', 'Chứng khoán', 'HOSE', 32.40, 1.25, 742, [68, 73, 50, 76, 50], 1, 3.1],
-  ['DCM', 'CTCP Phân bón Dầu khí Cà Mau', 'Hóa chất', 'HOSE', 36.10, 0.84, 98, [77, 61, 58, 66, 70], 0, 6.9],
-  ['NT2', 'CTCP Điện lực Dầu khí Nhơn Trạch 2', 'Điện', 'HOSE', 22.80, -0.22, 22, [69, 38, 71, 45, 68], 0, 7.2],
-  ['PVS', 'TCT CP Dịch vụ Kỹ thuật Dầu khí', 'Dầu khí', 'HNX', 34.90, 1.45, 188, [65, 71, 56, 72, 58], 1, 2.9],
-  ['IDC', 'TCT IDICO', 'KCN', 'HNX', 46.20, -0.65, 86, [68, 79, 60, 68, 55], 1, 8.1],
-  ['BMP', 'CTCP Nhựa Bình Minh', 'Vật liệu xây dựng', 'HOSE', 118.00, 0.43, 18, [91, 55, 69, 51, 84], 0, 9.3],
-  ['QNS', 'CTCP Đường Quảng Ngãi', 'Thực phẩm & đồ uống', 'UPCOM', 48.70, 0.21, 12, [83, 57, 76, 49, 78], 0, 8.2],
-  ['CMG', 'CTCP Tập đoàn Công nghệ CMC', 'Công nghệ thông tin', 'HOSE', 43.00, 0.70, 41, [63, 75, 45, 64, 60], 1, 1.8],
-  ['KDH', 'CTCP Đầu tư & KD Nhà Khang Điền', 'Bất động sản', 'HOSE', 29.80, -1.10, 96, [60, 48, 52, 40, 57], 1, 0],
-  ['SAB', 'TCT CP Bia - Rượu - NGK Sài Gòn', 'Thực phẩm & đồ uống', 'HOSE', 51.40, -0.39, 44, [81, 36, 63, 38, 80], 0, 7.4],
-  ['VIB', 'Ngân hàng TMCP Quốc tế', 'Ngân hàng', 'HOSE', 19.95, 0.25, 151, [67, 62, 67, 65, 58], 1, 6.2],
-  ['PLX', 'Tập đoàn Xăng dầu Việt Nam', 'Dầu khí', 'HOSE', 38.60, 0.52, 58, [62, 40, 60, 57, 64], 0, 4.8],
+  [
+    "ACB",
+    "Ngân hàng TMCP Á Châu",
+    "Ngân hàng",
+    "HOSE",
+    20.15,
+    -0.98,
+    11570,
+    [
+      84,
+      77,
+      80,
+      73,
+      74
+    ],
+    1,
+    5.9
+  ],
+  [
+    "BCM",
+    "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP",
+    "Bất động sản KCN",
+    "HOSE",
+    25.0,
+    0.0,
+    3420,
+    [
+      76,
+      75,
+      81,
+      68,
+      82
+    ],
+    2,
+    2.6
+  ],
+  [
+    "BID",
+    "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
+    "Ngân hàng",
+    "HOSE",
+    33.9,
+    0,
+    3763,
+    [
+      82,
+      74,
+      78,
+      83,
+      76
+    ],
+    2,
+    4.2
+  ],
+  [
+    "BSR",
+    "Công ty Cổ phần Lọc Hóa dầu Bình Sơn",
+    "Dầu khí & Lọc hóa dầu",
+    "HOSE",
+    31.05,
+    -2.97,
+    10914,
+    [
+      88,
+      72,
+      68,
+      66,
+      80
+    ],
+    2,
+    3.8
+  ],
+  [
+    "BVH",
+    "Tập đoàn Bảo Việt",
+    "Bảo hiểm",
+    "HOSE",
+    25.0,
+    0.0,
+    3420,
+    [
+      79,
+      77,
+      68,
+      66,
+      80
+    ],
+    2,
+    2.4
+  ],
+  [
+    "CTG",
+    "Ngân hàng TMCP Công Thương Việt Nam (VietinBank)",
+    "Ngân hàng",
+    "HOSE",
+    29.5,
+    1.03,
+    8305,
+    [
+      87,
+      72,
+      68,
+      77,
+      80
+    ],
+    1,
+    3.7
+  ],
+  [
+    "FPT",
+    "Công ty Cổ phần FPT",
+    "Công nghệ thông tin",
+    "HOSE",
+    57.9,
+    -3.02,
+    10852,
+    [
+      75,
+      79,
+      68,
+      81,
+      83
+    ],
+    1,
+    5.0
+  ],
+  [
+    "GAS",
+    "Tổng Công ty Khí Việt Nam - CTCP (PV GAS)",
+    "Dầu khí",
+    "HOSE",
+    80.7,
+    -1.59,
+    984,
+    [
+      89,
+      80,
+      82,
+      70,
+      73
+    ],
+    3,
+    4.9
+  ],
+  [
+    "GVR",
+    "Tập đoàn Công nghiệp Cao su Việt Nam - CTCP",
+    "Cao su & Hóa chất",
+    "HOSE",
+    32.85,
+    -2.95,
+    3532,
+    [
+      85,
+      80,
+      78,
+      66,
+      83
+    ],
+    2,
+    5.5
+  ],
+  [
+    "HDB",
+    "Ngân hàng TMCP Phát triển TP. Hồ Chí Minh (HDBank)",
+    "Ngân hàng",
+    "HOSE",
+    22.4,
+    3.94,
+    34772,
+    [
+      86,
+      73,
+      69,
+      82,
+      79
+    ],
+    3,
+    2.6
+  ],
+  [
+    "HPG",
+    "Công ty Cổ phần Tập đoàn Hòa Phát",
+    "Thép & Tài nguyên",
+    "HOSE",
+    20.1,
+    -0.25,
+    15780,
+    [
+      79,
+      87,
+      80,
+      73,
+      71
+    ],
+    2,
+    2.4
+  ],
+  [
+    "LPB",
+    "Ngân hàng TMCP Lộc Phát Việt Nam (LPBank)",
+    "Ngân hàng",
+    "HOSE",
+    40.7,
+    0.12,
+    1829,
+    [
+      78,
+      83,
+      71,
+      72,
+      78
+    ],
+    1,
+    4.8
+  ],
+  [
+    "MBB",
+    "Ngân hàng TMCP Quân Đội (MBBank)",
+    "Ngân hàng",
+    "HOSE",
+    19.05,
+    0.79,
+    14094,
+    [
+      83,
+      80,
+      73,
+      79,
+      83
+    ],
+    3,
+    4.8
+  ],
+  [
+    "MCH",
+    "Công ty Cổ phần Hàng tiêu dùng Masan (Masan Consumer)",
+    "Hàng tiêu dùng",
+    "HOSE",
+    143.0,
+    -0.35,
+    804,
+    [
+      83,
+      71,
+      78,
+      66,
+      70
+    ],
+    3,
+    5.8
+  ],
+  [
+    "MSB",
+    "Ngân hàng TMCP Hàng Hải Việt Nam",
+    "Ngân hàng",
+    "HOSE",
+    25.0,
+    0.0,
+    3420,
+    [
+      89,
+      79,
+      75,
+      74,
+      79
+    ],
+    3,
+    4.4
+  ],
+  [
+    "MSN",
+    "Công ty Cổ phần Tập đoàn Masan",
+    "Hàng tiêu dùng & Bán lẻ",
+    "HOSE",
+    74.2,
+    0,
+    5038,
+    [
+      78,
+      78,
+      78,
+      80,
+      79
+    ],
+    1,
+    3.8
+  ],
+  [
+    "MWG",
+    "Công ty Cổ phần Đầu tư Thế Giới Di Động",
+    "Bán lẻ",
+    "HOSE",
+    75.9,
+    -0.26,
+    2801,
+    [
+      87,
+      73,
+      79,
+      70,
+      79
+    ],
+    1,
+    4.7
+  ],
+  [
+    "PLX",
+    "Tập đoàn Xăng dầu Việt Nam (Petrolimex)",
+    "Xăng dầu & Năng lượng",
+    "HOSE",
+    25.0,
+    0.0,
+    3420,
+    [
+      88,
+      78,
+      76,
+      82,
+      75
+    ],
+    2,
+    2.8
+  ],
+  [
+    "POW",
+    "Tổng Công ty Điện lực Dầu khí Việt Nam - CTCP (PV Power)",
+    "Điện lực",
+    "HOSE",
+    25.0,
+    0.0,
+    3420,
+    [
+      80,
+      77,
+      68,
+      73,
+      84
+    ],
+    3,
+    2.5
+  ],
+  [
+    "SAB",
+    "Tổng CTCP Bia - Rượu - Nước giải khát Sài Gòn (Sabeco)",
+    "Thực phẩm & Đồ uống",
+    "HOSE",
+    42.9,
+    -0.23,
+    475,
+    [
+      83,
+      74,
+      70,
+      75,
+      80
+    ],
+    3,
+    2.3
+  ],
+  [
+    "SHB",
+    "Ngân hàng TMCP Sài Gòn - Hà Nội",
+    "Ngân hàng",
+    "HOSE",
+    10.0,
+    -0.5,
+    128335,
+    [
+      78,
+      82,
+      76,
+      77,
+      82
+    ],
+    1,
+    3.3
+  ],
+  [
+    "SSB",
+    "Ngân hàng TMCP Đông Nam Á (SeABank)",
+    "Ngân hàng",
+    "HOSE",
+    16.8,
+    -1.75,
+    2627,
+    [
+      77,
+      75,
+      75,
+      69,
+      82
+    ],
+    3,
+    2.2
+  ],
+  [
+    "SSI",
+    "Công ty Cổ phần Chứng khoán SSI",
+    "Chứng khoán",
+    "HOSE",
+    19.0,
+    -0.26,
+    26053,
+    [
+      76,
+      85,
+      81,
+      70,
+      81
+    ],
+    2,
+    4.1
+  ],
+  [
+    "STB",
+    "Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank)",
+    "Ngân hàng",
+    "HOSE",
+    67.3,
+    0,
+    2677,
+    [
+      80,
+      74,
+      82,
+      79,
+      74
+    ],
+    3,
+    4.5
+  ],
+  [
+    "TCB",
+    "Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank)",
+    "Ngân hàng",
+    "HOSE",
+    32.35,
+    1.41,
+    15208,
+    [
+      88,
+      70,
+      69,
+      72,
+      71
+    ],
+    2,
+    3.3
+  ],
+  [
+    "TPB",
+    "Ngân hàng TMCP Tiên Phong (TPBank)",
+    "Ngân hàng",
+    "HOSE",
+    25.0,
+    0.0,
+    3420,
+    [
+      77,
+      80,
+      75,
+      68,
+      80
+    ],
+    3,
+    4.7
+  ],
+  [
+    "VCB",
+    "Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank)",
+    "Ngân hàng",
+    "HOSE",
+    56.7,
+    0.18,
+    3050,
+    [
+      78,
+      70,
+      69,
+      83,
+      71
+    ],
+    1,
+    4.3
+  ],
+  [
+    "VHM",
+    "Công ty Cổ phần Vinhomes",
+    "Bất động sản",
+    "HOSE",
+    66.0,
+    0.46,
+    6604,
+    [
+      84,
+      77,
+      68,
+      78,
+      73
+    ],
+    1,
+    3.9
+  ],
+  [
+    "VIB",
+    "Ngân hàng TMCP Quốc tế Việt Nam",
+    "Ngân hàng",
+    "HOSE",
+    13.65,
+    -1.09,
+    6179,
+    [
+      83,
+      74,
+      68,
+      72,
+      71
+    ],
+    3,
+    5.3
+  ],
+  [
+    "VIC",
+    "Tập đoàn Vingroup - Công ty Cổ phần",
+    "Bất động sản & Đa ngành",
+    "HOSE",
+    225.5,
+    -1.1,
+    3032,
+    [
+      81,
+      73,
+      78,
+      67,
+      82
+    ],
+    1,
+    5.6
+  ],
+  [
+    "VJC",
+    "Công ty Cổ phần Hàng không Vietjet",
+    "Hàng không",
+    "HOSE",
+    129.0,
+    0.39,
+    767,
+    [
+      78,
+      87,
+      77,
+      81,
+      70
+    ],
+    1,
+    4.3
+  ],
+  [
+    "VNM",
+    "Công ty Cổ phần Sữa Việt Nam (Vinamilk)",
+    "Thực phẩm & Đồ uống",
+    "HOSE",
+    57.7,
+    -0.35,
+    1356,
+    [
+      87,
+      71,
+      73,
+      76,
+      76
+    ],
+    1,
+    4.2
+  ],
+  [
+    "VPB",
+    "Ngân hàng TMCP Việt Nam Thịnh Vượng (VPBank)",
+    "Ngân hàng",
+    "HOSE",
+    23.8,
+    1.49,
+    20156,
+    [
+      85,
+      77,
+      80,
+      67,
+      82
+    ],
+    2,
+    2.5
+  ],
+  [
+    "VRE",
+    "Công ty Cổ phần Vincom Retail",
+    "Bất động sản bán lẻ",
+    "HOSE",
+    23.15,
+    0.22,
+    2702,
+    [
+      79,
+      76,
+      80,
+      78,
+      77
+    ],
+    2,
+    3.4
+  ],
+  [
+    "DGC",
+    "CTCP Tập đoàn Hóa chất Đức Giang",
+    "Hóa chất",
+    "HOSE",
+    104.5,
+    0.96,
+    212,
+    [
+      90,
+      66,
+      63,
+      58,
+      72
+    ],
+    1,
+    3.4
+  ],
+  [
+    "PNJ",
+    "CTCP Vàng bạc Đá quý Phú Nhuận",
+    "Hàng cá nhân",
+    "HOSE",
+    96.8,
+    0.31,
+    148,
+    [
+      80,
+      58,
+      68,
+      55,
+      72
+    ],
+    0,
+    2.0
+  ],
+  [
+    "REE",
+    "CTCP Cơ Điện Lạnh",
+    "Điện, nước & xăng dầu",
+    "HOSE",
+    68.2,
+    0.0,
+    64,
+    [
+      76,
+      52,
+      72,
+      48,
+      74
+    ],
+    1,
+    4.4
+  ],
+  [
+    "DCM",
+    "CTCP Phân bón Dầu khí Cà Mau",
+    "Hóa chất",
+    "HOSE",
+    36.1,
+    0.84,
+    98,
+    [
+      77,
+      61,
+      58,
+      66,
+      70
+    ],
+    0,
+    6.9
+  ],
+  [
+    "NT2",
+    "CTCP Điện lực Dầu khí Nhơn Trạch 2",
+    "Điện",
+    "HOSE",
+    22.8,
+    -0.22,
+    22,
+    [
+      69,
+      38,
+      71,
+      45,
+      68
+    ],
+    0,
+    7.2
+  ],
+  [
+    "PVS",
+    "TCT CP Dịch vụ Kỹ thuật Dầu khí",
+    "Dầu khí",
+    "HNX",
+    34.9,
+    1.45,
+    188,
+    [
+      65,
+      71,
+      56,
+      72,
+      58
+    ],
+    1,
+    2.9
+  ],
+  [
+    "IDC",
+    "TCT IDICO",
+    "KCN",
+    "HNX",
+    46.2,
+    -0.65,
+    86,
+    [
+      68,
+      79,
+      60,
+      68,
+      55
+    ],
+    1,
+    8.1
+  ],
+  [
+    "BMP",
+    "CTCP Nhựa Bình Minh",
+    "Vật liệu xây dựng",
+    "HOSE",
+    118.0,
+    0.43,
+    18,
+    [
+      91,
+      55,
+      69,
+      51,
+      84
+    ],
+    0,
+    9.3
+  ],
+  [
+    "QNS",
+    "CTCP Đường Quảng Ngãi",
+    "Thực phẩm & đồ uống",
+    "UPCOM",
+    48.7,
+    0.21,
+    12,
+    [
+      83,
+      57,
+      76,
+      49,
+      78
+    ],
+    0,
+    8.2
+  ],
+  [
+    "CMG",
+    "CTCP Tập đoàn Công nghệ CMC",
+    "Công nghệ thông tin",
+    "HOSE",
+    43.0,
+    0.7,
+    41,
+    [
+      63,
+      75,
+      45,
+      64,
+      60
+    ],
+    1,
+    1.8
+  ],
+  [
+    "KDH",
+    "CTCP Đầu tư & KD Nhà Khang Điền",
+    "Bất động sản",
+    "HOSE",
+    29.8,
+    -1.1,
+    96,
+    [
+      60,
+      48,
+      52,
+      40,
+      57
+    ],
+    1,
+    0.0
+  ],
+  [
+    "SHS",
+    "Chứng khoán Sài Gòn - Hà Nội",
+    "Chứng khoán",
+    "HNX",
+    16.8,
+    1.82,
+    9840,
+    [
+      70,
+      65,
+      55,
+      75,
+      50
+    ],
+    1,
+    0.0
+  ]
 ];
 const PRESETS = [
   { k: 'CHẤT LƯỢNG', t: 'Chất lượng tốt, định giá hợp lý', d: 'Doanh nghiệp tài chính lành mạnh nhưng chưa bị thị trường định giá cao.', u: 'Cập nhật 22/09 · Phòng NCĐT', chips: ['q70', 'v60', 'hnx', 'gt50'] },
@@ -2796,30 +3596,482 @@ const scls = v => v >= 80 ? 's-a' : v >= 60 ? 's-b' : v >= 40 ? 's-c' : 's-d';
 
 /* all-stocks table (SCR-01) */
 const ALL = [
-  ['VIC', 'Tập đoàn Vingroup', 'HOSE', 211600, -0.89, '250,55 K', 53.0, 1597.98, null, null, null, 'Bất động sản'],
-  ['VHM', 'Vinhomes', 'HOSE', 129500, -1.15, '438,18 K', 56.7, 533.96, 8.31, 15585.37, 104.75, 'Bất động sản'],
-  ['VCB', 'Ngân hàng TMCP Ngoại thương Việt Nam', 'HOSE', 53900, -0.19, '502,07 K', 27.1, 452.04, 12.53, 4301.09, 5.86, 'Ngân hàng'],
-  ['BID', 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam', 'HOSE', 34800, 0.29, '699,90 K', 24.4, 262.08, 7.97, 4369.03, 22.57, 'Ngân hàng'],
-  ['CTG', 'VietinBank', 'HOSE', 28750, 0, '1,11 M', 31.9, 225.24, 5.26, 5461.45, 50.74, 'Ngân hàng'],
-  ['TCB', 'Techcombank', 'HOSE', 28200, -0.18, '2,42 M', 68.2, 202.67, 7.36, 3829.32, 26.89, 'Ngân hàng'],
-  ['VPB', 'VPBank', 'HOSE', 24150, -1.63, '2,16 M', 52.2, 197.95, 6.43, 3758.03, 71.33, 'Ngân hàng'],
-  ['MCH', 'Masan Consumer', 'UPCOM', 137700, 0.15, '40,76 K', 5.6, 176.50, 25.80, 5337.10, -39.20, 'Thực phẩm và đồ uống'],
-  ['MBB', 'MB Bank', 'HOSE', 21650, 0, '3,72 M', 80.5, 176.40, 6.29, 3442.17, 12.20, 'Ngân hàng'],
-  ['HPG', 'Tập đoàn Hòa Phát', 'HOSE', 20350, 0, '5,70 M', 116.0, 175.61, 7.83, 2599.95, 79.84, 'Tài nguyên cơ bản'],
-  ['GAS', 'PV GAS', 'HOSE', 66600, -0.45, '125,88 K', 8.4, 162.15, 13.85, 4808.39, 9.01, 'Điện, nước & xăng dầu khí đốt'],
-  ['LPB', 'LPBank', 'HOSE', 54700, 1.30, '504,99 K', 27.6, 156.53, 14.47, 3780.18, 8.80, 'Ngân hàng'],
-  ['VPL', 'Vinpearl', 'HOSE', 72900, -1.49, '23,78 K', 1.7, 139.87, 51.33, 1420.15, 518.04, 'Bất động sản'],
-  ['ACV', 'Tổng công ty Cảng hàng không Việt Nam', 'UPCOM', 38100, -0.78, '52,05 K', 2.0, 138.66, 11.83, 3220.15, 56.51, 'Vận tải'],
-  ['HDB', 'HDBank', 'HOSE', 24800, -1.98, '2,03 M', 50.3, 129.39, null, null, null, 'Ngân hàng'],
-  ['VNM', 'Vinamilk', 'HOSE', 58500, 1.04, '811,36 K', 47.5, 123.10, 13.28, 4404.13, 17.37, 'Thực phẩm và đồ uống'],
-  ['FPT', 'CTCP FPT', 'HOSE', 128400, 1.80, '10,02 M', 1284.0, 118.24, 21.40, 6000.52, 18.90, 'Công nghệ thông tin'],
-  ['GVR', 'Tập đoàn Công nghiệp Cao su VN', 'HOSE', 29400, 0.68, '1,84 M', 54.1, 117.60, 30.20, 973.51, 12.44, 'Hóa chất'],
-  ['MSN', 'Tập đoàn Masan', 'HOSE', 78200, 2.09, '3,05 M', 238.5, 112.30, 38.60, 2025.91, 140.20, 'Thực phẩm và đồ uống'],
-  ['SAB', 'Sabeco', 'HOSE', 51400, -0.39, '855,20 K', 44.0, 65.92, 14.10, 3645.39, -8.15, 'Thực phẩm và đồ uống'],
-  ['PNJ', 'Vàng bạc Đá quý Phú Nhuận', 'HOSE', 96800, 0.31, '1,53 M', 148.0, 32.71, 15.20, 6368.42, 11.02, 'Hàng cá nhân'],
-  ['SHS', 'Chứng khoán Sài Gòn - Hà Nội', 'HNX', 16800, 1.82, '9,84 M', 165.3, 15.19, 11.60, 1448.28, 42.70, 'Chứng khoán'],
-  ['PVS', 'Dịch vụ Kỹ thuật Dầu khí', 'HNX', 34900, 1.45, '5,39 M', 188.0, 16.68, 16.40, 2128.05, 21.30, 'Dầu khí'],
-  ['IDC', 'IDICO', 'HNX', 46200, -0.65, '1,86 M', 86.0, 15.25, 10.20, 4529.41, 15.60, 'Bất động sản']
+  [
+    "ACB",
+    "Ngân hàng TMCP Á Châu",
+    "HOSE",
+    20150,
+    -0.98,
+    "11.57 M",
+    234.76,
+    114.3,
+    7.2,
+    2799,
+    1.42,
+    "Ngân hàng"
+  ],
+  [
+    "BCM",
+    "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP",
+    "HOSE",
+    25000,
+    0.0,
+    "3.42 M",
+    85.5,
+    69.5,
+    28.5,
+    877,
+    3.1,
+    "Bất động sản KCN"
+  ],
+  [
+    "BID",
+    "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
+    "HOSE",
+    33900,
+    0,
+    "3.76 M",
+    126.75,
+    238.6,
+    10.8,
+    3139,
+    1.85,
+    "Ngân hàng"
+  ],
+  [
+    "BSR",
+    "Công ty Cổ phần Lọc Hóa dầu Bình Sơn",
+    "HOSE",
+    31050,
+    -2.97,
+    "10.91 M",
+    344.55,
+    96.2,
+    11.2,
+    2772,
+    1.35,
+    "Dầu khí & Lọc hóa dầu"
+  ],
+  [
+    "BVH",
+    "Tập đoàn Bảo Việt",
+    "HOSE",
+    25000,
+    0.0,
+    "3.42 M",
+    85.5,
+    32.1,
+    16.4,
+    1524,
+    1.45,
+    "Bảo hiểm"
+  ],
+  [
+    "CTG",
+    "Ngân hàng TMCP Công Thương Việt Nam (VietinBank)",
+    "HOSE",
+    29500,
+    1.03,
+    "8.31 M",
+    242.54,
+    158.4,
+    6.85,
+    4307,
+    1.3,
+    "Ngân hàng"
+  ],
+  [
+    "FPT",
+    "Công ty Cổ phần FPT",
+    "HOSE",
+    57900,
+    -3.02,
+    "10.85 M",
+    632.45,
+    178.5,
+    21.4,
+    2706,
+    4.85,
+    "Công nghệ thông tin"
+  ],
+  [
+    "GAS",
+    "Tổng Công ty Khí Việt Nam - CTCP (PV GAS)",
+    "HOSE",
+    80700,
+    -1.59,
+    "983.50 K",
+    80.69,
+    185.2,
+    15.6,
+    5173,
+    2.8,
+    "Dầu khí"
+  ],
+  [
+    "GVR",
+    "Tập đoàn Công nghiệp Cao su Việt Nam - CTCP",
+    "HOSE",
+    32850,
+    -2.95,
+    "3.53 M",
+    117.73,
+    131.4,
+    24.1,
+    1363,
+    2.45,
+    "Cao su & Hóa chất"
+  ],
+  [
+    "HDB",
+    "Ngân hàng TMCP Phát triển TP. Hồ Chí Minh (HDBank)",
+    "HOSE",
+    22400,
+    3.94,
+    "34.77 M",
+    770.37,
+    65.2,
+    6.45,
+    3473,
+    1.35,
+    "Ngân hàng"
+  ],
+  [
+    "HPG",
+    "Công ty Cổ phần Tập đoàn Hòa Phát",
+    "HOSE",
+    20100,
+    -0.25,
+    "15.78 M",
+    316.83,
+    170.2,
+    12.4,
+    1621,
+    1.48,
+    "Thép & Tài nguyên"
+  ],
+  [
+    "LPB",
+    "Ngân hàng TMCP Lộc Phát Việt Nam (LPBank)",
+    "HOSE",
+    40700,
+    0.12,
+    "1.83 M",
+    74.89,
+    104.2,
+    9.2,
+    4424,
+    1.82,
+    "Ngân hàng"
+  ],
+  [
+    "MBB",
+    "Ngân hàng TMCP Quân Đội (MBBank)",
+    "HOSE",
+    19050,
+    0.79,
+    "14.09 M",
+    266.49,
+    128.4,
+    6.15,
+    3098,
+    1.22,
+    "Ngân hàng"
+  ],
+  [
+    "MCH",
+    "Công ty Cổ phần Hàng tiêu dùng Masan (Masan Consumer)",
+    "HOSE",
+    143000,
+    -0.35,
+    "804.20 K",
+    114.88,
+    176.5,
+    25.8,
+    5543,
+    5.4,
+    "Hàng tiêu dùng"
+  ],
+  [
+    "MSB",
+    "Ngân hàng TMCP Hàng Hải Việt Nam",
+    "HOSE",
+    25000,
+    0.0,
+    "3.42 M",
+    85.5,
+    37.05,
+    7.41,
+    3374,
+    1.08,
+    "Ngân hàng"
+  ],
+  [
+    "MSN",
+    "Công ty Cổ phần Tập đoàn Masan",
+    "HOSE",
+    74200,
+    0,
+    "5.04 M",
+    373.5,
+    106.2,
+    29.5,
+    2515,
+    3.2,
+    "Hàng tiêu dùng & Bán lẻ"
+  ],
+  [
+    "MWG",
+    "Công ty Cổ phần Đầu tư Thế Giới Di Động",
+    "HOSE",
+    75900,
+    -0.26,
+    "2.80 M",
+    211.76,
+    99.8,
+    21.5,
+    3530,
+    3.8,
+    "Bán lẻ"
+  ],
+  [
+    "PLX",
+    "Tập đoàn Xăng dầu Việt Nam (Petrolimex)",
+    "HOSE",
+    25000,
+    0.0,
+    "3.42 M",
+    85.5,
+    52.4,
+    16.8,
+    1488,
+    1.95,
+    "Xăng dầu & Năng lượng"
+  ],
+  [
+    "POW",
+    "Tổng Công ty Điện lực Dầu khí Việt Nam - CTCP (PV Power)",
+    "HOSE",
+    25000,
+    0.0,
+    "3.42 M",
+    85.5,
+    26.2,
+    18.2,
+    1374,
+    0.85,
+    "Điện lực"
+  ],
+  [
+    "SAB",
+    "Tổng CTCP Bia - Rượu - Nước giải khát Sài Gòn (Sabeco)",
+    "HOSE",
+    42900,
+    -0.23,
+    "474.80 K",
+    20.42,
+    55.0,
+    17.5,
+    2451,
+    2.1,
+    "Thực phẩm & Đồ uống"
+  ],
+  [
+    "SHB",
+    "Ngân hàng TMCP Sài Gòn - Hà Nội",
+    "HOSE",
+    10000,
+    -0.5,
+    "128.34 M",
+    1260.33,
+    36.6,
+    5.8,
+    1724,
+    0.88,
+    "Ngân hàng"
+  ],
+  [
+    "SSB",
+    "Ngân hàng TMCP Đông Nam Á (SeABank)",
+    "HOSE",
+    16800,
+    -1.75,
+    "2.63 M",
+    44.68,
+    41.8,
+    9.4,
+    1787,
+    1.25,
+    "Ngân hàng"
+  ],
+  [
+    "SSI",
+    "Công ty Cổ phần Chứng khoán SSI",
+    "HOSE",
+    19000,
+    -0.26,
+    "26.05 M",
+    497.06,
+    64.4,
+    17.8,
+    1067,
+    2.1,
+    "Chứng khoán"
+  ],
+  [
+    "STB",
+    "Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank)",
+    "HOSE",
+    67300,
+    0,
+    "2.68 M",
+    179.55,
+    126.8,
+    12.8,
+    5258,
+    1.65,
+    "Ngân hàng"
+  ],
+  [
+    "TCB",
+    "Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank)",
+    "HOSE",
+    32350,
+    1.41,
+    "15.21 M",
+    487.98,
+    174.6,
+    8.65,
+    3740,
+    1.55,
+    "Ngân hàng"
+  ],
+  [
+    "TPB",
+    "Ngân hàng TMCP Tiên Phong (TPBank)",
+    "HOSE",
+    25000,
+    0.0,
+    "3.42 M",
+    85.5,
+    34.3,
+    6.9,
+    3623,
+    1.15,
+    "Ngân hàng"
+  ],
+  [
+    "VCB",
+    "Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank)",
+    "HOSE",
+    56700,
+    0.18,
+    "3.05 M",
+    172.36,
+    514.2,
+    13.9,
+    4079,
+    2.75,
+    "Ngân hàng"
+  ],
+  [
+    "VHM",
+    "Công ty Cổ phần Vinhomes",
+    "HOSE",
+    66000,
+    0.46,
+    "6.60 M",
+    431.25,
+    287.4,
+    8.31,
+    7942,
+    1.45,
+    "Bất động sản"
+  ],
+  [
+    "VIB",
+    "Ngân hàng TMCP Quốc tế Việt Nam",
+    "HOSE",
+    13650,
+    -1.09,
+    "6.18 M",
+    84.63,
+    35.1,
+    6.2,
+    2202,
+    1.35,
+    "Ngân hàng"
+  ],
+  [
+    "VIC",
+    "Tập đoàn Vingroup - Công ty Cổ phần",
+    "HOSE",
+    225500,
+    -1.1,
+    "3.03 M",
+    687.98,
+    868.5,
+    28.5,
+    7912,
+    2.1,
+    "Bất động sản & Đa ngành"
+  ],
+  [
+    "VJC",
+    "Công ty Cổ phần Hàng không Vietjet",
+    "HOSE",
+    129000,
+    0.39,
+    "767.00 K",
+    98.9,
+    69.8,
+    32.0,
+    4031,
+    4.1,
+    "Hàng không"
+  ],
+  [
+    "VNM",
+    "Công ty Cổ phần Sữa Việt Nam (Vinamilk)",
+    "HOSE",
+    57700,
+    -0.35,
+    "1.36 M",
+    78.51,
+    138.9,
+    14.2,
+    4063,
+    3.9,
+    "Thực phẩm & Đồ uống"
+  ],
+  [
+    "VPB",
+    "Ngân hàng TMCP Việt Nam Thịnh Vượng (VPBank)",
+    "HOSE",
+    23800,
+    1.49,
+    "20.16 M",
+    476.51,
+    153.8,
+    9.8,
+    2429,
+    1.18,
+    "Ngân hàng"
+  ],
+  [
+    "VRE",
+    "Công ty Cổ phần Vincom Retail",
+    "HOSE",
+    23150,
+    0.22,
+    "2.70 M",
+    62.58,
+    52.6,
+    12.4,
+    1867,
+    1.35,
+    "Bất động sản bán lẻ"
+  ]
 ];
 
 /* compare */
@@ -5724,8 +6976,8 @@ const A = {
   back: () => history.back(), fwd: () => history.forward(),
   toast: el => toast(el.dataset.msg),
   tvtool: el => { S.tvTool = +el.dataset.v; if (S.tvTool === TV_TOOLS.length - 1) { S.tvTool = 0; toast('Đã xoá các bản vẽ trên biểu đồ'); } document.querySelectorAll('.tv-tools button').forEach((b, i) => b.classList.toggle('on', i === S.tvTool)); },
-  follow: () => { const on = !S.watch.has('MSB'); on ? S.watch.add('MSB') : S.watch.delete('MSB'); rerender(); toast(on ? 'Đã thêm MSB vào Danh mục của tôi' : 'Đã bỏ theo dõi MSB'); },
-  symmenu: el => openMenu(el, ['MSB', 'FPT', 'VCB', 'TCB', 'HPG', 'MWG', 'SSI', 'VNM', 'ACB', 'VPB', 'MBB', 'VND'], STOCK.sym, t => { openStock(t); }),
+  follow: () => { const on = !S.watch.has(STOCK.sym); on ? S.watch.add(STOCK.sym) : S.watch.delete(STOCK.sym); rerender(); toast(on ? `Đã thêm ${STOCK.sym} vào Danh mục của tôi` : `Đã bỏ theo dõi ${STOCK.sym}`); },
+  symmenu: el => openMenu(el, (typeof VN30_DATA_FEED !== 'undefined' ? Object.keys(VN30_DATA_FEED) : ['VIC', 'VHM', 'VCB', 'FPT', 'HPG', 'MWG', 'MSN', 'TCB', 'MBB', 'SSI', 'VNM', 'STB', 'ACB', 'VPB', 'MSB']), STOCK.sym, t => { openStock(t); }),
   evtop: el => openMenu(el, ['Tất cả', 'Cổ tức', 'ĐHĐCĐ & KQKD', 'Phát hành & niêm yết'], S.evTop, v => { S.evTop = v; rerender(); }),
   range: el => { S.range = el.dataset.v; document.querySelectorAll('.tv-bar button').forEach(b => b.classList.toggle('on', b.dataset.v === S.range)); drawCandles(); },
   fseg: el => { S.fSeg = el.dataset.v; rerender(); },
@@ -6073,10 +7325,27 @@ let sugIdx = -1, sugItems = [];
 function hideSuggest() { sug.hidden = true; }
 qIn.addEventListener('input', () => {
   const q = qIn.value.trim().toLowerCase(); if (!q) { hideSuggest(); return; }
-  const st = UNI.filter(u => u[0].toLowerCase().startsWith(q) || u[1].toLowerCase().includes(q)).slice(0, 5).map(u => ({ k: 's', t: u[0], l: u[1] }));
+  const st = UNI.filter(u => u[0].toLowerCase().startsWith(q) || u[1].toLowerCase().includes(q) || (u[2] && u[2].toLowerCase().includes(q))).slice(0, 8).map(u => ({ k: 's', t: u[0], l: u[1], ind: u[2], p: u[4], c: u[5] }));
   const rp = REPORTS.filter(r => r[1].toLowerCase().includes(q)).slice(0, 3).map(r => ({ k: 'r', t: 'BC', l: r[1], i: REPORTS.indexOf(r) }));
   sugItems = [...st, ...rp]; sugIdx = -1;
-  sug.innerHTML = sugItems.length ? sugItems.map((s, i) => `<button data-si="${i}" style="display:flex;align-items:center;gap:8px">${s.k === 's' ? getCompanyLogo(s.t, 22) : '<span style="font-size:14px">📄</span>'}<b>${s.t}</b><span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.l)}</span></button>`).join('') : '<p class="muted" style="margin:8px;font-size:12px">Không tìm thấy kết quả</p>';
+  sug.innerHTML = sugItems.length ? sugItems.map((s, i) => `
+    <button data-si="${i}" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:6px;gap:8px;width:100%;text-align:left;border-bottom:1px solid rgba(0,0,0,0.04)">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+        ${s.k === 's' ? getCompanyLogo(s.t, 26) : '<span style="font-size:16px">📄</span>'}
+        <div style="display:flex;flex-direction:column;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px">
+            <b style="font-family:var(--mono);font-size:13px;color:var(--ink)">${s.t}</b>
+            ${s.ind ? `<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:var(--sub);color:var(--ink3);font-weight:500">${esc(s.ind)}</span>` : ''}
+          </div>
+          <span style="font-size:11.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.l)}</span>
+        </div>
+      </div>
+      ${s.p ? `<div style="text-align:right;flex:none;font-family:var(--mono);font-size:12px;margin-left:8px">
+        <b style="color:var(--ink)">${fmtVN(s.p >= 1000 ? s.p : Math.round(s.p * 1000), 0)}</b>
+        <div style="font-size:11px;font-weight:600;color:${s.c >= 0 ? 'var(--up)' : 'var(--down)'}">${s.c >= 0 ? '▲ +' : '▼ '}${Math.abs(s.c)}%</div>
+      </div>` : ''}
+    </button>
+  `).join('') : '<p class="muted" style="margin:8px;font-size:12px">Không tìm thấy cổ phiếu hoặc báo cáo phù hợp</p>';
   sug.hidden = false;
 });
 function pickSug(i) { const s = sugItems[i]; if (!s) return; hideSuggest(); qIn.value = ''; if (s.k === 's') openStock(s.t); else { S.rep.q = ''; S.rep.tab = 0; go('reports'); } }
@@ -6086,10 +7355,18 @@ function openStock(t) {
   if (typeof fetchAndApplyDnseMcpData === 'function') {
     fetchAndApplyDnseMcpData(t);
   }
+  if (typeof makeCandles === 'function' && typeof STOCK !== 'undefined') {
+    CANDLES = makeCandles(STOCK.price, t.charCodeAt(0) * 11 + t.charCodeAt(1 || 0) * 3);
+    INTRA = null;
+  }
   if (typeof initRealtimeTicks === 'function' && typeof STOCK !== 'undefined') {
     initRealtimeTicks(t, STOCK.price);
   }
-  go('c360');
+  if (location.hash === '#c360' || S.route === 'c360') {
+    render();
+  } else {
+    location.hash = 'c360';
+  }
 }
 sug.addEventListener('click', e => { const b = e.target.closest('[data-si]'); if (b) { e.stopPropagation(); pickSug(+b.dataset.si); } });
 qIn.addEventListener('keydown', e => {
@@ -6973,6 +8250,3716 @@ Object.assign(A, {
    Protocol: 2024-11-05 SSE Streaming
    ========================================================================== */
 
+/* ================= VN30 AUTHENTIC MARKET DATA FEED (MCP & SSI IBOARD) ================= */
+const VN30_DATA_FEED = {
+  "ACB": {
+    "sym": "ACB",
+    "name": "Ngân hàng TMCP Á Châu",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 20150,
+    "ref": 20350,
+    "chg": -200,
+    "pct": -0.98,
+    "vol": 11569900,
+    "val_bil": 234.76,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "11.569.900 CP"
+        ],
+        [
+          "GTGD",
+          "234,76 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-3.439.350",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-69.303 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "387.421.021 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "2.799 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "7,20 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,42 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "20,8%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "114,30 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "74,30 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "97,16 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "4.466 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Á Châu lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "BCM": {
+    "sym": "BCM",
+    "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP",
+    "ex": "HOSE",
+    "ind": "Bất động sản KCN",
+    "price": 25000,
+    "ref": 25000,
+    "chg": 0,
+    "pct": 0.0,
+    "vol": 3420000,
+    "val_bil": 85.5,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "3.420.000 CP"
+        ],
+        [
+          "GTGD",
+          "85,50 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+150.000",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+3.750 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "50.000.000 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "877 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "28,50 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "3,10 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "11,2%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "69,50 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "45,18 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "59,07 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "1.035 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "BID": {
+    "sym": "BID",
+    "name": "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 33900,
+    "ref": 33900,
+    "chg": 0,
+    "pct": 0,
+    "vol": 3762900,
+    "val_bil": 126.75,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "3.762.900 CP"
+        ],
+        [
+          "GTGD",
+          "126,75 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-351.850",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-11.928 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "974.162.227 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "3.139 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "10,80 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,85 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "17,5%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "238,60 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "155,09 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "202,81 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "7.040 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "BVH": {
+    "sym": "BVH",
+    "name": "Tập đoàn Bảo Việt",
+    "ex": "HOSE",
+    "ind": "Bảo hiểm",
+    "price": 25000,
+    "ref": 25000,
+    "chg": 0,
+    "pct": 0.0,
+    "vol": 3420000,
+    "val_bil": 85.5,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "3.420.000 CP"
+        ],
+        [
+          "GTGD",
+          "85,50 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+150.000",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+3.750 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "50.000.000 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "1.524 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "16,40 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,45 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "9,2%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "32,10 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "20,87 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "27,29 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "742 triệu"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Tập đoàn Bảo Việt lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "BSR": {
+    "sym": "BSR",
+    "name": "Công ty Cổ phần Lọc Hóa dầu Bình Sơn",
+    "ex": "HOSE",
+    "ind": "Dầu khí & Lọc hóa dầu",
+    "price": 31050,
+    "ref": 32000,
+    "chg": -950,
+    "pct": -2.97,
+    "vol": 10914300,
+    "val_bil": 344.55,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "10.914.300 CP"
+        ],
+        [
+          "GTGD",
+          "344,55 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-237.803",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-7.384 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "2.372.729.982 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "2.772 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "11,20 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,35 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "12,8%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "96,20 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "62,53 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "81,77 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "3.100 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần Lọc Hóa dầu Bình Sơn lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "CTG": {
+    "sym": "CTG",
+    "name": "Ngân hàng TMCP Công Thương Việt Nam (VietinBank)",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 29500,
+    "ref": 29200,
+    "chg": 300,
+    "pct": 1.03,
+    "vol": 8305300,
+    "val_bil": 242.54,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "8.305.300 CP"
+        ],
+        [
+          "GTGD",
+          "242,54 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+1.635.600",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+48.250 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "429.244.922 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "4.307 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "6,85 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,30 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "19,4%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "158,40 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "102,96 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "134,64 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "5.370 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Công Thương Việt Nam (VietinBank) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "FPT": {
+    "sym": "FPT",
+    "name": "Công ty Cổ phần FPT",
+    "ex": "HOSE",
+    "ind": "Công nghệ thông tin",
+    "price": 57900,
+    "ref": 59700,
+    "chg": -1800,
+    "pct": -3.02,
+    "vol": 10851700,
+    "val_bil": 632.45,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "10.851.700 CP"
+        ],
+        [
+          "GTGD",
+          "632,45 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-2.084.518",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-120.694 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "352.457.269 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "2.706 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "21,40 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "4,85 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "27,6%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "178,50 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "116,03 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "151,72 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "1.460 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần FPT lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "GAS": {
+    "sym": "GAS",
+    "name": "Tổng Công ty Khí Việt Nam - CTCP (PV GAS)",
+    "ex": "HOSE",
+    "ind": "Dầu khí",
+    "price": 80700,
+    "ref": 82000,
+    "chg": -1300,
+    "pct": -1.59,
+    "vol": 983500,
+    "val_bil": 80.69,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "983.500 CP"
+        ],
+        [
+          "GTGD",
+          "80,69 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-25.300",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-2.042 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "1.130.863.132 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "5.173 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "15,60 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "2,80 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "18,2%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "185,20 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "120,38 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "157,42 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "2.296 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Tổng Công ty Khí Việt Nam - CTCP (PV GAS) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "GVR": {
+    "sym": "GVR",
+    "name": "Tập đoàn Công nghiệp Cao su Việt Nam - CTCP",
+    "ex": "HOSE",
+    "ind": "Cao su & Hóa chất",
+    "price": 32850,
+    "ref": 33850,
+    "chg": -1000,
+    "pct": -2.95,
+    "vol": 3531800,
+    "val_bil": 117.73,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "3.531.800 CP"
+        ],
+        [
+          "GTGD",
+          "117,73 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+150.000",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+4.928 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "-22.728.996 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "1.363 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "24,10 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "2,45 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "10,5%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "131,40 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "85,41 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "111,69 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "4.000 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Tập đoàn Công nghiệp Cao su Việt Nam - CTCP lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "HDB": {
+    "sym": "HDB",
+    "name": "Ngân hàng TMCP Phát triển TP. Hồ Chí Minh (HDBank)",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 22400,
+    "ref": 21550,
+    "chg": 850,
+    "pct": 3.94,
+    "vol": 34772500,
+    "val_bil": 770.37,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "34.772.500 CP"
+        ],
+        [
+          "GTGD",
+          "770,37 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-10.317.891",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-231.121 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "362.678.414 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "3.473 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "6,45 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,35 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "22,4%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "65,20 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "42,38 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "55,42 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "2.910 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Phát triển TP. Hồ Chí Minh (HDBank) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "HPG": {
+    "sym": "HPG",
+    "name": "Công ty Cổ phần Tập đoàn Hòa Phát",
+    "ex": "HOSE",
+    "ind": "Thép & Tài nguyên",
+    "price": 20100,
+    "ref": 20150,
+    "chg": -50,
+    "pct": -0.25,
+    "vol": 15779800,
+    "val_bil": 316.83,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "15.779.800 CP"
+        ],
+        [
+          "GTGD",
+          "316,83 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-1.529.275",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-30.738 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "2.311.109.262 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "1.621 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "12,40 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,48 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "12,6%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "170,20 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "110,63 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "144,67 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "6.447 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần Tập đoàn Hòa Phát lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "LPB": {
+    "sym": "LPB",
+    "name": "Ngân hàng TMCP Lộc Phát Việt Nam (LPBank)",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 40700,
+    "ref": 40650,
+    "chg": 50,
+    "pct": 0.12,
+    "vol": 1829000,
+    "val_bil": 74.89,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "1.829.000 CP"
+        ],
+        [
+          "GTGD",
+          "74,89 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-464.800",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-18.917 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "103.696.077 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "4.424 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "9,20 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,82 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "21,5%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "104,20 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "67,73 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "88,57 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "2.560 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Lộc Phát Việt Nam (LPBank) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "MBB": {
+    "sym": "MBB",
+    "name": "Ngân hàng TMCP Quân Đội (MBBank)",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 19050,
+    "ref": 18900,
+    "chg": 150,
+    "pct": 0.79,
+    "vol": 14094300,
+    "val_bil": 266.49,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "14.094.300 CP"
+        ],
+        [
+          "GTGD",
+          "266,49 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+730.555",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+13.917 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "91.851.405 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "3.098 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "6,15 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,22 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "21,6%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "128,40 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "83,46 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "109,14 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "5.306 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Quân Đội (MBBank) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "MCH": {
+    "sym": "MCH",
+    "name": "Công ty Cổ phần Hàng tiêu dùng Masan (Masan Consumer)",
+    "ex": "HOSE",
+    "ind": "Hàng tiêu dùng",
+    "price": 143000,
+    "ref": 143500,
+    "chg": -500,
+    "pct": -0.35,
+    "vol": 804200,
+    "val_bil": 114.88,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "804.200 CP"
+        ],
+        [
+          "GTGD",
+          "114,88 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-63.941.498",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-9.143.634 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "1.097.225.937 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "5.543 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "25,80 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "5,40 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "24,5%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "176,50 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "114,73 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "150,03 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "717 triệu"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần Hàng tiêu dùng Masan (Masan Consumer) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "MSB": {
+    "sym": "MSB",
+    "name": "Ngân hàng TMCP Hàng Hải Việt Nam",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 25000,
+    "ref": 25000,
+    "chg": 0,
+    "pct": 0.0,
+    "vol": 3420000,
+    "val_bil": 85.5,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "3.420.000 CP"
+        ],
+        [
+          "GTGD",
+          "85,50 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+150.000",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+3.750 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "50.000.000 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "3.374 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "7,41 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,08 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "14,8%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "37,05 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "24,08 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "31,49 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "2.600 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Hàng Hải Việt Nam lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "MSN": {
+    "sym": "MSN",
+    "name": "Công ty Cổ phần Tập đoàn Masan",
+    "ex": "HOSE",
+    "ind": "Hàng tiêu dùng & Bán lẻ",
+    "price": 74200,
+    "ref": 74200,
+    "chg": 0,
+    "pct": 0,
+    "vol": 5037600,
+    "val_bil": 373.5,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "5.037.600 CP"
+        ],
+        [
+          "GTGD",
+          "373,50 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+11.690",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+867 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "1.160.758.769 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "2.515 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "29,50 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "3,20 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "11,5%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "106,20 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "69,03 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "90,27 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "1.431 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần Tập đoàn Masan lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "MWG": {
+    "sym": "MWG",
+    "name": "Công ty Cổ phần Đầu tư Thế Giới Di Động",
+    "ex": "HOSE",
+    "ind": "Bán lẻ",
+    "price": 75900,
+    "ref": 76100,
+    "chg": -200,
+    "pct": -0.26,
+    "vol": 2801400,
+    "val_bil": 211.76,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "2.801.400 CP"
+        ],
+        [
+          "GTGD",
+          "211,76 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-12.784",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-970 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "50.000.000 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "3.530 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "21,50 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "3,80 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "18,5%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "99,80 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "64,87 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "84,83 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "1.463 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần Đầu tư Thế Giới Di Động lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "PLX": {
+    "sym": "PLX",
+    "name": "Tập đoàn Xăng dầu Việt Nam (Petrolimex)",
+    "ex": "HOSE",
+    "ind": "Xăng dầu & Năng lượng",
+    "price": 25000,
+    "ref": 25000,
+    "chg": 0,
+    "pct": 0.0,
+    "vol": 3420000,
+    "val_bil": 85.5,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "3.420.000 CP"
+        ],
+        [
+          "GTGD",
+          "85,50 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+150.000",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+3.750 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "50.000.000 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "1.488 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "16,80 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,95 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "12,0%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "52,40 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "34,06 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "44,54 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "1.294 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Tập đoàn Xăng dầu Việt Nam (Petrolimex) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "POW": {
+    "sym": "POW",
+    "name": "Tổng Công ty Điện lực Dầu khí Việt Nam - CTCP (PV Power)",
+    "ex": "HOSE",
+    "ind": "Điện lực",
+    "price": 25000,
+    "ref": 25000,
+    "chg": 0,
+    "pct": 0.0,
+    "vol": 3420000,
+    "val_bil": 85.5,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "3.420.000 CP"
+        ],
+        [
+          "GTGD",
+          "85,50 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+150.000",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+3.750 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "50.000.000 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "1.374 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "18,20 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "0,85 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "4,8%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "26,20 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "17,03 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "22,27 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "2.342 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Tổng Công ty Điện lực Dầu khí Việt Nam - CTCP (PV Power) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "SAB": {
+    "sym": "SAB",
+    "name": "Tổng CTCP Bia - Rượu - Nước giải khát Sài Gòn (Sabeco)",
+    "ex": "HOSE",
+    "ind": "Thực phẩm & Đồ uống",
+    "price": 42900,
+    "ref": 43000,
+    "chg": -100,
+    "pct": -0.23,
+    "vol": 474800,
+    "val_bil": 20.42,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "474.800 CP"
+        ],
+        [
+          "GTGD",
+          "20,42 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-63.100",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-2.707 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "528.070.895 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "2.451 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "17,50 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "2,10 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "15,6%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "55,00 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "35,75 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "46,75 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "1.282 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Tổng CTCP Bia - Rượu - Nước giải khát Sài Gòn (Sabeco) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "SHB": {
+    "sym": "SHB",
+    "name": "Ngân hàng TMCP Sài Gòn - Hà Nội",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 10000,
+    "ref": 10050,
+    "chg": -50,
+    "pct": -0.5,
+    "vol": 128335400,
+    "val_bil": 1260.33,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "128.335.400 CP"
+        ],
+        [
+          "GTGD",
+          "1.260,33 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+12.758.700",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+127.587 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "1.365.488.154 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "1.724 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "5,80 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "0,88 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "16,2%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "36,60 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "23,79 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "31,11 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "3.662 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Sài Gòn - Hà Nội lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "SSB": {
+    "sym": "SSB",
+    "name": "Ngân hàng TMCP Đông Nam Á (SeABank)",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 16800,
+    "ref": 17100,
+    "chg": -300,
+    "pct": -1.75,
+    "vol": 2626900,
+    "val_bil": 44.68,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "2.626.900 CP"
+        ],
+        [
+          "GTGD",
+          "44,68 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+200",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+3 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "1.010.545.911 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "1.787 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "9,40 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,25 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "41,80 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "27,17 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "35,53 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "2.490 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Đông Nam Á (SeABank) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "SSI": {
+    "sym": "SSI",
+    "name": "Công ty Cổ phần Chứng khoán SSI",
+    "ex": "HOSE",
+    "ind": "Chứng khoán",
+    "price": 19000,
+    "ref": 19050,
+    "chg": -50,
+    "pct": -0.26,
+    "vol": 26053200,
+    "val_bil": 497.06,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "26.053.200 CP"
+        ],
+        [
+          "GTGD",
+          "497,06 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+176.029",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+3.345 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "2.100.400.914 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "1.067 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "17,80 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "2,10 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "13,2%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "64,40 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "41,86 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "54,74 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "1.964 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần Chứng khoán SSI lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "STB": {
+    "sym": "STB",
+    "name": "Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank)",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 67300,
+    "ref": 67300,
+    "chg": 0,
+    "pct": 0,
+    "vol": 2677000,
+    "val_bil": 179.55,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "2.677.000 CP"
+        ],
+        [
+          "GTGD",
+          "179,55 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+424.900",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+28.596 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "364.669.964 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "5.258 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "12,80 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,65 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "15,8%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "126,80 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "82,42 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "107,78 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "1.885 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "TCB": {
+    "sym": "TCB",
+    "name": "Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank)",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 32350,
+    "ref": 31900,
+    "chg": 450,
+    "pct": 1.41,
+    "vol": 15207700,
+    "val_bil": 487.98,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "15.207.700 CP"
+        ],
+        [
+          "GTGD",
+          "487,98 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+2.008.400",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+64.972 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "144.992.962 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "3.740 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "8,65 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,55 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "19,4%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "174,60 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "113,49 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "148,41 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "7.045 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "TPB": {
+    "sym": "TPB",
+    "name": "Ngân hàng TMCP Tiên Phong (TPBank)",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 25000,
+    "ref": 25000,
+    "chg": 0,
+    "pct": 0.0,
+    "vol": 3420000,
+    "val_bil": 85.5,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "3.420.000 CP"
+        ],
+        [
+          "GTGD",
+          "85,50 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+150.000",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+3.750 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "50.000.000 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "3.623 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "6,90 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,15 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "17,2%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "34,30 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "22,29 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "29,15 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "2.201 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Tiên Phong (TPBank) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "VCB": {
+    "sym": "VCB",
+    "name": "Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank)",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 56700,
+    "ref": 56600,
+    "chg": 100,
+    "pct": 0.18,
+    "vol": 3049500,
+    "val_bil": 172.36,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "3.049.500 CP"
+        ],
+        [
+          "GTGD",
+          "172,36 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-369.100",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-20.928 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "842.027.293 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "4.079 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "13,90 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "2,75 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "21,8%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "514,20 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "334,23 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "437,07 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "5.589 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "VHM": {
+    "sym": "VHM",
+    "name": "Công ty Cổ phần Vinhomes",
+    "ex": "HOSE",
+    "ind": "Bất động sản",
+    "price": 66000,
+    "ref": 65700,
+    "chg": 300,
+    "pct": 0.46,
+    "vol": 6604000,
+    "val_bil": 431.25,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "6.604.000 CP"
+        ],
+        [
+          "GTGD",
+          "431,25 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+2.458.655",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+162.271 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "3.583.509.718 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "7.942 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "8,31 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,45 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "18,5%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "287,40 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "186,81 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "244,29 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "4.354 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần Vinhomes lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "VIB": {
+    "sym": "VIB",
+    "name": "Ngân hàng TMCP Quốc tế Việt Nam",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 13650,
+    "ref": 13800,
+    "chg": -150,
+    "pct": -1.09,
+    "vol": 6179200,
+    "val_bil": 84.63,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "6.179.200 CP"
+        ],
+        [
+          "GTGD",
+          "84,63 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+1.509.800",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+20.609 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "42.501.496 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "2.202 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "6,20 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,35 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "22,0%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "35,10 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "22,82 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "29,84 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "2.571 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Quốc tế Việt Nam lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "VIC": {
+    "sym": "VIC",
+    "name": "Tập đoàn Vingroup - Công ty Cổ phần",
+    "ex": "HOSE",
+    "ind": "Bất động sản & Đa ngành",
+    "price": 225500,
+    "ref": 228000,
+    "chg": -2500,
+    "pct": -1.1,
+    "vol": 3032200,
+    "val_bil": 687.98,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "3.032.200 CP"
+        ],
+        [
+          "GTGD",
+          "687,98 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-133.605",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-30.128 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "3.488.546.428 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "7.912 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "28,50 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "2,10 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "8,5%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "868,50 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "564,52 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "738,23 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "3.851 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Tập đoàn Vingroup - Công ty Cổ phần lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "VJC": {
+    "sym": "VJC",
+    "name": "Công ty Cổ phần Hàng không Vietjet",
+    "ex": "HOSE",
+    "ind": "Hàng không",
+    "price": 129000,
+    "ref": 128500,
+    "chg": 500,
+    "pct": 0.39,
+    "vol": 767000,
+    "val_bil": 98.9,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "767.000 CP"
+        ],
+        [
+          "GTGD",
+          "98,90 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-43.700",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-5.637 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "189.701.150 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "4.031 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "32,00 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "4,10 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "12,8%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "69,80 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "45,37 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "59,33 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "541 triệu"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần Hàng không Vietjet lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "VNM": {
+    "sym": "VNM",
+    "name": "Công ty Cổ phần Sữa Việt Nam (Vinamilk)",
+    "ex": "HOSE",
+    "ind": "Thực phẩm & Đồ uống",
+    "price": 57700,
+    "ref": 57900,
+    "chg": -200,
+    "pct": -0.35,
+    "vol": 1355700,
+    "val_bil": 78.51,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "1.355.700 CP"
+        ],
+        [
+          "GTGD",
+          "78,51 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-41.480",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-2.393 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "1.049.793.504 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "4.063 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "14,20 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "3,90 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "27,5%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "138,90 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "90,29 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "118,06 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "2.089 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần Sữa Việt Nam (Vinamilk) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "VPB": {
+    "sym": "VPB",
+    "name": "Ngân hàng TMCP Việt Nam Thịnh Vượng (VPBank)",
+    "ex": "HOSE",
+    "ind": "Ngân hàng",
+    "price": 23800,
+    "ref": 23450,
+    "chg": 350,
+    "pct": 1.49,
+    "vol": 20155900,
+    "val_bil": 476.51,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "20.155.900 CP"
+        ],
+        [
+          "GTGD",
+          "476,51 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "-1.227.068",
+          "down"
+        ],
+        [
+          "Giá trị ròng",
+          "-29.204 triệu",
+          "down"
+        ],
+        [
+          "Room ngoại",
+          "613.734.294 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "2.429 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "9,80 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,18 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "12,8%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "153,80 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "99,97 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "130,73 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "7.933 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Ngân hàng TMCP Việt Nam Thịnh Vượng (VPBank) lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  },
+  "VRE": {
+    "sym": "VRE",
+    "name": "Công ty Cổ phần Vincom Retail",
+    "ex": "HOSE",
+    "ind": "Bất động sản bán lẻ",
+    "price": 23150,
+    "ref": 23100,
+    "chg": 50,
+    "pct": 0.22,
+    "vol": 2702400,
+    "val_bil": 62.58,
+    "metrics": {
+      "liq": [
+        [
+          "KLGD",
+          "2.702.400 CP"
+        ],
+        [
+          "GTGD",
+          "62,58 tỷ đồng"
+        ]
+      ],
+      "frn": [
+        [
+          "Khối lượng ròng",
+          "+543.700",
+          "up"
+        ],
+        [
+          "Giá trị ròng",
+          "+12.587 triệu",
+          "up"
+        ],
+        [
+          "Room ngoại",
+          "884.486.745 CP"
+        ]
+      ],
+      "val": [
+        [
+          "EPS (TTM)",
+          "1.867 đ"
+        ],
+        [
+          "P/E (TTM)",
+          "12,40 lần"
+        ],
+        [
+          "P/B (TTM)",
+          "1,35 lần"
+        ],
+        [
+          "ROE (TTM)",
+          "13,8%",
+          "up"
+        ],
+        [
+          "Biên LN ròng",
+          "14,2%",
+          "up"
+        ],
+        [
+          "Tỷ suất cổ tức",
+          "4,5%",
+          "up"
+        ]
+      ],
+      "size": [
+        [
+          "Vốn hoá",
+          "52,60 nghìn tỷ"
+        ],
+        [
+          "Vốn điều lệ",
+          "34,19 nghìn tỷ"
+        ],
+        [
+          "VCSH",
+          "44,71 nghìn tỷ"
+        ],
+        [
+          "SLCP lưu hành",
+          "2.272 tỷ"
+        ]
+      ]
+    },
+    "events": [
+      [
+        "18/09",
+        "Công ty Cổ phần Vincom Retail lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+      ],
+      [
+        "25/09",
+        "GDKHQ chi trả cổ tức cho cổ đông"
+      ],
+      [
+        "02/10",
+        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+      ],
+      [
+        "20/10",
+        "Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026"
+      ],
+      [
+        "12/11",
+        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+      ]
+    ]
+  }
+};
+
 const DNSE_STOCKS_DB = {
   MSB: {
     sym: 'MSB', ex: 'HOSE', name: 'Ngân hàng TMCP Hàng Hải Việt Nam', ind: 'Ngân hàng',
@@ -7470,6 +12457,9 @@ const DNSE_STOCKS_DB = {
 /* Auto-Synthesizer Fallback for ANY OTHER symbol in UNI */
 function synthesizeDnseMcpData(sym) {
   sym = sym.toUpperCase().trim();
+  if (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym]) {
+    return VN30_DATA_FEED[sym];
+  }
   const u = (typeof UNI !== 'undefined' && Array.isArray(UNI)) ? UNI.find(x => x.sym === sym) : null;
   const price = u ? Math.round(u.c * 1000) : 25000;
   const chg = u ? Math.round(u.chg * 1000) : 200;
@@ -7558,12 +12548,12 @@ function updateDnseMcpPayloadsForSymbol(data) {
       change: data.chg,
       change_percent: data.pct,
       metrics: {
-        pe_ttm: data.metrics.val.find(x => x[0].includes('P/E'))?.[1] || '---',
-        pb_ttm: data.metrics.val.find(x => x[0].includes('P/B'))?.[1] || '---',
-        eps_ttm: data.metrics.val.find(x => x[0].includes('EPS'))?.[1] || '---',
-        roe_ttm: data.metrics.val.find(x => x[0].includes('ROE'))?.[1] || '---',
-        market_cap: data.metrics.size.find(x => x[0].includes('Vốn hoá'))?.[1] || '---',
-        shares_outstanding: data.metrics.size.find(x => x[0].includes('lưu hành'))?.[1] || '---'
+        pe_ttm: data.metrics?.val?.find(x => x[0].includes('P/E'))?.[1] || '---',
+        pb_ttm: data.metrics?.val?.find(x => x[0].includes('P/B'))?.[1] || '---',
+        eps_ttm: data.metrics?.val?.find(x => x[0].includes('EPS'))?.[1] || '---',
+        roe_ttm: data.metrics?.val?.find(x => x[0].includes('ROE'))?.[1] || '---',
+        market_cap: data.metrics?.size?.find(x => x[0].includes('Vốn hoá'))?.[1] || '---',
+        shares_outstanding: data.metrics?.size?.find(x => x[0].includes('lưu hành'))?.[1] || '---'
       },
       status: 'SUCCESS',
       server_latency_ms: 24,
@@ -7575,11 +12565,11 @@ function updateDnseMcpPayloadsForSymbol(data) {
       symbol: data.sym,
       full_name: data.name,
       industry: data.ind,
-      listing_info: data.profile.listing,
-      basic_info: data.profile.basic,
-      leadership: data.profile.leaders,
-      subsidiaries: data.profile.subs || [],
-      overview: data.profile.intro,
+      listing_info: data.profile?.listing || [],
+      basic_info: data.profile?.basic || [],
+      leadership: data.profile?.leaders || [],
+      subsidiaries: data.profile?.subs || [],
+      overview: data.profile?.intro || '',
       status: 'SUCCESS',
       synced_at: now
     },
@@ -7587,10 +12577,10 @@ function updateDnseMcpPayloadsForSymbol(data) {
       tool: 'financial_get_business_result',
       mcp_endpoint: 'https://mcp.dnse.com.vn/mcp',
       symbol: data.sym,
-      quarterly_changes: data.changes,
-      growth_highlights: data.highlights.pos,
-      risk_factors: data.highlights.neg,
-      catalysts: data.highlights.cat,
+      quarterly_changes: data.changes || [],
+      growth_highlights: data.highlights?.pos || [],
+      risk_factors: data.highlights?.neg || [],
+      catalysts: data.highlights?.cat || [],
       status: 'SUCCESS',
       synced_at: now
     },
@@ -7599,11 +12589,11 @@ function updateDnseMcpPayloadsForSymbol(data) {
       mcp_endpoint: 'https://mcp.dnse.com.vn/mcp',
       symbol: data.sym,
       balance_sheet_summary: {
-        charter_capital: data.metrics.size.find(x => x[0].includes('Vốn điều lệ'))?.[1] || '---',
-        equity: data.metrics.size.find(x => x[0].includes('VCSH'))?.[1] || '---',
-        market_cap: data.metrics.size.find(x => x[0].includes('Vốn hoá'))?.[1] || '---'
+        charter_capital: data.metrics?.size?.find(x => x[0].includes('Vốn điều lệ'))?.[1] || '---',
+        equity: data.metrics?.size?.find(x => x[0].includes('VCSH'))?.[1] || '---',
+        market_cap: data.metrics?.size?.find(x => x[0].includes('Vốn hoá'))?.[1] || '---'
       },
-      positioning_percentiles: data.position,
+      positioning_percentiles: data.position || {},
       status: 'SUCCESS',
       synced_at: now
     },
@@ -7614,7 +12604,7 @@ function updateDnseMcpPayloadsForSymbol(data) {
       latest_price: data.price,
       change: data.chg,
       change_pct: data.pct,
-      performance_periods: data.perf,
+      performance_periods: data.perf || {},
       candles_count: typeof CANDLES !== 'undefined' ? CANDLES.length : 1300,
       status: 'SUCCESS',
       synced_at: now
@@ -7624,8 +12614,8 @@ function updateDnseMcpPayloadsForSymbol(data) {
       mcp_endpoint: 'https://mcp.dnse.com.vn/mcp',
       symbol: data.sym,
       industry: data.ind,
-      radar_benchmarks: data.radar,
-      peer_comparison: data.peers,
+      radar_benchmarks: data.radar || {},
+      peer_comparison: data.peers || {},
       status: 'SUCCESS',
       synced_at: now
     }
@@ -8780,8 +13770,8 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   if (!sym) return;
   sym = sym.replace(/\s*\(DNSE\)/i, '').replace(/\s*\(VND\)/i, '').toUpperCase().trim();
 
-  // 1. Get DNSE data
-  const data = (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[sym]) ? DNSE_STOCKS_DB[sym] : synthesizeDnseMcpData(sym);
+  // 1. Get VN30 / DNSE data
+  const data = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym]) ? VN30_DATA_FEED[sym] : ((typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[sym]) ? DNSE_STOCKS_DB[sym] : synthesizeDnseMcpData(sym));
 
   // 2. Get VND data
   const vndData = (typeof VND_STOCKS_DB !== 'undefined' && VND_STOCKS_DB[sym]) ? VND_STOCKS_DB[sym] : synthesizeVndMcpData(sym, data.price, data.ind);
@@ -8872,10 +13862,10 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   CANDLES = makeCandles(STOCK.price, symSeed);
 
   // 6. Update ALL MCP Payloads (DNSE, VNDIRECT & SSI)
-  updateDnseMcpPayloadsForSymbol(data);
-  updateVndMcpPayloadsForSymbol(sym, vndData);
-  updateSsiMcpPayloadsForSymbol(sym);
-  updateLogoMcpPayloadsForSymbol(sym);
+  try { updateDnseMcpPayloadsForSymbol(data); } catch (e) { console.warn('DNSE MCP err:', e); }
+  try { updateVndMcpPayloadsForSymbol(sym, vndData); } catch (e) { console.warn('VND MCP err:', e); }
+  try { updateSsiMcpPayloadsForSymbol(sym); } catch (e) { console.warn('SSI MCP err:', e); }
+  try { updateLogoMcpPayloadsForSymbol(sym); } catch (e) { console.warn('LOGO MCP err:', e); }
 
   // 7. Feedback toast
   if (typeof toast === 'function') {

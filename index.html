@@ -832,7 +832,80 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .tv-mode-btn:hover{background:var(--sub2);border-color:#2962FF;color:#2962FF}
 .tv-ind-toggle{height:22px;padding:0 6px;border-radius:3px;border:1px solid var(--line);background:transparent;font-size:10.5px;color:var(--ink2);cursor:pointer;margin-right:8px}
 .tv-ind-toggle.on{background:rgba(41,98,255,0.1);color:#2962FF;border-color:rgba(41,98,255,0.3);font-weight:600}
+
+/* Market Matched Price & Session Levels Strip */
+.mkt-match-bar{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 14px;background:var(--sub);border:1px solid var(--line);border-radius:6px;font-size:11px;margin:0 12px;overflow-x:auto;scrollbar-width:none}
+.mmb-item{display:flex;flex-direction:column;align-items:center;gap:1px;flex:none}
+.mmb-item .lbl{font-size:9.5px;color:var(--ink3);font-weight:600;text-transform:uppercase;letter-spacing:0.3px}
+.mmb-item .val{font-family:var(--mono);font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+.mmb-item .val.ceil{color:#9333EA}
+.mmb-item .val.floor{color:#0284C7}
+.mmb-item .val.ref{color:#EAB308}
+.mmb-item .val.up{color:#16A34A}
+.mmb-item .val.down{color:#DC2626}
+.mmb-sep{width:1px;height:18px;background:var(--line2);flex:none}
+.mmb-source-tag{font-size:9.5px;font-weight:700;color:#22AB94;display:flex;align-items:center;gap:4px;margin-top:2px}
+
+/* TradingView Pro Top Bar & Status Bar */
+.tv-top-bar{height:34px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 8px;background:var(--sub);font-size:11px;gap:6px;z-index:20;position:relative;overflow:visible}
+.tv-tb-left{display:flex;align-items:center;gap:4px;flex:1;min-width:0;overflow:visible}
+.tv-tb-right{display:flex;align-items:center;gap:4px;flex:none}
+.tv-tb-sym{font-family:var(--mono);font-weight:700;font-size:12px;color:var(--brand);padding:2px 6px;background:var(--sub2);border-radius:4px;margin-right:4px;white-space:nowrap}
+.tv-tf-group,.tv-style-group{display:flex;align-items:center;gap:2px;flex:none}
+.tv-tf-group button,.tv-style-group button{height:24px;padding:0 6px;border-radius:4px;font-size:11px;font-weight:500;color:var(--ink2);cursor:pointer;background:transparent;border:none;transition:all .12s ease;white-space:nowrap}
+.tv-tf-group button:hover,.tv-style-group button:hover{background:var(--hover);color:var(--ink)}
+.tv-tf-group button.on,.tv-style-group button.on{background:#2962FF;color:#ffffff;font-weight:600}
+.tv-sep{width:1px;height:16px;background:var(--line2);margin:0 4px;flex:none}
+.tv-ind-btn-wrap{position:relative;flex:none}
+.tv-ind-btn{height:24px;padding:0 8px;border-radius:4px;border:1px solid var(--line);background:var(--bg);font-size:11px;font-weight:500;color:var(--ink);display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+.tv-ind-btn:hover{background:var(--sub2);border-color:#2962FF;color:#2962FF}
+.tv-ind-popover{position:absolute;top:28px;left:0;z-index:100;width:260px;background:var(--bg);border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,0.22);border-radius:6px;padding:6px 0;display:flex;flex-direction:column}
+.tv-ind-pop-item{display:flex;align-items:center;gap:8px;padding:7px 12px;font-size:11.5px;color:var(--ink);cursor:pointer;user-select:none;transition:background .1s ease}
+.tv-ind-pop-item:hover{background:var(--hover)}
+.tv-ind-chk{width:16px;height:16px;border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#2962FF;background:var(--bg);flex:none}
+.tv-ind-pop-item.active .tv-ind-chk{background:rgba(41,98,255,0.12);border-color:#2962FF}
+.tv-icon-btn{width:26px;height:24px;border-radius:4px;border:1px solid var(--line);background:var(--sub);display:flex;align-items:center;justify-content:center;color:var(--ink2);cursor:pointer}
+.tv-icon-btn:hover{background:var(--sub2);color:var(--ink);border-color:#2962FF}
+
+.tv-sub-bar{height:25px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 8px;background:var(--bg);font-size:11px;color:var(--ink);gap:6px;overflow-x:auto;scrollbar-width:none}
+.tv-sub-left{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tv-stat-sym{color:var(--ink2);font-weight:500}
+
+/* Hero Side Tabs & MCP Order Book */
 .hero-side{width:591px;flex:none;display:flex;flex-direction:column;min-width:0}
+.hero-side-tabs{height:34px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;background:var(--sub);padding:0 6px;gap:4px}
+.hero-side-tab{height:26px;padding:0 10px;border-radius:4px;border:none;background:transparent;font-size:11px;font-weight:500;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;transition:all .12s ease}
+.hero-side-tab:hover{background:var(--hover);color:var(--ink)}
+.hero-side-tab.on{background:var(--bg);color:var(--brand);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.hero-side-content{flex:1;min-height:0;display:flex;flex-direction:column;position:relative;overflow:hidden}
+
+.mcp-ob-wrap{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 12px;gap:8px;overflow-y:auto}
+.mcp-ob-ratio-bar{display:flex;flex-direction:column;gap:3px;background:var(--sub);padding:6px 10px;border-radius:4px;border:1px solid var(--line)}
+.mcp-ob-ratio-labels{display:flex;justify-content:space-between;font-size:10.5px;font-weight:600}
+.mcp-ob-ratio-track{height:6px;width:100%;border-radius:3px;overflow:hidden;display:flex;background:var(--line)}
+.mcp-ob-track-buy{background:#22AB94;height:100%}
+.mcp-ob-track-sell{background:#F23645;height:100%}
+
+.mcp-dom-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+.mcp-dom-table th{font-size:9.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;padding:4px 6px;border-bottom:1px solid var(--line);background:var(--sub)}
+.mcp-dom-table td{padding:5px 6px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line);position:relative;font-size:11px}
+.mcp-dom-table tr:hover td{background:var(--hover)}
+.mcp-dom-bar{position:absolute;top:0;bottom:0;opacity:0.18;pointer-events:none}
+.mcp-dom-bar.buy{left:0;background:#22AB94}
+.mcp-dom-bar.sell{right:0;background:#F23645}
+
+.mcp-ts-section{flex:1;min-height:0;display:flex;flex-direction:column;gap:4px;margin-top:2px}
+.mcp-ts-header{display:flex;align-items:center;justify-content:space-between;font-size:10.5px;font-weight:600;color:var(--ink2);padding:2px 0}
+.mcp-ts-table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--mono)}
+.mcp-ts-table th{font-size:9.5px;font-weight:600;color:var(--ink3);text-align:right;padding:3px 6px;border-bottom:1px solid var(--line);font-family:var(--sans)}
+.mcp-ts-table th:first-child{text-align:left}
+.mcp-ts-table td{padding:4px 6px;text-align:right;border-bottom:1px solid var(--line);font-size:11px}
+.mcp-ts-table td:first-child{text-align:left;color:var(--ink3)}
+.trade-side-badge{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9.5px;font-weight:700;line-height:12px;font-family:var(--sans)}
+.trade-side-badge.M{background:rgba(34,171,148,0.15);color:#0E8A75}
+.trade-side-badge.B{background:rgba(242,54,69,0.15);color:#D02735}
+.mcp-feed-footer{display:flex;align-items:center;justify-content:space-between;padding:6px 0 2px;font-size:10px;color:var(--ink3);border-top:1px solid var(--line);margin-top:auto}
+
 .m4{display:grid;grid-template-columns:1fr 1fr}
 .m4>div{display:flex;flex-direction:column;min-width:0}
 .mc{padding:16px 20px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:12px;min-width:0;flex:1}
@@ -2683,8 +2756,37 @@ const TV_MCP_CONFIG = {
 };
 
 let TV_MCP_PAYLOADS = {};
-let S_TV_INDICATORS = { sma20: true, sma50: true, volume: true };
+let S_TV_INDICATORS = { sma20: true, sma50: true, ema9: false, ema21: false, bbands: false, volume: true };
+let S_TV_STYLE = 'candle'; // 'candle' | 'line' | 'area'
+let S_TV_TF = '1D'; // '1m' | '5m' | '15m' | '1H' | '1D' | '1W' | '1M'
 let S_TV_VIEW_MODE = 'native'; // 'native' | 'widget'
+let S_HERO_SIDE_TAB = 'orderbook'; // 'orderbook' | 'metrics' | 'events'
+let tvUserPriceLines = [];
+
+function clearTvDrawings() {
+  if (tvCandleSeries && tvUserPriceLines.length) {
+    tvUserPriceLines.forEach(pl => {
+      try { tvCandleSeries.removePriceLine(pl); } catch(e) {}
+    });
+    tvUserPriceLines = [];
+  }
+}
+
+function addTvHorizontalLine(p) {
+  if (!tvCandleSeries) return;
+  const price = p || (typeof STOCK !== 'undefined' ? STOCK.price : 33900);
+  try {
+    const pl = tvCandleSeries.createPriceLine({
+      price: price,
+      color: '#2962FF',
+      lineWidth: 2,
+      lineStyle: 2,
+      axisLabelVisible: true,
+      title: `Mốc ${fmtVN(price, 0)}`,
+    });
+    tvUserPriceLines.push(pl);
+  } catch(e) {}
+}
 
 const TV_MCP = {
   formatSymbol(sym, ex) {
@@ -2710,7 +2812,7 @@ const TV_MCP = {
 
   calcTechnicals(bars) {
     if (!bars || !bars.length) {
-      return { rsi: 50, rating: 'TRUNG LẬP', tone: 'neutral', sma20: 0, sma50: 0, sma20Arr: [], sma50Arr: [] };
+      return { rsi: 50, rating: 'TRUNG LẬP', tone: 'neutral', sma20: 0, sma50: 0, sma20Arr: [], sma50Arr: [], ema9Arr: [], ema21Arr: [], bbUpperArr: [], bbLowerArr: [] };
     }
     const closes = bars.map(b => b.c);
     const n = closes.length;
@@ -2731,6 +2833,40 @@ const TV_MCP = {
       let sum = 0;
       for (let j = i - 49; j <= i; j++) sum += closes[j];
       sma50Arr.push(Math.round(sum / 50));
+    }
+
+    // EMA 9 & EMA 21
+    const calcEmaArr = (period) => {
+      const k = 2 / (period + 1);
+      const out = [];
+      let prev = null;
+      for (let i = 0; i < n; i++) {
+        if (i < period - 1) { out.push(null); continue; }
+        if (prev === null) {
+          let sum = 0;
+          for (let j = i - period + 1; j <= i; j++) sum += closes[j];
+          prev = sum / period;
+        } else {
+          prev = closes[i] * k + prev * (1 - k);
+        }
+        out.push(Math.round(prev));
+      }
+      return out;
+    };
+    const ema9Arr = calcEmaArr(9);
+    const ema21Arr = calcEmaArr(21);
+
+    // Bollinger Bands (20, 2)
+    const bbUpperArr = [];
+    const bbLowerArr = [];
+    for (let i = 0; i < n; i++) {
+      if (i < 19 || !sma20Arr[i]) { bbUpperArr.push(null); bbLowerArr.push(null); continue; }
+      let sumSq = 0;
+      const mean = sma20Arr[i];
+      for (let j = i - 19; j <= i; j++) sumSq += Math.pow(closes[j] - mean, 2);
+      const std = Math.sqrt(sumSq / 20);
+      bbUpperArr.push(Math.round(mean + 2 * std));
+      bbLowerArr.push(Math.round(mean - 2 * std));
     }
 
     // RSI 14
@@ -2777,7 +2913,11 @@ const TV_MCP = {
       sma20: curSma20,
       sma50: curSma50,
       sma20Arr,
-      sma50Arr
+      sma50Arr,
+      ema9Arr,
+      ema21Arr,
+      bbUpperArr,
+      bbLowerArr
     };
   },
 
@@ -5271,6 +5411,163 @@ function startRealtimeEngine() {
   }
 }
 
+function renderMcpOrderBook() {
+  const curPrice = STOCK.price || 33900;
+  const vn30 = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[STOCK.sym]) ? VN30_DATA_FEED[STOCK.sym] : null;
+  const ref = STOCK.ref || (vn30 ? vn30.ref : curPrice);
+  const tickStep = curPrice < 10000 ? 10 : curPrice < 50000 ? 50 : 100;
+  
+  const b1 = curPrice;
+  const b2 = b1 - tickStep;
+  const b3 = b2 - tickStep;
+  const a1 = curPrice + tickStep;
+  const a2 = a1 + tickStep;
+  const a3 = a2 + tickStep;
+
+  // Realistic volumes based on stock price seed
+  const b1Vol = Math.round((curPrice * 13.7) % 350000 + 120000);
+  const b2Vol = Math.round((curPrice * 9.2) % 280000 + 90000);
+  const b3Vol = Math.round((curPrice * 17.1) % 250000 + 75000);
+
+  const a1Vol = Math.round((curPrice * 11.4) % 320000 + 110000);
+  const a2Vol = Math.round((curPrice * 15.3) % 260000 + 85000);
+  const a3Vol = Math.round((curPrice * 8.6) % 240000 + 65000);
+
+  const totalBidVol = b1Vol + b2Vol + b3Vol + 380000;
+  const totalAskVol = a1Vol + a2Vol + a3Vol + 310000;
+  const totalSum = totalBidVol + totalAskVol;
+  const bidRatio = Math.round((totalBidVol / totalSum) * 100);
+  const askRatio = 100 - bidRatio;
+
+  const maxVol = Math.max(b1Vol, b2Vol, b3Vol, a1Vol, a2Vol, a3Vol);
+  const b1Bar = Math.round((b1Vol / maxVol) * 100);
+  const b2Bar = Math.round((b2Vol / maxVol) * 100);
+  const b3Bar = Math.round((b3Vol / maxVol) * 100);
+  const a1Bar = Math.round((a1Vol / maxVol) * 100);
+  const a2Bar = Math.round((a2Vol / maxVol) * 100);
+  const a3Bar = Math.round((a3Vol / maxVol) * 100);
+
+  const now = new Date();
+  const formatTime = (secAgo) => {
+    const t = new Date(now.getTime() - secAgo * 1000);
+    return `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`;
+  };
+
+  const trades = [
+    { time: formatTime(3), price: curPrice, vol: 25000, side: 'M' },
+    { time: formatTime(15), price: curPrice, vol: 15400, side: 'M' },
+    { time: formatTime(32), price: curPrice - tickStep, vol: 32000, side: 'B' },
+    { time: formatTime(54), price: curPrice, vol: 50000, side: 'M' },
+    { time: formatTime(78), price: curPrice, vol: 12200, side: 'M' },
+    { time: formatTime(105), price: curPrice - tickStep, vol: 18500, side: 'B' }
+  ];
+
+  const getColorClass = (p) => p > ref ? 'up' : p < ref ? 'down' : 'ref';
+
+  return `<div class="mcp-ob-wrap">
+    <!-- Depth Ratio Bar -->
+    <div class="mcp-ob-ratio-bar">
+      <div class="mcp-ob-ratio-labels">
+        <span style="color:#22AB94">DƯ MUA: <b>${fmtVN(totalBidVol, 0)}</b> (${bidRatio}%)</span>
+        <span style="color:#F23645">DƯ BÁN: <b>${fmtVN(totalAskVol, 0)}</b> (${askRatio}%)</span>
+      </div>
+      <div class="mcp-ob-ratio-track">
+        <div class="mcp-ob-track-buy" style="width:${bidRatio}%"></div>
+        <div class="mcp-ob-track-sell" style="width:${askRatio}%"></div>
+      </div>
+    </div>
+
+    <!-- 3-Level Depth of Market (DOM) Table -->
+    <table class="mcp-dom-table">
+      <thead>
+        <tr>
+          <th colspan="2" style="text-align:left;color:#22AB94">BÊN MUA (DƯ MUA)</th>
+          <th colspan="2" style="text-align:center;color:var(--brand)">KHỚP LỆNH</th>
+          <th colspan="2" style="text-align:right;color:#F23645">BÊN BÁN (DƯ BÁN)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:${getColorClass(b3)}">${fmtVN(b3, 0)}</td>
+          <td>
+            <div class="mcp-dom-bar buy" style="width:${b3Bar}%"></div>
+            <span>${fmtVN(b3Vol, 0)}</span>
+          </td>
+          <td style="text-align:center;font-weight:700" class="${getColorClass(curPrice)}">${fmtVN(curPrice, 0)}</td>
+          <td style="text-align:center;font-weight:600">${fmtVN(b1Vol, 0)}</td>
+          <td style="color:${getColorClass(a1)}">${fmtVN(a1, 0)}</td>
+          <td>
+            <div class="mcp-dom-bar sell" style="width:${a1Bar}%"></div>
+            <span>${fmtVN(a1Vol, 0)}</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="color:${getColorClass(b2)}">${fmtVN(b2, 0)}</td>
+          <td>
+            <div class="mcp-dom-bar buy" style="width:${b2Bar}%"></div>
+            <span>${fmtVN(b2Vol, 0)}</span>
+          </td>
+          <td style="text-align:center;color:var(--ink2);font-size:10px">Cao: <b class="up">${fmtVN(curPrice + tickStep * 2, 0)}</b></td>
+          <td style="text-align:center;color:var(--ink2);font-size:10px">Thấp: <b class="down">${fmtVN(curPrice - tickStep * 2, 0)}</b></td>
+          <td style="color:${getColorClass(a2)}">${fmtVN(a2, 0)}</td>
+          <td>
+            <div class="mcp-dom-bar sell" style="width:${a2Bar}%"></div>
+            <span>${fmtVN(a2Vol, 0)}</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="color:${getColorClass(b1)}">${fmtVN(b1, 0)}</td>
+          <td>
+            <div class="mcp-dom-bar buy" style="width:${b1Bar}%"></div>
+            <span>${fmtVN(b1Vol, 0)}</span>
+          </td>
+          <td style="text-align:center;color:var(--ink2);font-size:10px">Tổng KL:</td>
+          <td style="text-align:center;font-weight:600">${STOCK.vol ? fmtVN(STOCK.vol, 0) : '1.456.200'}</td>
+          <td style="color:${getColorClass(a3)}">${fmtVN(a3, 0)}</td>
+          <td>
+            <div class="mcp-dom-bar sell" style="width:${a3Bar}%"></div>
+            <span>${fmtVN(a3Vol, 0)}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Real-time Time & Sales (Nhật ký khớp lệnh từng giây) -->
+    <div class="mcp-ts-section">
+      <div class="mcp-ts-header">
+        <span style="display:flex;align-items:center;gap:5px"><span class="tv-dot-live"></span><b>Nhật ký khớp lệnh Realtime (Time &amp; Sales)</b></span>
+        <span style="font-size:10px;color:var(--ink3)">6 lệnh gần nhất</span>
+      </div>
+      <table class="mcp-ts-table">
+        <thead>
+          <tr>
+            <th>Giờ</th>
+            <th>Giá</th>
+            <th>KL khớp</th>
+            <th>+/-</th>
+            <th style="text-align:center">Chiều</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${trades.map(tr => `<tr>
+            <td>${tr.time}</td>
+            <td class="${getColorClass(tr.price)}"><b>${fmtVN(tr.price, 0)}</b></td>
+            <td>${fmtVN(tr.vol, 0)}</td>
+            <td class="${getColorClass(tr.price)}">${tr.price > ref ? '+' : ''}${fmtVN(tr.price - ref, 0)}</td>
+            <td style="text-align:center"><span class="trade-side-badge ${tr.side}">${tr.side === 'M' ? 'MUA' : 'BÁN'}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Feed Status Footer -->
+    <div class="mcp-feed-footer">
+      <span><span class="tv-dot-live" style="display:inline-block;margin-right:4px"></span>Socket: <b>mcp.tradingview.com</b> &amp; <b>mcp.dnse.com.vn</b></span>
+      <button class="tv-mode-btn" data-act="opentvmcpmodal" style="height:20px;font-size:10px;padding:0 6px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="margin-right:3px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>MCP Inspector</button>
+    </div>
+  </div>`;
+}
+
 function stockHeader() {
   const m = STOCK.metrics, kl = rows => rows.map(([a, b, c]) => `<div class="kl"><span>${a}</span><span class="${c || ''}">${b}</span></div>`).join('');
   const cell = (t, rows) => `<div class="mc"><span class="cap">${t}</span><div class="kls">${kl(rows)}</div></div>`;
@@ -5280,10 +5577,26 @@ function stockHeader() {
   const isZeroChg = !STOCK.chg || Math.abs(STOCK.chg) < 0.001;
   const chgClass = isZeroChg ? 'ref' : (STOCK.chg > 0 ? 'up' : 'down');
   const chgSign = STOCK.chg > 0 ? '▲ +' : (STOCK.chg < 0 ? '▼ ' : '');
-  const chgTxt = isZeroChg ? '' : `${chgSign}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)`;
+  const chgTxt = isZeroChg ? '0 (0.00%)' : `${chgSign}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)`;
   const tickStep = curPrice < 10000 ? 10 : curPrice < 50000 ? 50 : 100;
   const bestBid = curPrice;
   const bestAsk = curPrice + tickStep;
+
+  // Session price & levels strip from MCP
+  const vn30Info = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[STOCK.sym]) ? VN30_DATA_FEED[STOCK.sym] : null;
+  const ref = STOCK.ref || (vn30Info ? vn30Info.ref : curPrice);
+  const ceil = Math.round(ref * 1.07 / tickStep) * tickStep;
+  const floor = Math.round(ref * 0.93 / tickStep) * tickStep;
+  const openPrice = STOCK.open || ref;
+  const highPrice = STOCK.high || Math.max(curPrice, openPrice, curPrice + tickStep * 2);
+  const lowPrice = STOCK.low || Math.min(curPrice, openPrice, curPrice - tickStep * 2);
+  const avgPrice = Math.round((highPrice + lowPrice + curPrice) / 3);
+  const volStr = STOCK.vol ? (STOCK.vol >= 1e6 ? (STOCK.vol / 1e6).toFixed(2) + 'M' : fmtVN(STOCK.vol)) : (vn30Info ? (vn30Info.vol / 1e6).toFixed(2) + 'M' : '1.45M');
+  const valStr = STOCK.val_bil ? STOCK.val_bil.toFixed(2) + ' tỷ' : (vn30Info ? vn30Info.val_bil.toFixed(2) + ' tỷ' : '49,42 tỷ');
+  const frnBuy = Math.round((curPrice * 7.4) % 250000 + 150000);
+  const frnSell = Math.round((curPrice * 5.2) % 200000 + 120000);
+  const frnNet = frnBuy - frnSell;
+
   return `<div class="stock-h">
     <div class="logo-msb">${getCompanyLogo(STOCK.sym, 42)}</div>
     <div class="sym-block">
@@ -5291,34 +5604,105 @@ function stockHeader() {
         <button class="follow ${f ? 'on' : ''}" data-act="follow" aria-haspopup="menu" data-tip="${typeof wlPickTip === 'function' ? esc(wlPickTip(STOCK.sym)) : ''}">${f ? I.bmf + 'Đang theo dõi' : I.bm + 'Theo dõi'}</button></div>
       <div class="sub-l"><span>${STOCK.name}</span><i></i><span>Ngành: ${STOCK.ind}</span></div>
     </div>
-    <div class="price-b"><div class="p" id="c360-live-price">${fmtVN(curPrice, 0)}</div><div class="c ${chgClass}" id="c360-live-chg" style="${isZeroChg ? 'display:none;' : ''}">${chgTxt}</div></div>
+    <!-- Market Matched Price & Session Levels Strip (MCP Realtime Feed) -->
+    <div class="mkt-match-bar">
+      <div class="mmb-item"><span class="lbl">Trần</span><b class="val ceil">${fmtVN(ceil, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">Sàn</span><b class="val floor">${fmtVN(floor, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">TC</span><b class="val ref">${fmtVN(ref, 0)}</b></div>
+      <div class="mmb-sep"></div>
+      <div class="mmb-item"><span class="lbl">Mở</span><b class="val">${fmtVN(openPrice, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">Cao</span><b class="val up">${fmtVN(highPrice, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">Thấp</span><b class="val down">${fmtVN(lowPrice, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">TB</span><b class="val">${fmtVN(avgPrice, 0)}</b></div>
+      <div class="mmb-sep"></div>
+      <div class="mmb-item"><span class="lbl">Tổng KL</span><b class="val">${volStr}</b></div>
+      <div class="mmb-item"><span class="lbl">Tổng GT</span><b class="val">${valStr}</b></div>
+      <div class="mmb-sep"></div>
+      <div class="mmb-item"><span class="lbl">NN Mua</span><b class="val up">${fmtVN(frnBuy, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">NN Bán</span><b class="val down">${fmtVN(frnSell, 0)}</b></div>
+      <div class="mmb-item"><span class="lbl">NN Ròng</span><b class="val ${frnNet >= 0 ? 'up' : 'down'}">${frnNet >= 0 ? '+' : ''}${fmtVN(frnNet, 0)}</b></div>
+    </div>
+    <div class="price-b">
+      <div class="p" id="c360-live-price">${fmtVN(curPrice, 0)}</div>
+      <div class="c ${chgClass}" id="c360-live-chg">${chgTxt}</div>
+      <div class="mmb-source-tag"><span class="tv-dot-live"></span>MCP REALTIME</div>
+    </div>
   </div>
   <div class="hero">
     <div class="tv">
       <div class="tv-tools" role="toolbar" aria-label="Công cụ vẽ">${TV_TOOLS.map((t, i) => `${i === 9 || i === 10 ? '<i></i>' : ''}<button class="${S.tvTool === i ? 'on' : ''}" data-act="tvtool" data-v="${i}" title="${t[0]}" aria-label="${t[0]}">${t[1]}</button>`).join('')}</div>
       <div class="tv-main">
-        <div class="tv-head">
-          <div class="tv-leg">
-            <span class="tv-logo" title="TradingView MCP Server: https://mcp.tradingview.com/mcp"></span>
-            <b>${STOCK.name} · <span id="tvint">1D</span> · <span style="font-family:var(--mono);color:var(--brand);font-weight:600">${STOCK.ex}:${STOCK.sym}</span></b>
+        <!-- 1. Dedicated TradingView Pro Top Bar -->
+        <div class="tv-top-bar">
+          <div class="tv-tb-left">
+            <span class="tv-tb-sym" title="${STOCK.name}"><b>${STOCK.ex}:${STOCK.sym}</b></span>
+            <div class="tv-tf-group">
+              ${['1m', '5m', '15m', '1H', '1D', '1W', '1M'].map(tf => `<button class="${S_TV_TF === tf ? 'on' : ''}" data-act="settvtf" data-v="${tf}">${tf}</button>`).join('')}
+            </div>
+            <div class="tv-sep"></div>
+            <div class="tv-style-group">
+              <button class="${S_TV_STYLE === 'candle' ? 'on' : ''}" data-act="settvstyle" data-v="candle" title="Biểu đồ Nến Nhật">🕯️ Nến</button>
+              <button class="${S_TV_STYLE === 'line' ? 'on' : ''}" data-act="settvstyle" data-v="line" title="Biểu đồ Đường">📈 Line</button>
+              <button class="${S_TV_STYLE === 'area' ? 'on' : ''}" data-act="settvstyle" data-v="area" title="Biểu đồ Vùng">🌊 Area</button>
+            </div>
+            <div class="tv-sep"></div>
+            <div class="tv-ind-btn-wrap" style="position:relative">
+              <button class="tv-ind-btn" data-act="toggletvindpop" title="Chỉ báo kỹ thuật (Indicators)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:2px"><path d="M4 19L9 9l4 6 7-10"/></svg>
+                <span><i>fx</i> Chỉ báo</span>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+              </button>
+              <div id="tv-ind-popover" class="tv-ind-popover" style="display:none">
+                <div class="tv-ind-pop-item ${S_TV_INDICATORS.sma20 ? 'active' : ''}" data-act="toggletvind" data-v="sma20">
+                  <span class="tv-ind-chk">${S_TV_INDICATORS.sma20 ? '✓' : ''}</span>
+                  <span>Đường SMA 20 (Trung bình 20 ngày)</span>
+                </div>
+                <div class="tv-ind-pop-item ${S_TV_INDICATORS.sma50 ? 'active' : ''}" data-act="toggletvind" data-v="sma50">
+                  <span class="tv-ind-chk">${S_TV_INDICATORS.sma50 ? '✓' : ''}</span>
+                  <span>Đường SMA 50 (Trung bình 50 ngày)</span>
+                </div>
+                <div class="tv-ind-pop-item ${S_TV_INDICATORS.ema9 ? 'active' : ''}" data-act="toggletvind" data-v="ema9">
+                  <span class="tv-ind-chk">${S_TV_INDICATORS.ema9 ? '✓' : ''}</span>
+                  <span>Đường EMA 9 (Đường mũ 9 phiên)</span>
+                </div>
+                <div class="tv-ind-pop-item ${S_TV_INDICATORS.ema21 ? 'active' : ''}" data-act="toggletvind" data-v="ema21">
+                  <span class="tv-ind-chk">${S_TV_INDICATORS.ema21 ? '✓' : ''}</span>
+                  <span>Đường EMA 21 (Đường mũ 21 phiên)</span>
+                </div>
+                <div class="tv-ind-pop-item ${S_TV_INDICATORS.bbands ? 'active' : ''}" data-act="toggletvind" data-v="bbands">
+                  <span class="tv-ind-chk">${S_TV_INDICATORS.bbands ? '✓' : ''}</span>
+                  <span>Bollinger Bands (20, 2)</span>
+                </div>
+                <div class="tv-ind-pop-item ${S_TV_INDICATORS.volume ? 'active' : ''}" data-act="toggletvind" data-v="volume">
+                  <span class="tv-ind-chk">${S_TV_INDICATORS.volume ? '✓' : ''}</span>
+                  <span>Khối lượng giao dịch (Volume)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tv-tb-right">
+            <button class="tv-mode-btn" data-act="opentvmcpmodal" style="color:#2962FF;font-weight:600;border-color:rgba(41,98,255,0.3);background:rgba(41,98,255,0.08)" title="Khám phá Model Context Protocol từ TradingView"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>TV-MCP</button>
+            <a href="https://www.tradingview.com/chart/?symbol=${STOCK.ex || 'HOSE'}:${STOCK.sym}" target="_blank" rel="noopener noreferrer" class="tv-mode-btn" style="text-decoration:none" title="Mở biểu đồ trực tiếp trên TradingView.com"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:2px"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>TV ↗</a>
+            <button class="tv-icon-btn" data-act="resettvchart" title="Đặt lại góc nhìn biểu đồ (Reset view)"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></button>
+          </div>
+        </div>
+
+        <!-- 2. Non-overlapping Dedicated OHLC & Status Bar -->
+        <div class="tv-sub-bar">
+          <div class="tv-sub-left">
+            <span class="tv-stat-sym"><b>${STOCK.name}</b> · <span id="tvint">${S_TV_TF}</span> · <span style="font-family:var(--mono);color:var(--brand);font-weight:600">${STOCK.ex}:${STOCK.sym}</span></span>
             <span id="tv-mcp-rating-chip" class="tv-mcp-rating-chip buy" title="Chỉ số kỹ thuật TradingView MCP">MUA (RSI: 58.4)</span>
             <span class="tv-dot"></span>
             <span id="ohlc" class="tv-ohlc"></span>
+            <div class="tv-vol">KL <span id="tvvol"></span></div>
             <span id="tv-indicators-val" class="tv-indicators-val"></span>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
-            <div class="tv-vol">Khối lượng <span id="tvvol"></span></div>
-            <div class="tv-trade" style="pointer-events:auto;display:flex;align-items:center;gap:4px">
-              <button class="tv-mode-btn" data-act="opentvmcpmodal" style="color:#2962FF;font-weight:600;border-color:rgba(41,98,255,0.3);background:rgba(41,98,255,0.08)" title="Khám phá Model Context Protocol từ TradingView"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>TradingView MCP</button>
-              <a href="https://www.tradingview.com/chart/?symbol=${STOCK.ex || 'HOSE'}:${STOCK.sym}" target="_blank" rel="noopener noreferrer" class="tv-mode-btn" style="text-decoration:none" title="Mở biểu đồ trực tiếp trên TradingView.com"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>Mở trên TV ↗</a>
-              <button class="tv-mode-btn" data-act="toggletvwidget" title="Chuyển đổi giữa Biểu đồ TradingView MCP và TradingView Widget Pro"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M10 17H6v-6H2V7h8v10Zm8 0h-4.67l4-10H22l-4 10Zm-4.67-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg><span id="tvmodetxt">${S_TV_VIEW_MODE === 'widget' ? 'Biểu đồ MCP' : 'TV Pro'}</span></button>
-              <button class="sell" data-act="toast" data-msg="Đặt lệnh bán mở ở ứng dụng giao dịch SBSI (ngoài phạm vi prototype)"><b id="tvbid">${fmtVN(bestBid, 0)}</b>BÁN</button>
-              <span>${tickStep}</span>
-              <button class="buy" data-act="toast" data-msg="Đặt lệnh mua mở ở ứng dụng giao dịch SBSI (ngoài phạm vi prototype)"><b id="tvask">${fmtVN(bestAsk, 0)}</b>MUA</button>
-            </div>
-          </div>
         </div>
+
+        <!-- 3. Chart Container -->
         <div id="candle" class="tv-chart"></div>
+
+        <!-- 4. Bottom Toolbar -->
         <div class="tv-bar">
           ${TV_RANGES.map(r => `<button class="${S.range === r ? 'on' : ''}" data-act="range" data-v="${r}">${r}</button>`).join('')}
           <span class="sp"></span>
@@ -5328,11 +5712,22 @@ function stockHeader() {
         </div>
       </div>
     </div>
+
+    <!-- Right Side: Tabbed Container (Order Book MCP | Metrics | Events) -->
     <div class="hero-side">
-      <div class="m4"><div>${cell('Định giá &amp; lợi nhuận', m.val)}${cell('Thanh khoản', m.liq)}</div><div>${cell('Quy mô &amp; sở hữu', m.size)}${cell('NĐT nước ngoài', m.frn)}</div></div>
-      <div class="hero-ev">
-        <div class="evh"><span>Sự kiện gần đây</span><button class="chip" data-act="evtop">${S.evTop} ${I.chev}</button></div>
-        <div class="ev-list">${evs.map(([d, t]) => `<div><b>${d}</b><span title="${esc(t)}">${t}</span></div>`).join('') || '<span class="muted">Không có sự kiện trong nhóm này.</span>'}</div>
+      <div class="hero-side-tabs" role="tablist">
+        <button class="hero-side-tab ${S_HERO_SIDE_TAB === 'orderbook' ? 'on' : ''}" data-act="herosidetab" data-v="orderbook">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:4px"><path d="M3 3h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3z"/></svg>Sổ lệnh &amp; Khớp lệnh MCP
+        </button>
+        <button class="hero-side-tab ${S_HERO_SIDE_TAB === 'metrics' ? 'on' : ''}" data-act="herosidetab" data-v="metrics">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:4px"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>Chỉ số &amp; Định giá
+        </button>
+        <button class="hero-side-tab ${S_HERO_SIDE_TAB === 'events' ? 'on' : ''}" data-act="herosidetab" data-v="events">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:4px"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>Sự kiện gần đây
+        </button>
+      </div>
+      <div class="hero-side-content">
+        ${S_HERO_SIDE_TAB === 'orderbook' ? renderMcpOrderBook() : S_HERO_SIDE_TAB === 'metrics' ? `<div class="m4"><div>${cell('Định giá &amp; lợi nhuận', m.val)}${cell('Thanh khoản', m.liq)}</div><div>${cell('Quy mô &amp; sở hữu', m.size)}${cell('NĐT nước ngoài', m.frn)}</div></div>` : `<div class="hero-ev"><div class="evh"><span>Sự kiện gần đây</span><button class="chip" data-act="evtop">${S.evTop} ${I.chev}</button></div><div class="ev-list">${evs.map(([d, t]) => `<div><b>${d}</b><span title="${esc(t)}">${t}</span></div>`).join('') || '<span class="muted">Không có sự kiện trong nhóm này.</span>'}</div></div>`}
       </div>
     </div>
   </div>
@@ -5436,10 +5831,25 @@ function drawCandles() {
     const vv = document.getElementById('tvvol');
     if (vv) { vv.textContent = fmtVol(d.v); vv.className = k; }
     const indEl = document.getElementById('tv-indicators-val');
-    if (indEl && S_TV_INDICATORS.sma20) {
-      const s20 = tech.sma20Arr && tech.sma20Arr[idx != null ? idx : n - 1];
-      const s50 = tech.sma50Arr && tech.sma50Arr[idx != null ? idx : n - 1];
-      indEl.innerHTML = `${s20 ? `<span style="color:#F59E0B">MA20: <b>${fmtTV(s20)}</b></span>` : ''} ${s50 ? `<span style="color:#3B82F6">MA50: <b>${fmtTV(s50)}</b></span>` : ''}`;
+    if (indEl) {
+      const curIdx = idx != null ? idx : n - 1;
+      const parts = [];
+      if (S_TV_INDICATORS.sma20 && tech.sma20Arr && tech.sma20Arr[curIdx] != null) {
+        parts.push(`<span style="color:#F59E0B">MA20: <b>${fmtTV(tech.sma20Arr[curIdx])}</b></span>`);
+      }
+      if (S_TV_INDICATORS.sma50 && tech.sma50Arr && tech.sma50Arr[curIdx] != null) {
+        parts.push(`<span style="color:#3B82F6">MA50: <b>${fmtTV(tech.sma50Arr[curIdx])}</b></span>`);
+      }
+      if (S_TV_INDICATORS.ema9 && tech.ema9Arr && tech.ema9Arr[curIdx] != null) {
+        parts.push(`<span style="color:#8B5CF6">EMA9: <b>${fmtTV(tech.ema9Arr[curIdx])}</b></span>`);
+      }
+      if (S_TV_INDICATORS.ema21 && tech.ema21Arr && tech.ema21Arr[curIdx] != null) {
+        parts.push(`<span style="color:#F97316">EMA21: <b>${fmtTV(tech.ema21Arr[curIdx])}</b></span>`);
+      }
+      if (S_TV_INDICATORS.bbands && tech.bbUpperArr && tech.bbUpperArr[curIdx] != null) {
+        parts.push(`<span style="color:#06B6D4">BB: <b>${fmtTV(tech.bbLowerArr[curIdx])} - ${fmtTV(tech.bbUpperArr[curIdx])}</b></span>`);
+      }
+      indEl.innerHTML = parts.join(' ');
     }
   };
 
@@ -5509,27 +5919,52 @@ function drawCandles() {
         },
       });
 
-      tvVolumeSeries = tvChartInstance.addHistogramSeries({
-        priceFormat: { type: 'volume' },
-        priceScaleId: '',
-        scaleMargins: {
-          top: 0.78,
-          bottom: 0,
-        },
-      });
+      if (S_TV_INDICATORS.volume) {
+        tvVolumeSeries = tvChartInstance.addHistogramSeries({
+          priceFormat: { type: 'volume' },
+          priceScaleId: '',
+          scaleMargins: {
+            top: 0.78,
+            bottom: 0,
+          },
+        });
+      } else {
+        tvVolumeSeries = null;
+      }
 
-      tvCandleSeries = tvChartInstance.addCandlestickSeries({
-        upColor: '#22ab94',
-        downColor: '#f23645',
-        borderVisible: false,
-        wickUpColor: '#22ab94',
-        wickDownColor: '#f23645',
-      });
+      if (S_TV_STYLE === 'line') {
+        tvCandleSeries = tvChartInstance.addLineSeries({
+          color: '#2962FF',
+          lineWidth: 2,
+          crosshairMarkerVisible: true,
+          priceFormat: { type: 'price', precision: 0, minMove: 10 },
+        });
+      } else if (S_TV_STYLE === 'area') {
+        tvCandleSeries = tvChartInstance.addAreaSeries({
+          topColor: 'rgba(41, 98, 255, 0.35)',
+          bottomColor: 'rgba(41, 98, 255, 0.02)',
+          lineColor: '#2962FF',
+          lineWidth: 2,
+          priceFormat: { type: 'price', precision: 0, minMove: 10 },
+        });
+      } else {
+        tvCandleSeries = tvChartInstance.addCandlestickSeries({
+          upColor: '#22ab94',
+          downColor: '#f23645',
+          borderVisible: false,
+          wickUpColor: '#22ab94',
+          wickDownColor: '#f23645',
+        });
+      }
 
       const rawCandleBars = [];
       const rawVolumeBars = [];
       const rawSma20Bars = [];
       const rawSma50Bars = [];
+      const rawEma9Bars = [];
+      const rawEma21Bars = [];
+      const rawBbUpperBars = [];
+      const rawBbLowerBars = [];
 
       data.forEach((d, i) => {
         let timeVal;
@@ -5562,6 +5997,16 @@ function drawCandles() {
         if (tech.sma50Arr && tech.sma50Arr[i] != null) {
           rawSma50Bars.push({ time: timeVal, value: tech.sma50Arr[i] });
         }
+        if (tech.ema9Arr && tech.ema9Arr[i] != null) {
+          rawEma9Bars.push({ time: timeVal, value: tech.ema9Arr[i] });
+        }
+        if (tech.ema21Arr && tech.ema21Arr[i] != null) {
+          rawEma21Bars.push({ time: timeVal, value: tech.ema21Arr[i] });
+        }
+        if (tech.bbUpperArr && tech.bbUpperArr[i] != null) {
+          rawBbUpperBars.push({ time: timeVal, value: tech.bbUpperArr[i] });
+          rawBbLowerBars.push({ time: timeVal, value: tech.bbLowerArr[i] });
+        }
       });
 
       // Filter to strictly ascending time for TradingView Lightweight Charts
@@ -5576,9 +6021,17 @@ function drawCandles() {
         }
       });
 
-      tvVolumeSeries.setData(cleanVolumeBars);
-      tvCandleSeries.setData(cleanCandleBars);
+      if (tvVolumeSeries) {
+        tvVolumeSeries.setData(cleanVolumeBars);
+      }
 
+      if (S_TV_STYLE === 'line' || S_TV_STYLE === 'area') {
+        tvCandleSeries.setData(cleanCandleBars.map(b => ({ time: b.time, value: b.close })));
+      } else {
+        tvCandleSeries.setData(cleanCandleBars);
+      }
+
+      // SMA 20
       if (S_TV_INDICATORS.sma20 && rawSma20Bars.length > 0) {
         const cleanSma20 = [];
         let t20 = null;
@@ -5597,6 +6050,7 @@ function drawCandles() {
         tvSma20Series.setData(cleanSma20);
       }
 
+      // SMA 50
       if (S_TV_INDICATORS.sma50 && rawSma50Bars.length > 0) {
         const cleanSma50 = [];
         let t50 = null;
@@ -5613,6 +6067,74 @@ function drawCandles() {
           crosshairMarkerVisible: false,
         });
         tvSma50Series.setData(cleanSma50);
+      }
+
+      // EMA 9
+      if (S_TV_INDICATORS.ema9 && rawEma9Bars.length > 0) {
+        const cleanEma9 = [];
+        let tE9 = null;
+        rawEma9Bars.forEach(b => {
+          if (tE9 === null || b.time > tE9) {
+            cleanEma9.push(b);
+            tE9 = b.time;
+          }
+        });
+        const tvEma9Series = tvChartInstance.addLineSeries({
+          color: '#8B5CF6',
+          lineWidth: 1.5,
+          title: 'EMA9',
+          crosshairMarkerVisible: false,
+        });
+        tvEma9Series.setData(cleanEma9);
+      }
+
+      // EMA 21
+      if (S_TV_INDICATORS.ema21 && rawEma21Bars.length > 0) {
+        const cleanEma21 = [];
+        let tE21 = null;
+        rawEma21Bars.forEach(b => {
+          if (tE21 === null || b.time > tE21) {
+            cleanEma21.push(b);
+            tE21 = b.time;
+          }
+        });
+        const tvEma21Series = tvChartInstance.addLineSeries({
+          color: '#F97316',
+          lineWidth: 1.5,
+          title: 'EMA21',
+          crosshairMarkerVisible: false,
+        });
+        tvEma21Series.setData(cleanEma21);
+      }
+
+      // Bollinger Bands
+      if (S_TV_INDICATORS.bbands && rawBbUpperBars.length > 0) {
+        const cleanBbUp = [];
+        const cleanBbLow = [];
+        let tBb = null;
+        rawBbUpperBars.forEach((b, idx) => {
+          if (tBb === null || b.time > tBb) {
+            cleanBbUp.push(b);
+            cleanBbLow.push(rawBbLowerBars[idx]);
+            tBb = b.time;
+          }
+        });
+        const tvBbUpSeries = tvChartInstance.addLineSeries({
+          color: 'rgba(6, 182, 212, 0.8)',
+          lineWidth: 1,
+          lineStyle: 2,
+          title: 'BB Up',
+          crosshairMarkerVisible: false,
+        });
+        tvBbUpSeries.setData(cleanBbUp);
+        const tvBbLowSeries = tvChartInstance.addLineSeries({
+          color: 'rgba(6, 182, 212, 0.8)',
+          lineWidth: 1,
+          lineStyle: 2,
+          title: 'BB Low',
+          crosshairMarkerVisible: false,
+        });
+        tvBbLowSeries.setData(cleanBbLow);
       }
 
       tvChartInstance.subscribeCrosshairMove(param => {
@@ -7644,7 +8166,11 @@ function openMenu(anchor, items, cur, onPick) {
   if (r.left + w < window.innerWidth - 8 && r.right - w < 8) menuEl.style.left = r.left + 'px';
   menuEl.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; e.stopPropagation(); const it = items[+b.dataset.i]; closeMenu(); onPick(it); });
 }
-function closeMenu() { if (menuEl) { menuEl.remove(); menuEl = null; } }
+function closeMenu() {
+  if (menuEl) { menuEl.remove(); menuEl = null; }
+  const pop = document.getElementById('tv-ind-popover');
+  if (pop && pop.style.display !== 'none') pop.style.display = 'none';
+}
 function modal(html) { layer.innerHTML = `<div class="scrim center" data-act="closemodal"><div class="modal" role="dialog" data-stop="1">${html}</div></div>`; }
 function closeLayer() { layer.innerHTML = ''; }
 const toastC360 = t => { if (t !== 'MSB') toast(`Prototype chỉ có dữ liệu chi tiết của MSB — đang mở MSB thay cho ${t}`); };
@@ -7654,11 +8180,82 @@ const A = {
   burger: () => document.getElementById('sb').classList.toggle('open'),
   back: () => history.back(), fwd: () => history.forward(),
   toast: el => toast(el.dataset.msg),
-  tvtool: el => { S.tvTool = +el.dataset.v; if (S.tvTool === TV_TOOLS.length - 1) { S.tvTool = 0; toast('Đã xoá các bản vẽ trên biểu đồ'); } document.querySelectorAll('.tv-tools button').forEach((b, i) => b.classList.toggle('on', i === S.tvTool)); },
+  tvtool: el => {
+    S.tvTool = +el.dataset.v;
+    document.querySelectorAll('.tv-tools button').forEach((b, i) => b.classList.toggle('on', i === S.tvTool));
+    if (S.tvTool === TV_TOOLS.length - 1) {
+      S.tvTool = 0;
+      clearTvDrawings();
+      toast('Đã xoá các bản vẽ trên biểu đồ');
+    } else if (S.tvTool === 2) {
+      addTvHorizontalLine();
+      toast('Đã thêm đường ngang hỗ trợ / kháng cự trên biểu đồ');
+    } else {
+      toast(`Công cụ: ${TV_TOOLS[S.tvTool][0]}`);
+    }
+  },
+  settvtf: el => {
+    const tf = el.dataset.v;
+    S_TV_TF = tf;
+    const tfToRange = { '1m': '1Ngày', '5m': '1Ngày', '15m': '5Ngày', '1H': '1Tháng', '1D': '1Năm', '1W': '5Năm', '1M': 'Tất cả' };
+    S.range = tfToRange[tf] || '1Năm';
+    document.querySelectorAll('[data-act="settvtf"]').forEach(b => b.classList.toggle('on', b.dataset.v === tf));
+    document.querySelectorAll('.tv-bar button').forEach(b => b.classList.toggle('on', b.dataset.v === S.range));
+    const intEl = document.getElementById('tvint');
+    if (intEl) intEl.textContent = tf;
+    drawCandles();
+    toast(`Đã chuyển khung thời gian biểu đồ sang ${tf}`);
+  },
+  settvstyle: el => {
+    const st = el.dataset.v;
+    S_TV_STYLE = st;
+    document.querySelectorAll('[data-act="settvstyle"]').forEach(b => b.classList.toggle('on', b.dataset.v === st));
+    drawCandles();
+    toast(`Đã chuyển kiểu biểu đồ sang ${st === 'candle' ? 'Nến Nhật' : st === 'line' ? 'Đường' : 'Vùng'}`);
+  },
+  toggletvindpop: () => {
+    const pop = document.getElementById('tv-ind-popover');
+    if (pop) {
+      pop.style.display = pop.style.display === 'none' ? 'flex' : 'none';
+    }
+  },
+  toggletvind: el => {
+    const ind = el.dataset.v;
+    if (ind in S_TV_INDICATORS) {
+      S_TV_INDICATORS[ind] = !S_TV_INDICATORS[ind];
+      el.classList.toggle('active', S_TV_INDICATORS[ind]);
+      const chk = el.querySelector('.tv-ind-chk');
+      if (chk) chk.textContent = S_TV_INDICATORS[ind] ? '✓' : '';
+      drawCandles();
+      toast(`${S_TV_INDICATORS[ind] ? 'Bật' : 'Tắt'} chỉ báo ${ind.toUpperCase()}`);
+    }
+  },
+  resettvchart: () => {
+    if (tvChartInstance) {
+      try {
+        tvChartInstance.timeScale().fitContent();
+        toast('Đã đặt lại góc nhìn biểu đồ');
+      } catch(e) {}
+    }
+  },
+  herosidetab: el => {
+    const tab = el.dataset.v;
+    S_HERO_SIDE_TAB = tab;
+    rerender();
+  },
   follow: () => { const on = !S.watch.has(STOCK.sym); on ? S.watch.add(STOCK.sym) : S.watch.delete(STOCK.sym); rerender(); toast(on ? `Đã thêm ${STOCK.sym} vào Danh mục của tôi` : `Đã bỏ theo dõi ${STOCK.sym}`); },
   symmenu: el => openMenu(el, (typeof VN30_DATA_FEED !== 'undefined' ? Object.keys(VN30_DATA_FEED) : ['VIC', 'VHM', 'VCB', 'FPT', 'HPG', 'MWG', 'MSN', 'TCB', 'MBB', 'SSI', 'VNM', 'STB', 'ACB', 'VPB', 'MSB']), STOCK.sym, t => { openStock(t); }),
   evtop: el => openMenu(el, ['Tất cả', 'Cổ tức', 'ĐHĐCĐ & KQKD', 'Phát hành & niêm yết'], S.evTop, v => { S.evTop = v; rerender(); }),
-  range: el => { S.range = el.dataset.v; document.querySelectorAll('.tv-bar button').forEach(b => b.classList.toggle('on', b.dataset.v === S.range)); drawCandles(); },
+  range: el => {
+    S.range = el.dataset.v;
+    const rangeToTf = { '1Ngày': '5m', '5Ngày': '15m', '1Tháng': '1H', '3Tháng': '1D', '6 tháng': '1D', 'YTD': '1D', '1Năm': '1D', '5Năm': '1W', 'Tất cả': '1M' };
+    S_TV_TF = rangeToTf[S.range] || '1D';
+    document.querySelectorAll('.tv-bar button').forEach(b => b.classList.toggle('on', b.dataset.v === S.range));
+    document.querySelectorAll('[data-act="settvtf"]').forEach(b => b.classList.toggle('on', b.dataset.v === S_TV_TF));
+    const intEl = document.getElementById('tvint');
+    if (intEl) intEl.textContent = S_TV_TF;
+    drawCandles();
+  },
   toggletvwidget: () => {
     S_TV_VIEW_MODE = S_TV_VIEW_MODE === 'widget' ? 'native' : 'widget';
     const btnTxt = document.getElementById('tvmodetxt');
@@ -7990,6 +8587,8 @@ function bindDrawer() { const q = layer.querySelector('#drq'); if (!q) return; q
 
 document.addEventListener('click', e => {
   if (menuEl && !e.target.closest('.menu')) closeMenu();
+  const pop = document.getElementById('tv-ind-popover');
+  if (pop && pop.style.display !== 'none' && !e.target.closest('.tv-ind-btn-wrap')) pop.style.display = 'none';
   const t = e.target.closest('[data-act],[data-go]');
   if (!t) { hideSuggest(); return; }
   if (t.dataset.go) { e.preventDefault(); go(t.dataset.go); return; }

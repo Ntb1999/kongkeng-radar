@@ -229,6 +229,9 @@ table.t{width:100%;border-collapse:collapse;font-size:12px;line-height:16px}
 .follow.on svg{stroke:var(--brand)}
 .price-b{flex:none;margin-left:auto;text-align:right;border-left:0;padding-left:0;display:flex;flex-direction:column;align-items:flex-end}
 .price-b .p{font-family:var(--mono);font-size:28px;font-weight:700;line-height:34px;color:var(--ink)}
+.price-b .p.up{color:var(--up)}
+.price-b .p.down{color:var(--down)}
+.price-b .p.ref{color:var(--warn)}
 .price-b .c{font-family:var(--mono);font-size:13px;font-weight:600;line-height:16px;margin-top:2px}
 .price-b .c.up{color:var(--up)}
 .price-b .c.down{color:var(--down)}
@@ -794,22 +797,24 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .tv-tools button.on{background:#F0F3FA;color:#2962FF}
 .tv-tools i{width:20px;height:1px;background:var(--line);margin:4px 0;flex:none}
 .tv-main{flex:1;min-width:0;display:flex;flex-direction:column;position:relative}
-.tv-head{position:absolute;left:8px;top:6px;right:12px;z-index:10;pointer-events:none;display:flex;flex-direction:column;gap:4px;font-size:11px;line-height:16px;color:var(--ink)}
+.tv-head{position:absolute;left:10px;top:8px;right:12px;z-index:10;pointer-events:none;display:flex;flex-direction:column;gap:5px;font-size:11px;line-height:16px;color:var(--ink)}
 .tv-head button,.tv-head a{pointer-events:auto;position:relative;z-index:11}
-.tv-leg{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.tv-leg b{font-weight:400}
+.tv-leg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--ink)}
+.tv-leg b{font-weight:600;color:var(--ink)}
 .tv-logo{width:16px;height:16px;border-radius:4px;background:#2962FF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M10 17H6v-6H2V7h8v10Zm8 0h-4.67l4-10H22l-4 10Zm-4.67-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z' fill='%23fff'/%3E%3C/svg%3E") center/13px no-repeat;box-shadow:0 1px 3px rgba(41,98,255,0.25);flex-shrink:0}
-.tv-dot{width:6px;height:6px;border-radius:50%;background:var(--up)}
-.tv-ohlc{display:inline-flex;gap:8px;font-variant-numeric:tabular-nums}
-.tv-ohlc span{color:var(--ink)}
-.tv-ohlc b{font-weight:400;margin-left:2px}
+.tv-dot{width:6px;height:6px;border-radius:50%;background:#22AB94;flex-shrink:0}
+.tv-ohlc{display:inline-flex;gap:6px;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:11px}
+.tv-ohlc span{color:var(--ink2)}
+.tv-ohlc b{font-weight:600;margin-left:2px}
 .tv-ohlc .up,.tv-vol .up{color:#22AB94}.tv-ohlc .down,.tv-vol .down{color:#F23645}
-.tv-trade{display:flex;align-items:center;gap:4px}
-.tv-trade button{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:44px;height:34px;padding:0 6px;border-radius:4px;color:#fff;font-size:9px;line-height:11px;font-weight:500}
-.tv-trade button b{font-size:11px;line-height:13px;font-weight:500}
+.tv-trade{display:flex;align-items:center;gap:4px;margin-top:2px}
+.tv-trade button{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:46px;height:32px;padding:0 8px;border-radius:4px;border:none;color:#fff;font-size:9.5px;line-height:11px;font-weight:600;cursor:pointer;pointer-events:auto;transition:opacity .15s ease}
+.tv-trade button:hover{opacity:0.9}
+.tv-trade button b{font-size:11.5px;line-height:13px;font-weight:700;font-family:var(--mono)}
 .tv-trade .sell{background:#F23645}.tv-trade .buy{background:#2962FF}
-.tv-trade span{font-size:10px;color:var(--ink)}
-.tv-vol{color:var(--ink2)}
+.tv-trade-qty{height:32px;min-width:32px;padding:0 6px;border-radius:4px;background:var(--sub);border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;font-family:var(--mono);color:var(--ink)}
+.tv-vol{color:var(--ink2);font-size:11px;display:flex;align-items:center;gap:4px;margin-top:2px}
+.tv-vol b,.tv-vol span{font-weight:600;font-family:var(--mono)}
 .tv-chart{flex:1;min-height:0;position:relative}
 .tv-bar{height:32px;flex:none;border-top:1px solid var(--line);display:flex;align-items:center;gap:2px;padding:0 8px;font-size:11px;color:var(--ink);overflow-x:auto;scrollbar-width:none}
 .tv-bar button{height:24px;padding:0 6px;border-radius:4px;white-space:nowrap}
@@ -930,17 +935,24 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .trade-side-badge.B{background:rgba(242,54,69,0.15);color:#D02735}
 .mcp-feed-footer{display:flex;align-items:center;justify-content:space-between;padding:6px 0 2px;font-size:10px;color:var(--ink3);border-top:1px solid var(--line);margin-top:auto}
 
-.m4{display:grid;grid-template-columns:1fr 1fr}
+.m4{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
 .m4>div{display:flex;flex-direction:column;min-width:0}
-.mc{padding:16px 20px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:12px;min-width:0;flex:1}
+.mc{padding:14px 20px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:10px;min-width:0;flex:1}
+.m4>div .mc:last-child{border-bottom:0}
 .m4>div:last-child .mc{border-right:0}
-.mc .kls{display:flex;flex-direction:column;gap:8px}
+.mc .cap{font-size:11px;font-weight:700;letter-spacing:0.4px;color:var(--ink);text-transform:uppercase}
+.mc .kls{display:flex;flex-direction:column;gap:7px}
 .mc .kl{display:flex;justify-content:space-between;gap:8px;font-size:12px;line-height:16px}
 .mc .kl span:first-child{color:var(--ink2)}
-.mc .kl span:last-child{font-family:var(--mono);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
-.hero-ev{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;padding:16px 20px 0}
+.mc .kl span:last-child{font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mc .kl .up{color:#009253}
+.mc .kl .down{color:#DC2626}
+.hero-ev{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;padding:14px 20px 8px}
 .evh{display:flex;align-items:center;justify-content:space-between}
 .hero-ev .ev-list{flex:1;height:auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:0 8px 12px 0}
+.hero-ev .ev-list div{display:flex;align-items:baseline;gap:12px;font-size:12px;line-height:17px}
+.hero-ev .ev-list b{color:#EF4444;font-family:var(--mono);font-size:11.5px;font-weight:600;flex-shrink:0}
+.hero-ev .ev-list span{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* panels */
 .ph{min-height:36px;height:36px;padding:0 16px;gap:8px;border-bottom:1px solid var(--line)}
 .ph .r{font-size:10px;line-height:16px;color:var(--ink3)}
@@ -2726,17 +2738,36 @@ let STOCK = {
   sym: 'MSB', ex: 'HOSE', name: 'Ngân hàng TMCP Hàng hải Việt Nam', ind: 'Ngân hàng', price: 14600, ref: 14750, chg: -150, pct: -1.02, vol: 21380000, val_bil: 312.15,
   open: 14750, high: 14950, low: 14500, close: 14600, ceil: 15750, floor: 13750, avg: 14650,
   metrics: {
-    liq: [['KLGD', '21.380.000 CP'], ['GTGD', '312,15 tỷ đồng']],
-    frn: [['Khối lượng ròng', '+400.000', 'up'], ['Giá trị ròng', '+5.850 triệu', 'up'], ['Room ngoại', '495.210.000 CP']],
-    val: [['EPS (TTM)', '1.973 đ'], ['P/E (TTM)', '7,40 lần'], ['P/B (TTM)', '1,08 lần'], ['ROE (TTM)', '14,8%', 'up'], ['Biên LN ròng', '22,4%', 'up'], ['Tỷ suất cổ tức', '5,3%', 'up']],
-    size: [['Vốn hoá', '54,66 nghìn tỷ'], ['Vốn điều lệ', '26.000 tỷ'], ['VCSH', '34.250 tỷ'], ['SLCP lưu hành', '2.600 triệu']]
+    val: [
+      ['EPS (TTM)', '2.096'],
+      ['P/E (TTM)', '6,80'],
+      ['TT Doanh thu (TTM)', '+12,4%', 'up'],
+      ['TT Lợi nhuận (TTM)', '+8,6%', 'up']
+    ],
+    size: [
+      ['Vốn hoá', '37,55 nghìn tỷ'],
+      ['VCSH', '34,02 nghìn tỷ'],
+      ['SLCP đang NY', '2,635 tỷ'],
+      ['SLCP lưu hành', '2,635 tỷ']
+    ],
+    liq: [
+      ['KLGD', '21.380.000'],
+      ['GTGD', '312,15 tỷ đồng']
+    ],
+    frn: [
+      ['Khối lượng ròng', '+512.400', 'up'],
+      ['Giá trị ròng', '+7.302 triệu', 'up'],
+      ['Room', '790.500.000']
+    ]
   },
   events: [
-    ['18/09', 'MSB lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh & tăng vốn điều lệ'],
-    ['25/09', 'GDKHQ chi trả cổ tức bằng tiền mặt tỷ lệ 15% cho cổ đông'],
-    ['02/10', 'Ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức'],
-    ['20/10', 'Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026'],
-    ['12/11', 'Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3']
+    ['18/09', 'ĐHĐCĐ bất thường lấy ý kiến tăng vốn điều lệ'],
+    ['25/09', 'GDKHQ trả cổ tức tiền mặt năm 2026, tỷ lệ 15%'],
+    ['02/10', 'Ngày thanh toán cổ tức tiền mặt năm 2026'],
+    ['09/10', 'GDKHQ phát hành cổ phiếu ESOP năm 2026'],
+    ['20/10', 'Công bố kết quả kinh doanh quý 3/2026'],
+    ['30/10', 'Niêm yết bổ sung cổ phiếu phát hành theo ESOP'],
+    ['12/11', 'Gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3/2026']
   ]
 };
 
@@ -5098,7 +5129,7 @@ const NAV = [
   ['KHÁM PHÁ', [['market', 'Tổng quan thị trường', I.grid], ['screener', 'Bộ lọc cổ phiếu', I.filter], ['mnews', 'Tin tức thị trường', I.news]]],
   ['NGHIÊN CỨU', [['c360', 'Company 360', I.grid], ['compare', 'So sánh cổ phiếu', I.comp], ['reports', 'Báo cáo & Insights', I.rep], ['follow', 'Danh sách theo dõi', I.book]]]
 ];
-const C360_TABS = [['', 'Tổng quan'], ['hoso', 'Hồ sơ'], ['codong', 'Cổ đông & GDNB'], ['taichinh', 'Tài chính'], ['cungnganh', 'Cùng ngành'], ['tintuc', 'Tin tức & Sự kiện'], ['dulieu', 'Dữ liệu']];
+const C360_TABS = [['', 'TỔNG QUAN'], ['hoso', 'HỒ SƠ'], ['codong', 'CỔ ĐÔNG & GDNB'], ['taichinh', 'TÀI CHÍNH'], ['cungnganh', 'CÙNG NGÀNH'], ['tintuc', 'TIN TỨC & SỰ KIỆN'], ['dulieu', 'DỮ LIỆU']];
 
 /* ================= CHART HELPERS ================= */
 const P = (cx, cy, r, deg) => [cx + r * Math.cos(deg * Math.PI / 180), cy - r * Math.sin(deg * Math.PI / 180)];
@@ -5389,6 +5420,7 @@ function tickRealtime() {
   const chgEl = document.getElementById('c360-live-chg');
   if (priceEl) {
     priceEl.textContent = fmtVN(newPrice, 0);
+    priceEl.className = 'p ' + (STOCK.chg > 0 ? 'up' : STOCK.chg < 0 ? 'down' : 'ref');
     priceEl.classList.remove('flash-up', 'flash-down');
     void priceEl.offsetWidth; // trigger reflow
     if (newPrice > oldPrice) {
@@ -5410,13 +5442,17 @@ function tickRealtime() {
     }
   }
 
-  // Update tvbid & tvask in TradingView header if present
-  const tvbidEl = document.getElementById('tvbid');
-  const tvaskEl = document.getElementById('tvask');
+  // Update tv-trade-bid & tv-trade-ask in TradingView overlay
   const bestBid = newPrice;
   const bestAsk = newPrice + step;
+  const tvbidEl = document.getElementById('tvbid');
+  const tvaskEl = document.getElementById('tvask');
+  const bBidEl = document.getElementById('tv-trade-bid');
+  const bAskEl = document.getElementById('tv-trade-ask');
   if (tvbidEl) tvbidEl.textContent = fmtVN(bestBid, 0);
   if (tvaskEl) tvaskEl.textContent = fmtVN(bestAsk, 0);
+  if (bBidEl) bBidEl.textContent = fmtVN(bestBid, 0);
+  if (bAskEl) bAskEl.textContent = fmtVN(bestAsk, 0);
 
   // 2. Update Candlestick Chart (last candle)
   if (typeof CANDLES !== 'undefined' && CANDLES && CANDLES.length > 0) {
@@ -5695,137 +5731,83 @@ function stockHeader() {
       <div class="sub-l"><span>${STOCK.name}</span><i></i><span>Ngành: ${STOCK.ind}</span></div>
     </div>
     <div class="price-b">
-      <div class="p" id="c360-live-price">${fmtVN(curPrice, 0)}</div>
+      <div class="p ${chgClass}" id="c360-live-price">${fmtVN(curPrice, 0)}</div>
       <div class="c ${chgClass}" id="c360-live-chg">${chgTxt}</div>
-      <div class="mmb-source-tag"><span class="tv-dot-live"></span>MCP REALTIME</div>
     </div>
   </div>
   <div class="hero">
     <div class="tv">
       <div class="tv-tools" role="toolbar" aria-label="Công cụ vẽ">${TV_TOOLS.map((t, i) => `${i === 9 || i === 10 ? '<i></i>' : ''}<button class="${S.tvTool === i ? 'on' : ''}" data-act="tvtool" data-v="${i}" title="${t[0]}" aria-label="${t[0]}">${t[1]}</button>`).join('')}</div>
       <div class="tv-main">
-        <!-- 1. Dedicated TradingView Pro Top Bar -->
-        <div class="tv-top-bar">
-          <div class="tv-tb-left">
-            <span class="tv-tb-sym" title="${STOCK.name}"><b>${STOCK.ex}:${STOCK.sym}</b></span>
-            <div class="tv-tf-group">
-              ${['1m', '5m', '15m', '1H', '1D', '1W', '1M'].map(tf => `<button class="${S_TV_TF === tf ? 'on' : ''}" data-act="settvtf" data-v="${tf}">${tf}</button>`).join('')}
-            </div>
-            <div class="tv-sep"></div>
-            <div class="tv-style-group">
-              <button class="${S_TV_STYLE === 'candle' ? 'on' : ''}" data-act="settvstyle" data-v="candle" title="Biểu đồ Nến Nhật">🕯️ Nến</button>
-              <button class="${S_TV_STYLE === 'line' ? 'on' : ''}" data-act="settvstyle" data-v="line" title="Biểu đồ Đường">📈 Line</button>
-              <button class="${S_TV_STYLE === 'area' ? 'on' : ''}" data-act="settvstyle" data-v="area" title="Biểu đồ Vùng">🌊 Area</button>
-            </div>
-            <div class="tv-sep"></div>
-            <div class="tv-ind-btn-wrap" style="position:relative">
-              <button class="tv-ind-btn" data-act="toggletvindpop" title="Chỉ báo kỹ thuật (Indicators)">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:2px"><path d="M4 19L9 9l4 6 7-10"/></svg>
-                <span><i>fx</i> Chỉ báo</span>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
-              </button>
-              <div id="tv-ind-popover" class="tv-ind-popover" style="display:none">
-                <div class="tv-ind-pop-item ${S_TV_INDICATORS.sma20 ? 'active' : ''}" data-act="toggletvind" data-v="sma20">
-                  <span class="tv-ind-chk">${S_TV_INDICATORS.sma20 ? '✓' : ''}</span>
-                  <span>Đường SMA 20 (Trung bình 20 ngày)</span>
-                </div>
-                <div class="tv-ind-pop-item ${S_TV_INDICATORS.sma50 ? 'active' : ''}" data-act="toggletvind" data-v="sma50">
-                  <span class="tv-ind-chk">${S_TV_INDICATORS.sma50 ? '✓' : ''}</span>
-                  <span>Đường SMA 50 (Trung bình 50 ngày)</span>
-                </div>
-                <div class="tv-ind-pop-item ${S_TV_INDICATORS.ema9 ? 'active' : ''}" data-act="toggletvind" data-v="ema9">
-                  <span class="tv-ind-chk">${S_TV_INDICATORS.ema9 ? '✓' : ''}</span>
-                  <span>Đường EMA 9 (Đường mũ 9 phiên)</span>
-                </div>
-                <div class="tv-ind-pop-item ${S_TV_INDICATORS.ema21 ? 'active' : ''}" data-act="toggletvind" data-v="ema21">
-                  <span class="tv-ind-chk">${S_TV_INDICATORS.ema21 ? '✓' : ''}</span>
-                  <span>Đường EMA 21 (Đường mũ 21 phiên)</span>
-                </div>
-                <div class="tv-ind-pop-item ${S_TV_INDICATORS.bbands ? 'active' : ''}" data-act="toggletvind" data-v="bbands">
-                  <span class="tv-ind-chk">${S_TV_INDICATORS.bbands ? '✓' : ''}</span>
-                  <span>Bollinger Bands (20, 2)</span>
-                </div>
-                <div class="tv-ind-pop-item ${S_TV_INDICATORS.volume ? 'active' : ''}" data-act="toggletvind" data-v="volume">
-                  <span class="tv-ind-chk">${S_TV_INDICATORS.volume ? '✓' : ''}</span>
-                  <span>Khối lượng giao dịch (Volume)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="tv-tb-right">
-            <button class="tv-mode-btn" data-act="opentvmcpmodal" style="color:#2962FF;font-weight:600;border-color:rgba(41,98,255,0.3);background:rgba(41,98,255,0.08)" title="Khám phá Model Context Protocol từ TradingView"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>TV-MCP</button>
-            <a href="https://www.tradingview.com/chart/?symbol=${STOCK.ex || 'HOSE'}:${STOCK.sym}" target="_blank" rel="noopener noreferrer" class="tv-mode-btn" style="text-decoration:none" title="Mở biểu đồ trực tiếp trên TradingView.com"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:2px"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>TV ↗</a>
-            <button class="tv-icon-btn" data-act="resettvchart" title="Đặt lại góc nhìn biểu đồ (Reset view)"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></button>
-          </div>
-        </div>
-
-        <!-- 2. Claude Artifact & TradingView Integrated Bar (OHLC + Quick Trade Widget) -->
-        <div class="tv-sub-bar">
-          <div class="tv-sub-left">
-            <span class="tv-stat-sym"><b>${STOCK.name}</b> · <span id="tvint">${S_TV_TF}</span> · <span style="font-family:var(--mono);color:var(--brand);font-weight:600">${STOCK.ex}:${STOCK.sym}</span></span>
-            <span id="tv-mcp-rating-chip" class="tv-mcp-rating-chip buy" title="Chỉ số kỹ thuật TradingView MCP">MUA (RSI: 58.4)</span>
+        <!-- Claude Artifact Overlay Header (Stock Name · TF · Ex ● OHLC + Quick Trade + Volume) -->
+        <div class="tv-head">
+          <div class="tv-leg">
+            <div class="tv-logo" style="cursor:pointer" data-act="opentvmcpmodal" title="Bấm mở TradingView MCP Inspector"></div>
+            <b>${STOCK.name}</b> · <span id="tvint" style="cursor:pointer" title="Khung thời gian">${S_TV_TF || '1D'}</span> · <span>${STOCK.ex}</span>
             <span class="tv-dot"></span>
             <span id="ohlc" class="tv-ohlc"></span>
-            <div class="tv-vol">KL <span id="tvvol">${volStr}</span></div>
-            <span id="tv-indicators-val" class="tv-indicators-val"></span>
           </div>
-          <!-- Quick Buy / Sell Trading Action Widget (Synchronized with Claude Artifact) -->
-          <div class="tv-quick-trade-wrap">
-            <button class="tv-qt-btn sell" title="Đặt lệnh Bán nhanh" onclick="toast('Lệnh BÁN nhanh ${STOCK.sym}: ${(bestBid >= 500 ? (bestBid / 1000).toFixed(2) : Number(bestBid).toFixed(2))} (KL: 50)')">
-              <span class="p">${(bestBid >= 500 ? (bestBid / 1000).toFixed(2) : Number(bestBid).toFixed(2))}</span>
-              <span class="lbl">BÁN</span>
+          <div class="tv-trade">
+            <button class="sell" onclick="toast('Lệnh BÁN nhanh ${STOCK.sym}: ${fmtVN(bestBid, 0)}')">
+              <b id="tv-trade-bid">${fmtVN(bestBid, 0)}</b>
+              <span>BÁN</span>
             </button>
-            <div class="tv-qt-qty" title="Khối lượng mặc định">50</div>
-            <button class="tv-qt-btn buy" title="Đặt lệnh Mua nhanh" onclick="toast('Lệnh MUA nhanh ${STOCK.sym}: ${(bestAsk >= 500 ? (bestAsk / 1000).toFixed(2) : Number(bestAsk).toFixed(2))} (KL: 50)')">
-              <span class="p">${(bestAsk >= 500 ? (bestAsk / 1000).toFixed(2) : Number(bestAsk).toFixed(2))}</span>
-              <span class="lbl">MUA</span>
+            <span class="tv-trade-qty">50</span>
+            <button class="buy" onclick="toast('Lệnh MUA nhanh ${STOCK.sym}: ${fmtVN(bestAsk, 0)}')">
+              <b id="tv-trade-ask">${fmtVN(bestAsk, 0)}</b>
+              <span>MUA</span>
             </button>
           </div>
+          <div class="tv-vol">Khối lượng <span id="tvvol" class="up">${volStr}</span><span id="tv-indicators-val" class="tv-indicators-val" style="margin-left:8px"></span></div>
         </div>
 
-        <!-- 3. Chart Container -->
+        <!-- TradingView Candlestick Canvas Container -->
         <div id="candle" class="tv-chart"></div>
 
-        <!-- 4. Bottom Toolbar -->
+        <!-- Claude Artifact Bottom Toolbar -->
         <div class="tv-bar">
           ${TV_RANGES.map(r => `<button class="${S.range === r ? 'on' : ''}" data-act="range" data-v="${r}">${r}</button>`).join('')}
           <span class="sp"></span>
-          <button class="tv-ind-toggle ${S_TV_INDICATORS.sma20 ? 'on' : ''}" data-act="togglesma" title="Bật/Tắt đường chỉ báo MA 20 và MA 50">MA 20/50</button>
-          <button class="tv-mcp-status" data-act="opentvmcpmodal" title="Bấm để mở TradingView MCP Inspector (https://mcp.tradingview.com/mcp)"><span class="tv-dot-live"></span><b>TV-MCP</b> ${STOCK.ex}:${STOCK.sym} ⚡</button>
-          <span class="mono" id="tv-clock">${typeof getLiveTimeString === 'function' ? getLiveTimeString() : '13:14:34 UTC+7'}</span><span class="adj">ADJ</span>
+          <span class="mono" id="tv-clock">${typeof getLiveTimeString === 'function' ? getLiveTimeString() : '14:45:02 UTC+7'}</span>
+          <span class="adj" style="cursor:pointer" data-act="opentvmcpmodal" title="TradingView MCP Inspector">ADJ</span>
         </div>
       </div>
     </div>
 
-    <!-- Right Side: Claude-Native Metrics & Events + MCP Order Book Tabs -->
+    <!-- Right Side: Claude-Native Metrics & Events -->
     <div class="hero-side">
-      <div class="hero-side-tabs" role="tablist">
-        <button class="hero-side-tab ${S_HERO_SIDE_TAB === 'metrics' ? 'on' : ''}" data-act="herosidetab" data-v="metrics" title="Chỉ số cơ bản &amp; Sự kiện theo thiết kế Claude Artifact">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:4px"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>Chỉ số &amp; Định giá
-        </button>
-        <button class="hero-side-tab ${S_HERO_SIDE_TAB === 'orderbook' ? 'on' : ''}" data-act="herosidetab" data-v="orderbook" title="Sổ lệnh chuyên sâu &amp; Khớp lệnh trực tiếp qua MCP">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:4px"><path d="M3 3h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3z"/></svg>Sổ lệnh &amp; Khớp lệnh MCP
-        </button>
-      </div>
-      <div class="hero-side-content">
-        ${S_HERO_SIDE_TAB === 'orderbook' ? renderMcpOrderBook() : `
-          <div class="hero-claude-wrap">
-            <div class="m4">
-              <div>${cell('Định giá &amp; lợi nhuận', m.val)}${cell('Thanh khoản', m.liq)}</div>
-              <div>${cell('Quy mô &amp; sở hữu', m.size)}${cell('NĐT nước ngoài', m.frn)}</div>
+      ${S_HERO_SIDE_TAB === 'orderbook' ? `
+        <div style="padding:8px 12px 0;display:flex;justify-content:space-between;align-items:center;background:var(--sub);border-bottom:1px solid var(--line)">
+          <span style="font-size:11.5px;font-weight:700;color:var(--brand);display:flex;align-items:center;gap:5px"><span class="tv-dot-live"></span>SỔ LỆNH &amp; KHỚP LỆNH MCP</span>
+          <button class="chip" data-act="herosidetab" data-v="metrics" style="font-size:10.5px;padding:2px 8px">📊 Quay lại Chỉ số</button>
+        </div>
+        ${renderMcpOrderBook()}
+      ` : `
+        <div class="hero-claude-wrap">
+          <div class="m4">
+            <div>
+              ${cell('ĐỊNH GIÁ &amp; LỢI NHUẬN', m.val)}
+              ${cell('THANH KHOẢN', m.liq)}
             </div>
-            <div class="hero-ev">
-              <div class="evh">
-                <span style="font-size:12px;font-weight:600;text-transform:uppercase;color:var(--ink3);letter-spacing:0.3px">Sự kiện gần đây</span>
-                <button class="chip" data-act="evtop" style="font-size:11px;padding:2px 8px">${S.evTop} ${I.chev}</button>
-              </div>
-              <div class="ev-list">
-                ${evs.map(([d, t]) => `<div><b>${d}</b><span title="${esc(t)}">${t}</span></div>`).join('') || '<span class="muted">Không có sự kiện trong nhóm này.</span>'}
-              </div>
+            <div>
+              ${cell('QUY MÔ &amp; SỞ HỮU', m.size)}
+              ${cell('NĐT NƯỚC NGOÀI', m.frn)}
             </div>
           </div>
-        `}
-      </div>
+          <div class="hero-ev">
+            <div class="evh">
+              <span class="cap">SỰ KIỆN GẦN ĐÂY</span>
+              <div style="display:flex;align-items:center;gap:6px">
+                <button class="chip" data-act="herosidetab" data-v="orderbook" title="Xem Sổ lệnh &amp; Khớp lệnh MCP">⚡ Sổ lệnh MCP</button>
+                <button class="chip" data-act="evtop">${S.evTop} ${I.chev}</button>
+              </div>
+            </div>
+            <div class="ev-list">
+              ${evs.map(([d, t]) => `<div><b>${d}</b><span title="${esc(t)}">${t}</span></div>`).join('') || '<span class="muted">Không có sự kiện trong nhóm này.</span>'}
+            </div>
+          </div>
+        </div>
+      `}
     </div>
   </div>
   <div class="tabs" role="tablist">${C360_TABS.map(([k, l]) => { const rt = k ? 'c360-' + k : 'c360'; return `<button role="tab" class="${S.route === rt ? 'on' : ''}" data-go="${rt}">${l}</button>`; }).join('')}</div>`;
@@ -13399,10 +13381,27 @@ const DNSE_STOCKS_DB = {
     sym: 'MSB', ex: 'HOSE', name: 'Ngân hàng TMCP Hàng hải Việt Nam', ind: 'Ngân hàng',
     price: 14600, ref: 14750, chg: -150, pct: -1.02, vol: 21380000, val_bil: 312.15,
     metrics: {
-      liq: [['KLGD', '21.380.000 CP'], ['GTGD', '312,15 tỷ đồng']],
-      frn: [['Khối lượng ròng', '+400.000', 'up'], ['Giá trị ròng', '+5.850 triệu', 'up'], ['Room ngoại', '495.210.000 CP']],
-      val: [['EPS (TTM)', '1.973 đ'], ['P/E (TTM)', '7,40 lần'], ['P/B (TTM)', '1,08 lần'], ['ROE (TTM)', '14,8%', 'up'], ['NIM (Bán niên)', '3,70%', 'up'], ['CASA', '26,71%', 'up']],
-      size: [['Vốn hoá', '54,66 nghìn tỷ'], ['Vốn điều lệ', '26,00 nghìn tỷ'], ['VCSH', '34,25 nghìn tỷ'], ['SLCP lưu hành', '2,600 tỷ CP']]
+      val: [
+        ['EPS (TTM)', '2.096'],
+        ['P/E (TTM)', '6,80'],
+        ['TT Doanh thu (TTM)', '+12,4%', 'up'],
+        ['TT Lợi nhuận (TTM)', '+8,6%', 'up']
+      ],
+      size: [
+        ['Vốn hoá', '37,55 nghìn tỷ'],
+        ['VCSH', '34,02 nghìn tỷ'],
+        ['SLCP đang NY', '2,635 tỷ'],
+        ['SLCP lưu hành', '2,635 tỷ']
+      ],
+      liq: [
+        ['KLGD', '21.380.000'],
+        ['GTGD', '312,15 tỷ đồng']
+      ],
+      frn: [
+        ['Khối lượng ròng', '+512.400', 'up'],
+        ['Giá trị ròng', '+7.302 triệu', 'up'],
+        ['Room', '790.500.000']
+      ]
     },
     factors: [
       { t: 'Chất lượng tài chính', w: 25, s: 76, lb: 'TÍCH CỰC', b: ['Nợ xấu (NPL) 2,88% & bao phủ 63%', 'ROA 1,52%, ROE 14,8%', 'Hệ số an toàn CAR > 12,5%'], n: 'Chất lượng tài sản và an toàn vốn.' },
@@ -13433,7 +13432,7 @@ const DNSE_STOCKS_DB = {
       'Biến động giá': [['Doanh nghiệp', '1 tuần', '1 tháng', '3 tháng', 'Từ đầu năm', '1 năm'], [['MSB', '+2,82%', '+11,45%', '+9,16%', '+41,29%', '+28,35%'], ['VCB', '−0,40%', '+1,90%', '+4,20%', '+8,70%', '+12,40%'], ['TCB', '+1,60%', '+6,80%', '+14,50%', '+29,30%', '+38,60%'], ['ACB', '+0,80%', '+3,20%', '+7,90%', '+15,40%', '+19,80%'], ['VPB', '−1,20%', '+2,40%', '+9,10%', '+18,20%', '+22,50%']]],
       'Định giá': [['Doanh nghiệp', 'P/E', 'P/B', 'P/S', 'EV/EBITDA', 'Tỷ suất cổ tức'], [['MSB', '7,40', '1,08', '2,35', '9,20', '5,3%'], ['VCB', '13,90', '2,75', '4,10', '13,60', '1,2%'], ['TCB', '8,65', '1,55', '3,05', '10,40', '2,8%'], ['ACB', '7,20', '1,42', '2,68', '9,80', '3,5%'], ['VPB', '9,80', '1,18', '2,90', '11,10', '4,1%']]]
     },
-    events: [['18/09', 'ĐHĐCĐ thông qua kế hoạch tăng vốn điều lệ'], ['25/09', 'GDKHQ trả cổ tức tiền mặt 15%'], ['02/10', 'Ngày đăng ký cuối cùng nhận cổ tức'], ['20/10', 'Công bố KQKD 9T: LNTT tăng trưởng mạnh'], ['12/11', 'Hội nghị gặp gỡ NĐT và chuyên viên phân tích']]
+    events: [['18/09', 'ĐHĐCĐ bất thường lấy ý kiến tăng vốn điều lệ'], ['25/09', 'GDKHQ trả cổ tức tiền mặt năm 2026, tỷ lệ 15%'], ['02/10', 'Ngày thanh toán cổ tức tiền mặt năm 2026'], ['09/10', 'GDKHQ phát hành cổ phiếu ESOP năm 2026'], ['20/10', 'Công bố kết quả kinh doanh quý 3/2026'], ['30/10', 'Niêm yết bổ sung cổ phiếu phát hành theo ESOP'], ['12/11', 'Gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3/2026']]
   },
 
   FPT: {

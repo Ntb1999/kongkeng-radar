@@ -6008,8 +6008,8 @@ function drawCandles() {
         rightPriceScale: {
           borderColor: isDark ? '#2B2B43' : '#E0E3EB',
           scaleMargins: {
-            top: 0.12,
-            bottom: 0.22,
+            top: 0.08,
+            bottom: 0.28,
           },
         },
         timeScale: {
@@ -6032,8 +6032,10 @@ function drawCandles() {
           priceFormat: { type: 'volume' },
           priceScaleId: '',
           lastValueVisible: false,
+        });
+        tvVolumeSeries.priceScale().applyOptions({
           scaleMargins: {
-            top: 0.78,
+            top: 0.76,
             bottom: 0,
           },
         });
@@ -6098,7 +6100,7 @@ function drawCandles() {
         rawVolumeBars.push({
           time: timeVal,
           value: d.v,
-          color: d.c >= d.o ? 'rgba(34, 171, 148, 0.35)' : 'rgba(242, 54, 69, 0.35)',
+          color: d.c >= d.o ? (isDark ? 'rgba(34, 171, 148, 0.55)' : 'rgba(34, 171, 148, 0.65)') : (isDark ? 'rgba(242, 54, 69, 0.55)' : 'rgba(242, 54, 69, 0.65)'),
         });
 
         if (tech.sma20Arr && tech.sma20Arr[i] != null) {
@@ -6133,6 +6135,31 @@ function drawCandles() {
 
       if (tvVolumeSeries) {
         tvVolumeSeries.setData(cleanVolumeBars);
+      }
+      // Volume SMA 9 Indicator (TradingView standard pane)
+      if (S_TV_INDICATORS.volume && cleanVolumeBars.length >= 9) {
+        const cleanVolSma9 = [];
+        let runVolSum = 0;
+        for (let vi = 0; vi < cleanVolumeBars.length; vi++) {
+          runVolSum += cleanVolumeBars[vi].value;
+          if (vi >= 9) runVolSum -= cleanVolumeBars[vi - 9].value;
+          if (vi >= 8) {
+            cleanVolSma9.push({
+              time: cleanVolumeBars[vi].time,
+              value: Math.round(runVolSum / Math.min(vi + 1, 9)),
+            });
+          }
+        }
+        if (cleanVolSma9.length > 0) {
+          const tvVolSma = tvChartInstance.addLineSeries({
+            priceScaleId: '',
+            color: isDark ? 'rgba(56, 189, 248, 0.75)' : 'rgba(2, 132, 199, 0.75)',
+            lineWidth: 1.5,
+            lastValueVisible: false,
+            priceFormat: { type: 'volume' },
+          });
+          tvVolSma.setData(cleanVolSma9);
+        }
       }
 
       if (S_TV_STYLE === 'line' || S_TV_STYLE === 'area') {
@@ -6290,7 +6317,7 @@ function drawCandles() {
   // SVG FALLBACK
   const hi = Math.max(...data.map(d => d.h)), lo = Math.min(...data.map(d => d.l)), pad = (hi - lo) * .06 || 0.1;
   const y0 = lo - pad, y1 = hi + pad, vmax = Math.max(...data.map(d => d.v));
-  const cw = (W - padR - 6) / n, X = i => 3 + cw * (i + .5), Y = v => top + pH * (1 - (v - y0) / (y1 - y0));
+  const cw = (W - padR - 6) / n, X = i => 3 + cw * (i + .5), Y = v => top + (pH * 0.70) * (1 - (v - y0) / (y1 - y0));
   let g = '';
   const step = niceStep((y1 - y0) / Math.max(4, Math.floor(pH / 34)));
   for (let v = Math.ceil(y0 / step) * step; v <= y1; v += step) {

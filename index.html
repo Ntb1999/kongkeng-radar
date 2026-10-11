@@ -6772,7 +6772,15 @@ function getCmpData(t) {
   const c = d.chg / 1000;
   const pct = d.pct;
   const tp = (v.consensus && v.consensus.target_price) ? v.consensus.target_price / 1000 : +(p * 1.2).toFixed(2);
-  const dcf = (v.valuation && v.valuation.dcf_fair_value) ? v.valuation.dcf_fair_value / 1000 : +(p * 1.25).toFixed(2);
+  const fv = v.forward_val || v.valuation || {};
+  let dcf = +(p * 1.25).toFixed(2);
+  if (fv.dcf_fair_value) {
+    const rawDcf = parseFloat(String(fv.dcf_fair_value).replace(/\./g, '').replace(/,/g, '.').replace(/[^0-9.]/g, ''));
+    if (!isNaN(rawDcf)) dcf = rawDcf >= 1000 ? +(rawDcf / 1000).toFixed(2) : rawDcf;
+  }
+  const fpe = fv.pe_forward ? parseFloat(String(fv.pe_forward).replace(',', '.').replace(/[^0-9.]/g, '')) : (v.consensus && v.consensus.forward_pe ? v.consensus.forward_pe : 10.2);
+  const fpb = fv.pb_forward ? parseFloat(String(fv.pb_forward).replace(',', '.').replace(/[^0-9.]/g, '')) : 1.30;
+  const peg = fv.peg_ratio ? parseFloat(String(fv.peg_ratio).replace(',', '.')) : (fv.peg ? fv.peg : 0.95);
   const pe = parseFloat((d.metrics && d.metrics.val && d.metrics.val.find(x => x[0].includes('P/E')) ? d.metrics.val.find(x => x[0].includes('P/E'))[1] : '11.5').replace(',', '.').replace(/[^0-9.]/g, '')) || 11.5;
   const pb = parseFloat((d.metrics && d.metrics.val && d.metrics.val.find(x => x[0].includes('P/B')) ? d.metrics.val.find(x => x[0].includes('P/B'))[1] : '1.4').replace(',', '.').replace(/[^0-9.]/g, '')) || 1.4;
   const roe = parseFloat((d.metrics && d.metrics.val && d.metrics.val.find(x => x[0].includes('ROE')) ? d.metrics.val.find(x => x[0].includes('ROE'))[1] : '15.0').replace(',', '.').replace(/[^0-9.]/g, '')) || 15.0;
@@ -6833,17 +6841,24 @@ function getCmpData(t) {
     tp,
     upside: v.consensus ? v.consensus.upside_pct : 20.0,
     coverage_count: v.consensus ? v.consensus.coverage_count : 6,
-    fpe: (v.valuation && v.valuation.pe_forward) ? v.valuation.pe_forward : 10.2,
-    fpb: (v.valuation && v.valuation.pb_forward) ? v.valuation.pb_forward : 1.30,
+    fpe,
+    fpb,
     dcf,
-    fr_net10: v.flow ? v.flow.foreign_net_10d : '+1.200.000 CP',
-    prop_net10: v.flow ? v.flow.prop_net_10d : '+350.000 CP',
-    fr_ratio: v.flow ? parseFloat(v.flow.foreign_ratio.replace(',', '.')) : 18.5,
-    fr_room: v.flow ? v.flow.foreign_room_pct : '31,50%',
+    fr_net10: (v.institutional && v.institutional.foreign_net_10d) || (v.flow && v.flow.foreign_net_10d) || '+1.200.000 CP',
+    prop_net10: (v.institutional && v.institutional.prop_net_10d) || (v.flow && v.flow.prop_net_10d) || '+350.000 CP',
+    fr_ratio: (v.institutional && v.institutional.foreign_ratio) ? parseFloat(String(v.institutional.foreign_ratio).replace(',', '.').replace(/[^0-9.]/g, '')) : (v.flow ? parseFloat(String(v.flow.foreign_ratio).replace(',', '.')) : 18.5),
+    fr_room: (v.institutional && v.institutional.foreign_room_pct) || (v.institutional && String(v.institutional.foreign_ratio).includes('Kín') ? '0.00% (Full 49%)' : (v.flow ? v.flow.foreign_room_pct : '31,50%')),
     inst_ratio: 45.2, insider_ratio: 8.5,
-    thesis: v.thesis || 'Doanh nghiệp duy trì tiềm năng tăng trưởng trung hạn tích cực.',
-    catalysts: t === 'MSB' ? ['CASA 26.7% thuộc top đầu ngành', 'NIM 3.7% phục hồi ổn định', 'Kế hoạch tăng vốn 37.440 tỷ đồng'] : t === 'FPT' ? ['Hợp tác Nvidia mở AI Factory', 'Doanh thu phần mềm nước ngoài +28%', 'Khối ngoại kịch room 49%'] : t === 'HPG' ? ['Dung Quất 2 nâng 66% công suất', 'Biên lợi nhuận thép phục hồi', 'Thị phần thép XD #1 Việt Nam'] : ['Vị thế đầu ngành', 'Ban lãnh đạo năng động', 'Tiềm năng tăng trưởng doanh thu'],
-    headwinds: t === 'MSB' ? ['Cạnh tranh huy động vốn gay gắt', 'Áp lực xử lý nợ tồn đọng'] : t === 'FPT' ? ['P/E 24.8x vùng đỉnh lịch sử', 'Biến động tỷ giá JPY xuất khẩu'] : t === 'HPG' ? ['Biến động giá nguyên liệu quặng sắt/than', 'Thị trường BĐS dân dụng phục hồi chậm'] : ['Áp lực lạm phát chi phí', 'Cạnh tranh gia tăng']
+    thesis: (v.reports && v.reports.thesis) || v.thesis || 'Doanh nghiệp duy trì tiềm năng tăng trưởng trung hạn tích cực.',
+    catalysts: (d.highlights && d.highlights.pos && d.highlights.pos.length) ? d.highlights.pos.slice(0, 3) : (t === 'MSB' ? ['CASA 26.71% thuộc top đầu ngành', 'NIM 3.70% phục hồi ổn định', 'Kế hoạch tăng vốn 37.440 tỷ đồng'] : t === 'FPT' ? ['Hợp tác Nvidia mở AI Factory', 'Doanh thu phần mềm nước ngoài +28%', 'Khối ngoại kịch room 49%'] : t === 'HPG' ? ['Dung Quất 2 nâng 66% công suất', 'Biên lợi nhuận thép phục hồi', 'Thị phần thép XD #1 Việt Nam'] : ['Vị thế đầu ngành', 'Ban lãnh đạo năng động', 'Tiềm năng tăng trưởng doanh thu']),
+    headwinds: (d.highlights && d.highlights.neg && d.highlights.neg.length) ? d.highlights.neg.slice(0, 3) : (t === 'MSB' ? ['Cạnh tranh huy động vốn gay gắt', 'Áp lực xử lý nợ tồn đọng'] : t === 'FPT' ? ['P/E 24.8x vùng đỉnh lịch sử', 'Biến động tỷ giá JPY xuất khẩu'] : t === 'HPG' ? ['Biến động giá nguyên liệu quặng sắt/than', 'Thị trường BĐS dân dụng phục hồi chậm'] : ['Áp lực lạm phát chi phí', 'Cạnh tranh gia tăng']),
+    radar_scores: {
+      fund: v.drating ? v.drating.fundamental : 76,
+      val: v.drating ? v.drating.valuation : 78,
+      tech: v.drating ? v.drating.technical : 72,
+      growth: (d.factors && d.factors.find(f => f.t && f.t.includes('Tăng trưởng'))) ? d.factors.find(f => f.t && f.t.includes('Tăng trưởng')).s : (t === 'FPT' ? 92 : t === 'HPG' ? 88 : t === 'MSB' ? 85 : 75),
+      money: v.drating && v.drating.money_flow ? (v.drating.money_flow.includes('Rất') ? 95 : v.drating.money_flow.includes('Tích') ? 82 : v.drating.money_flow.includes('Ổn') ? 74 : 65) : 75
+    }
   };
 
   CMP_MCP_CACHE[t] = res;
@@ -7253,6 +7268,84 @@ function renderCmpSwotView(T) {
   const bestUpside = [...stocks].sort((a,b) => b.upside - a.upside)[0];
   const bestDr = [...stocks].sort((a,b) => b.dr_score - a.dr_score)[0];
 
+  const colors = ['#38bdf8', '#f97316', '#22c55e', '#a855f7', '#eab308'];
+
+  // Radar chart computation
+  const axes = [
+    { label: 'Cơ bản', key: 'fund', fullName: 'Sức mạnh Cơ bản' },
+    { label: 'Tăng trưởng', key: 'growth', fullName: 'Tốc độ Tăng trưởng' },
+    { label: 'Dòng tiền', key: 'money', fullName: 'Sức mạnh Dòng tiền' },
+    { label: 'Định giá', key: 'val', fullName: 'Định giá Hấp dẫn' },
+    { label: 'Kỹ thuật', key: 'tech', fullName: 'Xu hướng Kỹ thuật' }
+  ];
+
+  const cx = 220, cy = 190, R = 130;
+  const numAxes = axes.length;
+  const angleStep = (Math.PI * 2) / numAxes;
+
+  // Grid levels 20, 40, 60, 80, 100
+  const levels = [20, 40, 60, 80, 100];
+  const gridPolys = levels.map(lvl => {
+    const r = R * (lvl / 100);
+    const pts = axes.map((_, i) => {
+      const a = -Math.PI / 2 + i * angleStep;
+      return `${(cx + r * Math.cos(a)).toFixed(1)},${(cy + r * Math.sin(a)).toFixed(1)}`;
+    }).join(' ');
+    return `<polygon points="${pts}" fill="${lvl === 100 ? 'var(--card-sub)' : 'none'}" stroke="var(--line2)" stroke-width="${lvl === 100 ? '1.5' : '1'}" stroke-dasharray="${lvl === 100 ? 'none' : '3,3'}"/>
+    <text x="${cx + 4}" y="${(cy - r + 3).toFixed(1)}" fill="var(--ink3)" font-size="9" font-family="monospace">${lvl}</text>`;
+  }).join('');
+
+  // Axis lines and labels
+  const axisLines = axes.map((ax, i) => {
+    const a = -Math.PI / 2 + i * angleStep;
+    const xEnd = cx + R * Math.cos(a);
+    const yEnd = cy + R * Math.sin(a);
+    const labelR = R + 24;
+    const xLab = cx + labelR * Math.cos(a);
+    const yLab = cy + labelR * Math.sin(a);
+    const anchor = i === 0 ? 'middle' : Math.cos(a) > 0.1 ? 'start' : Math.cos(a) < -0.1 ? 'end' : 'middle';
+    return `<line x1="${cx}" y1="${cy}" x2="${xEnd.toFixed(1)}" y2="${yEnd.toFixed(1)}" stroke="var(--line)" stroke-width="1.2"/>
+    <text x="${xLab.toFixed(1)}" y="${(yLab + 4).toFixed(1)}" text-anchor="${anchor}" fill="var(--ink)" font-size="11" font-weight="600">${ax.label}</text>`;
+  }).join('');
+
+  // Stock polygons and dots
+  const stockPolygons = stocks.map((p, idx) => {
+    const col = colors[idx % colors.length];
+    const scores = p.radar_scores || { fund: 75, growth: 75, money: 75, val: 75, tech: 75 };
+    const ptsArr = axes.map((ax, i) => {
+      const sc = Math.max(10, Math.min(100, scores[ax.key] || 70));
+      const r = R * (sc / 100);
+      const a = -Math.PI / 2 + i * angleStep;
+      return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), sc };
+    });
+    const ptsStr = ptsArr.map(pt => `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`).join(' ');
+    const dots = ptsArr.map(pt => `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="4" fill="${col}" stroke="var(--card-bg)" stroke-width="1.5"/>`).join('');
+    return `<g>
+      <polygon points="${ptsStr}" fill="${col}" fill-opacity="0.18" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>
+      ${dots}
+    </g>`;
+  }).join('');
+
+  const radarLegend = stocks.map((p, idx) => {
+    const col = colors[idx % colors.length];
+    return `<div style="display:flex;align-items:center;gap:6px">
+      <span style="width:12px;height:12px;border-radius:3px;background:${col}"></span>
+      <b style="color:var(--ink)">${p.sym}</b>
+      <span style="font-size:12px;color:var(--ink3)">(${p.dr_score}★)</span>
+    </div>`;
+  }).join('');
+
+  const radarTableRows = axes.map(ax => {
+    return `<tr>
+      <td style="font-weight:500">${ax.fullName}</td>
+      ${stocks.map((p, idx) => {
+        const sc = p.radar_scores ? p.radar_scores[ax.key] : 75;
+        const col = colors[idx % colors.length];
+        return `<td style="font-family:var(--mono);font-weight:600;color:${col}">${sc} / 100</td>`;
+      }).join('')}
+    </tr>`;
+  }).join('');
+
   const cardsHtml = stocks.map(p => {
     return `<div class="cmp-swot-card">
       <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line2);padding-bottom:8px">
@@ -7297,6 +7390,45 @@ function renderCmpSwotView(T) {
           <div style="color:var(--ink3);font-size:11px">Điểm D-Rating cao nhất</div>
           <div style="font-size:15px;font-weight:700;color:#d97706;margin:2px 0">${bestDr.sym} (${bestDr.dr_score}★)</div>
           <span class="cmp-lead-badge">Top 1 D-Rating</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RADAR SPIDER CHART -->
+    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:20px;margin-bottom:20px;box-shadow:var(--card-shadow)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--ink)">🕸️ BIỂU ĐỒ RADAR TƯƠNG QUAN 5 TRỤ CỘT SỨC MẠNH</div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:2px">Đánh giá đa chiều chuẩn hóa 0–100 từ VNDIRECT D-Rating &amp; DNSE Core</div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12px">${radarLegend}</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:24px;align-items:center">
+        <div style="display:flex;justify-content:center;align-items:center;overflow:hidden">
+          <svg viewBox="0 0 440 380" style="width:100%;max-width:440px;height:auto">
+            ${gridPolys}
+            ${axisLines}
+            ${stockPolygons}
+          </svg>
+        </div>
+
+        <div class="tscroll">
+          <table class="t cmp" style="width:100%">
+            <thead>
+              <tr>
+                <th>Trụ cột đánh giá</th>
+                ${stocks.map((p, idx) => `<th style="color:${colors[idx % colors.length]}">${p.sym}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${radarTableRows}
+              <tr style="border-top:2px solid var(--line)">
+                <td style="font-weight:700">D-Rating Tổng hợp</td>
+                ${stocks.map((p, idx) => `<td style="font-weight:700;color:${colors[idx % colors.length]}">${p.dr_score}★ (${p.rec.split(' ')[0]})</td>`).join('')}
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -13468,6 +13600,8 @@ const DNSE_STOCKS_DB = {
       val: [
         ['EPS (TTM)', '2.096'],
         ['P/E (TTM)', '6,80'],
+        ['P/B (TTM)', '1,08'],
+        ['ROE (TTM)', '14,8%'],
         ['TT Doanh thu (TTM)', '+12,4%', 'up'],
         ['TT Lợi nhuận (TTM)', '+8,6%', 'up']
       ],

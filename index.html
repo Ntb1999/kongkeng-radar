@@ -214,13 +214,14 @@ table.t{width:100%;border-collapse:collapse;font-size:12px;line-height:16px}
 .stock-h{display:flex;align-items:center;justify-content:flex-start;align-self:stretch;gap:24px;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--bg)}
 .logo-msb{width:42px;height:42px;border-radius:50%;overflow:hidden;flex:none;background:var(--bg);box-shadow:inset 0 0 0 1px var(--line)}
 .logo-msb img{width:42px;height:42px;display:block}
-.sym-block{display:flex;flex-direction:column;gap:4px;flex:none;min-width:340px}
+.sym-block{display:flex;flex-direction:column;gap:4px;flex:none;width:380px;min-width:380px;max-width:380px}
 .sym{display:flex;align-items:center;gap:8px}
 .sym h1{margin:0;font-size:22px;font-weight:700;letter-spacing:0;line-height:28px}
 .sym .dd{display:flex;align-items:center;gap:4px;cursor:pointer;position:relative}
 .sym .dd svg{width:16px;height:16px}
-.sub-l{display:flex;align-items:center;gap:12px;color:var(--ink2);font-size:13.5px;line-height:20px;white-space:nowrap}
-.sub-l span+span{color:var(--ink3)}
+.sub-l{display:flex;align-items:center;gap:10px;color:var(--ink2);font-size:13.5px;line-height:20px;white-space:nowrap;overflow:hidden}
+.sub-l span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 auto;min-width:0}
+.sub-l span+span{color:var(--ink3);flex:none;white-space:nowrap}
 .sub-l i{width:1px;height:11px;background:var(--line2);flex:none}
 .follow{height:28px;padding:2px 12px 2px 6px;border:1px solid var(--line2);border-radius:9999px;display:inline-flex;align-items:center;gap:2px;font-size:12px;line-height:16px;font-weight:500;background:var(--hover);margin-left:8px}
 .follow svg{width:14px;height:14px;margin-right:2px}
@@ -3297,9 +3298,9 @@ const UNI = [
     "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP",
     "Bất động sản KCN",
     "HOSE",
-    25.0,
-    0.0,
-    3420,
+    38.3,
+    -0.85,
+    447,
     [
       76,
       75,
@@ -4139,14 +4140,14 @@ const ALL = [
     "BCM",
     "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP",
     "HOSE",
-    25000,
-    0.0,
-    "3.42 M",
-    85.5,
-    69.5,
-    28.5,
-    877,
-    3.1,
+    38300,
+    -2.17,
+    "447.1 K",
+    17.12,
+    39.64,
+    18.95,
+    2050,
+    1.85,
     "Bất động sản KCN"
   ],
   [
@@ -5268,6 +5269,12 @@ function getStockValuationData() {
     percentile = '52%';
     evEbitda = '12,80';
     ps = '1,15';
+  } else if (sym === 'BCM' || ind.includes('bất động sản') || ind.includes('kcn')) {
+    indPb = 1.95;
+    indPe = 16.50;
+    percentile = '38%';
+    evEbitda = '14,50';
+    ps = '4,20';
   } else if (ind.includes('ngân hàng')) {
     indPb = 1.62;
     indPe = 11.25;
@@ -5807,7 +5814,7 @@ function stockHeader() {
     <div class="sym-block">
       <div class="sym"><span class="dd" data-act="symmenu"><h1>${STOCK.sym}</h1>${I.chev}</span><span class="tg">${STOCK.ex}</span>
         <button class="follow ${f ? 'on' : ''}" data-act="follow" aria-haspopup="menu" data-tip="${typeof wlPickTip === 'function' ? esc(wlPickTip(STOCK.sym)) : ''}">${f ? I.bmf + 'Đang theo dõi' : I.bm + 'Theo dõi'}</button></div>
-      <div class="sub-l"><span>${STOCK.name}</span><i></i><span>Ngành: ${STOCK.ind}</span></div>
+      <div class="sub-l"><span title="${STOCK.name}">${STOCK.name}</span><i></i><span>Ngành: ${STOCK.ind}</span></div>
     </div>
     <div class="price-b">
       <div class="p ${chgClass}" id="c360-live-price">${fmtVN(curPrice, 0)}</div>
@@ -5865,11 +5872,11 @@ function stockHeader() {
         <div class="hero-claude-wrap">
           <div class="m4">
             <div>
-              ${cell('ĐỊNH GIÁ &amp; LỢI NHUẬN', m.val)}
+              ${cell('ĐỊNH GIÁ &amp; LỢI NHUẬN', m.val ? m.val.slice(0, 4) : [])}
               ${cell('THANH KHOẢN', m.liq)}
             </div>
             <div>
-              ${cell('QUY MÔ &amp; SỞ HỮU', m.size)}
+              ${cell('QUY MÔ &amp; SỞ HỮU', m.size ? m.size.slice(0, 4) : [])}
               ${cell('NĐT NƯỚC NGOÀI', m.frn)}
             </div>
           </div>
@@ -10127,80 +10134,70 @@ const VN30_DATA_FEED = {
     "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP",
     "ex": "HOSE",
     "ind": "Bất động sản KCN",
-    "price": 25000,
-    "ref": 25000,
-    "chg": 0,
-    "pct": 0.0,
-    "vol": 3420000,
-    "val_bil": 85.5,
+    "price": 38300,
+    "ref": 39150,
+    "chg": -850,
+    "pct": -2.17,
+    "vol": 447100,
+    "val_bil": 17.12,
     "metrics": {
       "liq": [
         [
           "KLGD",
-          "3.420.000 CP"
+          "447.100 CP"
         ],
         [
           "GTGD",
-          "85,50 tỷ đồng"
+          "17,12 tỷ đồng"
         ]
       ],
       "frn": [
         [
           "Khối lượng ròng",
-          "+150.000",
-          "up"
+          "-38.500",
+          "down"
         ],
         [
           "Giá trị ròng",
-          "+3.750 triệu",
-          "up"
+          "-1.480 triệu",
+          "down"
         ],
         [
           "Room ngoại",
-          "50.000.000 CP"
+          "495.200.000 CP"
         ]
       ],
       "val": [
         [
           "EPS (TTM)",
-          "877 đ"
+          "2.050 đ"
         ],
         [
           "P/E (TTM)",
-          "28,50 lần"
+          "18,95 lần"
         ],
         [
           "P/B (TTM)",
-          "3,10 lần"
+          "1,85 lần"
         ],
         [
           "ROE (TTM)",
-          "11,2%",
-          "up"
-        ],
-        [
-          "Biên LN ròng",
-          "14,2%",
-          "up"
-        ],
-        [
-          "Tỷ suất cổ tức",
-          "4,5%",
+          "10,0%",
           "up"
         ]
       ],
       "size": [
         [
           "Vốn hoá",
-          "69,50 nghìn tỷ"
+          "39,64 nghìn tỷ"
         ],
         [
           "Vốn điều lệ",
-          "45,18 nghìn tỷ"
+          "10,35 nghìn tỷ"
         ],
         [
           "VCSH",
-          "59,07 nghìn tỷ"
+          "21,85 nghìn tỷ"
         ],
         [
           "SLCP lưu hành",
@@ -10211,15 +10208,15 @@ const VN30_DATA_FEED = {
     "events": [
       [
         "18/09",
-        "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh"
+        "Becamex IDC lấy ý kiến ĐHĐCĐ về kế hoạch sản xuất kinh doanh & tăng vốn điều lệ"
       ],
       [
         "25/09",
-        "GDKHQ chi trả cổ tức cho cổ đông"
+        "GDKHQ chi trả cổ tức tiền mặt 11% (1.100 đ/CP) cho cổ đông"
       ],
       [
         "02/10",
-        "Ngày đăng ký cuối cùng thực hiện quyền cho cổ đông hiện hữu"
+        "Ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức"
       ],
       [
         "20/10",
@@ -10227,7 +10224,7 @@ const VN30_DATA_FEED = {
       ],
       [
         "12/11",
-        "Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3"
+        "Hội nghị xúc tiến đầu tư FDI và gặp gỡ chuyên viên phân tích quý 3"
       ]
     ]
   },
@@ -13778,6 +13775,65 @@ const DNSE_STOCKS_DB = {
     },
     events: [['18/09', 'Tập đoàn Bảo Việt lấy ý kiến ĐHĐCĐ về kế hoạch phát triển kinh doanh'], ['25/09', 'GDKHQ chi trả cổ tức tiền mặt 10,55% (1.055,1 đ/CP)'], ['02/10', 'Ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức'], ['20/10', 'Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026'], ['12/11', 'Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3/2026']]
   },
+  BCM: {
+    sym: 'BCM', ex: 'HOSE', name: 'Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP', ind: 'Bất động sản KCN',
+    price: 38300, ref: 39150, chg: -850, pct: -2.17, vol: 447100, val_bil: 17.12,
+    metrics: {
+      val: [
+        ['EPS (TTM)', '2.050'],
+        ['P/E (TTM)', '18,95'],
+        ['P/B (TTM)', '1,85'],
+        ['ROE (TTM)', '10,0%'],
+        ['TT Doanh thu (TTM)', '+12,8%', 'up'],
+        ['TT Lợi nhuận (TTM)', '+18,5%', 'up']
+      ],
+      size: [
+        ['Vốn hoá', '39,64 nghìn tỷ'],
+        ['VCSH', '21,85 nghìn tỷ'],
+        ['SLCP đang NY', '1,035 tỷ'],
+        ['SLCP lưu hành', '1,035 tỷ']
+      ],
+      liq: [
+        ['KLGD', '447.100'],
+        ['GTGD', '17,12 tỷ đồng']
+      ],
+      frn: [
+        ['Khối lượng ròng', '-38.500', 'down'],
+        ['Giá trị ròng', '-1.480 triệu', 'down'],
+        ['Room', '495.200.000']
+      ]
+    },
+    factors: [
+      { t: 'Vị thế KCN & Quỹ đất', w: 25, s: 92, lb: 'RẤT TÍCH CỰC', b: ['Quỹ đất KCN > 10.000 ha lớn nhất Việt Nam', 'Thủ phủ công nghiệp Bình Dương & Vùng KTTĐ phía Nam', 'Liên doanh VSIP mang lại lợi nhuận và cổ tức bền vững'], n: 'Vị thế thống lĩnh thị trường bất động sản công nghiệp.' },
+      { t: 'Tăng trưởng cho thuê', w: 20, s: 78, lb: 'TÍCH CỰC', b: ['Dòng vốn FDI bán dẫn và công nghệ cao giải ngân mạnh', 'Tỷ lệ lấp đầy các KCN hiện hữu đạt trên 88%', 'Doanh thu cho thuê đất KCN và dịch vụ đô thị tăng trưởng'], n: 'Tốc độ cho thuê đất thương phẩm và dịch vụ KCN.' },
+      { t: 'Định giá P/B & P/E', w: 25, s: 75, lb: 'TÍCH CỰC', b: ['P/B 1,85 lần chiết khấu sâu so với lịch sử 5 năm', 'P/E 18,95 lần phản ánh vùng tích lũy giá trị', 'Tỷ suất cổ tức tiền mặt duy trì 2,87% (1.100 đ/CP)'], n: 'Mức định giá so với giá trị tài sản ròng RNAV.' },
+      { t: 'Sức mạnh dòng tiền', w: 15, s: 80, lb: 'TÍCH CỰC', b: ['Dòng tiền ổn định từ phí hạ tầng và dịch vụ tiện ích KCN', 'Doanh thu tài chính từ cổ tức liên doanh liên kết', 'Khả năng thanh toán nợ vay được đảm bảo'], n: 'Độ vững mạnh của dòng tiền hoạt động.' },
+      { t: 'Rủi ro tài chính & Pháp lý', w: 15, s: 45, lb: 'TRUNG TÍNH', b: ['Quy mô đòn bẩy tài chính để tài trợ các đại dự án KCN mới', 'Tiến độ hoàn thiện pháp lý và thủ tục giải phóng mặt bằng', 'Biến động chu kỳ xuất khẩu và dòng vốn FDI toàn cầu'], n: 'Mức độ rủi ro đòn bẩy và pháp lý dự án.' }
+    ],
+    highlights: {
+      pos: ['Nhà phát triển bất động sản khu công nghiệp số 1 Việt Nam với tổng quỹ đất KCN và đô thị vượt 10.000 ha', 'Đối tác chiến lược hàng đầu của các tập đoàn FDI đa quốc gia (Mỹ, Nhật Bản, Hàn Quốc, Singapore, Lego, Pandora...)', 'Liên doanh VSIP (Becamex - Sembcorp) tạo động lực lợi nhuận ổn định và tỷ suất sinh lời vượt trội', 'Mức định giá P/B 1,85 lần và P/E 18,95 lần đã chiết khấu sâu về vùng đáy định giá lịch sử 5 năm'],
+      neg: ['Áp lực nợ vay và chi phí lãi vay trong giai đoạn tập trung vốn giải phóng mặt bằng và đầu tư hạ tầng', 'Tiến độ cấp phép và hoàn thiện pháp lý các dự án khu đô thị mới cần thêm thời gian để ghi nhận doanh thu', 'Tốc độ tăng trưởng phụ thuộc vào tiến độ giải ngân vốn đầu tư trực tiếp nước ngoài (FDI) tại Việt Nam'],
+      cat: ['Đẩy nhanh tiến độ triển khai các KCN quy mô lớn: KCN Cây Trường (700 ha), Bàu Bàng mở rộng và VSIP 3 giai đoạn 2', 'Đề án tái cơ cấu vốn nhà nước, tăng vốn điều lệ và kế hoạch IPO một số công ty thành viên tạo dòng tiền dồi dào', 'Chính sách phát triển hạ tầng kết nối vùng Đông Nam Bộ (Vành đai 3, Vành đai 4, cao tốc TP.HCM - Thủ Dầu Một - Chơn Thành)']
+    },
+    changes: [['Doanh thu thuần', 12.8, '%'], ['Lợi nhuận gộp KCN', 18.5, '%'], ['Tỷ lệ lấp đầy KCN', 88.5, '%'], ['Diện tích cho thuê mới', 125, 'ha'], ['Dòng tiền HĐKD', 15.6, '%'], ['ROE (TTM)', 10.0, '%']],
+    radar: { axes: ['Quy mô quỹ đất', 'Sinh lời KCN', 'Thu hút FDI', 'Vị thế thương hiệu', 'Định giá P/B', 'Hạ tầng kết nối'], current: [95, 78, 92, 90, 75, 88], ind: [72, 70, 75, 71, 68, 70] },
+    position: [['Quỹ đất KCN', '>10.000 ha', 'Top 1'], ['Vốn hoá ngành BĐS', '39.640 tỷ', 'Top 2'], ['Thị phần KCN Bình Dương', '45,2%', 'Top 1'], ['P/B (MRQ)', '1,85x', 'Hấp dẫn'], ['Tỷ suất cổ tức', '2,87%', 'Ổn định'], ['Tỷ lệ lấp đầy', '88,5%', 'Rất cao']],
+    perf: [['1 tuần', -2.17, -0.85, 39150, 38000], ['1 tháng', -9.67, 3.12, 42500, 37800], ['3 tháng', -23.86, 8.40, 50200, 36500], ['6 tháng', -30.99, 18.20, 56500, 36500], ['52 tuần', -26.40, 24.50, 68500, 36500], ['Từ đầu năm', -26.10, 22.80, 68500, 36500]],
+    profile: {
+      basic: [['Mã chứng khoán', 'BCM'], ['Mã ngành ICB', '8633 · Bất động sản khu công nghiệp'], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '1976'], ['Vốn điều lệ', '10,35 nghìn tỷ đồng'], ['Số lượng nhân sự', '3.040'], ['Quỹ đất KCN', '> 10.000 ha'], ['Liên doanh tiêu biểu', 'VSIP (49%)'], ['Đại diện pháp luật', 'Nguyễn Văn Hùng']],
+      listing: [['Ngày niêm yết', '31/08/2020'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '30.000'], ['P/E (TTM)', '18,95 lần'], ['P/B (TTM)', '1,85 lần'], ['KL niêm yết', '1.035.000.000 CP'], ['KL lưu hành', '1.035.000.000 CP']],
+      intro: 'Tổng Công ty Đầu tư và Phát triển Công nghiệp – CTCP (Becamex IDC, mã BCM) tiền thân là Công ty Thương nghiệp Tổng hợp Bến Cát được thành lập từ năm 1976. Becamex IDC là nhà phát triển bất động sản công nghiệp và hạ tầng đô thị tiên phong tại Việt Nam, sở hữu hệ thống các khu công nghiệp trọng điểm như KCN Mỹ Phước, Bàu Bàng và đặc biệt là chuỗi KCN Việt Nam - Singapore (VSIP).',
+      miles: [['1976', 'Thành lập Công ty Thương nghiệp Tổng hợp Bến Cát'], ['1996', 'Khởi công xây dựng KCN Việt Nam - Singapore (VSIP 1) hợp tác cùng Sembcorp'], ['2018', 'Cổ phần hóa thành công Becamex IDC và giao dịch trên UPCoM'], ['31/08/2020', 'Chính thức chuyển niêm yết sang sàn HOSE'], ['2026', 'Tiên phong phát triển KCN thông minh, KCN sinh thái và trung tâm logistics xanh thế hệ mới']],
+      leaders: [['Nguyễn Văn Hùng', 'Chủ tịch HĐQT'], ['Phạm Ngọc Thuận', 'Tổng Giám đốc'], ['Nguyễn Hoàn Vũ', 'Phó TGĐ'], ['Trịnh Thanh Mai', 'Trưởng BKS'], ['Nguyễn Thanh Nhã', 'Kế toán trưởng']],
+      subs: [['CTCP Phát triển Hạ tầng Kỹ thuật (Becamex IJC)', '49,8%', 'Hạ tầng & Đô thị'], ['CTCP Kinh doanh và Phát triển Bình Dương (TDC)', '60,7%', 'Kinh doanh BĐS'], ['Công ty Liên doanh TNHH KCN Việt Nam - Singapore (VSIP)', '49,0%', 'Khu công nghiệp'], ['CTCP Bệnh viện Quốc tế Becamex', '100%', 'Dịch vụ y tế'], ['CTCP Nước - Môi trường Bình Dương (Biwase)', '15,6%', 'Cấp thoát nước']]
+    },
+    peers: {
+      'Tổng quan': [['Doanh nghiệp', 'Vốn hoá', 'P/E', 'P/B', 'ROE', 'Quỹ đất KCN', 'Tỷ suất Cổ tức'], [['BCM', '39.640 tỷ', '18,95', '1,85', '10,0%', '>10.000 ha', '2,87%'], ['KBC', '21.500 tỷ', '16,20', '1,42', '9,5%', '5.800 ha', '0,00%'], ['IDC', '17.800 tỷ', '10,40', '2,65', '24,5%', '3.300 ha', '5,50%'], ['SZC', '6.850 tỷ', '14,80', '2,10', '16,2%', '2.287 ha', '3,20%'], ['VGC', '20.200 tỷ', '15,50', '2,05', '14,8%', '4.000 ha', '3,80%']]],
+      'Biến động giá': [['Doanh nghiệp', '1 tuần', '1 tháng', '3 tháng', 'Từ đầu năm', '1 năm'], [['BCM', '−2,17%', '−9,67%', '−23,86%', '−26,10%', '−26,40%'], ['KBC', '+1,20%', '+4,50%', '−2,80%', '+8,40%', '+12,50%'], ['IDC', '+0,80%', '+2,10%', '+6,40%', '+18,20%', '+24,80%'], ['SZC', '+2,40%', '+5,80%', '+3,20%', '+15,60%', '+22,10%'], ['VGC', '−0,50%', '+1,20%', '−4,50%', '+9,80%', '+14,20%']]],
+      'Định giá': [['Doanh nghiệp', 'P/E', 'P/B', 'P/S', 'EV/EBITDA', 'Tỷ suất cổ tức'], [['BCM', '18,95', '1,85', '5,70', '19,66', '2,87%'], ['KBC', '16,20', '1,42', '4,20', '14,50', '0,00%'], ['IDC', '10,40', '2,65', '2,10', '8,90', '5,50%'], ['SZC', '14,80', '2,10', '4,50', '12,80', '3,20%'], ['VGC', '15,50', '2,05', '1,45', '11,20', '3,80%']]]
+    },
+    events: [['18/09', 'Becamex IDC lấy ý kiến ĐHĐCĐ về phương án phát hành tăng vốn điều lệ'], ['25/09', 'GDKHQ chi trả cổ tức tiền mặt tỷ lệ 11% (1.100 đ/CP)'], ['02/10', 'Ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức'], ['20/10', 'Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026'], ['12/11', 'Hội nghị xúc tiến đầu tư và ký kết biên bản ghi nhớ hợp tác FDI tại KCN Cây Trường']]
+  },
   MSB: {
     sym: 'MSB', ex: 'HOSE', name: 'Ngân hàng TMCP Hàng hải Việt Nam', ind: 'Ngân hàng',
     price: 14600, ref: 14750, chg: -150, pct: -1.02, vol: 21380000, val_bil: 312.15,
@@ -14293,20 +14349,142 @@ const DNSE_STOCKS_DB = {
 /* Auto-Synthesizer Fallback for ANY OTHER symbol in UNI */
 function synthesizeDnseMcpData(sym) {
   sym = sym.toUpperCase().trim();
-  if (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym]) {
-    return VN30_DATA_FEED[sym];
-  }
+  const vf = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym]) ? VN30_DATA_FEED[sym] : null;
   const u = (typeof UNI !== 'undefined' && Array.isArray(UNI)) ? UNI.find(x => x.sym === sym) : null;
-  const price = u ? Math.round(u.c * 1000) : 25000;
-  const chg = u ? Math.round(u.chg * 1000) : 200;
-  const pct = u ? u.pct : 0.8;
-  const ind = u ? u.ind : 'Thương mại & Dịch vụ';
-  const name = u ? (sym + ' · Doanh nghiệp niêm yết ' + ind) : ('Công ty Cổ phần ' + sym);
-  const pe = u ? u.pe.toFixed(2) : '12.50';
-  const pb = u ? u.pb.toFixed(2) : '1.45';
-  const roe = u ? u.roe.toFixed(1) + '%' : '15.2%';
-  const cap = u ? u.cap + ' nghìn tỷ' : '15,0 nghìn tỷ';
-  const eps = Math.round(price / (parseFloat(pe) || 12)) + ' đ';
+  const price = vf ? vf.price : (u ? Math.round(u.c * 1000) : 25000);
+  const chg = vf ? vf.chg : (u ? Math.round(u.chg * 1000) : 200);
+  const pct = vf ? vf.pct : (u ? u.pct : 0.8);
+  const ind = vf ? vf.ind : (u ? u.ind : 'Thương mại & Dịch vụ');
+  const name = vf ? vf.name : (u ? (sym + ' · Doanh nghiệp niêm yết ' + ind) : ('Công ty Cổ phần ' + sym));
+  const pe = u ? u.pe.toFixed(2) : (vf && vf.metrics?.val?.find(x => x[0].includes('P/E')) ? vf.metrics.val.find(x => x[0].includes('P/E'))[1].replace(/[^\d.,]/g, '').replace(',', '.') : '14.50');
+  const pb = u ? u.pb.toFixed(2) : (vf && vf.metrics?.val?.find(x => x[0].includes('P/B')) ? vf.metrics.val.find(x => x[0].includes('P/B'))[1].replace(/[^\d.,]/g, '').replace(',', '.') : '1.80');
+  const roe = u ? u.roe.toFixed(1) + '%' : (vf && vf.metrics?.val?.find(x => x[0].includes('ROE')) ? vf.metrics.val.find(x => x[0].includes('ROE'))[1] : '14.2%');
+  const cap = u ? u.cap + ' nghìn tỷ' : (vf && vf.metrics?.size?.find(x => x[0].includes('Vốn hoá')) ? vf.metrics.size.find(x => x[0].includes('Vốn hoá'))[1] : '25,0 nghìn tỷ');
+  const eps = vf && vf.metrics?.val?.find(x => x[0].includes('EPS')) ? vf.metrics.val.find(x => x[0].includes('EPS'))[1] : (Math.round(price / (parseFloat(pe) || 12)) + ' đ');
+
+  // Sector-smart highlights generator
+  const indLower = (ind || '').toLowerCase();
+  let pos = [], neg = [], cat = [];
+  if (indLower.includes('ngân hàng') || indLower.includes('tài chính')) {
+    pos = [
+      `Tăng trưởng tín dụng ổn định, kiểm soát tốt chi phí vốn và mở rộng tệp khách hàng cá nhân & SME`,
+      `Chất lượng tài sản được kiểm soát lành mạnh, tỷ lệ nợ xấu (NPL) duy trì trong ngưỡng an toàn`,
+      `Biên lãi thuần (NIM) duy trì ổn định nhờ tối ưu hóa cơ cấu vốn và tăng trưởng tiền gửi không kỳ hạn (CASA)`,
+      `Đẩy mạnh số hóa dịch vụ ngân hàng, tăng thu nhập ngoài lãi từ phí dịch vụ và thanh toán điện tử`
+    ];
+    neg = [
+      `Áp lực chi phí vốn trong bối cảnh mặt bằng lãi suất liên ngân hàng có biến động`,
+      `Rủi ro tín dụng tiềm ẩn từ nhóm khách hàng doanh nghiệp xây dựng và bất động sản`,
+      `Cạnh tranh huy động vốn và CASA gia tăng giữa các ngân hàng thương mại cổ phần`
+    ];
+    cat = [
+      `Tăng trưởng tín dụng trong nửa cuối năm theo hạn mức bổ sung từ Ngân hàng Nhà nước`,
+      `Mở rộng hệ sinh thái số và gia tăng đóng góp doanh thu từ bán chéo dịch vụ bảo hiểm & ngoại tệ`,
+      `Khả năng hoàn nhập dự phòng rủi ro khi thu hồi và xử lý thành công các khoản nợ tồn đọng`
+    ];
+  } else if (indLower.includes('bất động sản') || indLower.includes('kcn') || indLower.includes('xây dựng')) {
+    pos = [
+      `Sở hữu quỹ đất quy mô lớn tại các vị trí chiến lược, hưởng lợi từ tốc độ phát triển hạ tầng giao thông`,
+      `Hưởng lợi mạnh mẽ từ làn sóng dòng vốn FDI thế hệ mới và nhu cầu thuê mặt bằng khu công nghiệp`,
+      `Tỷ lệ lấp đầy các dự án hiện hữu duy trì ở mức cao trên 85%, tạo dòng tiền cho thuê ổn định`,
+      `Định giá P/B ${pb}x và P/E ${pe}x ở vùng tích lũy hấp dẫn so với tiềm năng quỹ đất thương phẩm`
+    ];
+    neg = [
+      `Tiến độ pháp lý và giải phóng mặt bằng các dự án mới đòi hỏi thời gian hoàn tất`,
+      `Chi phí vốn và lãi vay trong giai đoạn đẩy mạnh đầu tư cơ sở hạ tầng khu công nghiệp / khu đô thị`,
+      `Chu kỳ thị trường bất động sản và tốc độ giải ngân vốn đầu tư nước ngoài`
+    ];
+    cat = [
+      `Đưa vào vận hành và cho thuê các phân kỳ KCN mới trong năm 2026`,
+      `Kế hoạch chuyển nhượng quỹ đất thương phẩm và ghi nhận lợi nhuận đột biến`,
+      `Chính sách tháo gỡ pháp lý bất động sản và các quy hoạch vùng động lực kinh tế mới`
+    ];
+  } else if (indLower.includes('thép') || indLower.includes('kim loại') || indLower.includes('vật liệu')) {
+    pos = [
+      `Vị thế dẫn đầu thị phần, biên lợi nhuận gộp phục hồi nhờ tối ưu chuỗi cung ứng`,
+      `Nhu cầu tiêu thụ thép xây dựng và công nghiệp tăng trưởng theo tiến độ giải ngân đầu tư công`,
+      `Công nghệ lò cao hiện đại giúp tối ưu giá thành sản xuất so với các đối thủ cùng ngành`,
+      `Cơ cấu tài chính lành mạnh, tỷ lệ đòn bẩy duy trì trong ngưỡng an toàn`
+    ];
+    neg = [
+      `Biến động giá nguyên liệu đầu vào (quặng sắt, than mỡ) trên thị trường thế giới`,
+      `Áp lực cạnh tranh từ các sản phẩm thép nhập khẩu giá rẻ`,
+      `Tốc độ phục hồi của thị trường bất động sản dân dụng tác động đến nhu cầu tiêu thụ`
+    ];
+    cat = [
+      `Đưa vào vận hành các dây chuyền mở rộng công suất sản phẩm giá trị gia tăng cao (HRC, tôn mạ)`,
+      `Biện pháp tự vệ thương mại bảo vệ ngành thép trong nước được áp dụng`,
+      `Đẩy mạnh xuất khẩu vào các thị trường lớn (Bắc Mỹ, Châu Âu, Đông Nam Á)`
+    ];
+  } else if (indLower.includes('bảo hiểm')) {
+    pos = [
+      `Vị thế hàng đầu thị trường bảo hiểm với mạng lưới chi nhánh và đại lý phủ khắp 63 tỉnh thành`,
+      `Danh mục đầu tư tiền gửi và trái phiếu chính phủ an toàn mang lại dòng tiền tài chính vững chắc`,
+      `Thị phần phí bảo hiểm gốc duy trì đà tăng trưởng ổn định trong cả mảng nhân thọ và phi nhân thọ`,
+      `Cơ cấu vốn và khả năng thanh toán an toàn, chi trả cổ tức tiền mặt đều đặn cho cổ đông`
+    ];
+    neg = [
+      `Chi bồi thường gia tăng sau các biến cố thiên tai bão lũ bất thường`,
+      `Áp lực cạnh tranh phí bảo hiểm và quản lý chi phí khai thác dịch vụ`,
+      `Lộ trình chuyển đổi chuẩn mực kế toán IFRS 17 đòi hỏi chi phí và thời gian thích ứng`
+    ];
+    cat = [
+      `Khung pháp lý mới hoàn thiện giúp lành mạnh hóa kênh phân phối Bancassurance`,
+      `Mặt bằng lãi suất tiền gửi phục hồi nâng cao lợi suất đầu tư tài chính`,
+      `Chương trình tái cơ cấu và tối ưu hóa hiệu quả hoạt động các công ty thành viên`
+    ];
+  } else if (indLower.includes('công nghệ') || indLower.includes('viễn thông')) {
+    pos = [
+      `Tăng trưởng doanh thu chuyển đổi số và xuất khẩu phần mềm đạt mức hai con số`,
+      `Mở rộng thị trường quốc tế (Nhật Bản, Mỹ, Châu Âu, APAC) với các hợp đồng quy mô lớn`,
+      `Đầu tư chiến lược vào các lĩnh vực công nghệ cao mũi nhọn: Trí tuệ nhân tạo (AI), Cloud, Bán dẫn`,
+      `Nguồn nhân lực công nghệ dồi dào, biên lợi nhuận ròng duy trì ổn định quanh 15-18%`
+    ];
+    neg = [
+      `Biến động tỷ giá hối đoái tại các thị trường trọng điểm (JPY/VND, USD/VND)`,
+      `Chi phí nhân sự chất lượng cao và cạnh tranh nhân tài ngành công nghệ gia tăng`,
+      `Rủi ro chậm lại trong ngân sách chi tiêu CNTT của một số tập đoàn toàn cầu`
+    ];
+    cat = [
+      `Ký kết các hợp đồng cung ứng dịch vụ AI và trung tâm dữ liệu (Data Center) mới`,
+      `Mở rộng hệ sinh thái giáo dục công nghệ đào tạo nguồn nhân lực chất lượng cao`,
+      `Thương vụ M&A chiến lược tại thị trường nước ngoài giúp gia tăng thị phần toàn cầu`
+    ];
+  } else if (indLower.includes('bán lẻ') || indLower.includes('tiêu dùng') || indLower.includes('thực phẩm')) {
+    pos = [
+      `Mạng lưới điểm bán phủ rộng toàn quốc, năng lực chuỗi cung ứng vượt trội`,
+      `Sức mua tiêu dùng nội địa dần phục hồi, doanh thu trên mỗi cửa hàng (SSSG) cải thiện`,
+      `Tối ưu hóa chi phí vận hành, ứng dụng công nghệ trong quản lý tồn kho và logistics`,
+      `Biên lợi nhuận gộp mở rộng nhờ lợi thế quy mô đàm phán với nhà cung cấp`
+    ];
+    neg = [
+      `Cạnh tranh gay gắt từ các chuỗi bán lẻ hiện đại và các sàn thương mại điện tử`,
+      `Chi phí mặt bằng và nhân công bán hàng có xu hướng gia tăng tại các đô thị lớn`,
+      `Tâm lý người tiêu dùng còn thận trọng trước các mặt hàng giá trị lớn`
+    ];
+    cat = [
+      `Đưa chuỗi cửa hàng mới chạm điểm hòa vốn và bắt đầu đóng góp lợi nhuận ròng`,
+      `Mở rộng kênh bán hàng đa kênh (Omnichannel) và dịch vụ giao hàng nhanh`,
+      `Mùa cao điểm mua sắm cuối năm thúc đẩy tăng trưởng doanh số vượt bậc`
+    ];
+  } else {
+    pos = [
+      `Hoạt động sản xuất kinh doanh ổn định trong lĩnh vực ${ind}`,
+      `Hiệu quả sinh lời ROE ${roe} duy trì ở mức tích cực so với mặt bằng chung`,
+      `Vùng định giá P/E ${pe}x và P/B ${pb}x phản ánh sự tích lũy an toàn`,
+      `Nền tảng tài chính lành mạnh, chủ động kiểm soát chi phí hoạt động`
+    ];
+    neg = [
+      `Biến động giá nguyên nhiên liệu đầu vào và chi phí logistics toàn cầu`,
+      `Áp lực cạnh tranh thị phần từ các đối thủ trong nước và nhập khẩu`,
+      `Tốc độ tăng trưởng phụ thuộc vào chu kỳ phục hồi của nền kinh tế chung`
+    ];
+    cat = [
+      `Mở rộng năng lực sản xuất và tối ưu hóa hệ thống kênh phân phối`,
+      `Đẩy mạnh chuyển đổi số và nâng cao biên lợi nhuận hoạt động`,
+      `Chính sách chi trả cổ tức cho cổ đông duy trì đều đặn`
+    ];
+  }
 
   return {
     sym, ex: 'HOSE', name, ind, price, chg, pct,
@@ -14323,11 +14501,7 @@ function synthesizeDnseMcpData(sym) {
       { t: 'Sức khỏe tài chính', w: 15, s: 72, lb: 'TÍCH CỰC', b: ['Thanh khoản cổ phiếu duy trì tốt', 'Khối ngoại quan tâm', 'Dòng tiền HĐKD dương'], n: 'Sức mạnh dòng tiền thị trường.' },
       { t: 'Rủi ro', w: 15, s: 35, lb: 'TRUNG TÍNH', b: ['Biến động chu kỳ kinh tế', 'Áp lực cạnh tranh ngành', 'Chi phí đầu vào'], n: 'Độ an toàn hoạt động kinh doanh.' }
     ],
-    highlights: {
-      pos: [`Hoạt động kinh doanh ổn định trong ngành ${ind}`, `Chỉ số sinh lời ROE ${roe} ở mức tốt so với trung bình`, `Định giá P/E ${pe}x và P/B ${pb}x trong vùng tích lũy`, 'Tăng cường quản trị chi phí và chuyển đổi số'],
-      neg: ['Biến động chi phí nguyên vật liệu và chi phí vốn', 'Áp lực cạnh tranh gia tăng trong cùng phân khúc', 'Tốc độ tăng trưởng doanh thu phụ thuộc chu kỳ ngành'],
-      cat: ['Đẩy mạnh mở rộng thị trường và kênh phân phối mới', 'Kế hoạch nâng cao năng lực sản xuất kinh doanh', 'Chính sách chi trả cổ tức cho cổ đông']
-    },
+    highlights: { pos, neg, cat },
     changes: [['Doanh thu thuần', 14.5, '%'], ['Lợi nhuận sau thuế', 16.2, '%'], ['ROE', parseFloat(roe), '%'], ['P/E (TTM)', parseFloat(pe), 'Lần'], ['P/B (MRQ)', parseFloat(pb), 'Lần'], ['Biên LN ròng', 12.5, '%']],
     radar: { axes: ['Quy mô', 'Sinh lời', 'Tăng trưởng', 'Định giá', 'Thanh khoản', 'Quản trị'], current: [78, 80, 75, 82, 74, 76], ind: [65, 68, 62, 66, 64, 63] },
     position: [['ROE (TTM)', roe, 'Top 30%'], ['P/E (TTM)', pe + ' lần', 'Top 35%'], ['P/B', pb + ' lần', 'Top 40%'], ['Vốn hoá', cap, 'Top ngành'], ['Thanh khoản', 'Tốt', 'Top 30%'], ['Biên LN', '12,5%', 'Top 25%']],
@@ -14516,6 +14690,55 @@ const VND_STOCKS_DB = {
       rank: 1,
       total: 12,
       category: 'Top 1 Doanh thu & Quy mô tài sản ngành Bảo hiểm'
+    }
+  },
+  BCM: {
+    sym: 'BCM',
+    drating: { score: 4.4, stars: '★★★★☆', fundamental: 86, valuation: 80, technical: 72, money_flow: 'Tích lũy' },
+    consensus: {
+      recommendation: 'MUA (BUY)',
+      target_price: 46500,
+      target_price_fmt: '46.500 đ',
+      upside_pct: 21.4,
+      coverage_count: 6,
+      target_range: '42.000 - 48.500 đ'
+    },
+    reports: {
+      title: 'BCM: Quỹ đất KCN dẫn đầu sẵn sàng đón làn sóng FDI thế hệ mới',
+      analyst: 'Lê Hoàng Nam (VNDIRECT Research)',
+      date: '04/10/2026',
+      target_price: '46.500 đ',
+      thesis: 'Quỹ đất KCN > 10.000 ha lớn nhất VN; Hưởng lợi từ KCN Cây Trường và VSIP 3; Định giá P/B 1.85x đã chiết khấu sâu về đáy 5 năm.'
+    },
+    institutional: {
+      foreign_net_10d: '-380.000 CP',
+      prop_net_10d: '+420.000 CP',
+      foreign_ratio: '3,44%',
+      top_funds: ['UBND Tỉnh Bình Dương (95,44%)', 'Dragon Capital', 'VinaCapital']
+    },
+    forward_val: {
+      pe_forward: '16,20 lần',
+      pb_forward: '1,65 lần',
+      ev_ebitda: '17,50 lần',
+      peg_ratio: '1,12',
+      fair_value_dcf: '48.200 đ'
+    },
+    peers_comparison: [
+      { sym: 'KBC', name: 'Đô thị Kinh Bắc', pe: '16.2x', pb: '1.42x', roe: '9.5%', chg: '+1.2%' },
+      { sym: 'IDC', name: 'Tổng Công ty IDICO', pe: '10.4x', pb: '2.65x', roe: '24.5%', chg: '+0.8%' },
+      { sym: 'SZC', name: 'Sonadezi Châu Đức', pe: '14.8x', pb: '2.10x', roe: '16.2%', chg: '+2.4%' },
+      { sym: 'VGC', name: 'Viglacera', pe: '15.5x', pb: '2.05x', roe: '14.8%', chg: '-0.5%' }
+    ],
+    industry_valuation: {
+      ind_pe_median: '15.8x',
+      ind_pb_median: '1.95x',
+      ind_roe_avg: '14.5%',
+      bcm_discount_pct: '-5.1%'
+    },
+    stock_ranking: {
+      rank: 1,
+      total: 18,
+      category: 'Top 1 Quỹ đất KCN & Vị thế đối tác FDI toàn quốc'
     }
   },
   MSB: {
@@ -15811,17 +16034,18 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   sym = sym.replace(/\s*\(DNSE\)/i, '').replace(/\s*\(VND\)/i, '').toUpperCase().trim();
 
   // 1. Get VN30 / DNSE data (deep merge to ensure analytical highlights, factors, peers & radar are always populated)
-  const dnseBase = (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[sym]) ? DNSE_STOCKS_DB[sym] : synthesizeDnseMcpData(sym);
+  const synth = synthesizeDnseMcpData(sym);
+  const dnseBase = (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[sym]) ? DNSE_STOCKS_DB[sym] : synth;
   const vn30Base = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym]) ? VN30_DATA_FEED[sym] : null;
-  const data = Object.assign({}, dnseBase, vn30Base || {});
-  if (!data.factors && dnseBase.factors) data.factors = dnseBase.factors;
-  if (!data.highlights && dnseBase.highlights) data.highlights = dnseBase.highlights;
-  if (!data.changes && dnseBase.changes) data.changes = dnseBase.changes;
-  if (!data.radar && dnseBase.radar) data.radar = dnseBase.radar;
-  if (!data.position && dnseBase.position) data.position = dnseBase.position;
-  if (!data.perf && dnseBase.perf) data.perf = dnseBase.perf;
-  if (!data.profile && dnseBase.profile) data.profile = dnseBase.profile;
-  if (!data.peers && dnseBase.peers) data.peers = dnseBase.peers;
+  const data = Object.assign({}, synth, dnseBase || {}, vn30Base || {});
+  data.factors = (dnseBase && dnseBase.factors) || synth.factors;
+  data.highlights = (dnseBase && dnseBase.highlights) || synth.highlights;
+  data.changes = (dnseBase && dnseBase.changes) || synth.changes;
+  data.radar = (dnseBase && dnseBase.radar) || synth.radar;
+  data.position = (dnseBase && dnseBase.position) || synth.position;
+  data.perf = (dnseBase && dnseBase.perf) || synth.perf;
+  data.profile = (dnseBase && dnseBase.profile) || synth.profile;
+  data.peers = (dnseBase && dnseBase.peers) || synth.peers;
 
   // 2. Get VND data
   const vndData = (typeof VND_STOCKS_DB !== 'undefined' && VND_STOCKS_DB[sym]) ? VND_STOCKS_DB[sym] : synthesizeVndMcpData(sym, data.price, data.ind);
@@ -15925,16 +16149,27 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
       ['Biên LN ròng', '14,6%', '12,8%'],
       ['Tỷ suất cổ tức', '1,38%', '3,80%']
     ];
+  } else if (sym === 'BCM' || (data.ind && (data.ind.toLowerCase().includes('bất động sản') || data.ind.toLowerCase().includes('kcn')))) {
+    VS_IND = [
+      ['P/E (TTM)', '18,95', '16,50'],
+      ['P/B (MRQ)', '1,85', '1,95'],
+      ['EPS (TTM)', '2.050', '2.450'],
+      ['ROE', '10,0%', '12,5%'],
+      ['ROA', '3,57%', '4,20%'],
+      ['Biên LN gộp KCN', '42,5%', '38,0%'],
+      ['Tỷ suất cổ tức', '2,87%', '1,80%']
+    ];
   } else {
     const curVal = (typeof getStockValuationData === 'function') ? getStockValuationData() : null;
+    const isBank = (data.ind && (data.ind.toLowerCase().includes('ngân hàng') || data.ind.toLowerCase().includes('tài chính')));
     VS_IND = [
-      ['P/E (TTM)', curVal ? fmtVN(curVal.peVal, 2) : '7,41', curVal ? fmtVN(curVal.indPe, 2) : '11,25'],
-      ['P/B (MRQ)', curVal ? fmtVN(curVal.pbVal, 2) : '1,08', curVal ? fmtVN(curVal.indPb, 2) : '1,62'],
-      ['EPS (TTM)', (STOCK.metrics?.val?.find(x => x[0].includes('EPS'))?.[1] || '1.923').replace(' đ', ''), '2.640'],
-      ['ROE', (curVal ? curVal.roeVal : '14,8%'), '19,6%'],
-      ['ROA', '2,04%', '1,88%'],
-      ['NIM', '3,92%', '3,64%'],
-      ['Tỷ suất cổ tức', '5,3%', '2,9%']
+      ['P/E (TTM)', curVal ? fmtVN(curVal.peVal, 2) : '14,50', curVal ? fmtVN(curVal.indPe, 2) : '16,20'],
+      ['P/B (MRQ)', curVal ? fmtVN(curVal.pbVal, 2) : '1,80', curVal ? fmtVN(curVal.indPb, 2) : '1,95'],
+      ['EPS (TTM)', (STOCK.metrics?.val?.find(x => x[0].includes('EPS'))?.[1] || '2.150').replace(' đ', ''), '2.450'],
+      ['ROE', (curVal ? curVal.roeVal : '14,2%'), '15,6%'],
+      ['ROA', '3,85%', '4,20%'],
+      [isBank ? 'NIM' : 'Biên LN ròng', isBank ? '3,92%' : '14,5%', isBank ? '3,64%' : '12,8%'],
+      ['Tỷ suất cổ tức', '3,5%', '2,8%']
     ];
   }
 

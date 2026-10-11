@@ -7702,11 +7702,57 @@ function vMarket() {
       </div>
     </div>`;
   } else if (tab === 'leaders') {
+    const leaderMode = S.mktLeaderTab || 'val';
+    const allStocksList = (typeof VN30_DATA_FEED !== 'undefined') ? Object.values(VN30_DATA_FEED) : [];
+
+    const getStockDrating = (sym, price, ind) => {
+      const v = (typeof VND_STOCKS_DB !== 'undefined' && VND_STOCKS_DB[sym])
+        ? VND_STOCKS_DB[sym]
+        : (typeof synthesizeVndMcpData === 'function' ? synthesizeVndMcpData(sym, price, ind) : null);
+      const score = (v && v.drating && v.drating.score) ? v.drating.score : 4.2;
+      const rec = (v && v.consensus && v.consensus.recommendation)
+        ? v.consensus.recommendation
+        : (score >= 4.5 ? 'MUA' : 'KHẢ QUAN');
+      return { score, rec };
+    };
+
+    let displayRows = [];
+    let leaderBadgeTxt = '';
+
+    if (leaderMode === 'gainers') {
+      leaderBadgeTxt = 'Top 10 cổ phiếu Tăng giá mạnh nhất nhóm VN30 (Dẫn dắt đà tăng)';
+      displayRows = [...allStocksList]
+        .sort((a, b) => (b.pct || 0) - (a.pct || 0))
+        .slice(0, 10);
+    } else if (leaderMode === 'losers') {
+      leaderBadgeTxt = 'Top 10 cổ phiếu Giảm giá nhiều nhất nhóm VN30 (Áp lực điều chỉnh)';
+      displayRows = [...allStocksList]
+        .sort((a, b) => (a.pct || 0) - (b.pct || 0))
+        .slice(0, 10);
+    } else if (leaderMode === 'drating') {
+      leaderBadgeTxt = 'Top 10 cổ phiếu Dẫn đầu xếp hạng D-Rating VNDIRECT (4.5★ - 5.0★)';
+      displayRows = [...allStocksList]
+        .map(s => ({ ...s, _dr: getStockDrating(s.sym, s.price, s.ind) }))
+        .sort((a, b) => (b._dr.score - a._dr.score) || ((b.val_bil || 0) - (a.val_bil || 0)))
+        .slice(0, 10);
+    } else {
+      leaderBadgeTxt = 'Top 10 cổ phiếu có Giá trị giao dịch (GTGD) cao nhất toàn thị trường';
+      displayRows = [...allStocksList]
+        .sort((a, b) => (b.val_bil || 0) - (a.val_bil || 0))
+        .slice(0, 10);
+    }
+
     tabContent = `<div style="margin-top:16px">
-      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-        <button class="btn sm ${S.mktLeaderTab === 'val' ? 'pri' : ''}" data-act="mktleadertab" data-v="val">Top Thanh Khoản (GTGD)</button>
-        <button class="btn sm ${S.mktLeaderTab === 'gainers' ? 'pri' : ''}" data-act="mktleadertab" data-v="gainers">Top Tăng Giá (% Gainers)</button>
-        <button class="btn sm ${S.mktLeaderTab === 'drating' ? 'pri' : ''}" data-act="mktleadertab" data-v="drating">Top D-Rating VND (4.5★ - 5.0★)</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn sm ${leaderMode === 'val' ? 'pri' : ''}" data-act="mktleadertab" data-v="val">Top Thanh Khoản (GTGD)</button>
+          <button class="btn sm ${leaderMode === 'gainers' ? 'pri' : ''}" data-act="mktleadertab" data-v="gainers">Top Tăng Giá (% Gainers)</button>
+          <button class="btn sm ${leaderMode === 'losers' ? 'pri' : ''}" data-act="mktleadertab" data-v="losers">Top Giảm Giá (% Losers)</button>
+          <button class="btn sm ${leaderMode === 'drating' ? 'pri' : ''}" data-act="mktleadertab" data-v="drating">Top D-Rating VND (4.5★ - 5.0★)</button>
+        </div>
+        <div style="font-size:12px;color:var(--ink3)">
+          <span>⚡ ${leaderBadgeTxt}</span>
+        </div>
       </div>
 
       <div class="mkt-box" style="padding:0;overflow:hidden">
@@ -7726,28 +7772,25 @@ function vMarket() {
               </tr>
             </thead>
             <tbody>
-              ${[
-                ['FPT', 'Công ty Cổ phần FPT', 'HOSE', '138.50', '+1.84%', '4.82 M', '665.4', '4.8★ MUA'],
-                ['HPG', 'Tập đoàn Hòa Phát', 'HOSE', '26.40', '+2.33%', '24.15 M', '637.5', '4.5★ MUA'],
-                ['MSB', 'Ngân hàng TMCP Hàng hải Việt Nam', 'HOSE', '14.60', '-1.02%', '21.38 M', '312.2', '4.4★ MUA'],
-                ['TCB', 'Ngân hàng Techcombank', 'HOSE', '24.80', '+2.10%', '12.45 M', '308.2', '4.5★ MUA'],
-                ['SSI', 'Chứng khoán SSI', 'HOSE', '32.80', '+1.95%', '9.18 M', '301.1', '4.3★ MUA'],
-                ['VCB', 'Vietcombank', 'HOSE', '92.00', '+1.10%', '2.14 M', '196.8', '4.6★ KHẢ QUAN'],
-                ['MWG', 'Thế Giới Di Động', 'HOSE', '68.20', '+1.65%', '4.52 M', '308.2', '4.3★ MUA'],
-                ['MBB', 'Ngân hàng Quân đội', 'HOSE', '24.10', '+1.25%', '8.75 M', '210.8', '4.6★ MUA'],
-                ['VPB', 'Ngân hàng VPBank', 'HOSE', '19.40', '+0.80%', '11.20 M', '217.2', '4.1★ KHẢ QUAN'],
-                ['VND', 'Chứng khoán VNDIRECT', 'HOSE', '15.20', '+1.35%', '10.50 M', '159.6', '4.0★ KHẢ QUAN']
-              ].map(r => `<tr class="click" data-act="stock" data-v="${r[0]}">
-                <td><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(r[0], 22)}<b style="color:var(--brand)">${r[0]}</b></div></td>
-                <td>${r[1]}</td>
-                <td><span style="font-size:11px;color:var(--ink3)">${r[2]}</span></td>
-                <td class="num" style="text-align:right"><b>${r[3]}</b></td>
-                <td class="num" style="text-align:right;color:${r[4].startsWith('+') ? 'var(--up)' : 'var(--down)'}"><b>${r[4]}</b></td>
-                <td class="num" style="text-align:right;color:var(--ink2)">${r[5]}</td>
-                <td class="num font-mono" style="text-align:right;color:var(--ink)"><b>${r[6]}</b></td>
-                <td><span class="cmp-drating-badge">${r[7]}</span></td>
-                <td style="text-align:center"><button class="btn sm" data-act="stock" data-v="${r[0]}">360 ↗</button></td>
-              </tr>`).join('')}
+              ${displayRows.map(s => {
+                const dr = s._dr || getStockDrating(s.sym, s.price, s.ind);
+                const priceThousand = (s.price / 1000).toFixed(2);
+                const pctStr = (s.pct > 0 ? '+' : '') + Number(s.pct || 0).toFixed(2) + '%';
+                const pctColor = s.pct > 0 ? 'var(--up)' : s.pct < 0 ? 'var(--down)' : 'var(--ink3)';
+                const volStr = (s.vol >= 1e6 ? (s.vol / 1e6).toFixed(2) + ' M' : (s.vol >= 1e3 ? (s.vol / 1e3).toFixed(0) + ' K' : (s.vol || 0)));
+                const valStr = Number(s.val_bil || 0).toFixed(1);
+                return `<tr class="click" data-act="stock" data-v="${s.sym}">
+                  <td><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(s.sym, 22)}<b style="color:var(--brand)">${s.sym}</b></div></td>
+                  <td>${s.name}</td>
+                  <td><span style="font-size:11px;color:var(--ink3)">${s.ex || 'HOSE'}</span></td>
+                  <td class="num font-mono" style="text-align:right"><b>${priceThousand}</b></td>
+                  <td class="num font-mono" style="text-align:right;color:${pctColor}"><b>${pctStr}</b></td>
+                  <td class="num" style="text-align:right;color:var(--ink2)">${volStr}</td>
+                  <td class="num font-mono" style="text-align:right;color:var(--ink)"><b>${valStr}</b></td>
+                  <td><span class="cmp-drating-badge">${dr.score.toFixed(1)}★ ${dr.rec}</span></td>
+                  <td style="text-align:center"><button class="btn sm" data-act="stock" data-v="${s.sym}">360 ↗</button></td>
+                </tr>`;
+              }).join('')}
             </tbody>
           </table>
         </div>

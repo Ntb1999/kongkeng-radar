@@ -3299,7 +3299,7 @@ const UNI = [
     "Bất động sản KCN",
     "HOSE",
     38.3,
-    -0.85,
+    -2.17,
     447,
     [
       76,
@@ -4364,28 +4364,28 @@ const ALL = [
     "PLX",
     "Tập đoàn Xăng dầu Việt Nam (Petrolimex)",
     "HOSE",
-    25000,
-    0.0,
-    "3.42 M",
-    85.5,
-    52.4,
-    16.8,
-    1488,
-    1.95,
+    37350,
+    -0.66,
+    "2.15 M",
+    80.32,
+    48.35,
+    15.43,
+    2420,
+    1.68,
     "Xăng dầu & Năng lượng"
   ],
   [
     "POW",
     "Tổng Công ty Điện lực Dầu khí Việt Nam - CTCP (PV Power)",
     "HOSE",
-    25000,
-    0.0,
-    "3.42 M",
-    85.5,
-    26.2,
-    18.2,
-    1374,
-    0.85,
+    12450,
+    -0.40,
+    "9.42 M",
+    117.28,
+    29.16,
+    15.96,
+    780,
+    0.82,
     "Điện lực"
   ],
   [
@@ -4476,14 +4476,14 @@ const ALL = [
     "TPB",
     "Ngân hàng TMCP Tiên Phong (TPBank)",
     "HOSE",
-    25000,
-    0.0,
-    "3.42 M",
-    85.5,
-    34.3,
-    6.9,
-    3623,
-    1.15,
+    11450,
+    -1.29,
+    "18.54 M",
+    212.28,
+    25.20,
+    5.33,
+    2150,
+    0.98,
     "Ngân hàng"
   ],
   [
@@ -6466,16 +6466,16 @@ function drawForeign() {}
 
 /* ================= C360 TABS ================= */
 function vOverview() {
-  const li = (arr, ic) => `<ul>${arr.map(t => `<li>${ic}<span>${t}</span></li>`).join('')}</ul>`;
+  const li = (arr, ic) => `<ul>${(arr || []).map(t => `<li>${ic}<span>${t}</span></li>`).join('')}</ul>`;
   const valData = getStockValuationData();
   const curScore = (RADAR && RADAR.msb && RADAR.msb.length) ? Math.round(RADAR.msb.reduce((a, b) => a + b, 0) / RADAR.msb.length) : 78;
   const indScore = (RADAR && RADAR.ind && RADAR.ind.length) ? Math.round(RADAR.ind.reduce((a, b) => a + b, 0) / RADAR.ind.length) : 65;
   const curSym = typeof STOCK !== 'undefined' ? STOCK.sym : 'CP';
   const curInd = typeof STOCK !== 'undefined' && STOCK.ind ? STOCK.ind : 'Toàn ngành';
   return `  <div class="hl3">
-    <div><span class="cap">Điểm tích cực</span>${li(HIGHLIGHTS.pos, I.ok)}</div>
-    <div><span class="cap">Điểm cần chú ý</span>${li(HIGHLIGHTS.neg, I.alert)}</div>
-    <div><span class="cap">Catalyst sắp tới</span>${li(HIGHLIGHTS.cat, I.cal)}</div>
+    <div><span class="cap">Điểm tích cực</span>${li(HIGHLIGHTS.pos || HIGHLIGHTS.positives, I.ok)}</div>
+    <div><span class="cap">Điểm cần chú ý</span>${li(HIGHLIGHTS.neg || HIGHLIGHTS.negatives, I.alert)}</div>
+    <div><span class="cap">Catalyst sắp tới</span>${li(HIGHLIGHTS.cat || HIGHLIGHTS.catalysts, I.cal)}</div>
   </div>
   <div class="an4">
     <div>
@@ -14350,16 +14350,24 @@ const DNSE_STOCKS_DB = {
 function synthesizeDnseMcpData(sym) {
   sym = sym.toUpperCase().trim();
   const vf = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym]) ? VN30_DATA_FEED[sym] : null;
-  const u = (typeof UNI !== 'undefined' && Array.isArray(UNI)) ? UNI.find(x => x.sym === sym) : null;
-  const price = vf ? vf.price : (u ? Math.round(u.c * 1000) : 25000);
-  const chg = vf ? vf.chg : (u ? Math.round(u.chg * 1000) : 200);
-  const pct = vf ? vf.pct : (u ? u.pct : 0.8);
-  const ind = vf ? vf.ind : (u ? u.ind : 'Thương mại & Dịch vụ');
-  const name = vf ? vf.name : (u ? (sym + ' · Doanh nghiệp niêm yết ' + ind) : ('Công ty Cổ phần ' + sym));
-  const pe = u ? u.pe.toFixed(2) : (vf && vf.metrics?.val?.find(x => x[0].includes('P/E')) ? vf.metrics.val.find(x => x[0].includes('P/E'))[1].replace(/[^\d.,]/g, '').replace(',', '.') : '14.50');
-  const pb = u ? u.pb.toFixed(2) : (vf && vf.metrics?.val?.find(x => x[0].includes('P/B')) ? vf.metrics.val.find(x => x[0].includes('P/B'))[1].replace(/[^\d.,]/g, '').replace(',', '.') : '1.80');
-  const roe = u ? u.roe.toFixed(1) + '%' : (vf && vf.metrics?.val?.find(x => x[0].includes('ROE')) ? vf.metrics.val.find(x => x[0].includes('ROE'))[1] : '14.2%');
-  const cap = u ? u.cap + ' nghìn tỷ' : (vf && vf.metrics?.size?.find(x => x[0].includes('Vốn hoá')) ? vf.metrics.size.find(x => x[0].includes('Vốn hoá'))[1] : '25,0 nghìn tỷ');
+  const u = (typeof UNI !== 'undefined' && Array.isArray(UNI)) ? UNI.find(x => (Array.isArray(x) ? x[0] === sym : (x && x.sym === sym))) : null;
+  const uPrice = u ? (Array.isArray(u) ? Math.round(u[4] * 1000) : (u.c != null ? Math.round(u.c * 1000) : (u.price || 25000))) : 25000;
+  const uPct = u ? (Array.isArray(u) ? u[5] : (u.pct != null ? u.pct : 0.8)) : 0.8;
+  const uChg = u ? (Array.isArray(u) ? Math.round(uPrice * (u[5] / 100) / 50) * 50 : (u.chg != null ? u.chg : 200)) : 200;
+  const uInd = u ? (Array.isArray(u) ? u[2] : (u.ind || 'Thương mại & Dịch vụ')) : 'Thương mại & Dịch vụ';
+  const uName = u ? (Array.isArray(u) ? u[1] : (u.name || (sym + ' · Doanh nghiệp niêm yết ' + uInd))) : ('Công ty Cổ phần ' + sym);
+  const uVol = u ? (Array.isArray(u) ? Math.round(u[6] * 1000) : (u.vol || 3420000)) : 3420000;
+  const uValBil = u ? (Array.isArray(u) ? +(u[4] * u[6] / 1000).toFixed(2) : 85.5) : 85.5;
+
+  const price = vf ? vf.price : uPrice;
+  const chg = vf ? vf.chg : uChg;
+  const pct = vf ? vf.pct : uPct;
+  const ind = vf ? vf.ind : uInd;
+  const name = vf ? vf.name : uName;
+  const pe = (vf && vf.metrics?.val?.find(x => x[0].includes('P/E'))) ? vf.metrics.val.find(x => x[0].includes('P/E'))[1].replace(/[^\d.,]/g, '').replace(',', '.') : (u && !Array.isArray(u) && u.pe ? u.pe.toFixed(2) : '14.50');
+  const pb = (vf && vf.metrics?.val?.find(x => x[0].includes('P/B'))) ? vf.metrics.val.find(x => x[0].includes('P/B'))[1].replace(/[^\d.,]/g, '').replace(',', '.') : (u && !Array.isArray(u) && u.pb ? u.pb.toFixed(2) : '1.80');
+  const roe = (vf && vf.metrics?.val?.find(x => x[0].includes('ROE'))) ? vf.metrics.val.find(x => x[0].includes('ROE'))[1] : (u && !Array.isArray(u) && u.roe ? u.roe.toFixed(1) + '%' : '14.2%');
+  const cap = (vf && vf.metrics?.size?.find(x => x[0].includes('Vốn hoá'))) ? vf.metrics.size.find(x => x[0].includes('Vốn hoá'))[1] : (u && !Array.isArray(u) && u.cap ? u.cap + ' nghìn tỷ' : +(price * 1e9 / 1e12).toFixed(1) + ' nghìn tỷ');
   const eps = vf && vf.metrics?.val?.find(x => x[0].includes('EPS')) ? vf.metrics.val.find(x => x[0].includes('EPS'))[1] : (Math.round(price / (parseFloat(pe) || 12)) + ' đ');
 
   // Sector-smart highlights generator
@@ -16097,7 +16105,13 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
 
   // 4. Update fundamental factors & subviews
   if (data.factors) FACTORS = data.factors;
-  if (data.highlights) HIGHLIGHTS = data.highlights;
+  if (data.highlights) {
+    HIGHLIGHTS = {
+      pos: data.highlights.pos || data.highlights.positives || [],
+      neg: data.highlights.neg || data.highlights.negatives || [],
+      cat: data.highlights.cat || data.highlights.catalysts || []
+    };
+  }
   if (data.changes) CHANGES = data.changes;
   if (data.radar) RADAR = { axes: data.radar.axes, msb: data.radar.current, ind: data.radar.ind };
   if (data.position) POSITION = data.position;

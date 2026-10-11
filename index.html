@@ -4734,6 +4734,61 @@ const CMP_SECTIONS = [
     { l: "Mức sụt giảm tối đa 1 năm", k: "fin" }
   ]]
 ];
+
+/* ================= STRUCTURED INVESTMENT THESIS (UX WRITER ENHANCED) ================= */
+const REPORT_THESIS_DB = {
+  'HPG': {
+    catalyst: 'Phân kỳ 1 dự án Dung Quất 2 đi vào vận hành giúp nâng công suất thép thô thêm 3 triệu tấn/năm (+35%), đón đầu chu kỳ phục hồi xây dựng nội địa và chiếm lĩnh thị trường thép HRC chất lượng cao thay thế hàng nhập khẩu.',
+    valuation: 'P/E dự phóng 2026 ở mức 9.8x, thấp hơn trung bình 5 năm (12.8x); biên EBITDA kỳ vọng phục hồi lên 17.5% nhờ giá quặng sắt và than mỡ thế giới duy trì vùng giá thấp.',
+    risk: 'Áp lực cạnh tranh từ nguồn thép cuộn cán nóng giá rẻ từ thị trường khu vực và tốc độ phục hồi của thị trường bất động sản dân dụng.'
+  },
+  'MSB': {
+    catalyst: 'Tăng trưởng tín dụng bán lẻ và phân khúc SME bứt phá trên 16% YoY; tỷ lệ tiền gửi không kỳ hạn CASA giữ vững 27-29% trong top ngân hàng TMCP tư nhân, tối ưu hóa chi phí vốn đầu vào.',
+    valuation: 'Đồng thuận từ 8 CTCK khuyến nghị MUA với giá mục tiêu 17.500 đ (+22.8% Upside); P/B dự phóng 0.85x, chiết khấu sâu so với mức trung bình 1.25x của toàn ngành ngân hàng.',
+    risk: 'Áp lực nợ xấu nhóm khách hàng cá nhân cần thời gian xử lý và diễn biến biên lãi thuần NIM khi lãi suất cho vay tiếp tục cạnh tranh.'
+  },
+  'FPT': {
+    catalyst: 'Khối công nghệ tiếp tục là động lực tăng trưởng cốt lõi với doanh thu ký mới 9T vượt 1,2 tỷ USD (+28% YoY); mảng AI Factory hợp tác chiến lược cùng NVIDIA và hệ thống trung tâm dữ liệu mở rộng tại Nhật Bản và Đức.',
+    valuation: 'P/E dự phóng 2026 ở mức 20.2x; EPS kỳ vọng duy trì tốc độ tăng trưởng kép CAGR 22-25%/năm trong 3 năm tới; biên lợi nhuận gộp mảng chuyển đổi số đạt trên 38%.',
+    risk: 'Biến động tỷ giá đồng Yên Nhật (JPY) và chi phí thu hút, đào tạo nhân sự công nghệ chất lượng cao.'
+  },
+  'SSI': {
+    catalyst: 'Dẫn đầu thị phần môi giới cổ phiếu và hưởng lợi trọn vẹn từ thanh khoản thị trường bùng nổ; tăng vốn điều lệ lên gần 20.000 tỷ đồng mở rộng quy mô cho vay margin khi hệ thống KRX vận hành.',
+    valuation: 'Lợi nhuận trước thuế 2026 ước đạt hơn 3.800 tỷ đồng (+32% YoY); P/E dự phóng 13.5x và P/B 1.45x; tiềm năng định giá lại tích cực khi thị trường chứng khoán Việt Nam nâng hạng FTSE.',
+    risk: 'Biến động giá trị danh mục tự doanh cổ phiếu và rủi ro điều chỉnh thanh khoản chung của thị trường.'
+  },
+  'VCB': {
+    catalyst: 'Ngân hàng đầu ngành với chất lượng tài sản vượt trội số 1 toàn hệ thống; tỷ lệ nợ xấu NPL duy trì dưới 1.1% và tỷ lệ bao phủ nợ xấu dẫn đầu trên 230%.',
+    valuation: 'Kế hoạch phát hành riêng lẻ 6.5% vốn cho nhà đầu tư chiến lược nước ngoài củng cố hệ số an toàn vốn CAR; ROE đạt 22.5%; giá mục tiêu 105.000 đ (+15.4% Upside).',
+    risk: 'Khả năng hấp thụ tín dụng của khối doanh nghiệp xuất nhập khẩu trong bối cảnh thương mại quốc tế biến động.'
+  },
+  'TCB': {
+    catalyst: 'Tỷ lệ tiền gửi không kỳ hạn CASA đạt kỷ lục 42% giúp chi phí vốn thấp nhất ngành; mảng ngân hàng đầu tư TCBS và phân phối bảo hiểm đóng góp lợi nhuận vượt trội.',
+    valuation: 'P/B dự phóng 0.98x với ROE 18.2%; giá mục tiêu 31.000 đ (+25.0% Upside); dòng tiền dồi dào từ thu nhập phí thuần.',
+    risk: 'Tỷ trọng cho vay lĩnh vực bất động sản và trái phiếu doanh nghiệp chịu ảnh hưởng bởi tiến độ tháo gỡ pháp lý dự án.'
+  },
+  'MWG': {
+    catalyst: 'Chuỗi Bách Hóa Xanh đạt điểm hòa vốn sau thuế toàn chuỗi và đóng góp lợi nhuận ròng; chuỗi EraBlue tại Indonesia mở rộng lên hơn 100 cửa hàng dẫn dắt doanh thu.',
+    valuation: 'Doanh thu chuỗi Thế Giới Di Động & Điện Máy Xanh tăng trưởng dương trở lại sau khi tái cơ cấu mạng lưới; P/E dự phóng 14.8x.',
+    risk: 'Sức mua hàng điện máy và ICT trong nước phục hồi chậm hơn kỳ vọng và rủi ro biến động giá chuỗi cung ứng hàng tươi sống.'
+  },
+  'VNM': {
+    catalyst: 'Thị phần sữa nội địa giữ vững 55%; chiến lược tái định vị thương hiệu thu hút thế hệ tiêu dùng mới; thị trường xuất khẩu Trung Đông và Đông Nam Á tăng trưởng 12%.',
+    valuation: 'Tỷ suất cổ tức tiền mặt 5.8%/năm ổn định và phòng thủ cao; P/E dự phóng 14.2x; dòng tiền tự do FCF duy trì trên 9.000 tỷ đồng mỗi năm.',
+    risk: 'Biến động giá sữa bột nguyên liệu nhập khẩu (SMP và WMP) trên thị trường quốc tế.'
+  },
+  'VHM': {
+    catalyst: 'Mở bán các đại dự án Vinhomes Royal Island (Vũ Yên) và Vinhomes Cổ Loa bảo đảm doanh số bán hàng chưa ghi nhận (Backlog) trên 115.000 tỷ đồng.',
+    valuation: 'P/B dự phóng 0.82x ở vùng định giá thấp lịch sử; giá mục tiêu 62.000 đ (+26.5% Upside); dòng tiền bán buôn lô lớn mang lại dòng tiền ngay.',
+    risk: 'Mặt bằng lãi suất vay mua nhà và tiến độ cấp phép pháp lý dự án thứ cấp.'
+  },
+  'NLG': {
+    catalyst: 'Phân khúc nhà ở vừa túi tiền (EHome, Flora) đáp ứng nhu cầu ở thực; hợp tác chiến lược cùng đối tác Nhật Bản Hankyu Hanshin củng cố năng lực tài chính.',
+    valuation: 'Khuyến nghị KÉM KHẢ QUAN ngắn hạn do áp lực dòng tiền đáo hạn trái phiếu trong Q4/2026; giá mục tiêu 32.000 đ (-4.5% Downside) phản ánh rủi ro thanh khoản.',
+    risk: 'Tiến độ bán hàng tại dự án Akari City giai đoạn 2 và dự án Southgate Cần Thơ.'
+  }
+};
+
 const REPORTS = [
   ['Hôm nay', 'Báo cáo vĩ mô tháng 10/2026: Lạm phát duy trì dưới 4.5%, tín dụng toàn hệ thống đạt 9.0%', 'Vĩ mô', '—', null, null, 24, 'VNDIRECT Research & Finhay Macro', 'Hoàng Minh Tâm', 'Lạm phát CPI 9T/2026 đạt 3.88% hạ nhiệt so với cùng kỳ. Tăng trưởng tín dụng phục hồi lên 9.0% hỗ trợ thanh khoản hệ thống ngân hàng.', 'vnd_get_research_reports'],
   ['Hôm nay', 'Chiến lược tháng 10/2026: Đón đầu sóng kết quả kinh doanh quý 3 và vận hành hệ thống KRX', 'Chiến lược', '—', null, null, 18, 'VNDIRECT Research', 'Nguyễn Vũ Long', 'Dự báo VN-Index dao động trong biên độ 1.720 - 1.780 điểm; ưu tiên giải ngân nhóm Ngân hàng, Bán lẻ và Chứng khoán.', 'vnd_get_research_reports'],
@@ -4762,7 +4817,7 @@ const REPORTS = [
   ['02/10', 'Chiến lược đầu tư 2026: Định giá P/E thị trường ở mức hấp dẫn so với tăng trưởng EPS 18%', 'Chiến lược', '—', null, null, 28, 'VNDIRECT Research', 'Hoàng Minh Tâm', 'P/E thị trường VN-Index đang giao dịch ở mức 13.8x, thấp hơn trung bình 5 năm (15.2x), mở ra cơ hội tích lũy dài hạn.', 'vnd_get_consensus'],
   ['02/10', 'Ngành Bất động sản: Phục hồi từ nền thấp, phân hóa mạnh theo tiến độ pháp lý dự án', 'Ngành', 'TRUNG LẬP', null, null, 25, 'VNDIRECT Research', 'Trần Tuấn Anh', 'Luật Đất đai mới có hiệu lực giúp tháo gỡ vướng mắc cho các dự án thương mại đủ điều kiện pháp lý.', 'vnd_get_research_reports']
 ];
-const REP_TABS = [['TẤT CẢ', 1152, () => true], ['VĨ MÔ & CHIẾN LƯỢC', 86, r => r[2] === 'Vĩ mô' || r[2] === 'Chiến lược'], ['NGÀNH', 312, r => r[2] === 'Ngành'], ['DOANH NGHIỆP', 784, r => r[2] === 'Doanh nghiệp'], ['KHUYẾN NGHỊ', 158, r => r[4] != null]];
+const REP_TABS = [['Tất cả', 1152, () => true], ['Vĩ mô & Chiến lược', 86, r => r[2] === 'Vĩ mô' || r[2] === 'Chiến lược'], ['Ngành', 312, r => r[2] === 'Ngành'], ['Doanh nghiệp', 784, r => r[2] === 'Doanh nghiệp'], ['Có giá mục tiêu', 158, r => r[4] != null]];
 const recKey = r => ({ 'MUA': 'MUA', 'KHẢ QUAN': 'KHA', 'TRUNG LẬP': 'TRU', 'KÉM KHẢ QUAN': 'KEM', 'KÉM KQ': 'KEM', 'BÁN': 'BAN' }[r] || '');
 
 /* ================= MARKET NEWS (TIN TỨC THỊ TRƯỜNG - QUAD MCP) ================= */
@@ -7522,36 +7577,49 @@ function vReports() {
     ['VCB', 'Tín dụng dẫn dắt, nợ xấu kiểm soát', 'MUA', '1 ngày', 9],
     ['HPG', 'Thép xây dựng hồi phục từ Q3', 'MUA', '1 ngày', 6],
     ['MSB', 'Tín dụng bán lẻ & SME bứt phá', 'MUA', '2 ngày', 7],
-    ['NLG', 'Áp lực dòng tiền ngắn hạn', 'KÉM KQ', '3 ngày', 22]
+    ['NLG', 'Áp lực dòng tiền ngắn hạn', 'KÉM KHẢ QUAN', '3 ngày', 22]
   ];
   const pg = p => `<button class="${R.page === p ? 'on' : ''}" data-act="page" data-v="${p}">${p}</button>`;
   return `<div class="page flat" style="padding-bottom:40px">
     <div class="ph1 rep-h" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div style="display:flex;align-items:center;gap:12px">
-        <h2 style="margin:0">Báo cáo &amp; Insights</h2>
-        <span class="tag" style="background:var(--sub);border:1px solid var(--line);font-size:11px;color:var(--ink2);display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:4px" title="Kết nối MCP Server thời gian thực"><span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block"></span><span>VNDIRECT MCP Host · 2024-11-05 SSE</span></span>
+        <h2 style="margin:0">Báo cáo Phân tích &amp; Nhận định</h2>
+        <span class="tag" style="background:var(--sub);border:1px solid var(--line);font-size:11px;color:var(--ink2);display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:4px" title="Nguồn dữ liệu phân tích trực tiếp từ VNDIRECT Research, SSI Research và Finhay Macro"><span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block"></span><span>Nguồn dữ liệu: VNDIRECT Research &amp; Đối tác</span></span>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
-        <button class="btn sm" data-act="mktmcpmodal" data-server="vnd" style="font-size:11px;padding:4px 8px;cursor:pointer" title="Xem chi tiết kết nối MCP">⚡ MCP Server</button>
-        <button class="btn sm" onclick="syncReportsMcpLive()" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:4px 10px;border-radius:6px;cursor:pointer">
-          <span style="color:#22c55e">●</span> Làm mới báo cáo
+        <button class="btn sm" onclick="syncReportsMcpLive()" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:5px 12px;border-radius:6px;cursor:pointer" title="Cập nhật danh sách báo cáo mới nhất">
+          <span style="color:#22c55e;font-size:13px">↻</span> Cập nhật mới
         </button>
       </div>
     </div>
     <div class="rep"><div class="rep-l">
       <div class="rtabs">${REP_TABS.map((t, i) => `<button class="${R.tab === i ? 'on' : ''}" data-act="reptab" data-v="${i}">${t[0]} <span>${fmtVN(t[1])}</span></button>`).join('')}</div>
-      <div class="rsrch"><div class="search" style="display:inline-block"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="repq" type="search" placeholder="Tìm mã CK, tên công ty..." value="${esc(R.q)}" style="width:246px"></div></div>
-      <div class="tscroll"><table class="t upper rep-t"><thead><tr><th style="width:112px">Thời gian</th><th>Tiêu đề báo cáo</th><th style="width:104px">Loại</th><th style="width:112px">Khuyến nghị</th><th class="rt" style="width:100px">Giá mục tiêu</th><th class="rt" style="width:80px">Upside</th><th class="rt" style="width:88px">Trang</th></tr></thead>
-      <tbody>${rows.map(r => `<tr class="click" data-act="report" data-v="${REPORTS.indexOf(REPORTS.find(x => x[1] === r[1]))}"><td class="muted">${r[0]}</td><td class="ti" title="${esc(r[1])}">${r[1]}</td><td class="ink2">${r[2]}</td><td>${r[3] === '—' ? '<span class="muted">—</span>' : `<span class="rec rec-${recKey(r[3])}">${r[3]}</span>`}</td><td class="rt ${r[4] ? 'num' : 'muted'}">${r[4] ? fmtVN(r[4]) : '—'}</td><td class="rt ${r[5] != null ? 'num ' + cls(r[5]) : 'muted'}">${r[5] != null ? (r[5] > 0 ? '+' : '-') + fmtVN(Math.abs(r[5]), 1) + '%' : '—'}</td><td class="rt num muted">${r[6]}</td></tr>`).join('') || `<tr><td colspan="7" class="muted" style="padding:24px 32px;height:auto">Không tìm thấy báo cáo khớp “${esc(R.q)}”.</td></tr>`}</tbody></table></div>
+      <div class="rsrch"><div class="search" style="display:inline-block"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="repq" type="search" placeholder="Tìm theo mã cổ phiếu, ngành hoặc tiêu đề báo cáo..." value="${esc(R.q)}" style="width:246px"></div></div>
+      <div class="tscroll"><table class="t upper rep-t"><thead><tr><th style="width:100px">Thời gian</th><th>Tiêu đề báo cáo</th><th style="width:104px">Phân loại</th><th style="width:108px">Khuyến nghị</th><th class="rt" style="width:96px">Thị giá</th><th class="rt" style="width:104px">Giá mục tiêu</th><th class="rt" style="width:84px">Upside</th><th class="rt" style="width:76px">Số trang</th></tr></thead>
+      <tbody>${rows.map(r => {
+        const sym = r[1].includes(':') ? r[1].split(':')[0].trim() : '';
+        const u = (sym && typeof uni === 'function') ? uni(sym) : null;
+        const curPrice = u ? u[4] * 1000 : (r[4] && r[5] ? Math.round(r[4] / (1 + r[5] / 100)) : null);
+        return `<tr class="click" data-act="report" data-v="${REPORTS.indexOf(REPORTS.find(x => x[1] === r[1]))}">
+          <td class="muted">${r[0]}</td>
+          <td class="ti" title="${esc(r[1])}">${r[1]}</td>
+          <td class="ink2">${r[2]}</td>
+          <td>${r[3] === '—' ? '<span class="muted">—</span>' : `<span class="rec rec-${recKey(r[3])}">${r[3]}</span>`}</td>
+          <td class="rt ${curPrice ? 'num' : 'muted'}">${curPrice ? fmtVN(curPrice) + ' đ' : '—'}</td>
+          <td class="rt ${r[4] ? 'num' : 'muted'}">${r[4] ? fmtVN(r[4]) + ' đ' : '—'}</td>
+          <td class="rt ${r[5] != null ? 'num ' + cls(r[5]) : 'muted'}">${r[5] != null ? (r[5] > 0 ? '+' : '-') + fmtVN(Math.abs(r[5]), 1) + '%' : '—'}</td>
+          <td class="rt num muted">${r[6]} tr.</td>
+        </tr>`;
+      }).join('') || `<tr><td colspan="8" class="muted" style="padding:24px 32px;height:auto">Không tìm thấy báo cáo khớp “${esc(R.q)}”.</td></tr>`}</tbody></table></div>
       <div class="pag"><span>Hiển thị ${rows.length ? (R.page - 1) * 20 + 1 : 0}–${(R.page - 1) * 20 + rows.length} trong ${fmtVN(total)} báo cáo</span><div class="r"><button data-act="page" data-v="${Math.max(1, R.page - 1)}" aria-label="Trang trước">‹</button>${[1, 2, 3].filter(p => p <= pages).map(pg).join('')}${pages > 4 ? `<span>…</span>${pg(pages)}` : ''}<button data-act="page" data-v="${Math.min(pages, R.page + 1)}" aria-label="Trang sau">›</button></div></div>
-      <div class="rep-foot"><span>Báo cáo do Khối Phân tích Maris và các đơn vị nghiên cứu đối tác (VNDIRECT Research, SSI Research, FiinGroup) phát hành; bản quyền thuộc về đơn vị phát hành. Nội dung mang tính tham khảo, không cấu thành khuyến nghị đầu tư.</span><span id="rep-updated-time">${(S.rep && S.rep.lastSync) ? `Cập nhật tự động · ${S.rep.lastSync}` : 'Cập nhật tự động theo thời gian thực'}</span></div>
+      <div class="rep-foot"><span>Báo cáo do Khối Phân tích Maris và các tổ chức nghiên cứu đối tác (VNDIRECT Research, SSI Research, FiinGroup) phát hành; bản quyền thuộc về đơn vị phát hành. Thông tin mang tính chất tham khảo, không cấu thành lời mời chào mua bán chứng khoán.</span><span id="rep-updated-time">${(S.rep && S.rep.lastSync) ? `Cập nhật tự động · ${S.rep.lastSync}` : 'Cập nhật tự động theo thời gian thực'}</span></div>
     </div>
     <aside class="rep-r">
       <div class="rblk"><div class="hd"><span class="cap" style="text-transform:none">Báo cáo nổi bật</span><button class="chip sp" data-act="repspan">${R.span} ${I.chev}</button></div>
         ${feat.map(([t, s, r, ago, i]) => `<div class="feat" data-act="report" data-v="${i}"><b>${t}</b><div><p>${s}</p><small><span class="rec rec-${recKey(r)}">${r}</span><span>·</span><span>${ago}</span></small></div></div>`).join('')}</div>
       <div class="rblk"><div class="hd"><span class="cap">Phân bố khuyến nghị · ${R.span.toUpperCase()}</span><span class="link sp" style="cursor:default;text-decoration:none">${dist.reduce((a, d) => a + d[1], 0)} báo cáo</span></div>
         ${dist.map(d => `<div class="dist"><span class="rec rec-${recKey(d[0])}" style="font-weight:400">${d[0]}</span><span class="tr"><i style="width:${Math.min(100, d[1] / dmax * 100)}%;background:${d[2]}"></i></span><b>${d[1]}</b></div>`).join('')}</div>
-      <div class="rblk" style="border-bottom:0"><div class="hd"><span class="cap">Ngành được đề cập nhiều</span></div>
+      <div class="rblk" style="border-bottom:0"><div class="hd"><span class="cap">Ngành được quan tâm nhiều</span></div>
         ${secs.map(s => `<div class="dist sec" style="cursor:pointer" data-act="repsec" data-v="${s[0]}"><span>${s[0]}</span><span class="tr"><i style="width:${s[1] / smax * 100}%;background:var(--s3)"></i></span><b>${s[1]}</b></div>`).join('')}</div>
     </aside></div></div>`;
 }
@@ -8766,49 +8834,99 @@ const A = {
     const publisher = r[7] || (r[2] === 'Doanh nghiệp' ? 'VNDIRECT Research' : (r[2] === 'Ngành' ? 'SSI Research & VNDIRECT' : 'VNDIRECT & Finhay Macro'));
     const analyst = r[8] || 'Hoàng Minh Tâm (Senior Financial Analyst)';
     const thesis = r[9] || 'Báo cáo cung cấp đánh giá toàn diện về kết quả kinh doanh quý gần nhất, phân tích triển vọng ngành và định giá so sánh với các doanh nghiệp cùng phân khúc.';
-    const mcpTool = r[10] || (r[4] ? 'vnd_get_consensus' : 'vnd_get_research_reports');
     const sym = r[1].includes(':') ? r[1].split(':')[0].trim() : '';
+    const u = (sym && typeof uni === 'function') ? uni(sym) : null;
+    const curPrice = u ? u[4] * 1000 : (r[4] && r[5] ? Math.round(r[4] / (1 + r[5] / 100)) : null);
+
+    // UX Writer: Map raw tool IDs to professional investor-facing badges
+    const reportTypeBadge = r[10] === 'vnd_get_consensus' 
+      ? '<span class="tag" style="background:#0284c7;color:#fff;font-size:9.5px;font-weight:600" title="Đồng thuận tổng hợp từ 8 CTCK hàng đầu">Đồng thuận phân tích (Consensus)</span>'
+      : (r[2] === 'Doanh nghiệp' 
+        ? '<span class="tag" style="background:#ea580c;color:#fff;font-size:9.5px;font-weight:600" title="Báo cáo phân tích chuyên sâu độc lập">Báo cáo Phân tích Chuyên sâu</span>'
+        : (r[2] === 'Ngành'
+          ? '<span class="tag" style="background:#059669;color:#fff;font-size:9.5px;font-weight:600" title="Báo cáo chu kỳ và triển vọng ngành">Triển vọng Chu kỳ Ngành</span>'
+          : '<span class="tag" style="background:#7c3aed;color:#fff;font-size:9.5px;font-weight:600" title="Báo cáo vĩ mô và chiến lược thị trường">Vĩ mô &amp; Chiến lược</span>'));
+
+    const structuredThesis = (sym && typeof REPORT_THESIS_DB !== 'undefined' && REPORT_THESIS_DB[sym]) ? REPORT_THESIS_DB[sym] : null;
 
     modal(`<div class="m-h">
       <div>
-        <div class="muted" style="font-size:11.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span class="tag" style="font-size:9.5px">${publisher.split('(')[0].trim()}</span>
-          <span class="tag" style="background:#ea580c;color:#fff;font-size:9.5px;font-weight:600" title="Truy vấn qua MCP Server">MCP: ${mcpTool}</span>
-          <span>${r[2]} · ${r[0]} · ${r[6]} trang</span>
+        <div class="muted" style="font-size:11.5px;margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span class="tag" style="font-size:9.5px;font-weight:600">${publisher.split('(')[0].trim()}</span>
+          ${reportTypeBadge}
+          <span>Báo cáo ${r[2]} · ${r[0]} · ${r[6]} trang</span>
         </div>
-        <h3 style="margin:4px 0 0;font-size:16px;line-height:1.4">${esc(r[1])}</h3>
+        <h3 style="margin:4px 0 0;font-size:16px;line-height:1.45;color:var(--ink)">${esc(r[1])}</h3>
       </div>
       <button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button>
     </div>
     <div class="m-b">
       ${r[4] ? `
-        <div class="kpi4" style="grid-template-columns:repeat(4,1fr);margin-top:0">
-          <div><span>Khuyến nghị</span><b class="rec rec-${recKey(r[3])}" style="font-family:var(--sans);font-size:15px">${r[3]}</b></div>
-          <div><span>Giá mục tiêu</span><b>${fmtVN(r[4])} đ</b></div>
-          <div><span>Upside kỳ vọng</span><b class="${cls(r[5])}">${sgn(r[5], 1)}</b></div>
-          <div style="border-right:0"><span>Nguồn định giá</span><b style="color:#ea580c;font-size:11.5px">VNDIRECT Research</b></div>
+        <div class="kpi4" style="grid-template-columns:repeat(5,1fr);margin-top:0;background:var(--sub);border:1px solid var(--line);border-radius:8px;padding:8px 10px">
+          <div>
+            <span style="font-size:10.5px">Khuyến nghị</span>
+            <b class="rec rec-${recKey(r[3])}" style="font-family:var(--sans);font-size:15px;margin-top:2px;display:inline-block">${r[3]}</b>
+          </div>
+          <div>
+            <span style="font-size:10.5px">Thị giá hiện tại</span>
+            <b style="font-size:14px;color:var(--ink)">${curPrice ? fmtVN(curPrice) + ' đ' : '—'}</b>
+            <small class="muted" style="font-size:9.5px;display:block">Giá tham chiếu</small>
+          </div>
+          <div>
+            <span style="font-size:10.5px">Giá mục tiêu</span>
+            <b style="font-size:14px;color:var(--brand)">${fmtVN(r[4])} đ</b>
+            <small class="muted" style="font-size:9.5px;display:block">Kỳ hạn 12T</small>
+          </div>
+          <div>
+            <span style="font-size:10.5px">Upside kỳ vọng</span>
+            <b class="${cls(r[5])}" style="font-size:14px">${sgn(r[5], 1)}</b>
+            <small class="muted" style="font-size:9.5px;display:block">Tiềm năng tăng</small>
+          </div>
+          <div style="border-right:0">
+            <span style="font-size:10.5px">Kỳ hạn mục tiêu</span>
+            <b style="font-size:13px;color:var(--ink2)">12 Tháng</b>
+            <small class="muted" style="font-size:9.5px;display:block">Đến Q4/2027</small>
+          </div>
         </div>` : r[3] !== '—' ? `
-        <div style="margin:0 0 12px;padding:8px 12px;background:var(--card-sub);border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between">
-          <span>Quan điểm ngành: <b class="rec rec-${recKey(r[3])}">${r[3]}</b></span>
-          <span style="font-size:11px;color:var(--ink2)">Phát hành: <b>${publisher}</b></span>
-        </div>` : ''}
+        <div style="margin:0 0 12px;padding:10px 14px;background:var(--card-sub);border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between">
+          <span>Triển vọng ngành: <b class="rec rec-${recKey(r[3])}" style="font-size:13px">${r[3]}</b></span>
+          <span style="font-size:11px;color:var(--ink2)">Nguồn nghiên cứu: <b>${publisher}</b></span>
+        </div>` : `
+        <div style="margin:0 0 12px;padding:10px 14px;background:var(--card-sub);border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between">
+          <span>Chủ đề nghiên cứu: <b style="color:var(--brand);font-size:12.5px">${r[2]} &amp; Xu hướng vĩ mô</b></span>
+          <span style="font-size:11px;color:var(--ink2)">Tác động thị trường: <b style="color:#10b981">TÍCH CỰC</b></span>
+        </div>`}
       
-      <div style="margin-top:12px">
-        <div style="font-weight:600;font-size:12.5px;color:var(--ink);margin-bottom:6px">Tóm tắt luận điểm đầu tư chính (Investment Thesis):</div>
-        <div style="color:var(--ink2);line-height:1.65;font-size:12.5px;background:var(--sub);padding:10px 14px;border-radius:6px;border:1px solid var(--line)">
-          ${thesis}
+      <div style="margin-top:14px">
+        <div style="font-weight:700;font-size:12.5px;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+          <span>📌</span> Tóm tắt luận điểm đầu tư trọng tâm (Investment Thesis):
+        </div>
+        <div style="color:var(--ink);line-height:1.65;font-size:12.5px;background:var(--sub);padding:12px 16px;border-radius:8px;border:1px solid var(--line)">
+          ${structuredThesis ? `
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div><b style="color:var(--brand)">🚀 Động lực tăng trưởng cốt lõi:</b> <span class="ink2">${structuredThesis.catalyst}</span></div>
+              <div><b style="color:#0284c7">📊 Dự phóng tài chính &amp; Định giá:</b> <span class="ink2">${structuredThesis.valuation}</span></div>
+              <div><b style="color:#ea580c">⚠️ Rủi ro cần theo dõi:</b> <span class="ink2">${structuredThesis.risk}</span></div>
+            </div>
+          ` : `
+            <div>${thesis}</div>
+          `}
         </div>
       </div>
 
-      <div style="margin-top:12px;padding:8px 12px;background:var(--card-sub);border-radius:6px;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px">
+      <div style="margin-top:12px;padding:8px 14px;background:var(--card-sub);border-radius:6px;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px">
         <div><b>Chuyên viên phân tích:</b> <span class="ink2">${analyst}</span></div>
         <div><b>Tổ chức phát hành:</b> <span class="ink2">${publisher}</span></div>
       </div>
     </div>
-    <div class="m-f">
-      ${sym ? `<button class="btn" data-act="stock" data-v="${sym}">Mở Company 360 (${sym})</button>` : ''}
-      <button class="btn" data-act="mktmcpmodal" data-server="vnd" style="font-size:12px">⚡ Xem MCP Data</button>
-      <button class="btn pri" data-act="toast" data-msg="Đã tải toàn văn báo cáo phân tích (PDF ${r[6]} trang)!">Tải báo cáo (PDF)</button>
+    <div class="m-f" style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div style="display:flex;gap:8px">
+        ${sym ? `<button class="btn" data-act="stock" data-v="${sym}" style="font-size:12px;display:inline-flex;align-items:center;gap:6px"><span>📊</span> Mở Company 360 (${sym})</button>` : ''}
+        <button class="btn" data-act="mktmcpmodal" data-server="vnd" style="font-size:12px;display:inline-flex;align-items:center;gap:6px" title="Kiểm chứng nguồn dữ liệu và tham số định giá thời gian thực"><span>⚡</span> Nguồn dữ liệu &amp; Tham số</button>
+      </div>
+      <button class="btn pri" data-act="toast" data-msg="Đã tải toàn văn báo cáo phân tích (${esc(r[1])} · PDF ${r[6]} trang)!" style="font-size:12.5px;display:inline-flex;align-items:center;gap:6px">
+        <span>📥</span> Tải toàn văn (PDF · ${r[6]} trang)
+      </button>
     </div>`);
   },
   /* market news actions */
@@ -15549,7 +15667,7 @@ function syncReportsMcpLive() {
     timeEl.textContent = `Cập nhật tự động · ${timeStr}`;
   }
   if (typeof toast === 'function') {
-    toast(`↻ Đã làm mới & đồng bộ 1.152 báo cáo phân tích qua MCP!`);
+    toast(`↻ Đã cập nhật danh sách 1.152 báo cáo phân tích mới nhất!`);
   }
   if (typeof rerender === 'function') {
     rerender();

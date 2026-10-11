@@ -4740,8 +4740,8 @@ const REPORTS = [
   ['Hôm nay', 'Ngành Công nghệ thông tin: Xu hướng AI & Cloud dẫn dắt biên lợi nhuận bứt phá', 'Ngành', 'KHẢ QUAN', null, null, 20, 'VNDIRECT Research', 'Hoàng Minh Tâm', 'Doanh thu chuyển đổi số và xuất khẩu phần mềm sang Nhật Bản, Mỹ tiếp tục tăng trưởng trên 25% YoY.', 'vnd_get_research_reports'],
   ['Hôm nay', 'Ngành Ngân hàng: NIM hồi phục từ chi phí vốn thấp, chất lượng tài sản kiểm soát tốt', 'Ngành', 'KHẢ QUAN', null, null, 26, 'SSI Research', 'Nguyễn Hồng Nam', 'Tăng trưởng tín dụng bứt tốc quý 3, tỷ lệ CASA cải thiện tại các ngân hàng thương mại cổ phần top đầu.', 'ssi.marketdata.ssi100_sector_view'],
   ['Hôm nay', 'Ngành Thép: Kỳ vọng thị trường xây dựng hồi phục từ Q3/2026 và biên gộp cải thiện', 'Ngành', 'KHẢ QUAN', null, null, 18, 'VNDIRECT Research', 'Đặng Quốc Hưng', 'Giá quặng sắt hạ nhiệt trong khi sản lượng tiêu thụ HRC nội địa tăng trưởng 14% YoY.', 'vnd_get_research_reports'],
-  ['Hôm nay', 'FPT: Cập nhật KQKD Q2/2026 và triển vọng nửa cuối năm - Tăng tốc mảng AI & Bán dẫn', 'Doanh nghiệp', 'MUA', 152000, 11.4, 14, 'VNDIRECT Research', 'Hoàng Minh Tâm', 'Khối công nghệ tiếp tục là động lực tăng trưởng cốt lõi với doanh thu ký mới đạt hơn 1 tỷ USD.', 'vnd_get_research_reports'],
-  ['Hôm nay', 'HPG: Kỳ vọng Dung Quất 2 vận hành thương mại đẩy sản lượng HRC lên tầm cao mới', 'Doanh nghiệp', 'MUA', 34500, 23.7, 12, 'VNDIRECT Research', 'Đặng Quốc Hưng', 'Dự án Dung Quất 2 hoàn thành phân kỳ 1 giúp nâng công suất thép thô thêm 3 triệu tấn/năm.', 'vnd_get_research_reports'],
+  ['Hôm nay', 'FPT: Cập nhật KQKD Q2/2026 và triển vọng nửa cuối năm - Tăng tốc mảng AI & Bán dẫn', 'Doanh nghiệp', 'MUA', 165000, 19.1, 14, 'VNDIRECT Research', 'Hoàng Minh Tâm', 'Khối công nghệ tiếp tục là động lực tăng trưởng cốt lõi với doanh thu ký mới đạt hơn 1 tỷ USD.', 'vnd_get_research_reports'],
+  ['Hôm nay', 'HPG: Kỳ vọng Dung Quất 2 vận hành thương mại đẩy sản lượng HRC lên tầm cao mới', 'Doanh nghiệp', 'MUA', 32500, 23.1, 12, 'VNDIRECT Research', 'Đặng Quốc Hưng', 'Dự án Dung Quất 2 hoàn thành phân kỳ 1 giúp nâng công suất thép thô thêm 3 triệu tấn/năm.', 'vnd_get_research_reports'],
   ['Hôm qua', 'MSB: Tăng trưởng tín dụng bán lẻ và SME bứt phá, CASA giữ vững trong top ngành', 'Doanh nghiệp', 'MUA', 17500, 22.8, 10, 'VNDIRECT Research', 'Hoàng Minh Tâm', 'Đồng thuận định giá 8 CTCK khuyến nghị MUA với giá mục tiêu 17.500 đ (+22.8% Upside).', 'vnd_get_consensus'],
   ['Hôm qua', 'SSI: Dẫn đầu thị phần môi giới và hưởng lợi từ sóng tăng vốn nâng hạng thị trường', 'Doanh nghiệp', 'MUA', 39000, 14.0, 11, 'VNDIRECT Research', 'Hoàng Minh Tâm', 'SSI hoàn tất phát hành cổ phiếu tăng vốn lên gần 20.000 tỷ đồng, củng cố năng lực cho vay ký quỹ.', 'vnd_get_research_reports'],
   ['Hôm qua', 'VCB: Tăng trưởng tín dụng dẫn dắt, tỷ lệ bao phủ nợ xấu cao nhất toàn hệ thống', 'Doanh nghiệp', 'MUA', 105000, 15.4, 15, 'SSI Research', 'Nguyễn Hồng Nam', 'Chất lượng tài sản vượt trội với tỷ lệ nợ xấu NPL dưới 1.1%, kế hoạch phát hành riêng lẻ cho nhà đầu tư ngoại.', 'vnd_get_research_reports'],
@@ -5109,7 +5109,7 @@ const S = {
   all: { chips: [['Sàn', 'HOSE · HNX', 'ex'], ['Ngành', '', 'ind', 5], ['Biến động giá', '', 'bd', '< 3%'], ['KLGD', '', 'kl', '> 1,000']], sort: ['mc', -1], sel: new Set(['HPG', 'GAS', 'VNM']), ex: new Set(['HOSE', 'HNX']), cols: 'Tổng quan' },
   dr: { open: { 1: true }, crit: new Set(), ex: new Set(['HOSE', 'HNX']), q: '' },
   cmp: ['MSB', 'FPT', 'HPG'], cmpClosed: new Set(), cmpTab: 'all', cmpPeriod: '3M', mktTab: 'pulse', mktLeaderTab: 'val', mktEx: 'ALL',
-  rep: { tab: 0, q: '', page: 1, span: '30 ngày', span2: '30 ngày' },
+  rep: { tab: 0, q: '', page: 1, span: '30 ngày', span2: '30 ngày', lastSync: '' },
   watch: new Set(['FPT', 'VCB', 'HPG']),
   mnews: { tab: 0, q: '', span: 'Tất cả', sentiment: 'Tất cả', page: 1 }
 };
@@ -7529,10 +7529,14 @@ function vReports() {
     <div class="ph1 rep-h" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div style="display:flex;align-items:center;gap:12px">
         <h2 style="margin:0">Báo cáo &amp; Insights</h2>
+        <span class="tag" style="background:var(--sub);border:1px solid var(--line);font-size:11px;color:var(--ink2);display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:4px" title="Kết nối MCP Server thời gian thực"><span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block"></span><span>VNDIRECT MCP Host · 2024-11-05 SSE</span></span>
       </div>
-      <button class="btn sm" onclick="syncReportsMcpLive()" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:4px 10px;border-radius:6px;cursor:pointer">
-        <span style="color:#22c55e">●</span> Làm mới báo cáo
-      </button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn sm" data-act="mktmcpmodal" data-server="vnd" style="font-size:11px;padding:4px 8px;cursor:pointer" title="Xem chi tiết kết nối MCP">⚡ MCP Server</button>
+        <button class="btn sm" onclick="syncReportsMcpLive()" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:4px 10px;border-radius:6px;cursor:pointer">
+          <span style="color:#22c55e">●</span> Làm mới báo cáo
+        </button>
+      </div>
     </div>
     <div class="rep"><div class="rep-l">
       <div class="rtabs">${REP_TABS.map((t, i) => `<button class="${R.tab === i ? 'on' : ''}" data-act="reptab" data-v="${i}">${t[0]} <span>${fmtVN(t[1])}</span></button>`).join('')}</div>
@@ -7540,7 +7544,7 @@ function vReports() {
       <div class="tscroll"><table class="t upper rep-t"><thead><tr><th style="width:112px">Thời gian</th><th>Tiêu đề báo cáo</th><th style="width:104px">Loại</th><th style="width:112px">Khuyến nghị</th><th class="rt" style="width:100px">Giá mục tiêu</th><th class="rt" style="width:80px">Upside</th><th class="rt" style="width:88px">Trang</th></tr></thead>
       <tbody>${rows.map(r => `<tr class="click" data-act="report" data-v="${REPORTS.indexOf(REPORTS.find(x => x[1] === r[1]))}"><td class="muted">${r[0]}</td><td class="ti" title="${esc(r[1])}">${r[1]}</td><td class="ink2">${r[2]}</td><td>${r[3] === '—' ? '<span class="muted">—</span>' : `<span class="rec rec-${recKey(r[3])}">${r[3]}</span>`}</td><td class="rt ${r[4] ? 'num' : 'muted'}">${r[4] ? fmtVN(r[4]) : '—'}</td><td class="rt ${r[5] != null ? 'num ' + cls(r[5]) : 'muted'}">${r[5] != null ? (r[5] > 0 ? '+' : '-') + fmtVN(Math.abs(r[5]), 1) + '%' : '—'}</td><td class="rt num muted">${r[6]}</td></tr>`).join('') || `<tr><td colspan="7" class="muted" style="padding:24px 32px;height:auto">Không tìm thấy báo cáo khớp “${esc(R.q)}”.</td></tr>`}</tbody></table></div>
       <div class="pag"><span>Hiển thị ${rows.length ? (R.page - 1) * 20 + 1 : 0}–${(R.page - 1) * 20 + rows.length} trong ${fmtVN(total)} báo cáo</span><div class="r"><button data-act="page" data-v="${Math.max(1, R.page - 1)}" aria-label="Trang trước">‹</button>${[1, 2, 3].filter(p => p <= pages).map(pg).join('')}${pages > 4 ? `<span>…</span>${pg(pages)}` : ''}<button data-act="page" data-v="${Math.min(pages, R.page + 1)}" aria-label="Trang sau">›</button></div></div>
-      <div class="rep-foot"><span>Báo cáo do Khối Phân tích Maris và các đơn vị nghiên cứu đối tác (VNDIRECT Research, SSI Research, FiinGroup) phát hành; bản quyền thuộc về đơn vị phát hành. Nội dung mang tính tham khảo, không cấu thành khuyến nghị đầu tư.</span><span id="rep-updated-time">Cập nhật tự động theo thời gian thực</span></div>
+      <div class="rep-foot"><span>Báo cáo do Khối Phân tích Maris và các đơn vị nghiên cứu đối tác (VNDIRECT Research, SSI Research, FiinGroup) phát hành; bản quyền thuộc về đơn vị phát hành. Nội dung mang tính tham khảo, không cấu thành khuyến nghị đầu tư.</span><span id="rep-updated-time">${(S.rep && S.rep.lastSync) ? `Cập nhật tự động · ${S.rep.lastSync}` : 'Cập nhật tự động theo thời gian thực'}</span></div>
     </div>
     <aside class="rep-r">
       <div class="rblk"><div class="hd"><span class="cap" style="text-transform:none">Báo cáo nổi bật</span><button class="chip sp" data-act="repspan">${R.span} ${I.chev}</button></div>
@@ -8769,6 +8773,7 @@ const A = {
       <div>
         <div class="muted" style="font-size:11.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
           <span class="tag" style="font-size:9.5px">${publisher.split('(')[0].trim()}</span>
+          <span class="tag" style="background:#ea580c;color:#fff;font-size:9.5px;font-weight:600" title="Truy vấn qua MCP Server">MCP: ${mcpTool}</span>
           <span>${r[2]} · ${r[0]} · ${r[6]} trang</span>
         </div>
         <h3 style="margin:4px 0 0;font-size:16px;line-height:1.4">${esc(r[1])}</h3>
@@ -8780,7 +8785,7 @@ const A = {
         <div class="kpi4" style="grid-template-columns:repeat(4,1fr);margin-top:0">
           <div><span>Khuyến nghị</span><b class="rec rec-${recKey(r[3])}" style="font-family:var(--sans);font-size:15px">${r[3]}</b></div>
           <div><span>Giá mục tiêu</span><b>${fmtVN(r[4])} đ</b></div>
-          <div><span>Upside kỳ vọng</span><b class="${cls(r[5])}">${sgn(r[5], 1)}%</b></div>
+          <div><span>Upside kỳ vọng</span><b class="${cls(r[5])}">${sgn(r[5], 1)}</b></div>
           <div style="border-right:0"><span>Nguồn định giá</span><b style="color:#ea580c;font-size:11.5px">VNDIRECT Research</b></div>
         </div>` : r[3] !== '—' ? `
         <div style="margin:0 0 12px;padding:8px 12px;background:var(--card-sub);border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between">
@@ -8802,7 +8807,7 @@ const A = {
     </div>
     <div class="m-f">
       ${sym ? `<button class="btn" data-act="stock" data-v="${sym}">Mở Company 360 (${sym})</button>` : ''}
-      
+      <button class="btn" data-act="mktmcpmodal" data-server="vnd" style="font-size:12px">⚡ Xem MCP Data</button>
       <button class="btn pri" data-act="toast" data-msg="Đã tải toàn văn báo cáo phân tích (PDF ${r[6]} trang)!">Tải báo cáo (PDF)</button>
     </div>`);
   },
@@ -15538,12 +15543,13 @@ function syncAllMcpLive() {
 function syncReportsMcpLive() {
   const now = new Date();
   const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
+  if (S && S.rep) S.rep.lastSync = timeStr;
   const timeEl = document.getElementById('rep-updated-time');
   if (timeEl) {
     timeEl.textContent = `Cập nhật tự động · ${timeStr}`;
   }
   if (typeof toast === 'function') {
-    toast(`↻ Đã làm mới 1.152 báo cáo phân tích & khuyến nghị!`);
+    toast(`↻ Đã làm mới & đồng bộ 1.152 báo cáo phân tích qua MCP!`);
   }
   if (typeof rerender === 'function') {
     rerender();

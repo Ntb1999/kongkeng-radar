@@ -214,7 +214,7 @@ table.t{width:100%;border-collapse:collapse;font-size:12px;line-height:16px}
 .stock-h{display:flex;align-items:center;justify-content:flex-start;align-self:stretch;gap:24px;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--bg)}
 .logo-msb{width:42px;height:42px;border-radius:50%;overflow:hidden;flex:none;background:var(--bg);box-shadow:inset 0 0 0 1px var(--line)}
 .logo-msb img{width:42px;height:42px;display:block}
-.sym-block{display:flex;flex-direction:column;gap:4px;flex:none;min-width:0}
+.sym-block{display:flex;flex-direction:column;gap:4px;flex:none;min-width:340px}
 .sym{display:flex;align-items:center;gap:8px}
 .sym h1{margin:0;font-size:22px;font-weight:700;letter-spacing:0;line-height:28px}
 .sym .dd{display:flex;align-items:center;gap:4px;cursor:pointer;position:relative}
@@ -5262,6 +5262,12 @@ function getStockValuationData() {
     percentile = '50%';
     evEbitda = '11,40';
     ps = '2,80';
+  } else if (sym === 'BVH' || ind.includes('bảo hiểm')) {
+    indPb = 1.45;
+    indPe = 14.50;
+    percentile = '52%';
+    evEbitda = '12,80';
+    ps = '1,15';
   } else if (ind.includes('ngân hàng')) {
     indPb = 1.62;
     indPe = 11.25;
@@ -10388,16 +10394,6 @@ const VN30_DATA_FEED = {
         [
           "ROE (TTM)",
           "9,8%",
-          "up"
-        ],
-        [
-          "Biên LN ròng",
-          "14,6%",
-          "up"
-        ],
-        [
-          "Tỷ suất cổ tức",
-          "1,38%",
           "up"
         ]
       ],
@@ -15814,8 +15810,18 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   if (!sym) return;
   sym = sym.replace(/\s*\(DNSE\)/i, '').replace(/\s*\(VND\)/i, '').toUpperCase().trim();
 
-  // 1. Get VN30 / DNSE data
-  const data = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym]) ? VN30_DATA_FEED[sym] : ((typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[sym]) ? DNSE_STOCKS_DB[sym] : synthesizeDnseMcpData(sym));
+  // 1. Get VN30 / DNSE data (deep merge to ensure analytical highlights, factors, peers & radar are always populated)
+  const dnseBase = (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[sym]) ? DNSE_STOCKS_DB[sym] : synthesizeDnseMcpData(sym);
+  const vn30Base = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym]) ? VN30_DATA_FEED[sym] : null;
+  const data = Object.assign({}, dnseBase, vn30Base || {});
+  if (!data.factors && dnseBase.factors) data.factors = dnseBase.factors;
+  if (!data.highlights && dnseBase.highlights) data.highlights = dnseBase.highlights;
+  if (!data.changes && dnseBase.changes) data.changes = dnseBase.changes;
+  if (!data.radar && dnseBase.radar) data.radar = dnseBase.radar;
+  if (!data.position && dnseBase.position) data.position = dnseBase.position;
+  if (!data.perf && dnseBase.perf) data.perf = dnseBase.perf;
+  if (!data.profile && dnseBase.profile) data.profile = dnseBase.profile;
+  if (!data.peers && dnseBase.peers) data.peers = dnseBase.peers;
 
   // 2. Get VND data
   const vndData = (typeof VND_STOCKS_DB !== 'undefined' && VND_STOCKS_DB[sym]) ? VND_STOCKS_DB[sym] : synthesizeVndMcpData(sym, data.price, data.ind);
@@ -15908,6 +15914,16 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
       ['ROA', '16,8%', '8,5%'],
       ['Biên LN gộp', '42,5%', '31,0%'],
       ['Tỷ suất cổ tức', '5,8%', '3,2%']
+    ];
+  } else if (sym === 'BVH' || (data.ind && data.ind.toLowerCase().includes('bảo hiểm'))) {
+    VS_IND = [
+      ['P/E (TTM)', '16,71', '14,50'],
+      ['P/B (MRQ)', '2,20', '1,45'],
+      ['EPS (TTM)', '4.700', '3.120'],
+      ['ROE', '9,8%', '11,2%'],
+      ['ROA', '1,92%', '2,15%'],
+      ['Biên LN ròng', '14,6%', '12,8%'],
+      ['Tỷ suất cổ tức', '1,38%', '3,80%']
     ];
   } else {
     const curVal = (typeof getStockValuationData === 'function') ? getStockValuationData() : null;

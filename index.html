@@ -7599,7 +7599,7 @@ function vReports() {
       <tbody>${rows.map(r => {
         const sym = r[1].includes(':') ? r[1].split(':')[0].trim() : '';
         const u = (sym && typeof uni === 'function') ? uni(sym) : null;
-        const curPrice = u ? u[4] * 1000 : (r[4] && r[5] ? Math.round(r[4] / (1 + r[5] / 100)) : null);
+        const curPrice = (r[4] && r[5] != null) ? Math.round(r[4] / (1 + r[5] / 100)) : (u ? u[4] * 1000 : null);
         return `<tr class="click" data-act="report" data-v="${REPORTS.indexOf(REPORTS.find(x => x[1] === r[1]))}">
           <td class="muted">${r[0]}</td>
           <td class="ti" title="${esc(r[1])}">${r[1]}</td>
@@ -8836,7 +8836,7 @@ const A = {
     const thesis = r[9] || 'Báo cáo cung cấp đánh giá toàn diện về kết quả kinh doanh quý gần nhất, phân tích triển vọng ngành và định giá so sánh với các doanh nghiệp cùng phân khúc.';
     const sym = r[1].includes(':') ? r[1].split(':')[0].trim() : '';
     const u = (sym && typeof uni === 'function') ? uni(sym) : null;
-    const curPrice = u ? u[4] * 1000 : (r[4] && r[5] ? Math.round(r[4] / (1 + r[5] / 100)) : null);
+    const curPrice = (r[4] && r[5] != null) ? Math.round(r[4] / (1 + r[5] / 100)) : (u ? u[4] * 1000 : null);
 
     // UX Writer: Map raw tool IDs to professional investor-facing badges
     const reportTypeBadge = r[10] === 'vnd_get_consensus' 

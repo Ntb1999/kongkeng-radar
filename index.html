@@ -1644,36 +1644,99 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
   border-color: #6366f1;
 }
 
-/* REALTIME STREAMING ENGINE & TICK FLASHING (BINANCE-STYLE) */
-@keyframes flashGreen {
-  0% { background: rgba(34, 197, 94, 0.45); color: var(--up); transform: scale(1.04); }
-  100% { background: transparent; color: inherit; transform: scale(1); }
+/* ================= BINANCE-STYLE CUSTOMER-FRIENDLY TICK ANIMATION ================= */
+:root {
+  --bn-green: #0ecb81;
+  --bn-red: #f6465d;
+  --bn-up-bg: rgba(14, 203, 129, 0.16);
+  --bn-down-bg: rgba(246, 70, 93, 0.16);
+  --bn-up-border: rgba(14, 203, 129, 0.35);
+  --bn-down-border: rgba(246, 70, 93, 0.35);
 }
-@keyframes flashRed {
-  0% { background: rgba(239, 68, 68, 0.45); color: var(--down); transform: scale(1.04); }
-  100% { background: transparent; color: inherit; transform: scale(1); }
+
+@keyframes binanceTickUp {
+  0% {
+    background-color: var(--bn-up-bg);
+    color: var(--bn-green) !important;
+    border-color: var(--bn-up-border);
+    box-shadow: 0 0 8px rgba(14, 203, 129, 0.22);
+  }
+  35% {
+    background-color: var(--bn-up-bg);
+    color: var(--bn-green) !important;
+    border-color: var(--bn-up-border);
+    box-shadow: 0 0 8px rgba(14, 203, 129, 0.22);
+  }
+  100% {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
 }
+
+@keyframes binanceTickDown {
+  0% {
+    background-color: var(--bn-down-bg);
+    color: var(--bn-red) !important;
+    border-color: var(--bn-down-border);
+    box-shadow: 0 0 8px rgba(246, 70, 93, 0.22);
+  }
+  35% {
+    background-color: var(--bn-down-bg);
+    color: var(--bn-red) !important;
+    border-color: var(--bn-down-border);
+    box-shadow: 0 0 8px rgba(246, 70, 93, 0.22);
+  }
+  100% {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+}
+
 .flash-up {
-  animation: flashGreen 0.75s cubic-bezier(0.1, 0.9, 0.2, 1);
+  animation: binanceTickUp 1.05s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   border-radius: 4px;
 }
+
 .flash-down {
-  animation: flashRed 0.75s cubic-bezier(0.1, 0.9, 0.2, 1);
+  animation: binanceTickDown 1.05s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   border-radius: 4px;
 }
+
+.mkt-idx-score,
+[data-stock-role="price"],
+.mkt-global-val,
+#c360-live-price,
+.num.font-mono,
+.mkt-idx-chg,
+[data-stock-role="pct"] {
+  font-variant-numeric: tabular-nums lining-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
 .mkt-idx-score {
-  transition: background 0.3s, color 0.2s;
   display: inline-block;
-  padding: 1px 4px;
+  padding: 1px 6px;
   border-radius: 4px;
+  border: 1px solid transparent;
+  transition: background-color 0.8s ease-out, border-color 0.8s ease-out, color 0.3s ease;
 }
+
 [data-stock-role="price"] {
-  transition: background 0.3s, color 0.2s;
-  border-radius: 4px;
-}
-[data-stock-role="price"].flash-up, [data-stock-role="price"].flash-down {
   display: inline-block;
-  padding: 1px 5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: background-color 0.8s ease-out, border-color 0.8s ease-out, color 0.3s ease;
+}
+
+.mkt-global-val {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: background-color 0.8s ease-out, border-color 0.8s ease-out, color 0.3s ease;
 }
 .live-pulse-dot {
   width: 7px;
@@ -5478,7 +5541,7 @@ const TV_TOOLS = [
 /* ================= REALTIME STREAMING ENGINE (CLIENT-SIDE STREAM & WSS) ================= */
 let REALTIME_ACTIVE = true;
 let REALTIME_TIMER = null;
-let REALTIME_SPEED_MS = 1400;
+let REALTIME_SPEED_MS = 1000;
 let HERO_SIDE_TAB = 'tape';
 let INTRADAY_LIVE_TICKS = [];
 let _MKT_STREAM_TICK_COUNT = 0;
@@ -5524,6 +5587,10 @@ function toggleRealtimeStream() {
   const dot = document.getElementById('c360-live-dot');
   const label = document.getElementById('c360-live-status-label');
 
+  const mktBtn = document.getElementById('btn-mkt-realtime-toggle');
+  const mktDot = document.getElementById('mkt-live-dot');
+  const mktLabel = document.getElementById('mkt-live-label');
+
   if (REALTIME_ACTIVE) {
     if (btn) {
       btn.style.background = 'rgba(34,197,94,0.12)';
@@ -5532,7 +5599,16 @@ function toggleRealtimeStream() {
     }
     if (dot) dot.className = 'live-pulse-dot';
     if (label) label.textContent = 'REALTIME LIVE';
-    if (typeof toast === 'function') toast('● Đã BẬT luồng Realtime Streaming (~1.4s/tick Binance style)!');
+
+    if (mktBtn) {
+      mktBtn.style.background = 'rgba(34,197,94,0.08)';
+      mktBtn.style.borderColor = 'rgba(34,197,94,0.3)';
+      mktBtn.style.color = '#16a34a';
+    }
+    if (mktDot) mktDot.className = 'live-pulse-dot';
+    if (mktLabel) mktLabel.textContent = '⚡ Live Stream (~1.0s/tick)';
+
+    if (typeof toast === 'function') toast('● Đã BẬT luồng Realtime Streaming (~1.0s/tick Binance style)!');
   } else {
     if (btn) {
       btn.style.background = 'rgba(148,163,184,0.15)';
@@ -5541,6 +5617,15 @@ function toggleRealtimeStream() {
     }
     if (dot) dot.className = 'live-paused-dot';
     if (label) label.textContent = 'STREAM: TẠM DỪNG';
+
+    if (mktBtn) {
+      mktBtn.style.background = 'rgba(148,163,184,0.12)';
+      mktBtn.style.borderColor = 'var(--line2)';
+      mktBtn.style.color = 'var(--ink3)';
+    }
+    if (mktDot) mktDot.className = 'live-paused-dot';
+    if (mktLabel) mktLabel.textContent = '⏸ Stream: Tạm dừng';
+
     if (typeof toast === 'function') toast('⏸ Đã TẠM DỪNG luồng Realtime.');
   }
 }
@@ -5570,7 +5655,9 @@ function updateMarketIndexInDOM(idxName, newScore, newChg, newPct, delta) {
   }
 
   if (chgEl) {
-    chgEl.textContent = `${isUp ? '+' : ''}${newChg.toFixed(2)} (${isUp ? '+' : ''}${newPct.toFixed(2)}%)`;
+    const dirSign = isUp ? '▲ +' : '▼ ';
+    const pctSign = isUp ? '+' : '';
+    chgEl.textContent = `${dirSign}${Math.abs(newChg).toFixed(2)} (${pctSign}${newPct.toFixed(2)}%)`;
     chgEl.className = `mkt-idx-chg ${chgClass}`;
   }
 
@@ -5616,8 +5703,11 @@ function updateStockRowInDOM(sym, newPrice, newChg, newPct, newVol, newVal, delt
     const valEl = row.querySelector('[data-stock-role="val"]');
 
     const priceThousand = (newPrice / 1000).toFixed(2);
-    const pctStr = (newPct > 0 ? '+' : '') + Number(newPct || 0).toFixed(2) + '%';
-    const pctColor = newPct > 0 ? 'var(--up)' : newPct < 0 ? 'var(--down)' : 'var(--ink3)';
+    const isUp = newPct > 0;
+    const isDown = newPct < 0;
+    const dirArrow = isUp ? '▲ +' : (isDown ? '▼ ' : '');
+    const pctStr = dirArrow + Math.abs(Number(newPct || 0)).toFixed(2) + '%';
+    const pctColor = isUp ? 'var(--bn-green, #0ECB81)' : (isDown ? 'var(--bn-red, #F6465D)' : 'var(--ink3)');
 
     if (priceEl) {
       priceEl.innerHTML = `<b>${priceThousand}</b>`;
@@ -5643,10 +5733,13 @@ function updateStockRowInDOM(sym, newPrice, newChg, newPct, newVol, newVal, delt
   // Also update Movers if visible
   const moverRows = document.querySelectorAll(`[data-mover-sym="${sym}"]`);
   moverRows.forEach(mRow => {
-    const mVal = mRow.querySelector('[data-mover-role="val"]');
     const mPct = mRow.querySelector('[data-mover-role="pct"]');
     if (mPct) {
-      mPct.textContent = `(${(newPct > 0 ? '+' : '') + Number(newPct || 0).toFixed(2)}%)`;
+      const isUp = newPct > 0;
+      const isDown = newPct < 0;
+      const dirArrow = isUp ? '▲ +' : (isDown ? '▼ ' : '');
+      mPct.textContent = `(${dirArrow}${Math.abs(Number(newPct || 0)).toFixed(2)}%)`;
+      mPct.style.color = isUp ? 'var(--bn-green, #0ECB81)' : (isDown ? 'var(--bn-red, #F6465D)' : 'var(--ink3)');
     }
   });
 }
@@ -5773,75 +5866,75 @@ function tickCompany360Realtime() {
 function tickMarketStreamingEngine() {
   _MKT_STREAM_TICK_COUNT++;
 
-  // 1. Tick for Market Indices (VN-INDEX, VN30, HNX, UPCOM)
-  if (Array.isArray(MARKET_INDICES) && MARKET_INDICES.length > 0) {
-    // Select index: VN-INDEX (45%), VN30 (30%), HNX (15%), UPCOM (10%)
-    const r = Math.random();
-    const idxIndex = r < 0.45 ? 0 : r < 0.75 ? 1 : r < 0.90 ? 2 : 3;
-    const targetIdx = MARKET_INDICES[idxIndex];
-    if (targetIdx) {
-      const isLarge = idxIndex <= 1;
-      const stepMagnitude = isLarge ? (Math.random() * 0.28 + 0.04) : (Math.random() * 0.08 + 0.02);
-      const direction = Math.random() > 0.47 ? 1 : -1;
-      const delta = +(direction * stepMagnitude).toFixed(2);
+  // Staggered Binance heartbeat: alternate between Index micro-tick and Stock micro-tick each 1s
+  if (_MKT_STREAM_TICK_COUNT % 2 === 0) {
+    // 1. Tick for Market Indices (VN-INDEX, VN30, HNX, UPCOM)
+    if (Array.isArray(MARKET_INDICES) && MARKET_INDICES.length > 0) {
+      // Select index: VN-INDEX (45%), VN30 (30%), HNX (15%), UPCOM (10%)
+      const r = Math.random();
+      const idxIndex = r < 0.45 ? 0 : r < 0.75 ? 1 : r < 0.90 ? 2 : 3;
+      const targetIdx = MARKET_INDICES[idxIndex];
+      if (targetIdx) {
+        const isLarge = idxIndex <= 1;
+        const stepMagnitude = isLarge ? (Math.random() * 0.22 + 0.04) : (Math.random() * 0.08 + 0.02);
+        const direction = Math.random() > 0.47 ? 1 : -1;
+        const delta = +(direction * stepMagnitude).toFixed(2);
 
-      targetIdx.score = +(targetIdx.score + delta).toFixed(2);
-      targetIdx.chg = +(targetIdx.chg + delta).toFixed(2);
-      const refScore = targetIdx.score - targetIdx.chg;
-      targetIdx.pct = +( (targetIdx.chg / (refScore || 1)) * 100 ).toFixed(2);
-      targetIdx.spark.push(targetIdx.score);
-      if (targetIdx.spark.length > 14) targetIdx.spark.shift();
+        targetIdx.score = +(targetIdx.score + delta).toFixed(2);
+        targetIdx.chg = +(targetIdx.chg + delta).toFixed(2);
+        const refScore = targetIdx.score - targetIdx.chg;
+        targetIdx.pct = +( (targetIdx.chg / (refScore || 1)) * 100 ).toFixed(2);
+        targetIdx.spark.push(targetIdx.score);
+        if (targetIdx.spark.length > 14) targetIdx.spark.shift();
 
-      if (delta > 0) {
-        targetIdx.adv = Math.min(380, targetIdx.adv + 1);
-        targetIdx.dec = Math.max(10, targetIdx.dec - 1);
-      } else {
-        targetIdx.dec = Math.min(380, targetIdx.dec + 1);
-        targetIdx.adv = Math.max(10, targetIdx.adv - 1);
+        if (delta > 0) {
+          targetIdx.adv = Math.min(380, targetIdx.adv + 1);
+          targetIdx.dec = Math.max(10, targetIdx.dec - 1);
+        } else {
+          targetIdx.dec = Math.min(380, targetIdx.dec + 1);
+          targetIdx.adv = Math.max(10, targetIdx.adv - 1);
+        }
+
+        updateMarketIndexInDOM(targetIdx.name, targetIdx.score, targetIdx.chg, targetIdx.pct, delta);
       }
-
-      updateMarketIndexInDOM(targetIdx.name, targetIdx.score, targetIdx.chg, targetIdx.pct, delta);
     }
-  }
-
-  // 2. Tick for Stocks (VN30 Data Feed Universe)
-  if (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED) {
-    const symKeys = Object.keys(VN30_DATA_FEED);
-    if (symKeys.length > 0) {
-      // Pick 1-2 random stocks to micro-tick this cycle
-      const count = Math.random() > 0.5 ? 2 : 1;
-      for (let i = 0; i < count; i++) {
+  } else {
+    // 2. Tick for Stocks (Single Stock from VN30 Data Feed Universe)
+    if (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED) {
+      const symKeys = Object.keys(VN30_DATA_FEED);
+      if (symKeys.length > 0) {
         const randSym = symKeys[Math.floor(Math.random() * symKeys.length)];
         const s = VN30_DATA_FEED[randSym];
-        if (!s) continue;
+        if (s) {
+          const refPrice = s.ref || s.price;
+          const step = s.price < 10000 ? 10 : s.price < 50000 ? 50 : 100;
+          const maxDelta = Math.round(refPrice * 0.07);
+          const ceilPrice = Math.round((refPrice + maxDelta) / step) * step;
+          const floorPrice = Math.round((refPrice - maxDelta) / step) * step;
 
-        const refPrice = s.ref || s.price;
-        const step = s.price < 10000 ? 10 : s.price < 50000 ? 50 : 100;
-        const maxDelta = Math.round(refPrice * 0.07);
-        const ceilPrice = Math.round((refPrice + maxDelta) / step) * step;
-        const floorPrice = Math.round((refPrice - maxDelta) / step) * step;
+          const sDelta = (Math.random() > 0.46 ? 1 : -1) * step;
+          let newPrice = s.price + sDelta;
+          if (newPrice > ceilPrice) newPrice = ceilPrice;
+          if (newPrice < floorPrice) newPrice = floorPrice;
 
-        const sDelta = (Math.random() > 0.46 ? 1 : -1) * step;
-        let newPrice = s.price + sDelta;
-        if (newPrice > ceilPrice) newPrice = ceilPrice;
-        if (newPrice < floorPrice) newPrice = floorPrice;
-        if (newPrice === s.price) continue;
+          if (newPrice !== s.price) {
+            const oldPrice = s.price;
+            s.price = newPrice;
+            s.chg = s.price - refPrice;
+            s.pct = +( (s.chg / (refPrice || 1)) * 100 ).toFixed(2);
+            const tickVol = Math.floor(Math.random() * 50 + 10) * 100;
+            s.vol = (s.vol || 0) + tickVol;
+            s.val_bil = +( (s.val_bil || 0) + (tickVol * s.price) / 1e9 ).toFixed(1);
 
-        const oldPrice = s.price;
-        s.price = newPrice;
-        s.chg = s.price - refPrice;
-        s.pct = +( (s.chg / (refPrice || 1)) * 100 ).toFixed(2);
-        const tickVol = Math.floor(Math.random() * 50 + 10) * 100;
-        s.vol = (s.vol || 0) + tickVol;
-        s.val_bil = +( (s.val_bil || 0) + (tickVol * s.price) / 1e9 ).toFixed(1);
+            updateStockRowInDOM(s.sym, s.price, s.chg, s.pct, s.vol, s.val_bil, newPrice - oldPrice);
 
-        updateStockRowInDOM(s.sym, s.price, s.chg, s.pct, s.vol, s.val_bil, newPrice - oldPrice);
-
-        // If currently viewed in C360, keep synchronized
-        if (typeof STOCK !== 'undefined' && STOCK && STOCK.sym === s.sym && typeof S !== 'undefined' && S.route && S.route.startsWith('c360')) {
-          STOCK.price = s.price;
-          STOCK.chg = s.chg;
-          STOCK.pct = s.pct;
+            // If currently viewed in C360, keep synchronized
+            if (typeof STOCK !== 'undefined' && STOCK && STOCK.sym === s.sym && typeof S !== 'undefined' && S.route && S.route.startsWith('c360')) {
+              STOCK.price = s.price;
+              STOCK.chg = s.chg;
+              STOCK.pct = s.pct;
+            }
+          }
         }
       }
     }
@@ -8276,6 +8369,8 @@ function vMarket() {
     const advPct = (idx.adv / totalCount * 100).toFixed(0);
     const refPct = (idx.ref / totalCount * 100).toFixed(0);
     const decPct = (idx.dec / totalCount * 100).toFixed(0);
+    const dirSign = isUp ? '▲ +' : '▼ ';
+    const pctSign = isUp ? '+' : '';
 
     return `<div class="mkt-idx-card" data-idx-name="${idx.name}">
       <div class="mkt-idx-head">
@@ -8288,7 +8383,7 @@ function vMarket() {
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
           <div class="mkt-idx-score ${chgClass}" data-idx-role="score">${idx.score.toLocaleString('vi-VN', { minimumFractionDigits: 2 })}</div>
-          <div class="mkt-idx-chg ${chgClass}" data-idx-role="chg">${isUp ? '+' : ''}${idx.chg.toFixed(2)} (${isUp ? '+' : ''}${idx.pct.toFixed(2)}%)</div>
+          <div class="mkt-idx-chg ${chgClass}" data-idx-role="chg">${dirSign}${Math.abs(idx.chg).toFixed(2)} (${pctSign}${idx.pct.toFixed(2)}%)</div>
         </div>
         <div data-idx-role="spark">${renderSparklineSVG(idx.spark, isUp)}</div>
       </div>
@@ -8447,8 +8542,11 @@ function vMarket() {
               ${displayRows.map(s => {
                 const dr = s._dr || getStockDrating(s.sym, s.price, s.ind);
                 const priceThousand = (s.price / 1000).toFixed(2);
-                const pctStr = (s.pct > 0 ? '+' : '') + Number(s.pct || 0).toFixed(2) + '%';
-                const pctColor = s.pct > 0 ? 'var(--up)' : s.pct < 0 ? 'var(--down)' : 'var(--ink3)';
+                const isUp = s.pct > 0;
+                const isDown = s.pct < 0;
+                const dirArrow = isUp ? '▲ +' : (isDown ? '▼ ' : '');
+                const pctStr = dirArrow + Math.abs(Number(s.pct || 0)).toFixed(2) + '%';
+                const pctColor = isUp ? 'var(--bn-green, #0ECB81)' : (isDown ? 'var(--bn-red, #F6465D)' : 'var(--ink3)');
                 const volStr = (s.vol >= 1e6 ? (s.vol / 1e6).toFixed(2) + ' M' : (s.vol >= 1e3 ? (s.vol / 1e3).toFixed(0) + ' K' : (s.vol || 0)));
                 const valStr = Number(s.val_bil || 0).toFixed(1);
                 return `<tr class="click" data-act="stock" data-v="${s.sym}" data-stock-sym="${s.sym}">
@@ -8629,10 +8727,10 @@ function vMarket() {
         <h2 style="margin:0">Tổng quan thị trường</h2>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span style="font-size:11.5px;color:#16a34a;display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.08);padding:4px 10px;border-radius:4px;border:1px solid rgba(34,197,94,0.3)">
-          <span class="live-pulse-dot" style="width:7px;height:7px"></span>
-          <b>⚡ Live Stream (~1.4s/tick)</b> · <span class="muted" id="mkt-stream-rate">Binance Engine</span>
-        </span>
+        <button id="btn-mkt-realtime-toggle" onclick="toggleRealtimeStream()" style="font-size:11.5px;color:${REALTIME_ACTIVE ? '#16a34a' : 'var(--ink3)'};display:inline-flex;align-items:center;gap:6px;background:${REALTIME_ACTIVE ? 'rgba(34,197,94,0.08)' : 'rgba(148,163,184,0.12)'};padding:4px 10px;border-radius:4px;border:1px solid ${REALTIME_ACTIVE ? 'rgba(34,197,94,0.3)' : 'var(--line2)'};cursor:pointer;outline:none" title="Bấm để Tạm dừng / Tiếp tục Live Stream Realtime">
+          <span id="mkt-live-dot" class="${REALTIME_ACTIVE ? 'live-pulse-dot' : 'live-paused-dot'}" style="width:7px;height:7px"></span>
+          <b id="mkt-live-label">${REALTIME_ACTIVE ? '⚡ Live Stream (~1.0s/tick)' : '⏸ Stream: Tạm dừng'}</b> · <span class="muted" id="mkt-stream-rate">Binance Engine</span>
+        </button>
         <span style="font-size:11.5px;color:var(--brand);display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,0.08);padding:4px 10px;border-radius:4px;border:1px solid rgba(37,99,235,0.25)">
           <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e"></span>
           <b>Cloudflare Proxy (DNSE)</b> · <span class="muted" id="mkt-sync-clock">${LAST_REALTIME_SYNC_TIME || 'Live Feed'}</span>

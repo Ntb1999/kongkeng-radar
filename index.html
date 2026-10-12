@@ -7770,32 +7770,32 @@ function getLiveTradingSessionInfo() {
 
 let MARKET_INDICES = [
   {
-    name: 'VN-INDEX', ex: 'HOSE', score: 1735.09, chg: -3.88, pct: -0.22,
-    vol: '911.2M', val: '27.543 tỷ',
-    adv: 168, ceiling: 9, ref: 64, dec: 232, floor: 4,
-    mcp_src: 'DNSE',
-    spark: [1742.5, 1740.1, 1736.8, 1731.2, 1733.5, 1738.0, 1733.4, 1735.09]
+    name: 'VN-INDEX', ex: 'HOSE', score: 1729.15, chg: -5.94, pct: -0.34,
+    vol: '270.4M', val: '8.920 tỷ',
+    adv: 152, ceiling: 7, ref: 61, dec: 254, floor: 3,
+    mcp_src: 'Cloudflare Live Proxy (DNSE)',
+    spark: [1736.20, 1736.64, 1731.50, 1726.80, 1724.79, 1727.40, 1729.15]
   },
   {
-    name: 'VN30-INDEX', ex: 'HOSE', score: 1873.40, chg: -3.60, pct: -0.20,
-    vol: '382.5M', val: '15.420 tỷ',
-    adv: 11, ceiling: 0, ref: 2, dec: 17, floor: 0,
-    mcp_src: 'DNSE',
-    spark: [1880.2, 1877.5, 1874.1, 1869.8, 1871.2, 1875.6, 1872.1, 1873.40]
+    name: 'VN30-INDEX', ex: 'HOSE', score: 1877.10, chg: 3.67, pct: 0.20,
+    vol: '147.0M', val: '5.640 tỷ',
+    adv: 16, ceiling: 0, ref: 3, dec: 11, floor: 0,
+    mcp_src: 'Cloudflare Live Proxy (DNSE)',
+    spark: [1877.75, 1879.67, 1874.20, 1867.35, 1871.50, 1877.10]
   },
   {
-    name: 'HNX-INDEX', ex: 'HNX', score: 256.22, chg: -1.12, pct: -0.43,
-    vol: '84.2M', val: '1.980 tỷ',
-    adv: 65, ceiling: 4, ref: 58, dec: 112, floor: 3,
-    mcp_src: 'DNSE',
-    spark: [258.5, 258.0, 257.4, 256.8, 257.0, 256.22]
+    name: 'HNX-INDEX', ex: 'HNX', score: 266.61, chg: 5.01, pct: 1.92,
+    vol: '18.4M', val: '490 tỷ',
+    adv: 88, ceiling: 8, ref: 52, dec: 78, floor: 1,
+    mcp_src: 'Cloudflare Live Proxy (DNSE)',
+    spark: [261.60, 263.50, 265.20, 266.08, 267.08, 266.61]
   },
   {
-    name: 'UPCOM-INDEX', ex: 'UPCOM', score: 125.49, chg: 0.15, pct: 0.12,
-    vol: '58.6M', val: '860 tỷ',
-    adv: 162, ceiling: 12, ref: 98, dec: 128, floor: 2,
-    mcp_src: 'DNSE',
-    spark: [125.1, 125.2, 125.35, 125.3, 125.42, 125.49]
+    name: 'UPCOM-INDEX', ex: 'UPCOM', score: 125.01, chg: 0.34, pct: 0.27,
+    vol: '9.4M', val: '180 tỷ',
+    adv: 175, ceiling: 14, ref: 92, dec: 115, floor: 2,
+    mcp_src: 'Cloudflare Live Proxy (DNSE)',
+    spark: [124.67, 124.45, 124.80, 125.10, 125.01]
   }
 ];
 
@@ -7963,7 +7963,7 @@ const MARKET_FOREIGN_TOP_SELL = [
   { sym: 'VRE', name: 'Vincom Retail', net_val: '-45.1 tỷ', vol: '-2.450.000 CP', price: '23.15', pct: 0.22 },
   { sym: 'VIC', name: 'Vingroup', net_val: '-38.2 tỷ', vol: '-910.000 CP', price: '225.50', pct: -1.10 },
   { sym: 'MSN', name: 'Masan Group', net_val: '-29.8 tỷ', vol: '-395.000 CP', price: '75.80', pct: -0.26 },
-  { sym: 'BID', name: 'Ngân hàng BIDV', net_val: '-11.9 tỷ', vol: '-351.850 CP', price: '33.90', pct: 0.00 }
+  { sym: 'BID', name: 'Ngân hàng BIDV', net_val: '-11.9 tỷ', vol: '-351.850 CP', price: '34.00', pct: 0.29 }
 ];
 
 const GLOBAL_INDICES = [
@@ -9556,7 +9556,7 @@ const WLU = {};
   ['MWG', 'Thế Giới Di Động', 'HOSE', 75.90, -0.20, -0.26, '5,60 M', 425.04, 75.50, 76.80, 48.90, 82.60, 'Bán lẻ'],
   ['VIC', 'Tập đoàn Vingroup', 'HOSE', 225.50, -2.50, -1.10, '1,85 M', 417.18, 224.00, 229.00, 95.40, 241.80, 'Bất động sản'],
   ['VHM', 'Vinhomes', 'HOSE', 66.00, 0.30, 0.46, '3,40 M', 224.40, 65.40, 67.00, 38.20, 145.60, 'Bất động sản'],
-  ['BID', 'BIDV', 'HOSE', 33.90, 0, 0, '3,76 M', 126.75, 33.25, 34.10, 30.15, 42.70, 'Tài chính'],
+  ['BID', 'BIDV', 'HOSE', 34.00, 0.10, 0.29, '1,13 M', 38.39, 33.70, 34.20, 30.15, 42.70, 'Tài chính'],
   ['CTG', 'VietinBank', 'HOSE', 29.50, 0.30, 1.03, '6,80 M', 200.60, 29.10, 29.80, 24.30, 37.15, 'Tài chính'],
   ['TCB', 'Techcombank', 'HOSE', 32.35, 0.45, 1.41, '8,40 M', 271.74, 31.90, 32.60, 20.45, 34.80, 'Tài chính'],
   ['LPB', 'LPBank', 'HOSE', 40.70, 0.05, 0.12, '2,10 M', 85.47, 40.40, 41.20, 24.80, 59.30, 'Tài chính'],
@@ -13981,8 +13981,8 @@ const DNSE_STOCKS_DB = {
   },
   BID: {
     sym: 'BID', ex: 'HOSE', name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam', ind: 'Ngân hàng',
-    price: 33900, ref: 33900, chg: 0, pct: 0, vol: 3762900, val_bil: 126.75,
-    open: 34050, high: 34100, low: 33250, close: 33900, ceil: 36250, floor: 31550, avg: 33700,
+    price: 34000, ref: 33900, chg: 100, pct: 0.29, vol: 1129100, val_bil: 38.39,
+    open: 33800, high: 34200, low: 33700, close: 34000, ceil: 36250, floor: 31550, avg: 33950,
     metrics: {
       val: [
         ['EPS (TTM)', '3.139 đ'],

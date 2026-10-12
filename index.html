@@ -214,7 +214,7 @@ table.t{width:100%;border-collapse:collapse;font-size:12px;line-height:16px}
 .stock-h{display:flex;align-items:center;justify-content:flex-start;align-self:stretch;gap:24px;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--bg)}
 .logo-msb{width:42px;height:42px;border-radius:50%;overflow:hidden;flex:none;background:var(--bg);box-shadow:inset 0 0 0 1px var(--line)}
 .logo-msb img{width:42px;height:42px;display:block}
-.sym-block{display:flex;flex-direction:column;gap:4px;flex:none;width:380px;min-width:380px;max-width:380px}
+.sym-block{display:flex;flex-direction:column;gap:4px;flex:0 0 auto;min-width:380px;max-width:480px;width:auto}
 .sym{display:flex;align-items:center;gap:8px}
 .sym h1{margin:0;font-size:22px;font-weight:700;letter-spacing:0;line-height:28px}
 .sym .dd{display:flex;align-items:center;gap:4px;cursor:pointer;position:relative}
@@ -300,8 +300,12 @@ table.t{width:100%;border-collapse:collapse;font-size:12px;line-height:16px}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:0}
 .chart-tip{position:fixed;pointer-events:none;background:var(--dark);color:#fff;font-size:12px;line-height:16px;padding:6px 8px;border-radius:4px;z-index:90;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.2)}
 .chart-tip b{font-family:var(--mono);font-weight:500}
-.pos-t th{background:var(--sub);height:32px;padding:0 12px;border-bottom:0;font-weight:500}
-.pos-t td{padding:8px 12px;font-size:12px}
+.pos-t{width:100%;table-layout:fixed}
+.pos-t th{background:var(--sub);height:30px;padding:0 6px;border-bottom:0;font-weight:600;font-size:11px;white-space:nowrap}
+.pos-t td{padding:7px 6px;font-size:12px;white-space:nowrap}
+.pos-t th:nth-child(1),.pos-t td:nth-child(1){width:42%;text-align:left;overflow:hidden;text-overflow:ellipsis}
+.pos-t th:nth-child(2),.pos-t td:nth-child(2){width:28%;text-align:right}
+.pos-t th:nth-child(3),.pos-t td:nth-child(3){width:30%;text-align:right}
 
 /* trading */
 .trade{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.15fr) minmax(0,1.05fr)}
@@ -6591,7 +6595,7 @@ function vOverview() {
         <table class="t pos-t">
           <thead>
             <tr>
-              <th>Chỉ số ngành (trung bình)</th>
+              <th>Chỉ số (TB ngành)</th>
               <th class="rt">Giá trị</th>
               <th class="rt">Vị thế ${curSym}</th>
             </tr>
@@ -6619,6 +6623,8 @@ function vProfile() {
     VNM: { primary: '#003399', secondary: '#66B2FF', accent: '#FFD700', domain: 'vinamilk.com.vn' },
     MWG: { primary: '#FFD400', secondary: '#1A1A1A', accent: '#D0021B', domain: 'mwg.vn' },
     MBB: { primary: '#002B7F', secondary: '#E60000', accent: '#00A3E0', domain: 'mbbank.com.vn' },
+    BID: { primary: '#008542', secondary: '#F5B800', accent: '#006B33', domain: 'bidv.com.vn' },
+    BCM: { primary: '#005BAA', secondary: '#F37021', accent: '#008244', domain: 'becamex.com.vn' },
     VND: { primary: '#F97316', secondary: '#0F172A', accent: '#FB923C', domain: 'vndirect.com.vn' }
   };
   const bInfo = brandColors[STOCK.sym] || { primary: '#2563EB', secondary: '#1E293B', accent: '#38BDF8', domain: `${STOCK.sym.toLowerCase()}.com.vn` };
@@ -6661,7 +6667,7 @@ function vProfile() {
   </div>
   <div class="prow2">
     ${pnl('Ban lãnh đạo', 'Cập nhật 12/08/2026', `<div class="tscroll"><table class="t dn"><thead><tr><th style="width:50px">#</th><th>Họ tên</th><th style="width:430px">Chức vụ</th></tr></thead><tbody>${PROFILE.leaders.map((r, i) => `<tr><td class="num">${i + 1}</td><td class="ink2">${r[0]}</td><td class="ink2">${r[1]}</td></tr>`).join('')}</tbody></table></div>`)}
-    ${pnl('Công ty con &amp; liên kết', '3 đơn vị', `<div class="tscroll"><table class="t dn"><thead><tr><th style="width:50px">#</th><th>Tên công ty</th><th class="rt" style="width:100px">% sở hữu</th><th style="width:220px">Lĩnh vực</th><th class="rt" style="width:120px">Quan hệ</th></tr></thead><tbody>${PROFILE.subs.map((r, i) => `<tr><td class="num">${i + 1}</td><td class="ink2">${r[0]}</td><td class="rt num ink2">${r[1]}</td><td class="ink2">${r[2]}</td><td class="rt ink2">${r[3]}</td></tr>`).join('')}</tbody></table></div>`, 'last')}
+    ${pnl('Công ty con &amp; liên kết', `${(PROFILE.subs || []).length} đơn vị`, `<div class="tscroll"><table class="t dn"><thead><tr><th style="width:50px">#</th><th>Tên công ty</th><th class="rt" style="width:100px">% sở hữu</th><th style="width:220px">Lĩnh vực</th><th class="rt" style="width:120px">Quan hệ</th></tr></thead><tbody>${(PROFILE.subs || []).map((r, i) => `<tr><td class="num">${i + 1}</td><td class="ink2">${r[0]}</td><td class="rt num ink2">${r[1]}</td><td class="ink2">${r[2]}</td><td class="rt ink2">${r[3] || 'Công ty con'}</td></tr>`).join('')}</tbody></table></div>`, 'last')}
   </div>`;
 }
 
@@ -6712,7 +6718,7 @@ function vPeers() {
     <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 8px 0;flex-wrap:wrap;gap:8px">
       <div>${stabs(Object.keys(PEERS).map(k => [k, k]), S.peerSub, 'peersub')}</div>
       <div style="display:flex;align-items:center;gap:6px">
-        <span style="font-size:11px;color:var(--ink3)">Phân loại ngành ICB ·</span>
+        <span style="font-size:11px;color:var(--ink3)">Phân loại ngành ICB · <b style="color:var(--ink2)">${STOCK.ind || 'Ngân hàng'}</b></span>
         
       </div>
     </div>
@@ -10307,6 +10313,13 @@ const VN30_DATA_FEED = {
     "pct": 0,
     "vol": 3762900,
     "val_bil": 126.75,
+    "open": 34050,
+    "high": 34100,
+    "low": 33250,
+    "close": 33900,
+    "ceil": 36250,
+    "floor": 31550,
+    "avg": 33700,
     "metrics": {
       "liq": [
         [
@@ -10316,6 +10329,10 @@ const VN30_DATA_FEED = {
         [
           "GTGD",
           "126,75 tỷ đồng"
+        ],
+        [
+          "KLGD TB 20P",
+          "3.250.000 CP"
         ]
       ],
       "frn": [
@@ -13843,6 +13860,261 @@ const DNSE_STOCKS_DB = {
     },
     events: [['18/09', 'Tập đoàn Bảo Việt lấy ý kiến ĐHĐCĐ về kế hoạch phát triển kinh doanh'], ['25/09', 'GDKHQ chi trả cổ tức tiền mặt 10,55% (1.055,1 đ/CP)'], ['02/10', 'Ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức'], ['20/10', 'Công bố kết quả hoạt động kinh doanh 9 tháng đầu năm 2026'], ['12/11', 'Hội nghị gặp gỡ nhà đầu tư và chuyên viên phân tích quý 3/2026']]
   },
+  BID: {
+    sym: 'BID', ex: 'HOSE', name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam', ind: 'Ngân hàng',
+    price: 33900, ref: 33900, chg: 0, pct: 0, vol: 3762900, val_bil: 126.75,
+    open: 34050, high: 34100, low: 33250, close: 33900, ceil: 36250, floor: 31550, avg: 33700,
+    metrics: {
+      val: [
+        ['EPS (TTM)', '3.139 đ'],
+        ['P/E (TTM)', '10,80 lần'],
+        ['P/B (TTM)', '1,85 lần'],
+        ['ROE (TTM)', '17,5%', 'up'],
+        ['TT Doanh thu (TTM)', '+14,5%', 'up'],
+        ['TT Lợi nhuận (TTM)', '+16,2%', 'up']
+      ],
+      size: [
+        ['Vốn hoá', '238,60 nghìn tỷ'],
+        ['Vốn điều lệ', '155,09 nghìn tỷ'],
+        ['VCSH', '202,81 nghìn tỷ'],
+        ['SLCP lưu hành', '7.040 tỷ']
+      ],
+      liq: [
+        ['KLGD', '3.762.900 CP'],
+        ['GTGD', '126,75 tỷ đồng'],
+        ['KLGD TB 20P', '3.250.000 CP']
+      ],
+      frn: [
+        ['Khối lượng ròng', '-351.850', 'down'],
+        ['Giá trị ròng', '-11.928 triệu', 'down'],
+        ['Room ngoại', '974.162.227 CP']
+      ]
+    },
+    factors: [
+      { t: 'Chất lượng tài chính', w: 25, s: 82, lb: 'RẤT TÍCH CỰC', b: ['Quy mô tài sản #1 hệ thống (> 2,5 triệu tỷ)', 'Tỷ lệ bao phủ nợ xấu NPL buffer > 160%', 'CAR 9,2% tuân thủ Basel II'], n: 'Ngân hàng thương mại quy mô tổng tài sản lớn nhất Việt Nam.' },
+      { t: 'Tăng trưởng', w: 20, s: 78, lb: 'TÍCH CỰC', b: ['Tăng trưởng tín dụng 14,2% theo hạn mức NHNN', 'Doanh thu dịch vụ & số hóa bán lẻ', 'Tăng vốn điều lệ qua phát hành riêng lẻ'], n: 'Động lực từ mở rộng tệp khách hàng FDI và bán lẻ.' },
+      { t: 'Định giá', w: 25, s: 75, lb: 'TÍCH CỰC', b: ['P/E 10,80 lần hấp dẫn so với nhóm Big 4', 'P/B 1,85 lần phản ánh ROE 17,5%', 'Tỷ suất cổ tức ổn định'], n: 'Mức định giá hấp dẫn cho vị thế ngân hàng quốc doanh đầu ngành.' },
+      { t: 'Sức khỏe tài chính', w: 15, s: 76, lb: 'TÍCH CỰC', b: ['Huy động vốn tăng trưởng bền vững', 'CASA cải thiện nhờ BIDV SmartBanking', 'Dòng tiền kinh doanh thặng dư'], n: 'Nền tảng thanh khoản vững vàng.' },
+      { t: 'Rủi ro', w: 15, s: 38, lb: 'RỦI RO THẤP', b: ['Chi phí vốn trong môi trường lãi suất', 'Trích lập dự phòng theo chu kỳ', 'Áp lực cạnh tranh tín dụng bán lẻ'], n: 'Khả năng chống chịu rủi ro cao nhờ bộ đệm dự phòng dày.' }
+    ],
+    highlights: {
+      pos: [
+        'Ngân hàng có tổng tài sản lớn nhất Việt Nam (> 2,5 triệu tỷ đồng), thị phần huy động và cho vay đầu ngành',
+        'Chất lượng tài sản cải thiện mạnh mẽ, tỷ lệ nợ xấu duy trì dưới 1,3% và tỷ lệ trích lập bao phủ nợ xấu thuộc top đầu',
+        'Tăng trưởng số hóa vượt bậc với nền tảng BIDV SmartBanking phục vụ hơn 20 triệu khách hàng cá nhân',
+        'Động lực tăng vốn điều lệ và phát hành riêng lẻ cho nhà đầu tư chiến lược nước ngoài'
+      ],
+      neg: [
+        'Biên lãi thuần (NIM) chịu áp lực thu hẹp nhẹ do cạnh tranh lãi suất cho vay hỗ trợ nền kinh tế',
+        'Nhu cầu duy trì trích lập dự phòng rủi ro tín dụng ở mức cao cho các khoản nợ tái cơ cấu',
+        'Tỷ lệ an toàn vốn (CAR) cần liên tục được bồi đắp thông qua các đợt tăng vốn điều lệ'
+      ],
+      cat: [
+        'Kế hoạch phát hành riêng lẻ 9% vốn điều lệ cho nhà đầu tư chiến lược nâng cao bộ đệm an toàn vốn',
+        'Hạn mức tăng trưởng tín dụng được NHNN ưu tiên cấp bổ sung vào quý 3 và quý 4',
+        'Ghi nhận hoàn nhập dự phòng từ các khoản nợ cơ cấu lớn được xử lý dứt điểm trong năm 2026'
+      ]
+    },
+    changes: [
+      ['Doanh thu thuần', 14.5, '%'],
+      ['Lợi nhuận sau thuế', 16.2, '%'],
+      ['ROE (TTM)', 17.5, '%'],
+      ['P/E (TTM)', 10.8, ' Lần'],
+      ['P/B (MRQ)', 1.85, ' Lần'],
+      ['Biên LN ròng', 12.5, '%']
+    ],
+    radar: {
+      axes: ['Quy mô tài sản', 'Chất lượng tài sản', 'Sinh lời ROE', 'Huy động & CASA', 'An toàn vốn CAR', 'Thương hiệu & Số hoá'],
+      current: [95, 82, 85, 90, 78, 88],
+      ind: [70, 68, 72, 68, 65, 68]
+    },
+    position: [
+      ['ROE (TTM)', '17,5%', 'Top 25%'],
+      ['P/E (TTM)', '10,80 lần', 'Top 35%'],
+      ['P/B (MRQ)', '1,85 lần', 'Top 40%'],
+      ['Vốn hoá', '238,60 nghìn tỷ', 'Top 2 Ngành'],
+      ['Tổng tài sản', '> 2,5 triệu tỷ', '#1 Toàn ngành'],
+      ['Biên LN ròng', '12,5%', 'Top 20%']
+    ],
+    perf: [
+      ['1 tuần', 0.0, 1.13, 34100, 33250],
+      ['1 tháng', -6.74, 5.08, 37850, 33250],
+      ['3 tháng', 8.20, 9.70, 38500, 31200],
+      ['6 tháng', 18.50, 22.42, 38500, 28500],
+      ['52 tuần', 24.30, 26.93, 38500, 27100],
+      ['Từ đầu năm', 15.60, 26.93, 38500, 28500]
+    ],
+    profile: {
+      basic: [
+        ['Mã chứng khoán', 'BID'],
+        ['Mã ngành ICB', '8355 · Ngân hàng'],
+        ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'],
+        ['Năm thành lập', '26/04/1957'],
+        ['Vốn điều lệ', '155,09 nghìn tỷ đồng'],
+        ['Số lượng nhân sự', '28.500'],
+        ['Số lượng chi nhánh', '1.096 phòng giao dịch'],
+        ['Đại diện pháp luật', 'Phan Đức Tú · Chủ tịch HĐQT']
+      ],
+      listing: [
+        ['Ngày niêm yết', '24/01/2014'],
+        ['Nơi niêm yết', 'HOSE'],
+        ['Giá chào sàn', '18.700 đ'],
+        ['P/E (TTM)', '10,80 lần'],
+        ['P/B (TTM)', '1,85 lần'],
+        ['KL niêm yết', '7.040.000.000 CP'],
+        ['KL lưu hành', '7.040.000.000 CP']
+      ],
+      intro: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV, HOSE: BID) thành lập năm 1957, là ngân hàng thương mại cổ phần lâu đời nhất và có quy mô tổng tài sản lớn nhất tại Việt Nam. BIDV phục vụ hơn 20 triệu khách hàng, cung cấp toàn diện các giải pháp tài chính ngân hàng, bảo hiểm, chứng khoán và đầu tư tài chính.',
+      miles: [
+        ['26/04/1957', 'Thành lập Ngân hàng Kiến thiết Việt Nam (tiền thân BIDV).'],
+        ['1995', 'Chuyển đổi thành Ngân hàng Đầu tư và Phát triển Việt Nam, mở rộng kinh doanh đa năng.'],
+        ['24/01/2014', 'Chính thức niêm yết trên Sở Giao dịch Chứng khoán TP.HCM (HOSE: BID).'],
+        ['2019', 'Phát hành thành công cho cổ đông chiến lược KEB Hana Bank (Hàn Quốc), gia tăng tiềm lực tài chính.'],
+        ['2026', 'Tổng tài sản vượt 2,5 triệu tỷ đồng, vị thế định chế tài chính trụ cột quốc gia.']
+      ],
+      leaders: [
+        ['Phan Đức Tú', 'Chủ tịch HĐQT'],
+        ['Lê Ngọc Lâm', 'Tổng Giám đốc'],
+        ['Trần Phương', 'Phó Tổng Giám đốc'],
+        ['Lê Trung Thành', 'Phó Tổng Giám đốc'],
+        ['Tạ Thị Hạnh', 'Kế toán trưởng']
+      ],
+      subs: [
+        ['Cty CP Chứng khoán BIDV (BSC)', '79,9%', 'Chứng khoán & Ngân hàng đầu tư', 'Công ty con'],
+        ['Tổng Công ty Bảo hiểm BIDV (BIC)', '51,0%', 'Bảo hiểm phi nhân thọ', 'Công ty con'],
+        ['Cty Cho thuê tài chính TNHH BIDV-SuMi TRUST (BSL)', '50,0%', 'Cho thuê tài chính', 'Liên doanh'],
+        ['Cty TNHH MTV Quản lý nợ & Khai thác TS BIDV (BAMC)', '100%', 'Xử lý nợ & Quản lý tài sản', 'Công ty con']
+      ]
+    },
+    peers: {
+      'Tổng quan': [
+        ['Doanh nghiệp', 'Vốn hoá', 'P/E', 'P/B', 'ROE', 'NIM', 'CASA'],
+        [
+          ['BID', '238.600 tỷ', '10,80', '1,85', '17,5%', '3,92%', '24,20%'],
+          ['VCB', '521.800 tỷ', '14,20', '2,65', '21,8%', '3,20%', '33,80%'],
+          ['CTG', '185.400 tỷ', '9,50', '1,42', '16,2%', '3,10%', '23,50%'],
+          ['TCB', '125.600 tỷ', '8,40', '1,18', '16,8%', '4,20%', '39,50%'],
+          ['MBB', '120.400 tỷ', '6,20', '1,25', '21,2%', '4,50%', '37,20%']
+        ]
+      ],
+      'Biến động giá': [
+        ['Doanh nghiệp', '1 tuần', '1 tháng', '3 tháng', 'Từ đầu năm', '1 năm'],
+        [
+          ['BID', '0,00%', '−6,74%', '+8,20%', '+15,60%', '+24,30%'],
+          ['VCB', '−0,40%', '+1,90%', '+4,20%', '+8,70%', '+12,40%'],
+          ['CTG', '+1,20%', '−2,40%', '+6,50%', '+18,20%', '+26,40%'],
+          ['TCB', '+1,60%', '+6,80%', '+14,50%', '+29,30%', '+38,60%'],
+          ['MBB', '+0,80%', '+3,50%', '+9,80%', '+22,10%', '+31,50%']
+        ]
+      ],
+      'Định giá': [
+        ['Doanh nghiệp', 'P/E', 'P/B', 'P/S', 'EV/EBITDA', 'Tỷ suất cổ tức'],
+        [
+          ['BID', '10,80', '1,85', '2,10', '9,40', '4,50%'],
+          ['VCB', '14,20', '2,65', '3,40', '12,80', '2,80%'],
+          ['CTG', '9,50', '1,42', '1,80', '8,20', '4,20%'],
+          ['TCB', '8,40', '1,18', '1,95', '7,80', '3,50%'],
+          ['MBB', '6,20', '1,25', '1,60', '6,50', '5,00%']
+        ]
+      ]
+    },
+    events: [
+      ['18/09', 'Lấy ý kiến ĐHĐCĐ về kế hoạch phát hành riêng lẻ tăng vốn'],
+      ['25/09', 'GDKHQ chi trả cổ tức cho cổ đông'],
+      ['02/10', 'Ngày ĐKCC thực hiện quyền cho cổ đông hiện hữu'],
+      ['20/10', 'Công bố KQKD 9 tháng đầu năm 2026'],
+      ['12/11', 'Hội nghị gặp gỡ nhà đầu tư và phân tích quý 3']
+    ],
+    eventsTable: [
+      ['20/11/2026', '06/11/2026', '05/09/2026', 'Quyền mua cổ phiếu', 'Chào bán quyền mua cổ phiếu cho cổ đông hiện hữu tỷ lệ 10:1, giá 10.000 đ/CP'],
+      ['25/10/2026', '-', '20/10/2026', 'Kết quả kinh doanh', 'Công bố BCTC hợp nhất quý 3/2026 (dự kiến LNTT tăng trưởng 18,5%)'],
+      ['14/10/2026', '25/09/2026', '01/09/2026', 'Trả cổ tức bằng tiền', 'Thực hiện chi trả cổ tức tiền mặt đợt 1/2026 tỷ lệ 10% (1.000 đ/CP)'],
+      ['18/09/2026', '04/09/2026', '26/08/2026', 'Khác', 'ĐHĐCĐ bất thường thông qua phương án phát hành riêng lẻ tăng vốn điều lệ'],
+      ['12/08/2026', '-', '12/08/2026', 'Giao dịch nội bộ', 'Hội đồng Quản trị phê duyệt kế hoạch kinh doanh và mở rộng mạng lưới giao dịch số'],
+      ['30/07/2026', '-', '30/07/2026', 'Kết quả kinh doanh', 'BCTC hợp nhất quý 2/2026 - LNTT luỹ kế 6 tháng đạt 15.545 tỷ đồng, +12,8% cùng kỳ'],
+      ['24/06/2026', '10/06/2026', '02/06/2026', 'Trả cổ tức bằng cổ phiếu', 'Chi trả cổ tức bằng cổ phiếu tỷ lệ 15% tăng vốn điều lệ lên 155.090 tỷ đồng'],
+      ['28/04/2026', '-', '28/04/2026', 'Kết quả kinh doanh', 'BCTC hợp nhất quý 1/2026 - LNST đạt 6.120 tỷ đồng, +10,4% cùng kỳ']
+    ],
+    news: [
+      ['10/10', 'Doanh nghiệp', 'BIDV được vinh danh là Ngân hàng SME xuất sắc nhất Việt Nam 2026'],
+      ['08/10', 'Thị trường', 'Ngân hàng quốc doanh triển khai gói tín dụng 100.000 tỷ hỗ trợ phát triển kinh tế'],
+      ['05/10', 'Doanh nghiệp', 'BIDV SmartBanking vượt mốc 20 triệu người dùng tích cực'],
+      ['02/10', 'Cổ tức', 'BIDV chốt danh sách cổ đông thực hiện quyền nhận cổ tức tiền mặt và lấy ý kiến ĐHĐCĐ'],
+      ['28/09', 'Thị trường', 'NHNN ưu tiên cấp thêm hạn mức tín dụng cho nhóm ngân hàng Big 4 trong quý 4'],
+      ['25/09', 'Doanh nghiệp', 'BIDV phát hành thành công 5.000 tỷ đồng trái phiếu xanh theo chuẩn quốc tế'],
+      ['18/09', 'Doanh nghiệp', 'ĐHĐCĐ thông qua phương án phát hành riêng lẻ cho đối tác chiến lược nước ngoài'],
+      ['12/09', 'Thị trường', 'Cổ phiếu ngân hàng dẫn dắt dòng tiền thị trường, thanh khoản BID bứt phá'],
+      ['05/09', 'Doanh nghiệp', 'BIDV và KEB Hana Bank mở rộng hợp tác toàn diện các dịch vụ tài chính khu vực'],
+      ['28/08', 'Doanh nghiệp', 'LNTT 6 tháng đầu năm của BIDV đạt hơn 15.545 tỷ đồng, hoàn thành 54% kế hoạch']
+    ],
+    holders: [
+      ['Ngân hàng Nhà nước Việt Nam (NHNN)', 'Tổ chức', 'Trong nước', '5.688,28 triệu', '80,80%', '30/06/2026'],
+      ['KEB Hana Bank (Hàn Quốc)', 'Tổ chức', 'Nước ngoài', '1.056,00 triệu', '15,00%', '30/06/2026'],
+      ['Vietnam Enterprise Investments Limited (VEIL - Dragon Capital)', 'Tổ chức', 'Nước ngoài', '65,40 triệu', '0,93%', '15/06/2026'],
+      ['Cổ đông nội bộ & Người có liên quan', 'Cá nhân', 'Trong nước', '18,20 triệu', '0,26%', '30/06/2026'],
+      ['Đại chúng & Cổ đông khác', 'Đại chúng', 'Trong nước', '212,12 triệu', '3,01%', '30/06/2026']
+    ],
+    ownership: [
+      ['Nhà nước', 80.80, '#008542'],
+      ['Nước ngoài', 16.50, '#14A6FA'],
+      ['Khác', 2.70, '#F5B800']
+    ],
+    foreign_own: [
+      ['Room tối đa', '30,00%'],
+      ['Đã sở hữu', '16,50%', 'up'],
+      ['Room còn lại', '974.162.227 CP'],
+      ['KL mua ròng 5 phiên', '-1.850.000', 'down'],
+      ['KL mua ròng 1 tháng', '+4.120.000', 'up']
+    ],
+    insiders: [
+      ['Phan Đức Tú', 'Chủ tịch HĐQT', 'Bầu lại', '25/04/2026', '0,01%'],
+      ['Lê Ngọc Lâm', 'Thành viên HĐQT kiêm Tổng Giám đốc', 'Bổ nhiệm', '15/03/2026', '0,01%'],
+      ['Trần Phương', 'Phó Tổng Giám đốc', 'Giao dịch', '28/05/2026', '0,005%'],
+      ['Lê Trung Thành', 'Phó Tổng Giám đốc', 'Bổ nhiệm', '12/02/2026', '0,003%'],
+      ['Tạ Thị Hạnh', 'Kế toán trưởng', 'Bổ nhiệm', '10/01/2026', '0,002%']
+    ],
+    fin: {
+      bs: {
+        t: 'Cân đối kế toán', unit: 'Đơn vị: tỷ đồng', q: [
+          ['Tổng tài sản', [2380000, 2.8], [2425000, 1.9], [2480000, 2.3], [2530000, 2.0], [2585000, 2.2]],
+          ['Cho vay khách hàng', [1690000, 3.2], [1735000, 2.7], [1780000, 2.6], [1825000, 2.5], [1870000, 2.5]],
+          ['Tiền gửi khách hàng', [1620000, 2.9], [1660000, 2.5], [1710000, 3.0], [1760000, 2.9], [1810000, 2.8]],
+          ['Vốn chủ sở hữu', [112000, 3.5], [115500, 3.1], [119200, 3.2], [122500, 2.8], [126800, 3.5]],
+          ['Tổng nợ phải trả', [2268000, 2.7], [2309500, 1.8], [2360800, 2.2], [2407500, 2.0], [2458200, 2.1]],
+          ['Nợ xấu / Tổng dư nợ (NPL)', ['1,25%', -.02, 'pp'], ['1,26%', .01, 'pp'], ['1,28%', .02, 'pp'], ['1,27%', -.01, 'pp'], ['1,26%', -.01, 'pp']]
+        ]
+      },
+      is: {
+        t: 'Kết quả kinh doanh', unit: 'Đơn vị: tỷ đồng', q: [
+          ['Thu nhập lãi thuần', [13850, 3.8], [14200, 2.5], [14650, 3.2], [15100, 3.1], [15650, 3.6]],
+          ['Lãi thuần từ hoạt động dịch vụ', [1850, 4.2], [1920, 3.8], [2050, 6.8], [2140, 4.4], [2280, 6.5]],
+          ['Tổng thu nhập hoạt động', [17500, 4.0], [18100, 3.4], [18900, 4.4], [19600, 3.7], [20450, 4.3]],
+          ['Chi phí hoạt động', [5450, 2.8], [5620, 3.1], [5850, 4.1], [6050, 3.4], [6280, 3.8]],
+          ['Chi phí dự phòng rủi ro tín dụng', [5200, -4.5], [5400, 3.8], [5650, 4.6], [5800, 2.7], [6100, 5.2]],
+          ['Lợi nhuận trước thuế', [6850, 6.2], [7080, 3.4], [7400, 4.5], [7750, 4.7], [8070, 4.1]],
+          ['Lợi nhuận sau thuế', [5480, 6.2], [5664, 3.4], [5920, 4.5], [6200, 4.7], [6456, 4.1]]
+        ]
+      },
+      cf: {
+        t: 'Lưu chuyển tiền tệ', unit: 'Đơn vị: tỷ đồng', q: [
+          ['LC tiền thuần từ hoạt động kinh doanh', [18500, 12.4], [16200, -12.4], [22400, 38.3], [19800, -11.6], [24500, 23.7]],
+          ['LC tiền thuần từ hoạt động đầu tư', [-3200, null], [-3850, -20.3], [-2950, 23.4], [-4100, -39.0], [-3500, 14.6]],
+          ['LC tiền thuần từ hoạt động tài chính', [2800, null], [-1200, null], [3500, null], [4200, 20.0], [-1800, null]],
+          ['Lưu chuyển tiền thuần trong kỳ', [18100, 28.5], [11150, -38.4], [22950, 105.8], [19900, -13.3], [19200, -3.5]],
+          ['Tiền & tương đương tiền đầu kỳ', [85000, 8.5], [103100, 21.3], [114250, 10.8], [137200, 20.1], [157100, 14.5]],
+          ['Tiền & tương đương tiền cuối kỳ', [103100, 21.3], [114250, 10.8], [137200, 20.1], [157100, 14.5], [176300, 12.2]]
+        ]
+      },
+      rt: {
+        t: 'Chỉ số', unit: 'Đơn vị: % · chênh lệch theo điểm phần trăm (đ%)', q: [
+          ['Tỷ lệ chi phí / thu nhập (CIR)', ['31,2%', -.4, 'pp'], ['31,0%', -.2, 'pp'], ['30,9%', -.1, 'pp'], ['30,8%', -.1, 'pp'], ['30,7%', -.1, 'pp']],
+          ['Hệ số an toàn vốn (CAR)', ['9,15%', .05, 'pp'], ['9,20%', .05, 'pp'], ['9,22%', .02, 'pp'], ['9,25%', .03, 'pp'], ['9,28%', .03, 'pp']],
+          ['Tỷ lệ CASA', ['22,8%', .4, 'pp'], ['23,2%', .4, 'pp'], ['23,6%', .4, 'pp'], ['23,9%', .3, 'pp'], ['24,2%', .3, 'pp']],
+          ['Tỷ lệ bao phủ nợ xấu (LLR)', ['155,0%', 2.5, 'pp'], ['158,2%', 3.2, 'pp'], ['160,5%', 2.3, 'pp'], ['162,0%', 1.5, 'pp'], ['163,8%', 1.8, 'pp']]
+        ]
+      }
+    }
+  },
   BCM: {
     sym: 'BCM', ex: 'HOSE', name: 'Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP', ind: 'Bất động sản KCN',
     price: 38300, ref: 39150, chg: -850, pct: -2.17, vol: 447100, val_bil: 17.12,
@@ -14565,7 +14837,7 @@ function synthesizeDnseMcpData(sym) {
   return {
     sym, ex: 'HOSE', name, ind, price, chg, pct,
     metrics: {
-      liq: [['KLGD', '3.420.000 CP'], ['GTGD', Math.round(price * 3.42 / 1000) + ' tỷ đồng']],
+      liq: [['KLGD', '3.420.000 CP'], ['GTGD', Math.round(price * 3.42 / 1000) + ' tỷ đồng'], ['KLGD TB 20P', '3.150.000 CP']],
       frn: [['Khối lượng ròng', '+250.000', 'up'], ['Giá trị ròng', '+5.800 triệu', 'up'], ['Room ngoại', '45.000.000 CP']],
       val: [['EPS (TTM)', eps], ['P/E (TTM)', pe + ' lần'], ['P/B (TTM)', pb + ' lần'], ['ROE (TTM)', roe, 'up'], ['Biên LN ròng', '12,5%', 'up'], ['Tỷ suất cổ tức', '4,2%', 'up']],
       size: [['Vốn hoá', cap], ['Vốn điều lệ', '8,50 nghìn tỷ'], ['VCSH', '12,40 nghìn tỷ'], ['SLCP lưu hành', '850 triệu CP']]
@@ -14593,7 +14865,37 @@ function synthesizeDnseMcpData(sym) {
     peers: {
       'Tổng quan': [['Doanh nghiệp', 'Vốn hoá', 'P/E', 'P/B', 'ROE'], [[sym + '', cap, pe, pb, roe], ['VNM', '138.900 tỷ', '14,20', '3,90', '27,5%'], ['FPT', '198.600 tỷ', '24,80', '5,62', '28,4%'], ['HPG', '170.200 tỷ', '12,40', '1,48', '12,6%']]]
     },
-    events: [['15/09', 'ĐHĐCĐ thông qua kế hoạch kinh doanh năm 2026'], ['28/09', 'Công bố báo cáo tài chính soát xét'], ['20/10', 'Công bố ước tính kết quả kinh doanh quý 3']]
+    events: [['15/09', 'ĐHĐCĐ thông qua kế hoạch kinh doanh năm 2026'], ['28/09', 'Công bố báo cáo tài chính soát xét'], ['20/10', 'Công bố ước tính kết quả kinh doanh quý 3']],
+    news: [
+      ['10/10', 'Doanh nghiệp', `${name} công bố ước tính kết quả kinh doanh quý 3/2026 tăng trưởng khả quan`],
+      ['02/10', 'Thị trường', `Dòng tiền luân chuyển tích cực tại nhóm cổ phiếu ${ind}`],
+      ['25/09', 'Cổ tức', `${sym} chốt danh sách cổ đông thực hiện quyền chi trả cổ tức`],
+      ['18/09', 'Doanh nghiệp', `${name} đẩy mạnh chiến lược số hóa và mở rộng thị phần kinh doanh`],
+      ['10/09', 'Thị trường', `Khối ngoại duy trì xu hướng mua ròng tại các mã đầu ngành ${ind}`]
+    ],
+    holders: [
+      ['Tổng Công ty Đầu tư và Kinh doanh Vốn Nhà nước (SCIC)', 'Nhà nước', 'Trong nước', '185,40 triệu', '35,20%', '30/06/2026'],
+      ['Quỹ đầu tư Vietnam Enterprise Investments Limited', 'Tổ chức', 'Nước ngoài', '48,60 triệu', '8,40%', '30/06/2026'],
+      ['Ban Lãnh đạo & Cổ đông nội bộ', 'Cá nhân', 'Trong nước', '15,20 triệu', '2,65%', '30/06/2026'],
+      ['Đại chúng & Cổ đông khác', 'Đại chúng', 'Trong nước', '315,80 triệu', '53,75%', '30/06/2026']
+    ],
+    ownership: [
+      ['Nhà nước', 35.20, '#14A6FA'],
+      ['Nước ngoài', 18.50, '#008542'],
+      ['Khác', 46.30, '#F5B800']
+    ],
+    foreign_own: [
+      ['Room tối đa', '49,00%'],
+      ['Đã sở hữu', '18,50%', 'up'],
+      ['Room còn lại', '245.800.000 CP'],
+      ['KL mua ròng 5 phiên', '+350.000', 'up'],
+      ['KL mua ròng 1 tháng', '+1.240.000', 'up']
+    ],
+    insiders: [
+      ['Chủ tịch HĐQT ' + sym, 'Chủ tịch HĐQT', 'Bầu lại', '25/04/2026', '1,20%'],
+      ['Tổng Giám đốc ' + sym, 'Tổng Giám đốc', 'Bổ nhiệm', '15/03/2026', '0,85%'],
+      ['Thành viên HĐQT', 'Thành viên HĐQT', 'Giao dịch', '28/05/2026', '0,05%']
+    ]
   };
 }
 
@@ -16185,10 +16487,18 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   if (data.position) POSITION = data.position;
   if (data.perf) PERF = data.perf;
   if (data.profile) PROFILE = data.profile;
+  if (data.holders) HOLDERS = data.holders;
+  if (data.ownership) OWNERSHIP = data.ownership;
+  if (data.foreign_own) FOREIGN_OWN = data.foreign_own;
+  if (data.insiders) INSIDERS = data.insiders;
+  if (data.news) NEWS = data.news;
+  if (data.eventsTable) EVENTS = data.eventsTable;
+  else if (data.events && Array.isArray(data.events) && data.events.length && data.events[0].length >= 5) EVENTS = data.events;
   if (data.peers) {
     PEERS = data.peers;
     if (!PEERS[S.peerSub]) S.peerSub = Object.keys(PEERS)[0] || 'Tổng quan';
   }
+  if (data.fin) FIN = data.fin;
 
   // Update VS_IND dynamically based on stock & sector
   if (sym === 'FPT') {

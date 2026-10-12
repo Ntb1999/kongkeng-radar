@@ -8686,7 +8686,7 @@ function vMarket() {
           </div>
           <div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#16a34a;background:rgba(34,197,94,0.1);padding:3px 10px;border-radius:12px;border:1px solid rgba(34,197,94,0.3)">
             <span class="live-pulse-dot" style="width:6px;height:6px"></span>
-            <span>Binance Live Feed (~1s/tick)</span>
+            <span id="binance-status-text">Binance Live Feed (~1s/tick · 24/7)</span>
           </div>
         </div>
       </div>
@@ -9426,7 +9426,14 @@ const A = {
     S.dr.crit.forEach(c => S.all.chips.push([c, '', 'crit']));
     closeLayer(); rerender(); toast(`Đã áp dụng ${S.all.chips.length} điều kiện · ${allRows().length} mã phù hợp`);
   },
-    mkttab: el => { S.mktTab = el.dataset.v; rerender(); },
+    mkttab: el => {
+      S.mktTab = el.dataset.v;
+      rerender();
+      if (S.mktTab === 'global') {
+        fetchBinanceLiveData();
+        if (typeof initBinanceWebSocket === 'function') initBinanceWebSocket();
+      }
+    },
   mktleadertab: el => { S.mktLeaderTab = el.dataset.v; rerender(); },
   mktsync: () => {
     fetchBinanceLiveData();
@@ -17465,7 +17472,21 @@ function updateBinanceCardsInDOM() {
 let lastBinanceDataTime = Date.now();
 let binanceWatchdogTimer = null;
 let binanceRetryCount = 0;
-const MAX_BINANCE_RETRIES = 3;
+const MAX_BINANCE_RETRIES = 10;
+
+function updateBinanceStatusUI(status, isLive = true) {
+  const el = document.getElementById('binance-status-text');
+  if (el) {
+    el.textContent = status;
+    const parent = el.closest('div');
+    if (parent) {
+      const dot = parent.querySelector('.live-pulse-dot');
+      if (dot) {
+        dot.style.background = isLive ? '#22c55e' : '#eab308';
+      }
+    }
+  }
+}
 
 function stopBinanceWebSocket() {
   if (binanceWatchdogTimer) {
@@ -17481,6 +17502,7 @@ function stopBinanceWebSocket() {
     binanceWs = null;
   }
   binanceWsStarted = false;
+  updateBinanceStatusUI('Binance Live Stream (Tạm dừng khi ẩn tab)', false);
 }
 
 function startBinanceWatchdog() {
@@ -17498,9 +17520,14 @@ function startBinanceWatchdog() {
 }
 
 function initBinanceWebSocket() {
-  if (binanceWsStarted) return;
-  // Nếu tab bị ẩn hoặc user tắt stream, không kết nối socket
-  if (document.hidden || !REALTIME_ACTIVE) return;
+  if (binanceWs && binanceWs.readyState === WebSocket.OPEN) return;
+  // Crypto quốc tế giao dịch 24/7/365: Chỉ dừng khi tab bị ẩn để tiết kiệm tài nguyên mạng
+  if (document.hidden) return;
+
+  if (binanceWs) {
+    try { binanceWs.close(); } catch (_) {}
+    binanceWs = null;
+  }
 
   binanceWsStarted = true;
   lastBinanceDataTime = Date.now();
@@ -17512,6 +17539,7 @@ function initBinanceWebSocket() {
     binanceWs.onopen = () => {
       binanceRetryCount = 0;
       lastBinanceDataTime = Date.now();
+      updateBinanceStatusUI('Binance Live Feed (~1s/tick · 24/7)', true);
     };
 
     binanceWs.onmessage = e => {
@@ -17562,30 +17590,46 @@ function initBinanceWebSocket() {
         clearInterval(binanceWatchdogTimer);
         binanceWatchdogTimer = null;
       }
-      // Chỉ reconnect nếu chưa vượt quá số lần retry và tab đang mở, user đang bật stream
-      if (binanceRetryCount < MAX_BINANCE_RETRIES && !document.hidden && REALTIME_ACTIVE) {
+      updateBinanceStatusUI('Binance REST Fallback (Sync 10s · 24/7)', false);
+      // Tự động kết nối lại nếu tab đang mở
+      if (!document.hidden && binanceRetryCount < MAX_BINANCE_RETRIES) {
         binanceRetryCount++;
+        const delay = Math.min(2000 * binanceRetryCount, 10000);
         setTimeout(() => {
-          if (!document.hidden && REALTIME_ACTIVE) initBinanceWebSocket();
-        }, 5000);
-      } else {
-        console.warn('[Binance WS] Đã dừng socket (Không có dữ liệu giao dịch hoặc đã ngắt kết nối).');
+          if (!document.hidden) {
+            initBinanceWebSocket();
+            fetchBinanceLiveData();
+          }
+        }, delay);
       }
     };
 
-    binanceWs.onerror = () => {};
+    binanceWs.onerror = () => {
+      fetchBinanceLiveData();
+    };
   } catch (_) {
     binanceWsStarted = false;
+    fetchBinanceLiveData();
   }
 }
 
-// Auto-trigger Binance fetch and WS on init
+// Auto-trigger Binance fetch and WS on init (Crypto 24/7 luôn chạy độc lập)
 setTimeout(() => {
   fetchBinanceLiveData();
-  if (REALTIME_ACTIVE) {
-    initBinanceWebSocket();
+  initBinanceWebSocket();
+}, 400);
+
+// Fallback đồng bộ giá Binance qua REST định kỳ 10s khi không có tick hoặc WS mất kết nối
+setInterval(() => {
+  if (document.hidden) return;
+  const isWsStale = !binanceWs || binanceWs.readyState !== WebSocket.OPEN || (Date.now() - lastBinanceDataTime > 10000);
+  if (isWsStale) {
+    fetchBinanceLiveData();
+    if (!binanceWsStarted && !document.hidden) {
+      initBinanceWebSocket();
+    }
   }
-}, 600);
+}, 10000);
 
 // Auto-trigger Cloudflare Worker Realtime Market & Stock Quote Sync (1 lần ban đầu để lấy giá chốt phiên)
 setTimeout(() => {
@@ -17612,7 +17656,12 @@ document.addEventListener('visibilitychange', () => {
     // Ẩn tab: Dừng socket Binance để tiết kiệm tài nguyên mạng
     stopBinanceWebSocket();
   } else {
-    // Hiện tab trở lại: Kiểm tra điều kiện phiên giao dịch trước khi kích hoạt
+    // Hiện tab trở lại:
+    // 1. Crypto 24/7: Khôi phục ngay lập tức kết nối Binance
+    fetchBinanceLiveData();
+    initBinanceWebSocket();
+
+    // 2. Thị trường Việt Nam: Kiểm tra điều kiện phiên giao dịch trước khi kích hoạt
     const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
     if (session.isOpen || REALTIME_MANUAL_SIM) {
       if (!REALTIME_ACTIVE) {
@@ -17620,10 +17669,13 @@ document.addEventListener('visibilitychange', () => {
         updateRealtimeUIState();
       }
       startRealtimeEngine();
-      initBinanceWebSocket();
     } else {
       REALTIME_ACTIVE = false;
       updateRealtimeUIState();
+      if (REALTIME_TIMER) {
+        clearInterval(REALTIME_TIMER);
+        REALTIME_TIMER = null;
+      }
     }
   }
 });

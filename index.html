@@ -5548,7 +5548,8 @@ const TV_TOOLS = [
   ['Xoá bản vẽ', tvi('<path d="M8 9h12M11 9V7h6v2M9.5 9l1 13h7l1-13"/>')]
 ];
 /* ================= REALTIME STREAMING ENGINE (CLIENT-SIDE STREAM & WSS) ================= */
-let REALTIME_ACTIVE = true;
+let REALTIME_ACTIVE = (typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo().isOpen : false);
+let REALTIME_MANUAL_SIM = false;
 let REALTIME_TIMER = null;
 let REALTIME_SPEED_MS = 1000;
 let HERO_SIDE_TAB = 'tape';
@@ -5590,8 +5591,11 @@ function setHeroSideTab(tab) {
   rerender();
 }
 
-function toggleRealtimeStream() {
-  REALTIME_ACTIVE = !REALTIME_ACTIVE;
+function updateRealtimeUIState() {
+  const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false, statusText: '' };
+  const isMarketOpen = session.isOpen;
+  const isStreaming = REALTIME_ACTIVE && (isMarketOpen || REALTIME_MANUAL_SIM);
+
   const btn = document.getElementById('btn-realtime-toggle');
   const dot = document.getElementById('c360-live-dot');
   const label = document.getElementById('c360-live-status-label');
@@ -5599,15 +5603,16 @@ function toggleRealtimeStream() {
   const mktBtn = document.getElementById('btn-mkt-realtime-toggle');
   const mktDot = document.getElementById('mkt-live-dot');
   const mktLabel = document.getElementById('mkt-live-label');
+  const rateEl = document.getElementById('mkt-stream-rate');
 
-  if (REALTIME_ACTIVE) {
+  if (isStreaming) {
     if (btn) {
       btn.style.background = 'rgba(34,197,94,0.12)';
       btn.style.borderColor = 'rgba(34,197,94,0.35)';
       btn.style.color = '#16a34a';
     }
     if (dot) dot.className = 'live-pulse-dot';
-    if (label) label.textContent = 'REALTIME LIVE';
+    if (label) label.textContent = isMarketOpen ? 'REALTIME LIVE' : 'STREAM: MÔ PHỎNG';
 
     if (mktBtn) {
       mktBtn.style.background = 'rgba(34,197,94,0.08)';
@@ -5615,9 +5620,8 @@ function toggleRealtimeStream() {
       mktBtn.style.color = '#16a34a';
     }
     if (mktDot) mktDot.className = 'live-pulse-dot';
-    if (mktLabel) mktLabel.textContent = '⚡ Live Stream (~1.0s/tick)';
-
-    if (typeof toast === 'function') toast('● Đã BẬT luồng Realtime Streaming (~1.0s/tick Binance style)!');
+    if (mktLabel) mktLabel.textContent = isMarketOpen ? '⚡ Live Stream (~1.0s/tick)' : '⚡ Stream Mô Phỏng';
+    if (rateEl && !isMarketOpen) rateEl.textContent = 'Mô phỏng';
   } else {
     if (btn) {
       btn.style.background = 'rgba(148,163,184,0.15)';
@@ -5625,7 +5629,7 @@ function toggleRealtimeStream() {
       btn.style.color = 'var(--ink3)';
     }
     if (dot) dot.className = 'live-paused-dot';
-    if (label) label.textContent = 'STREAM: TẠM DỪNG';
+    if (label) label.textContent = isMarketOpen ? 'STREAM: TẠM DỪNG' : 'STREAM: PHIÊN ĐÃ ĐÓNG';
 
     if (mktBtn) {
       mktBtn.style.background = 'rgba(148,163,184,0.12)';
@@ -5633,8 +5637,48 @@ function toggleRealtimeStream() {
       mktBtn.style.color = 'var(--ink3)';
     }
     if (mktDot) mktDot.className = 'live-paused-dot';
-    if (mktLabel) mktLabel.textContent = '⏸ Stream: Tạm dừng';
+    if (mktLabel) {
+      mktLabel.textContent = isMarketOpen ? '⏸ Stream: Tạm dừng' : '⏸ Đã dừng (Ngoài phiên GD)';
+    }
+    if (rateEl) {
+      rateEl.textContent = isMarketOpen ? 'Tạm dừng' : 'Chốt phiên';
+    }
+  }
+}
 
+function toggleRealtimeStream() {
+  const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
+
+  if (!session.isOpen) {
+    if (!REALTIME_ACTIVE && !REALTIME_MANUAL_SIM) {
+      REALTIME_MANUAL_SIM = true;
+      REALTIME_ACTIVE = true;
+      updateRealtimeUIState();
+      startRealtimeEngine();
+      if (typeof toast === 'function') {
+        toast('⚠️ Thị trường hiện ngoài phiên GD (Không có giao dịch). Đã bật Chế độ Mô phỏng.');
+      }
+    } else {
+      REALTIME_MANUAL_SIM = false;
+      REALTIME_ACTIVE = false;
+      updateRealtimeUIState();
+      if (typeof toast === 'function') {
+        toast('⏸ Đã dừng stream. Bảo lưu nguyên vẹn dữ liệu chốt phiên.');
+      }
+    }
+    return;
+  }
+
+  // Trong giờ giao dịch bình thường:
+  REALTIME_ACTIVE = !REALTIME_ACTIVE;
+  REALTIME_MANUAL_SIM = false;
+  updateRealtimeUIState();
+  if (REALTIME_ACTIVE) {
+    startRealtimeEngine();
+    if (typeof initBinanceWebSocket === 'function') initBinanceWebSocket();
+    if (typeof toast === 'function') toast('● Đã BẬT luồng Realtime Streaming (~1.0s/tick)!');
+  } else {
+    if (typeof stopBinanceWebSocket === 'function') stopBinanceWebSocket();
     if (typeof toast === 'function') toast('⏸ Đã TẠM DỪNG luồng Realtime.');
   }
 }
@@ -5972,6 +6016,22 @@ function tickMarketStreamingEngine() {
 }
 
 function tickRealtime() {
+  const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
+
+  // NẾU KHÔNG CÓ DỮ LIỆU GIAO DỊCH (NGOÀI GIỜ PHIÊN & KHÔNG BẬT MÔ PHỎNG) -> DỪNG NGAY
+  if (!session.isOpen && !REALTIME_MANUAL_SIM) {
+    if (REALTIME_ACTIVE) {
+      REALTIME_ACTIVE = false;
+      updateRealtimeUIState();
+      if (REALTIME_TIMER) {
+        clearInterval(REALTIME_TIMER);
+        REALTIME_TIMER = null;
+      }
+      console.log('[Realtime Stream] Ngoài phiên giao dịch (Không có dữ liệu giao dịch) -> Đã dừng stream.');
+    }
+    return;
+  }
+
   if (!REALTIME_ACTIVE) return;
 
   // 1. Tick for Company 360 when on #c360
@@ -5988,11 +6048,36 @@ function updateTvClock() {
   if (el) el.textContent = getLiveTimeString();
   const c = document.getElementById('clock');
   if (c && !c.dataset.locked) c.textContent = getLiveTimeHMS();
+
+  // Kiểm tra chuyển đổi phiên giao dịch để tự động dừng / mở stream
+  if (typeof getLiveTradingSessionInfo === 'function') {
+    const session = getLiveTradingSessionInfo();
+    const sessTextEl = document.getElementById('mkt-session-text');
+    const sessDotEl = document.getElementById('mkt-session-dot');
+    if (sessTextEl) sessTextEl.textContent = session.statusText;
+    if (sessDotEl) sessDotEl.style.background = session.isOpen ? 'var(--up)' : 'var(--warn)';
+
+    // Nếu hết phiên giao dịch mà đang chạy stream tự động -> Tự động dừng vì không có giao dịch
+    if (!session.isOpen && !REALTIME_MANUAL_SIM && REALTIME_ACTIVE) {
+      REALTIME_ACTIVE = false;
+      updateRealtimeUIState();
+      if (REALTIME_TIMER) {
+        clearInterval(REALTIME_TIMER);
+        REALTIME_TIMER = null;
+      }
+    }
+  }
 }
 
 function startRealtimeEngine() {
   if (REALTIME_TIMER) clearInterval(REALTIME_TIMER);
-  REALTIME_TIMER = setInterval(tickRealtime, REALTIME_SPEED_MS);
+  const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
+  if (session.isOpen || REALTIME_MANUAL_SIM) {
+    REALTIME_TIMER = setInterval(tickRealtime, REALTIME_SPEED_MS);
+  } else {
+    REALTIME_ACTIVE = false;
+    updateRealtimeUIState();
+  }
   if (!window._TV_CLOCK_TIMER) {
     window._TV_CLOCK_TIMER = setInterval(updateTvClock, 1000);
   }
@@ -8751,17 +8836,21 @@ function vMarket() {
         <h2 style="margin:0">Tổng quan thị trường</h2>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <button id="btn-mkt-realtime-toggle" onclick="toggleRealtimeStream()" style="font-size:11.5px;color:${REALTIME_ACTIVE ? '#16a34a' : 'var(--ink3)'};display:inline-flex;align-items:center;gap:6px;background:${REALTIME_ACTIVE ? 'rgba(34,197,94,0.08)' : 'rgba(148,163,184,0.12)'};padding:4px 10px;border-radius:4px;border:1px solid ${REALTIME_ACTIVE ? 'rgba(34,197,94,0.3)' : 'var(--line2)'};cursor:pointer;outline:none" title="Bấm để Tạm dừng / Tiếp tục Live Stream Realtime">
-          <span id="mkt-live-dot" class="${REALTIME_ACTIVE ? 'live-pulse-dot' : 'live-paused-dot'}" style="width:7px;height:7px"></span>
-          <b id="mkt-live-label">${REALTIME_ACTIVE ? '⚡ Live Stream (~1.0s/tick)' : '⏸ Stream: Tạm dừng'}</b> · <span class="muted" id="mkt-stream-rate">Binance Engine</span>
-        </button>
+        ${(() => {
+          const isMarketOpen = session.isOpen;
+          const isStreaming = REALTIME_ACTIVE && (isMarketOpen || REALTIME_MANUAL_SIM);
+          return `<button id="btn-mkt-realtime-toggle" onclick="toggleRealtimeStream()" style="font-size:11.5px;color:${isStreaming ? '#16a34a' : 'var(--ink3)'};display:inline-flex;align-items:center;gap:6px;background:${isStreaming ? 'rgba(34,197,94,0.08)' : 'rgba(148,163,184,0.12)'};padding:4px 10px;border-radius:4px;border:1px solid ${isStreaming ? 'rgba(34,197,94,0.3)' : 'var(--line2)'};cursor:pointer;outline:none" title="${isMarketOpen ? 'Bấm để Tạm dừng / Tiếp tục Live Stream Realtime' : 'Ngoài giờ giao dịch - Bấm để bật/tắt Mô phỏng'}">
+            <span id="mkt-live-dot" class="${isStreaming ? 'live-pulse-dot' : 'live-paused-dot'}" style="width:7px;height:7px"></span>
+            <b id="mkt-live-label">${isStreaming ? (isMarketOpen ? '⚡ Live Stream (~1.0s/tick)' : '⚡ Stream Mô Phỏng') : (isMarketOpen ? '⏸ Stream: Tạm dừng' : '⏸ Đã dừng (Ngoài phiên GD)')}</b> · <span class="muted" id="mkt-stream-rate">${isStreaming ? (_MKT_STREAM_TICK_COUNT > 0 ? `Tick #${_MKT_STREAM_TICK_COUNT}` : 'Binance Engine') : (isMarketOpen ? 'Tạm dừng' : 'Chốt phiên')}</span>
+          </button>`;
+        })()}
         <span style="font-size:11.5px;color:var(--brand);display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,0.08);padding:4px 10px;border-radius:4px;border:1px solid rgba(37,99,235,0.25)">
           <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e"></span>
           <b>Cloudflare Proxy (DNSE)</b> · <span class="muted" id="mkt-sync-clock">${LAST_REALTIME_SYNC_TIME || 'Live Feed'}</span>
         </span>
         <span style="font-size:12px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;background:var(--card-sub);padding:4px 10px;border-radius:4px;border:1px solid var(--line)">
-          <span style="width:7px;height:7px;border-radius:50%;background:${session.isOpen ? 'var(--up)' : 'var(--warn)'}"></span>
-          <b>${session.statusText}</b>
+          <span id="mkt-session-dot" style="width:7px;height:7px;border-radius:50%;background:${session.isOpen ? 'var(--up)' : 'var(--warn)'}"></span>
+          <b id="mkt-session-text">${session.statusText}</b>
         </span>
         <button class="btn sm primary" data-act="mktsync" title="Nhấn để đồng bộ dữ liệu thời gian thực qua Cloudflare Worker">⚡ Đồng bộ Realtime</button>
       </div>
@@ -17373,16 +17462,66 @@ function updateBinanceCardsInDOM() {
   });
 }
 
+let lastBinanceDataTime = Date.now();
+let binanceWatchdogTimer = null;
+let binanceRetryCount = 0;
+const MAX_BINANCE_RETRIES = 3;
+
+function stopBinanceWebSocket() {
+  if (binanceWatchdogTimer) {
+    clearInterval(binanceWatchdogTimer);
+    binanceWatchdogTimer = null;
+  }
+  if (binanceWs) {
+    try {
+      binanceWs.onclose = null;
+      binanceWs.onerror = null;
+      binanceWs.close();
+    } catch (_) {}
+    binanceWs = null;
+  }
+  binanceWsStarted = false;
+}
+
+function startBinanceWatchdog() {
+  if (binanceWatchdogTimer) clearInterval(binanceWatchdogTimer);
+  binanceWatchdogTimer = setInterval(() => {
+    if (binanceWs && binanceWs.readyState === WebSocket.OPEN) {
+      const idleTime = Date.now() - lastBinanceDataTime;
+      // Nếu quá 30 giây không nhận được gói tin giao dịch mới từ Binance -> Tự động dừng socket để tiết kiệm tài nguyên
+      if (idleTime > 30000) {
+        console.warn('[Binance WS] Không có dữ liệu giao dịch trong 30s -> Tự động ngắt kết nối WebSocket.');
+        stopBinanceWebSocket();
+      }
+    }
+  }, 10000);
+}
+
 function initBinanceWebSocket() {
   if (binanceWsStarted) return;
+  // Nếu tab bị ẩn hoặc user tắt stream, không kết nối socket
+  if (document.hidden || !REALTIME_ACTIVE) return;
+
   binanceWsStarted = true;
+  lastBinanceDataTime = Date.now();
+  startBinanceWatchdog();
+
   try {
     binanceWs = new WebSocket('wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/ethusdt@ticker/bnbusdt@ticker/solusdt@ticker');
+    
+    binanceWs.onopen = () => {
+      binanceRetryCount = 0;
+      lastBinanceDataTime = Date.now();
+    };
+
     binanceWs.onmessage = e => {
       try {
+        lastBinanceDataTime = Date.now();
         const msg = JSON.parse(e.data);
         const d = msg.data;
-        if (!d || !d.s) return;
+        // Kiểm tra dữ liệu giao dịch: nếu không có mã giao dịch hoặc giá <= 0 -> Bỏ qua
+        if (!d || !d.s || !d.c || parseFloat(d.c) <= 0) return;
+
         const sym = d.s;
         const price = parseFloat(d.c);
         const chg = parseFloat(d.p);
@@ -17415,21 +17554,40 @@ function initBinanceWebSocket() {
         }
       } catch (_) {}
     };
+
     binanceWs.onclose = () => {
       binanceWsStarted = false;
-      setTimeout(initBinanceWebSocket, 5000);
+      binanceWs = null;
+      if (binanceWatchdogTimer) {
+        clearInterval(binanceWatchdogTimer);
+        binanceWatchdogTimer = null;
+      }
+      // Chỉ reconnect nếu chưa vượt quá số lần retry và tab đang mở, user đang bật stream
+      if (binanceRetryCount < MAX_BINANCE_RETRIES && !document.hidden && REALTIME_ACTIVE) {
+        binanceRetryCount++;
+        setTimeout(() => {
+          if (!document.hidden && REALTIME_ACTIVE) initBinanceWebSocket();
+        }, 5000);
+      } else {
+        console.warn('[Binance WS] Đã dừng socket (Không có dữ liệu giao dịch hoặc đã ngắt kết nối).');
+      }
     };
+
     binanceWs.onerror = () => {};
-  } catch (_) {}
+  } catch (_) {
+    binanceWsStarted = false;
+  }
 }
 
 // Auto-trigger Binance fetch and WS on init
 setTimeout(() => {
   fetchBinanceLiveData();
-  initBinanceWebSocket();
+  if (REALTIME_ACTIVE) {
+    initBinanceWebSocket();
+  }
 }, 600);
 
-// Auto-trigger Cloudflare Worker Realtime Market & Stock Quote Sync
+// Auto-trigger Cloudflare Worker Realtime Market & Stock Quote Sync (1 lần ban đầu để lấy giá chốt phiên)
 setTimeout(() => {
   syncMarketDataRealtime(false);
   if (typeof STOCK !== 'undefined' && STOCK.sym) {
@@ -17437,16 +17595,38 @@ setTimeout(() => {
   }
 }, 800);
 
-// Polling Cloudflare Worker Proxy every 6s for live index ticks
+// Polling Cloudflare Worker Proxy every 6s for live index ticks (CHỈ polling khi trong phiên giao dịch có dữ liệu mới)
 setInterval(() => {
   const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
-  if (session.isOpen || S.route === 'market' || !LAST_REALTIME_SYNC_TIME) {
+  if (session.isOpen) {
     syncMarketDataRealtime(false);
-  }
-  if (S.route === 'c360' && typeof STOCK !== 'undefined' && STOCK.sym) {
-    syncStockQuoteRealtime(STOCK.sym);
+    if (S.route === 'c360' && typeof STOCK !== 'undefined' && STOCK.sym) {
+      syncStockQuoteRealtime(STOCK.sym);
+    }
   }
 }, 6000);
+
+// Quản lý dừng/bật socket và stream theo trạng thái tab trình duyệt (Page Visibility API)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    // Ẩn tab: Dừng socket Binance để tiết kiệm tài nguyên mạng
+    stopBinanceWebSocket();
+  } else {
+    // Hiện tab trở lại: Kiểm tra điều kiện phiên giao dịch trước khi kích hoạt
+    const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
+    if (session.isOpen || REALTIME_MANUAL_SIM) {
+      if (!REALTIME_ACTIVE) {
+        REALTIME_ACTIVE = true;
+        updateRealtimeUIState();
+      }
+      startRealtimeEngine();
+      initBinanceWebSocket();
+    } else {
+      REALTIME_ACTIVE = false;
+      updateRealtimeUIState();
+    }
+  }
+});
 
 startRealtimeEngine();
 

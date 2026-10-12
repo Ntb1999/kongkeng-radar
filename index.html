@@ -621,7 +621,7 @@ table.fin-t tbody tr:hover td{background:var(--hover)}
 .mkt-global-card b { color: var(--ink); }
 .mkt-table { width: 100%; table-layout: auto !important; border-collapse: collapse; }
 .mkt-table th { padding: 11px 14px; text-align: left; background: var(--sub); color: var(--ink3); font-weight: 600; font-size: 12px; border-bottom: 1px solid var(--line); }
-.mkt-table td { padding: 11px 14px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--ink); }
+.mkt-table td { padding: 11px 14px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--ink); vertical-align: middle; }
 .mkt-table tr:hover td { background: var(--hover); }
 .mkt-cal-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--ink); }
 .mkt-cal-date { width: 90px; flex: none; font-family: var(--mono); font-weight: 700; color: #0284c7; }
@@ -1723,12 +1723,21 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
   transition: background-color 0.8s ease-out, border-color 0.8s ease-out, color 0.3s ease;
 }
 
-[data-stock-role="price"] {
+span[data-stock-role="price"],
+.mkt-price-pill {
   display: inline-block;
-  padding: 1px 6px;
+  padding: 2px 6px;
   border-radius: 4px;
   border: 1px solid transparent;
+  line-height: 1.25;
+  vertical-align: middle;
   transition: background-color 0.8s ease-out, border-color 0.8s ease-out, color 0.3s ease;
+}
+
+td[data-stock-role="price"],
+.mkt-table td.num,
+.mkt-table td {
+  vertical-align: middle !important;
 }
 
 .mkt-global-val {
@@ -5710,11 +5719,26 @@ function updateStockRowInDOM(sym, newPrice, newChg, newPct, newVol, newVal, delt
     const pctColor = isUp ? 'var(--bn-green, #0ECB81)' : (isDown ? 'var(--bn-red, #F6465D)' : 'var(--ink3)');
 
     if (priceEl) {
-      priceEl.innerHTML = `<b>${priceThousand}</b>`;
-      if (delta !== undefined && Math.abs(delta) > 0.001) {
-        priceEl.classList.remove('flash-up', 'flash-down');
-        void priceEl.offsetWidth; // Reflow
-        priceEl.classList.add(delta > 0 ? 'flash-up' : 'flash-down');
+      if (priceEl.tagName === 'TD') {
+        let pillSpan = priceEl.querySelector('.mkt-price-pill');
+        if (!pillSpan) {
+          priceEl.innerHTML = `<span class="mkt-price-pill"><b>${priceThousand}</b></span>`;
+          pillSpan = priceEl.querySelector('.mkt-price-pill');
+        } else {
+          pillSpan.innerHTML = `<b>${priceThousand}</b>`;
+        }
+        if (delta !== undefined && Math.abs(delta) > 0.001) {
+          pillSpan.classList.remove('flash-up', 'flash-down');
+          void pillSpan.offsetWidth; // Reflow
+          pillSpan.classList.add(delta > 0 ? 'flash-up' : 'flash-down');
+        }
+      } else {
+        priceEl.innerHTML = `<b>${priceThousand}</b>`;
+        if (delta !== undefined && Math.abs(delta) > 0.001) {
+          priceEl.classList.remove('flash-up', 'flash-down');
+          void priceEl.offsetWidth; // Reflow
+          priceEl.classList.add(delta > 0 ? 'flash-up' : 'flash-down');
+        }
       }
     }
     if (pctEl) {
@@ -8553,7 +8577,7 @@ function vMarket() {
                   <td><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(s.sym, 22)}<b style="color:var(--brand)">${s.sym}</b></div></td>
                   <td>${s.name}</td>
                   <td><span style="font-size:11px;color:var(--ink3)">${s.ex || 'HOSE'}</span></td>
-                  <td class="num font-mono" style="text-align:right" data-stock-role="price"><b>${priceThousand}</b></td>
+                  <td class="num font-mono" style="text-align:right"><span class="mkt-price-pill" data-stock-role="price"><b>${priceThousand}</b></span></td>
                   <td class="num font-mono" style="text-align:right;color:${pctColor}" data-stock-role="pct"><b>${pctStr}</b></td>
                   <td class="num" style="text-align:right;color:var(--ink2)" data-stock-role="vol">${volStr}</td>
                   <td class="num font-mono" style="text-align:right;color:var(--ink)" data-stock-role="val"><b>${valStr}</b></td>

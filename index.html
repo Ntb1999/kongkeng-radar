@@ -1644,13 +1644,13 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
   border-color: #6366f1;
 }
 
-/* REALTIME STREAMING ENGINE & TICK FLASHING */
+/* REALTIME STREAMING ENGINE & TICK FLASHING (BINANCE-STYLE) */
 @keyframes flashGreen {
-  0% { background: rgba(34, 197, 94, 0.45); color: #15803d; transform: scale(1.04); }
+  0% { background: rgba(34, 197, 94, 0.45); color: var(--up); transform: scale(1.04); }
   100% { background: transparent; color: inherit; transform: scale(1); }
 }
 @keyframes flashRed {
-  0% { background: rgba(239, 68, 68, 0.45); color: #b91c1c; transform: scale(1.04); }
+  0% { background: rgba(239, 68, 68, 0.45); color: var(--down); transform: scale(1.04); }
   100% { background: transparent; color: inherit; transform: scale(1); }
 }
 .flash-up {
@@ -1660,6 +1660,20 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
 .flash-down {
   animation: flashRed 0.75s cubic-bezier(0.1, 0.9, 0.2, 1);
   border-radius: 4px;
+}
+.mkt-idx-score {
+  transition: background 0.3s, color 0.2s;
+  display: inline-block;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+[data-stock-role="price"] {
+  transition: background 0.3s, color 0.2s;
+  border-radius: 4px;
+}
+[data-stock-role="price"].flash-up, [data-stock-role="price"].flash-down {
+  display: inline-block;
+  padding: 1px 5px;
 }
 .live-pulse-dot {
   width: 7px;
@@ -5464,9 +5478,10 @@ const TV_TOOLS = [
 /* ================= REALTIME STREAMING ENGINE (CLIENT-SIDE STREAM & WSS) ================= */
 let REALTIME_ACTIVE = true;
 let REALTIME_TIMER = null;
-let REALTIME_SPEED_MS = 2200;
+let REALTIME_SPEED_MS = 1400;
 let HERO_SIDE_TAB = 'tape';
 let INTRADAY_LIVE_TICKS = [];
+let _MKT_STREAM_TICK_COUNT = 0;
 
 function initRealtimeTicks(sym, basePrice) {
   basePrice = basePrice || (typeof STOCK !== 'undefined' ? STOCK.price : 14600);
@@ -5474,7 +5489,7 @@ function initRealtimeTicks(sym, basePrice) {
   const now = new Date();
   for (let i = 7; i >= 0; i--) {
     const t = new Date(now.getTime() - i * 3200);
-    const tStr = `${t.getHours().toString().padStart(2, '0')}:${t.getMinutes().toString().padStart(2, '0')}:${t.getSeconds().toString().padStart(2, '0')}`;
+    const tStr = `${t.getHours().toString().padStart(2, '0')}:${t.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
     const p = basePrice + (Math.floor(Math.random() * 3) - 1) * 50;
     const v = Math.floor(Math.random() * 60 + 10) * 100;
     const side = Math.random() > 0.4 ? 'buy' : 'sell';
@@ -5517,7 +5532,7 @@ function toggleRealtimeStream() {
     }
     if (dot) dot.className = 'live-pulse-dot';
     if (label) label.textContent = 'REALTIME LIVE';
-    if (typeof toast === 'function') toast('● Đã BẬT luồng Realtime Streaming (~2s/tick)!');
+    if (typeof toast === 'function') toast('● Đã BẬT luồng Realtime Streaming (~1.4s/tick Binance style)!');
   } else {
     if (btn) {
       btn.style.background = 'rgba(148,163,184,0.15)';
@@ -5530,16 +5545,117 @@ function toggleRealtimeStream() {
   }
 }
 
-function tickRealtime() {
-  if (!REALTIME_ACTIVE) return;
-  if (typeof S === 'undefined' || !S.route || !S.route.startsWith('c360')) return;
+/* ================= IN-PLACE DOM UPDATERS (BINANCE STREAMING ENGINE) ================= */
+function updateMarketIndexInDOM(idxName, newScore, newChg, newPct, delta) {
+  const cardEl = document.querySelector(`[data-idx-name="${idxName}"]`);
+  if (!cardEl) return;
+  const scoreEl = cardEl.querySelector('[data-idx-role="score"]');
+  const chgEl = cardEl.querySelector('[data-idx-role="chg"]');
+  const sparkEl = cardEl.querySelector('[data-idx-role="spark"]');
+  const breadthEl = cardEl.querySelector('[data-idx-role="breadth"]');
+  const statsEl = cardEl.querySelector('[data-idx-role="stats"]');
+
+  const idxObj = Array.isArray(MARKET_INDICES) ? MARKET_INDICES.find(m => m.name === idxName) : null;
+  const isUp = newChg >= 0;
+  const chgClass = isUp ? 'up' : 'down';
+
+  if (scoreEl) {
+    scoreEl.textContent = newScore.toLocaleString('vi-VN', { minimumFractionDigits: 2 });
+    scoreEl.className = `mkt-idx-score ${chgClass}`;
+    if (delta !== undefined && Math.abs(delta) > 0.001) {
+      scoreEl.classList.remove('flash-up', 'flash-down');
+      void scoreEl.offsetWidth; // Force Reflow to retrigger CSS keyframe
+      scoreEl.classList.add(delta > 0 ? 'flash-up' : 'flash-down');
+    }
+  }
+
+  if (chgEl) {
+    chgEl.textContent = `${isUp ? '+' : ''}${newChg.toFixed(2)} (${isUp ? '+' : ''}${newPct.toFixed(2)}%)`;
+    chgEl.className = `mkt-idx-chg ${chgClass}`;
+  }
+
+  if (sparkEl && idxObj && idxObj.spark && typeof renderSparklineSVG === 'function') {
+    sparkEl.innerHTML = renderSparklineSVG(idxObj.spark, isUp);
+  }
+
+  if (idxObj) {
+    const totalCount = idxObj.adv + idxObj.ref + idxObj.dec;
+    if (breadthEl && totalCount > 0) {
+      const advPct = (idxObj.adv / totalCount * 100).toFixed(0);
+      const refPct = (idxObj.ref / totalCount * 100).toFixed(0);
+      const decPct = (idxObj.dec / totalCount * 100).toFixed(0);
+      breadthEl.innerHTML = `
+        <div style="width:${advPct}%;background:#22c55e" title="Tăng: ${idxObj.adv}"></div>
+        <div style="width:${refPct}%;background:#eab308" title="Tham chiếu: ${idxObj.ref}"></div>
+        <div style="width:${decPct}%;background:#ef4444" title="Giảm: ${idxObj.dec}"></div>
+      `;
+    }
+    if (statsEl) {
+      statsEl.innerHTML = `
+        <span>KL: <b>${idxObj.vol}</b></span>
+        <span>GT: <b>${idxObj.val}</b></span>
+        <span><b style="color:#22c55e">${idxObj.adv}</b> / <b style="color:#eab308">${idxObj.ref}</b> / <b style="color:#ef4444">${idxObj.dec}</b></span>
+      `;
+    }
+  }
+}
+
+function updateAllMarketIndicesInDOM() {
+  if (!Array.isArray(MARKET_INDICES)) return;
+  MARKET_INDICES.forEach(idx => {
+    updateMarketIndexInDOM(idx.name, idx.score, idx.chg, idx.pct);
+  });
+}
+
+function updateStockRowInDOM(sym, newPrice, newChg, newPct, newVol, newVal, delta) {
+  const rows = document.querySelectorAll(`[data-stock-sym="${sym}"]`);
+  rows.forEach(row => {
+    const priceEl = row.querySelector('[data-stock-role="price"]');
+    const pctEl = row.querySelector('[data-stock-role="pct"]');
+    const volEl = row.querySelector('[data-stock-role="vol"]');
+    const valEl = row.querySelector('[data-stock-role="val"]');
+
+    const priceThousand = (newPrice / 1000).toFixed(2);
+    const pctStr = (newPct > 0 ? '+' : '') + Number(newPct || 0).toFixed(2) + '%';
+    const pctColor = newPct > 0 ? 'var(--up)' : newPct < 0 ? 'var(--down)' : 'var(--ink3)';
+
+    if (priceEl) {
+      priceEl.innerHTML = `<b>${priceThousand}</b>`;
+      if (delta !== undefined && Math.abs(delta) > 0.001) {
+        priceEl.classList.remove('flash-up', 'flash-down');
+        void priceEl.offsetWidth; // Reflow
+        priceEl.classList.add(delta > 0 ? 'flash-up' : 'flash-down');
+      }
+    }
+    if (pctEl) {
+      pctEl.innerHTML = `<b>${pctStr}</b>`;
+      pctEl.style.color = pctColor;
+    }
+    if (volEl && newVol) {
+      const volStr = (newVol >= 1e6 ? (newVol / 1e6).toFixed(2) + ' M' : (newVol >= 1e3 ? (newVol / 1e3).toFixed(0) + ' K' : newVol));
+      volEl.textContent = volStr;
+    }
+    if (valEl && newVal) {
+      valEl.innerHTML = `<b>${Number(newVal).toFixed(1)}</b>`;
+    }
+  });
+
+  // Also update Movers if visible
+  const moverRows = document.querySelectorAll(`[data-mover-sym="${sym}"]`);
+  moverRows.forEach(mRow => {
+    const mVal = mRow.querySelector('[data-mover-role="val"]');
+    const mPct = mRow.querySelector('[data-mover-role="pct"]');
+    if (mPct) {
+      mPct.textContent = `(${(newPct > 0 ? '+' : '') + Number(newPct || 0).toFixed(2)}%)`;
+    }
+  });
+}
+
+/* ================= COMPANY 360 REALTIME STREAMING ================= */
+function tickCompany360Realtime() {
   if (typeof STOCK === 'undefined' || !STOCK) return;
 
-  const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
-  if (!session.isOpen) {
-    // Ngoài giờ giao dịch hoặc cuối tuần: Giữ nguyên giá chốt phiên chính thức từ MCP, không tự động biến động giá
-    return;
-  }
+  const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: true };
 
   const oldPrice = STOCK.price;
   const refPrice = (STOCK.price - STOCK.chg) || 14100;
@@ -5651,6 +5767,103 @@ function tickRealtime() {
   if (modalEl && modalEl.classList.contains('open') && typeof renderDnseMcpModal === 'function') {
     renderDnseMcpModal();
   }
+}
+
+/* ================= MARKET OVERVIEW STREAMING ENGINE (BINANCE-STYLE) ================= */
+function tickMarketStreamingEngine() {
+  _MKT_STREAM_TICK_COUNT++;
+
+  // 1. Tick for Market Indices (VN-INDEX, VN30, HNX, UPCOM)
+  if (Array.isArray(MARKET_INDICES) && MARKET_INDICES.length > 0) {
+    // Select index: VN-INDEX (45%), VN30 (30%), HNX (15%), UPCOM (10%)
+    const r = Math.random();
+    const idxIndex = r < 0.45 ? 0 : r < 0.75 ? 1 : r < 0.90 ? 2 : 3;
+    const targetIdx = MARKET_INDICES[idxIndex];
+    if (targetIdx) {
+      const isLarge = idxIndex <= 1;
+      const stepMagnitude = isLarge ? (Math.random() * 0.28 + 0.04) : (Math.random() * 0.08 + 0.02);
+      const direction = Math.random() > 0.47 ? 1 : -1;
+      const delta = +(direction * stepMagnitude).toFixed(2);
+
+      targetIdx.score = +(targetIdx.score + delta).toFixed(2);
+      targetIdx.chg = +(targetIdx.chg + delta).toFixed(2);
+      const refScore = targetIdx.score - targetIdx.chg;
+      targetIdx.pct = +( (targetIdx.chg / (refScore || 1)) * 100 ).toFixed(2);
+      targetIdx.spark.push(targetIdx.score);
+      if (targetIdx.spark.length > 14) targetIdx.spark.shift();
+
+      if (delta > 0) {
+        targetIdx.adv = Math.min(380, targetIdx.adv + 1);
+        targetIdx.dec = Math.max(10, targetIdx.dec - 1);
+      } else {
+        targetIdx.dec = Math.min(380, targetIdx.dec + 1);
+        targetIdx.adv = Math.max(10, targetIdx.adv - 1);
+      }
+
+      updateMarketIndexInDOM(targetIdx.name, targetIdx.score, targetIdx.chg, targetIdx.pct, delta);
+    }
+  }
+
+  // 2. Tick for Stocks (VN30 Data Feed Universe)
+  if (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED) {
+    const symKeys = Object.keys(VN30_DATA_FEED);
+    if (symKeys.length > 0) {
+      // Pick 1-2 random stocks to micro-tick this cycle
+      const count = Math.random() > 0.5 ? 2 : 1;
+      for (let i = 0; i < count; i++) {
+        const randSym = symKeys[Math.floor(Math.random() * symKeys.length)];
+        const s = VN30_DATA_FEED[randSym];
+        if (!s) continue;
+
+        const refPrice = s.ref || s.price;
+        const step = s.price < 10000 ? 10 : s.price < 50000 ? 50 : 100;
+        const maxDelta = Math.round(refPrice * 0.07);
+        const ceilPrice = Math.round((refPrice + maxDelta) / step) * step;
+        const floorPrice = Math.round((refPrice - maxDelta) / step) * step;
+
+        const sDelta = (Math.random() > 0.46 ? 1 : -1) * step;
+        let newPrice = s.price + sDelta;
+        if (newPrice > ceilPrice) newPrice = ceilPrice;
+        if (newPrice < floorPrice) newPrice = floorPrice;
+        if (newPrice === s.price) continue;
+
+        const oldPrice = s.price;
+        s.price = newPrice;
+        s.chg = s.price - refPrice;
+        s.pct = +( (s.chg / (refPrice || 1)) * 100 ).toFixed(2);
+        const tickVol = Math.floor(Math.random() * 50 + 10) * 100;
+        s.vol = (s.vol || 0) + tickVol;
+        s.val_bil = +( (s.val_bil || 0) + (tickVol * s.price) / 1e9 ).toFixed(1);
+
+        updateStockRowInDOM(s.sym, s.price, s.chg, s.pct, s.vol, s.val_bil, newPrice - oldPrice);
+
+        // If currently viewed in C360, keep synchronized
+        if (typeof STOCK !== 'undefined' && STOCK && STOCK.sym === s.sym && typeof S !== 'undefined' && S.route && S.route.startsWith('c360')) {
+          STOCK.price = s.price;
+          STOCK.chg = s.chg;
+          STOCK.pct = s.pct;
+        }
+      }
+    }
+  }
+
+  // 3. Heartbeat animation for rate indicator in Market header
+  const rateEl = document.getElementById('mkt-stream-rate');
+  if (rateEl) {
+    rateEl.textContent = `Tick #${_MKT_STREAM_TICK_COUNT}`;
+  }
+}
+
+function tickRealtime() {
+  if (!REALTIME_ACTIVE) return;
+
+  // 1. Tick for Company 360 when on #c360
+  if (typeof S !== 'undefined' && S.route && S.route.startsWith('c360')) {
+    tickCompany360Realtime();
+  }
+
+  // 2. Tick for Market Overview & Stock Universe (Binance Engine)
+  tickMarketStreamingEngine();
 }
 
 function updateTvClock() {
@@ -7893,7 +8106,13 @@ async function syncMarketDataRealtime(isManual) {
     LAST_REALTIME_SYNC_TIME = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
     
     if (S.route === 'market') {
-      rerender();
+      if (typeof updateAllMarketIndicesInDOM === 'function') {
+        updateAllMarketIndicesInDOM();
+      } else {
+        rerender();
+      }
+      const syncClockEl = document.getElementById('mkt-sync-clock');
+      if (syncClockEl) syncClockEl.textContent = LAST_REALTIME_SYNC_TIME;
     }
     if (isManual && typeof toast === 'function') {
       toast(`⚡ Đã đồng bộ Realtime (DNSE & Finhay MCP) lúc ${LAST_REALTIME_SYNC_TIME}`);
@@ -8058,27 +8277,27 @@ function vMarket() {
     const refPct = (idx.ref / totalCount * 100).toFixed(0);
     const decPct = (idx.dec / totalCount * 100).toFixed(0);
 
-    return `<div class="mkt-idx-card">
+    return `<div class="mkt-idx-card" data-idx-name="${idx.name}">
       <div class="mkt-idx-head">
         <div style="display:flex;align-items:center;gap:6px">
           <b style="font-size:15px">${idx.name}</b>
-          
+          <span class="live-pulse-dot" style="width:6px;height:6px" title="Streaming Live Tick (Binance-style)"></span>
         </div>
         <span style="font-size:11px;color:var(--ink3)">${idx.ex}</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
-          <div class="mkt-idx-score ${chgClass}">${idx.score.toLocaleString('vi-VN', { minimumFractionDigits: 2 })}</div>
-          <div class="mkt-idx-chg ${chgClass}">${isUp ? '+' : ''}${idx.chg.toFixed(2)} (${isUp ? '+' : ''}${idx.pct.toFixed(2)}%)</div>
+          <div class="mkt-idx-score ${chgClass}" data-idx-role="score">${idx.score.toLocaleString('vi-VN', { minimumFractionDigits: 2 })}</div>
+          <div class="mkt-idx-chg ${chgClass}" data-idx-role="chg">${isUp ? '+' : ''}${idx.chg.toFixed(2)} (${isUp ? '+' : ''}${idx.pct.toFixed(2)}%)</div>
         </div>
-        ${renderSparklineSVG(idx.spark, isUp)}
+        <div data-idx-role="spark">${renderSparklineSVG(idx.spark, isUp)}</div>
       </div>
-      <div class="mkt-breadth-bar">
+      <div class="mkt-breadth-bar" data-idx-role="breadth">
         <div style="width:${advPct}%;background:#22c55e" title="Tăng: ${idx.adv}"></div>
         <div style="width:${refPct}%;background:#eab308" title="Tham chiếu: ${idx.ref}"></div>
         <div style="width:${decPct}%;background:#ef4444" title="Giảm: ${idx.dec}"></div>
       </div>
-      <div class="mkt-idx-stats">
+      <div class="mkt-idx-stats" data-idx-role="stats">
         <span>KL: <b>${idx.vol}</b></span>
         <span>GT: <b>${idx.val}</b></span>
         <span><b style="color:#22c55e">${idx.adv}</b> / <b style="color:#eab308">${idx.ref}</b> / <b style="color:#ef4444">${idx.dec}</b></span>
@@ -8232,14 +8451,14 @@ function vMarket() {
                 const pctColor = s.pct > 0 ? 'var(--up)' : s.pct < 0 ? 'var(--down)' : 'var(--ink3)';
                 const volStr = (s.vol >= 1e6 ? (s.vol / 1e6).toFixed(2) + ' M' : (s.vol >= 1e3 ? (s.vol / 1e3).toFixed(0) + ' K' : (s.vol || 0)));
                 const valStr = Number(s.val_bil || 0).toFixed(1);
-                return `<tr class="click" data-act="stock" data-v="${s.sym}">
+                return `<tr class="click" data-act="stock" data-v="${s.sym}" data-stock-sym="${s.sym}">
                   <td><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(s.sym, 22)}<b style="color:var(--brand)">${s.sym}</b></div></td>
                   <td>${s.name}</td>
                   <td><span style="font-size:11px;color:var(--ink3)">${s.ex || 'HOSE'}</span></td>
-                  <td class="num font-mono" style="text-align:right"><b>${priceThousand}</b></td>
-                  <td class="num font-mono" style="text-align:right;color:${pctColor}"><b>${pctStr}</b></td>
-                  <td class="num" style="text-align:right;color:var(--ink2)">${volStr}</td>
-                  <td class="num font-mono" style="text-align:right;color:var(--ink)"><b>${valStr}</b></td>
+                  <td class="num font-mono" style="text-align:right" data-stock-role="price"><b>${priceThousand}</b></td>
+                  <td class="num font-mono" style="text-align:right;color:${pctColor}" data-stock-role="pct"><b>${pctStr}</b></td>
+                  <td class="num" style="text-align:right;color:var(--ink2)" data-stock-role="vol">${volStr}</td>
+                  <td class="num font-mono" style="text-align:right;color:var(--ink)" data-stock-role="val"><b>${valStr}</b></td>
                   <td><span class="cmp-drating-badge">${dr.score.toFixed(1)}★ ${dr.rec}</span></td>
                   <td style="text-align:center"><button class="btn sm" data-act="stock" data-v="${s.sym}">360 ↗</button></td>
                 </tr>`;
@@ -8363,7 +8582,7 @@ function vMarket() {
               ['SHB', 'SHB', '+1.20 đ', '+2.50%', '#38bdf8'],
               ['ACB', 'Á Châu', '+0.95 đ', '+1.49%', '#38bdf8'],
               ['HDB', 'HDBank', '+0.88 đ', '+1.12%', '#38bdf8']
-            ].map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m[0]}">
+            ].map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m[0]}" data-mover-sym="${m[0]}">
               <div style="display:flex;align-items:center;gap:8px">
                 ${getCompanyLogo(m[0], 24)}
                 <div>
@@ -8373,7 +8592,7 @@ function vMarket() {
               </div>
               <div style="text-align:right">
                 <b style="color:#22c55e;font-family:var(--mono)">${m[2]}</b>
-                <span style="font-size:11px;color:var(--ink3);margin-left:6px">(${m[3]})</span>
+                <span data-mover-role="pct" style="font-size:11px;color:var(--ink3);margin-left:6px">(${m[3]})</span>
               </div>
             </div>`).join('')}
 
@@ -8384,7 +8603,7 @@ function vMarket() {
               ['VHM', 'Vinhomes', '-1.10 đ', '-1.82%', '#f87171'],
               ['PLX', 'Petrolimex', '-0.52 đ', '-2.01%', '#f87171'],
               ['MSN', 'Masan', '-0.45 đ', '-0.94%', '#f87171']
-            ].map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m[0]}">
+            ].map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m[0]}" data-mover-sym="${m[0]}">
               <div style="display:flex;align-items:center;gap:8px">
                 ${getCompanyLogo(m[0], 24)}
                 <div>
@@ -8394,7 +8613,7 @@ function vMarket() {
               </div>
               <div style="text-align:right">
                 <b style="color:#ef4444;font-family:var(--mono)">${m[2]}</b>
-                <span style="font-size:11px;color:var(--ink3);margin-left:6px">(${m[3]})</span>
+                <span data-mover-role="pct" style="font-size:11px;color:var(--ink3);margin-left:6px">(${m[3]})</span>
               </div>
             </div>`).join('')}
           </div>
@@ -8410,9 +8629,13 @@ function vMarket() {
         <h2 style="margin:0">Tổng quan thị trường</h2>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:11.5px;color:#16a34a;display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.08);padding:4px 10px;border-radius:4px;border:1px solid rgba(34,197,94,0.3)">
+          <span class="live-pulse-dot" style="width:7px;height:7px"></span>
+          <b>⚡ Live Stream (~1.4s/tick)</b> · <span class="muted" id="mkt-stream-rate">Binance Engine</span>
+        </span>
         <span style="font-size:11.5px;color:var(--brand);display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,0.08);padding:4px 10px;border-radius:4px;border:1px solid rgba(37,99,235,0.25)">
           <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e"></span>
-          <b>Realtime: Cloudflare Proxy (DNSE Entrade)</b> · <span class="muted" id="mkt-sync-clock">${LAST_REALTIME_SYNC_TIME || 'Live Feed'}</span>
+          <b>Cloudflare Proxy (DNSE)</b> · <span class="muted" id="mkt-sync-clock">${LAST_REALTIME_SYNC_TIME || 'Live Feed'}</span>
         </span>
         <span style="font-size:12px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;background:var(--card-sub);padding:4px 10px;border-radius:4px;border:1px solid var(--line)">
           <span style="width:7px;height:7px;border-radius:50%;background:${session.isOpen ? 'var(--up)' : 'var(--warn)'}"></span>

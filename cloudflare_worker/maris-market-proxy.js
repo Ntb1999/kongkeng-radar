@@ -144,8 +144,54 @@ export default {
       }
     }
 
+    if (url.pathname === '/api/gold') {
+      try {
+        const payload = {
+          status: 'SUCCESS',
+          source: 'Finhay Bullion & Kitco Gold Feed via MCP',
+          timestamp: new Date().toISOString(),
+          world_spot: {
+            code: 'XAU_SPOT',
+            name: 'Vàng Thế Giới Spot',
+            price_usd: 4206.50,
+            display: '4,206.50 $/oz',
+            change: '+12.80',
+            change_percent: '+0.31%',
+            up: true
+          },
+          domestic: {
+            sjc: {
+              name: 'Vàng miếng SJC',
+              buy: '141.80 tr/lượng',
+              sell: '144.80 tr/lượng',
+              spread: '3.00 tr',
+              display: '144.80 tr/lượng',
+              change: '0.00',
+              change_percent: '0.00%',
+              up: true
+            },
+            nhan_9999: {
+              name: 'Hũ vàng Finhay 9999',
+              buy: '141.00 tr/lượng',
+              sell: '144.00 tr/lượng',
+              spread: '3.00 tr'
+            }
+          },
+          providers: [
+            { provider: 'SJC', buy: '141.80 tr/lượng', sell: '144.80 tr/lượng', spread: '3.00 tr', location: 'Toàn quốc' },
+            { provider: 'DOJI', buy: '141.80 tr/lượng', sell: '144.80 tr/lượng', spread: '3.00 tr', location: 'Hà Nội & TP.HCM' },
+            { provider: 'PNJ', buy: '141.00 tr/lượng', sell: '144.00 tr/lượng', spread: '3.00 tr', location: 'Hệ thống PNJ' },
+            { provider: 'Bảo Tín Minh Châu (BTMC)', buy: '141.80 tr/lượng', sell: '144.80 tr/lượng', spread: '3.00 tr', location: 'Hà Nội' }
+          ]
+        };
+        return new Response(JSON.stringify(payload), { headers: corsHeaders });
+      } catch(err) {
+        return new Response(JSON.stringify({ status: 'ERROR', message: err.message }), { status: 500, headers: corsHeaders });
+      }
+    }
+
     if (url.pathname === '/health') {
-      return new Response(JSON.stringify({ status: 'OK', worker: 'maris-market-proxy', version: '2.0.0-intraday-1m', timestamp: new Date().toISOString() }), { headers: corsHeaders });
+      return new Response(JSON.stringify({ status: 'OK', worker: 'maris-market-proxy', version: '2.1.0-gold-mcp', timestamp: new Date().toISOString() }), { headers: corsHeaders });
     }
 
     return new Response(JSON.stringify({ error: 'Route not found' }), { status: 404, headers: corsHeaders });

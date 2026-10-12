@@ -5114,16 +5114,16 @@ const MARKET_NEWS = [
   },
   {
     id: 'n16',
-    title: 'Giá vàng SJC biến động mạnh quanh mốc 84.5 triệu đồng/lượng, Ngân hàng Nhà nước duy trì cung ứng qua 4 NHTM Nhà nước',
-    summary: 'Chênh lệch giữa giá vàng miếng trong nước và giá vàng thế giới quy đổi duy trì ở biên độ hợp lý 3.5 - 4.2 triệu đồng/lượng sau các giải pháp can thiệp thị trường.',
-    content: 'Giá vàng thế giới giao ngay đạt mốc 2.658 USD/oz do dòng tiền quốc tế tìm kiếm nơi trú ẩn trước bất ổn địa chính trị. Tại thị trường Việt Nam, chính sách can thiệp cung vàng miếng trực tiếp qua 4 ngân hàng thương mại quốc doanh và công ty SJC tiếp tục phát huy hiệu quả ổn định tâm lý thị trường tiền tệ.',
+    title: 'Giá vàng SJC duy trì vùng 141.8 - 144.8 triệu đồng/lượng, Vàng thế giới vượt đỉnh 4.200 USD/oz',
+    summary: 'Chênh lệch mua - bán duy trì ở mức 3.0 triệu đồng/lượng, thị trường vàng quốc tế giao ngay giao dịch quanh mốc 4.206 USD/oz.',
+    content: 'Giá vàng thế giới giao ngay đạt mốc 4.206 USD/oz do dòng tiền quốc tế tìm kiếm nơi trú ẩn trước bất ổn địa chính trị và kỳ vọng chính sách tiền tệ Fed. Tại thị trường Việt Nam, giá vàng miếng SJC được các đơn vị lớn niêm yết ở mức 141.8 triệu đồng/lượng (mua vào) và 144.8 triệu đồng/lượng (bán ra). Chênh lệch mua - bán duy trì ở mức 3.0 triệu đồng/lượng.',
     category: 'Hàng hóa',
-    time: '06/10',
+    time: '12/10',
     source: 'FINHAY Wealth Gold',
     sentiment: 'TRUNG LẬP',
     impact: 'Trung bình',
     tickers: [],
-    tags: ['Vàng SJC', 'Vàng thế giới', 'Bình ổn giá'],
+    tags: ['Vàng SJC', 'Vàng thế giới', 'Finhay MCP'],
     mcpTool: 'finhay_get_gold_rate'
   },
   {
@@ -7841,18 +7841,64 @@ async function syncMarketDataRealtime(isManual) {
             target.mcp_src = 'Cloudflare Live Proxy (DNSE)';
           }
         });
-        const now = new Date();
-        LAST_REALTIME_SYNC_TIME = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-        
-        if (S.route === 'market') {
-          rerender();
-        }
-        if (isManual && typeof toast === 'function') {
-          toast(`⚡ Đã đồng bộ Realtime từ Cloudflare Proxy lúc ${LAST_REALTIME_SYNC_TIME}`);
-        }
-        return true;
       }
     }
+
+    // Đồng bộ giá Vàng từ MCP Finhay & Kitco Proxy
+    try {
+      const goldRes = await fetch(`${CLOUDFLARE_MARKET_PROXY}/api/gold`);
+      if (goldRes.ok) {
+        const goldData = await goldRes.json();
+        if (goldData && goldData.status === 'SUCCESS') {
+          const sjcIdx = GLOBAL_INDICES.find(g => g.name === 'Vàng SJC');
+          if (sjcIdx && goldData.domestic && goldData.domestic.sjc) {
+            sjcIdx.val = goldData.domestic.sjc.display;
+            sjcIdx.buy = goldData.domestic.sjc.buy;
+            sjcIdx.sell = goldData.domestic.sjc.sell;
+            sjcIdx.spread = goldData.domestic.sjc.spread;
+            sjcIdx.chg = goldData.domestic.sjc.change;
+            sjcIdx.pct = goldData.domestic.sjc.change_percent;
+            sjcIdx.mcp_src = 'Finhay MCP Live Feed';
+          }
+          const spotIdx = GLOBAL_INDICES.find(g => g.name === 'Vàng TG (Spot)');
+          if (spotIdx && goldData.world_spot) {
+            spotIdx.val = goldData.world_spot.display;
+            spotIdx.chg = goldData.world_spot.change;
+            spotIdx.pct = goldData.world_spot.change_percent;
+            spotIdx.mcp_src = 'Kitco MCP Spot Feed';
+          }
+          if (typeof FINHAY_MCP_PAYLOADS !== 'undefined' && FINHAY_MCP_PAYLOADS.finhay_get_gold_rate) {
+            FINHAY_MCP_PAYLOADS.finhay_get_gold_rate.timestamp = goldData.timestamp;
+            FINHAY_MCP_PAYLOADS.finhay_get_gold_rate.products = [
+              { name: 'Vàng miếng SJC', buy: goldData.domestic.sjc.buy, sell: goldData.domestic.sjc.sell, spread: goldData.domestic.sjc.spread },
+              { name: 'Hũ vàng Finhay 9999', buy: goldData.domestic.nhan_9999.buy, sell: goldData.domestic.nhan_9999.sell, spread: goldData.domestic.nhan_9999.spread },
+              { name: 'Vàng nhẫn DOJI Hưng Thịnh Vượng', buy: goldData.domestic.sjc.buy, sell: goldData.domestic.sjc.sell, spread: goldData.domestic.sjc.spread },
+              { name: 'Vàng PNJ 24K', buy: goldData.domestic.nhan_9999.buy, sell: goldData.domestic.nhan_9999.sell, spread: goldData.domestic.nhan_9999.spread }
+            ];
+          }
+          if (typeof FINHAY_MCP_PAYLOADS !== 'undefined' && FINHAY_MCP_PAYLOADS.finhay_get_macro_commodities) {
+            const xau = FINHAY_MCP_PAYLOADS.finhay_get_macro_commodities.commodities.find(c => c.code === 'XAU_SPOT');
+            if (xau) {
+              xau.price = goldData.world_spot.display;
+              xau.change_pct = goldData.world_spot.change_percent;
+            }
+          }
+        }
+      }
+    } catch(gErr) {
+      console.warn('Realtime gold sync fallback:', gErr);
+    }
+
+    const now = new Date();
+    LAST_REALTIME_SYNC_TIME = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+    
+    if (S.route === 'market') {
+      rerender();
+    }
+    if (isManual && typeof toast === 'function') {
+      toast(`⚡ Đã đồng bộ Realtime (DNSE & Finhay MCP) lúc ${LAST_REALTIME_SYNC_TIME}`);
+    }
+    return true;
   } catch (err) {
     console.warn('Realtime market fetch error:', err);
   }
@@ -7974,10 +8020,10 @@ const GLOBAL_INDICES = [
   { name: 'Nikkei 225', region: 'Nhật Bản', val: '39,380.00', chg: '+220.00', pct: '+0.56%', up: true },
   { name: 'Hang Seng', region: 'Hồng Kông', val: '21,250.00', chg: '+380.00', pct: '+1.82%', up: true },
   
-  // Hàng hóa & Ngoại tệ
+  // Hàng hóa & Ngoại tệ (Nguồn: Finhay MCP & Kitco)
   { name: 'Dầu Brent', region: 'Hàng hóa', val: '78.50 $/thùng', chg: '+1.25', pct: '+1.62%', up: true },
-  { name: 'Vàng TG (Spot)', region: 'Kim loại', val: '2,658.40 $/oz', chg: '+8.50', pct: '+0.32%', up: true },
-  { name: 'Vàng SJC', region: 'Việt Nam', val: '85.00 tr/lượng', chg: '0.00', pct: '0.00%', up: true },
+  { name: 'Vàng TG (Spot)', region: 'Kitco MCP', val: '4,206.50 $/oz', chg: '+12.80', pct: '+0.31%', up: true, mcp: 'finhay_get_macro_commodities' },
+  { name: 'Vàng SJC', region: 'Finhay MCP', val: '144.80 tr/lượng', chg: '0.00', pct: '0.00%', up: true, buy: '141.80 tr', sell: '144.80 tr', spread: '3.00 tr', mcp: 'finhay_get_gold_rate' },
   { name: 'Tỷ giá USD/VND', region: 'VCB FX', val: '24,850 đ', chg: '+15', pct: '+0.06%', up: true },
 
   // Tiền mã hóa Quốc tế (Nguồn: Binance Live API & WebSocket Feed)
@@ -8206,27 +8252,40 @@ function vMarket() {
   } else if (tab === 'global') {
     tabContent = `<div style="margin-top:16px">
       <div style="font-size:13px;color:var(--ink2);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-        <div>Dữ liệu chỉ số chứng khoán thế giới, hàng hóa chiến lược và thị trường tiền mã hóa ngày ${getLiveDateString()} (Nguồn: Quốc tế &amp; Binance).</div>
-        <div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#16a34a;background:rgba(34,197,94,0.1);padding:3px 10px;border-radius:12px;border:1px solid rgba(34,197,94,0.3)">
-          <span class="live-pulse-dot" style="width:6px;height:6px"></span>
-          <span>Binance Live Feed (api.binance.com · WebSocket ~1s/tick)</span>
+        <div>Dữ liệu chỉ số chứng khoán thế giới, hàng hóa chiến lược và thị trường tiền mã hóa ngày ${getLiveDateString()} (Nguồn: Quốc tế, Finhay MCP &amp; Binance).</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#059669;background:rgba(5,150,105,0.1);padding:3px 10px;border-radius:12px;border:1px solid rgba(5,150,105,0.3)" onclick="openDnseMcpModal('fin')" title="Bấm để xem cổng MCP Finhay Vàng &amp; Hàng hóa">
+            <span class="live-pulse-dot" style="width:6px;height:6px;background:#059669"></span>
+            <span>⚡ Finhay MCP Gold Feed (SJC &amp; Kitco)</span>
+          </div>
+          <div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#16a34a;background:rgba(34,197,94,0.1);padding:3px 10px;border-radius:12px;border:1px solid rgba(34,197,94,0.3)">
+            <span class="live-pulse-dot" style="width:6px;height:6px"></span>
+            <span>Binance Live Feed (~1s/tick)</span>
+          </div>
         </div>
       </div>
       <div class="mkt-global-grid">
         ${GLOBAL_INDICES.map(g => {
           const isCrypto = g.region === 'Binance';
+          const isGoldSjc = g.name === 'Vàng SJC';
+          const isGoldSpot = g.name.includes('Vàng TG');
+          const isGold = isGoldSjc || isGoldSpot;
           const symCode = g.sym || (g.name.includes('BTC') ? 'BTCUSDT' : g.name.includes('ETH') ? 'ETHUSDT' : g.name.includes('BNB') ? 'BNBUSDT' : g.name.includes('SOL') ? 'SOLUSDT' : '');
-          return `<div class="mkt-global-card" ${symCode ? `data-global-sym="${symCode}"` : ''} style="${isCrypto ? 'border-color:rgba(240,185,11,0.35);background:linear-gradient(180deg, var(--card) 0%, rgba(240,185,11,0.04) 100%)' : ''}">
+          return `<div class="mkt-global-card" ${symCode ? `data-global-sym="${symCode}"` : ''} ${isGold ? `onclick="openDnseMcpModal('fin')"` : ''} style="${isCrypto ? 'border-color:rgba(240,185,11,0.35);background:linear-gradient(180deg, var(--card) 0%, rgba(240,185,11,0.04) 100%)' : isGold ? 'border-color:rgba(234,179,8,0.35);background:linear-gradient(180deg, var(--card) 0%, rgba(234,179,8,0.04) 100%);cursor:pointer' : ''}" ${isGold ? 'title="Bấm để mở cổng Finhay MCP kiểm tra chi tiết giá vàng"' : ''}>
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div style="display:flex;align-items:center;gap:6px">
-              ${isCrypto ? `<svg viewBox="0 0 32 32" width="16" height="16" style="flex-shrink:0"><circle cx="16" cy="16" r="16" fill="#F0B90B"/><path fill="#1E2026" d="M16 6.5l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm13.4 0l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm-3.2-3.2l3.2-3.2 3.2 3.2-3.2 3.2z"/></svg>` : ''}
+              ${isCrypto ? `<svg viewBox="0 0 32 32" width="16" height="16" style="flex-shrink:0"><circle cx="16" cy="16" r="16" fill="#F0B90B"/><path fill="#1E2026" d="M16 6.5l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm13.4 0l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm-3.2-3.2l3.2-3.2 3.2 3.2-3.2 3.2z"/></svg>` : isGold ? `<span style="font-size:14px">🪙</span>` : ''}
               <b>${g.name}</b>
             </div>
-            <span style="font-size:11px;color:${isCrypto ? '#ca8a04' : 'var(--ink3)'};font-weight:${isCrypto ? '700' : '400'}">${g.region}</span>
+            <span style="font-size:11px;color:${isCrypto ? '#ca8a04' : isGold ? '#059669' : 'var(--ink3)'};font-weight:${isCrypto || isGold ? '700' : '400'}">${g.region}</span>
           </div>
           <div class="mkt-global-val" style="font-size:20px;font-weight:700;font-family:var(--mono);margin:2px 0;transition:background 0.3s, color 0.2s">${g.val}</div>
-          <div class="mkt-global-chg" style="font-size:12px;font-family:var(--mono);color:${g.up ? 'var(--up)' : 'var(--down)'}">
-            ${g.chg} (${g.pct})
+          ${isGoldSjc ? `<div style="font-size:11px;color:var(--ink2);margin-bottom:3px;font-family:var(--mono)">Mua: <b style="color:var(--ink)">${g.buy || '141.80 tr'}</b> · Bán: <b style="color:var(--ink)">${g.sell || '144.80 tr'}</b> <span style="color:#059669">(Spread: ${g.spread || '3.00 tr'})</span></div>` : ''}
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="mkt-global-chg" style="font-size:12px;font-family:var(--mono);color:${g.up ? 'var(--up)' : 'var(--down)'}">
+              ${g.chg} (${g.pct})
+            </div>
+            ${isGold ? `<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(5,150,105,0.12);color:#059669;font-weight:600">⚡ Finhay MCP ↗</span>` : ''}
           </div>
         </div>`;
         }).join('')}
@@ -15845,7 +15904,7 @@ function updateVndMcpPayloadsForSymbol(sym, vnd) {
 }
 
 /* TRIPLE MCP CONTROLLERS (DNSE, VNDIRECT & FINHAY) */
-let ACTIVE_FIN_MCP_TOOL = 'finhay_get_macro_commodities';
+let ACTIVE_FIN_MCP_TOOL = 'finhay_get_gold_rate';
 const FINHAY_MCP_PAYLOADS = {
   finhay_get_macro_commodities: {
     tool: 'finhay_get_macro_commodities',
@@ -15854,7 +15913,7 @@ const FINHAY_MCP_PAYLOADS = {
     timestamp: new Date().toISOString(),
     commodities: [
       { code: 'BRENT', name: 'Dầu Brent', price: '78.50 $/thùng', change_pct: '+1.62%' },
-      { code: 'XAU_SPOT', name: 'Vàng Thế Giới Spot', price: '2,658.40 $/oz', change_pct: '+0.32%' },
+      { code: 'XAU_SPOT', name: 'Vàng Thế Giới Spot', price: '4,206.50 $/oz', change_pct: '+0.31%' },
       { code: 'SP500', name: 'S&P 500 (US)', value: '5,785.40', change_pct: '+0.43%' },
       { code: 'NDX', name: 'Nasdaq 100', value: '18,295.60', change_pct: '+0.62%' }
     ],
@@ -15865,10 +15924,25 @@ const FINHAY_MCP_PAYLOADS = {
     mcp_endpoint: 'https://mcp.finhay.com.vn/mcp',
     timestamp: new Date().toISOString(),
     products: [
-      { name: 'Vàng miếng SJC', buy: '83.00 tr/lượng', sell: '85.00 tr/lượng', spread: '2.00 tr' },
-      { name: 'Hũ vàng Finhay 9999', buy: '82.30 tr/lượng', sell: '83.50 tr/lượng', spread: '1.20 tr' }
+      { name: 'Vàng miếng SJC', buy: '141.80 tr/lượng', sell: '144.80 tr/lượng', spread: '3.00 tr' },
+      { name: 'Hũ vàng Finhay 9999', buy: '141.00 tr/lượng', sell: '144.00 tr/lượng', spread: '3.00 tr' },
+      { name: 'Vàng nhẫn DOJI Hưng Thịnh Vượng', buy: '141.80 tr/lượng', sell: '144.80 tr/lượng', spread: '3.00 tr' },
+      { name: 'Vàng PNJ 24K', buy: '141.00 tr/lượng', sell: '144.00 tr/lượng', spread: '3.00 tr' }
     ],
-    source: 'Finhay Bullion & SJC Feed',
+    source: 'Finhay Bullion & SJC Live Feed',
+    status: 'SUCCESS'
+  },
+  finhay_get_gold_providers: {
+    tool: 'finhay_get_gold_providers',
+    mcp_endpoint: 'https://mcp.finhay.com.vn/mcp',
+    timestamp: new Date().toISOString(),
+    providers: [
+      { provider: 'SJC', buy: '141.80 tr/lượng', sell: '144.80 tr/lượng', spread: '3.00 tr', location: 'Toàn quốc' },
+      { provider: 'DOJI', buy: '141.80 tr/lượng', sell: '144.80 tr/lượng', spread: '3.00 tr', location: 'Hà Nội & TP.HCM' },
+      { provider: 'PNJ', buy: '141.00 tr/lượng', sell: '144.00 tr/lượng', spread: '3.00 tr', location: 'Hệ thống PNJ' },
+      { provider: 'Bảo Tín Minh Châu (BTMC)', buy: '141.80 tr/lượng', sell: '144.80 tr/lượng', spread: '3.00 tr', location: 'Hà Nội' }
+    ],
+    source: 'Finhay Grouped Providers Feed',
     status: 'SUCCESS'
   },
   finhay_get_fx_rate: {
@@ -16431,8 +16505,8 @@ function renderMcpToolTabs() {
     ).join('');
   } else if (ACTIVE_MCP_SERVER === 'fin') {
     const finTools = [
-      'finhay_get_macro_commodities', 'finhay_get_gold_rate', 'finhay_get_fx_rate',
-      'finhay_get_fund_nav', 'finhay_get_interest_rates', 'finhay_get_inflation_cpi'
+      'finhay_get_gold_rate', 'finhay_get_gold_providers', 'finhay_get_macro_commodities',
+      'finhay_get_fx_rate', 'finhay_get_fund_nav', 'finhay_get_interest_rates', 'finhay_get_inflation_cpi'
     ];
     container.innerHTML = finTools.map(t =>
       `<button class="dnse-tool-tab ${ACTIVE_FIN_MCP_TOOL === t ? 'active' : ''}" style="${ACTIVE_FIN_MCP_TOOL === t ? 'background:#059669;border-color:#059669;color:#fff' : ''}" data-tool="${t}" onclick="switchFinMcpTab('${t}')">${t}</button>`

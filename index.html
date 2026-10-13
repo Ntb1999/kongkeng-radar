@@ -5816,7 +5816,11 @@ function updateStockRowInDOM(sym, newPrice, newChg, newPct, newVol, newVal, delt
 function tickCompany360Realtime() {
   if (typeof STOCK === 'undefined' || !STOCK) return;
 
-  const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: true };
+  // Khi đang kết nối thị trường thật (!REALTIME_MANUAL_SIM): Không tự cộng/trừ bước giá ngẫu nhiên,
+  // giữ nguyên 100% giá khớp thật đồng bộ từ Cloudflare Worker (DNSE Entrade Realtime).
+  if (!REALTIME_MANUAL_SIM) {
+    return;
+  }
 
   const oldPrice = STOCK.price;
   const refPrice = (STOCK.price - STOCK.chg) || 14100;
@@ -5934,11 +5938,20 @@ function tickCompany360Realtime() {
 function tickMarketStreamingEngine() {
   _MKT_STREAM_TICK_COUNT++;
 
-  // Staggered Binance heartbeat: alternate between Index micro-tick and Stock micro-tick each 1s
+  // Khi đang ở chế độ thị trường thật (!REALTIME_MANUAL_SIM):
+  // Toàn bộ chỉ số và 46 mã cổ phiếu được đồng bộ 100% từ thị trường thực tế qua Cloudflare Proxy (DNSE Entrade).
+  // Không cộng/trừ ngẫu nhiên làm sai lệch giá và thứ hạng Top Thanh khoản / Tăng giá / Giảm giá.
+  if (!REALTIME_MANUAL_SIM) {
+    const rateEl = document.getElementById('mkt-stream-rate');
+    if (rateEl) {
+      rateEl.textContent = `DNSE Live #${_MKT_STREAM_TICK_COUNT}`;
+    }
+    return;
+  }
+
+  // Chế độ Mô phỏng thủ công (khi người dùng chủ động bật ngoài giờ giao dịch)
   if (_MKT_STREAM_TICK_COUNT % 2 === 0) {
-    // 1. Tick for Market Indices (VN-INDEX, VN30, HNX, UPCOM)
     if (Array.isArray(MARKET_INDICES) && MARKET_INDICES.length > 0) {
-      // Select index: VN-INDEX (45%), VN30 (30%), HNX (15%), UPCOM (10%)
       const r = Math.random();
       const idxIndex = r < 0.45 ? 0 : r < 0.75 ? 1 : r < 0.90 ? 2 : 3;
       const targetIdx = MARKET_INDICES[idxIndex];
@@ -5967,7 +5980,6 @@ function tickMarketStreamingEngine() {
       }
     }
   } else {
-    // 2. Tick for Stocks (Single Stock from VN30 Data Feed Universe)
     if (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED) {
       const symKeys = Object.keys(VN30_DATA_FEED);
       if (symKeys.length > 0) {
@@ -5995,23 +6007,15 @@ function tickMarketStreamingEngine() {
             s.val_bil = +( (s.val_bil || 0) + (tickVol * s.price) / 1e9 ).toFixed(1);
 
             updateStockRowInDOM(s.sym, s.price, s.chg, s.pct, s.vol, s.val_bil, newPrice - oldPrice);
-
-            // If currently viewed in C360, keep synchronized
-            if (typeof STOCK !== 'undefined' && STOCK && STOCK.sym === s.sym && typeof S !== 'undefined' && S.route && S.route.startsWith('c360')) {
-              STOCK.price = s.price;
-              STOCK.chg = s.chg;
-              STOCK.pct = s.pct;
-            }
           }
         }
       }
     }
   }
 
-  // 3. Heartbeat animation for rate indicator in Market header
   const rateEl = document.getElementById('mkt-stream-rate');
   if (rateEl) {
-    rateEl.textContent = `Tick #${_MKT_STREAM_TICK_COUNT}`;
+    rateEl.textContent = `Mô phỏng #${_MKT_STREAM_TICK_COUNT}`;
   }
 }
 
@@ -8229,12 +8233,409 @@ let MARKET_SECTORS = [
 
 const CLOUDFLARE_MARKET_PROXY = 'https://maris-market-proxy.tungbachntb.workers.dev';
 let LAST_REALTIME_SYNC_TIME = null;
+let _IS_SYNCING_ALL_STOCKS = false;
+
+function ensureFullMarketUniverseInFeed() {
+  if (typeof UNI === 'undefined' || !Array.isArray(UNI) || typeof VN30_DATA_FEED === 'undefined') return;
+  UNI.forEach(u => {
+    const sym = u[0];
+    if (!sym) return;
+    if (!VN30_DATA_FEED[sym]) {
+      const priceVnd = Math.round((u[4] || 20) * 1000);
+      const pctVal = Number(u[5] || 0);
+      const refVnd = Math.round(priceVnd / (1 + pctVal / 100) / 50) * 50 || priceVnd;
+      const chgVnd = priceVnd - refVnd;
+      const volEst = Math.round((u[6] || 150) * 1000);
+      const valBil = +((priceVnd * volEst) / 1e9).toFixed(2);
+      VN30_DATA_FEED[sym] = {
+        sym: sym,
+        name: u[1] || sym,
+        ind: u[2] || 'Thị trường',
+        ex: u[3] || 'HOSE',
+        price: priceVnd,
+        ref: refVnd,
+        chg: chgVnd,
+        pct: pctVal,
+        vol: volEst,
+        val_bil: valBil
+      };
+    }
+  });
+}
+
+function getStockDratingInfo(sym, price, ind) {
+  const v = (typeof VND_STOCKS_DB !== 'undefined' && VND_STOCKS_DB[sym])
+    ? VND_STOCKS_DB[sym]
+    : (typeof synthesizeVndMcpData === 'function' ? synthesizeVndMcpData(sym, price, ind) : null);
+  const score = (v && v.drating && v.drating.score) ? v.drating.score : 4.2;
+  const rec = (v && v.consensus && v.consensus.recommendation)
+    ? v.consensus.recommendation
+    : (score >= 4.5 ? 'MUA' : 'KHẢ QUAN');
+  return { score, rec };
+}
+
+function getMarketLeadersConfig(leaderMode) {
+  ensureFullMarketUniverseInFeed();
+  const allStocksList = (typeof VN30_DATA_FEED !== 'undefined') ? Object.values(VN30_DATA_FEED) : [];
+  let displayRows = [];
+  let leaderBadgeTxt = '';
+
+  if (leaderMode === 'gainers') {
+    leaderBadgeTxt = 'Top 10 cổ phiếu Tăng giá mạnh nhất theo thị trường thực tế (Realtime DNSE Entrade)';
+    displayRows = [...allStocksList]
+      .sort((a, b) => ((b.pct || 0) - (a.pct || 0)) || ((b.val_bil || 0) - (a.val_bil || 0)))
+      .slice(0, 10);
+  } else if (leaderMode === 'losers') {
+    leaderBadgeTxt = 'Top 10 cổ phiếu Giảm giá nhiều nhất theo thị trường thực tế (Realtime DNSE Entrade)';
+    displayRows = [...allStocksList]
+      .sort((a, b) => ((a.pct || 0) - (b.pct || 0)) || ((b.val_bil || 0) - (a.val_bil || 0)))
+      .slice(0, 10);
+  } else if (leaderMode === 'drating') {
+    leaderBadgeTxt = 'Top 10 cổ phiếu Dẫn đầu xếp hạng D-Rating VNDIRECT · Giá khớp thực tế DNSE';
+    displayRows = [...allStocksList]
+      .map(s => ({ ...s, _dr: getStockDratingInfo(s.sym, s.price, s.ind) }))
+      .sort((a, b) => (b._dr.score - a._dr.score) || ((b.val_bil || 0) - (a.val_bil || 0)))
+      .slice(0, 10);
+  } else {
+    leaderBadgeTxt = 'Top 10 cổ phiếu có Giá trị giao dịch (GTGD) cao nhất theo thị trường thực tế (Realtime DNSE Entrade)';
+    displayRows = [...allStocksList]
+      .sort((a, b) => ((b.val_bil || 0) - (a.val_bil || 0)) || ((b.vol || 0) - (a.vol || 0)))
+      .slice(0, 10);
+  }
+  return { displayRows, leaderBadgeTxt };
+}
+
+function renderMarketLeadersRowsHtml(displayRows) {
+  return displayRows.map((s, idx) => {
+    const dr = s._dr || getStockDratingInfo(s.sym, s.price, s.ind);
+    const priceThousand = (s.price / 1000).toFixed(2);
+    const isUp = s.pct > 0;
+    const isDown = s.pct < 0;
+    const dirArrow = isUp ? '▲ +' : (isDown ? '▼ ' : '');
+    const pctStr = dirArrow + Math.abs(Number(s.pct || 0)).toFixed(2) + '%';
+    const pctColor = isUp ? 'var(--bn-green, #0ECB81)' : (isDown ? 'var(--bn-red, #F6465D)' : 'var(--ink3)');
+    const volStr = (s.vol >= 1e6 ? (s.vol / 1e6).toFixed(2) + ' M' : (s.vol >= 1e3 ? (s.vol / 1e3).toFixed(0) + ' K' : (s.vol || 0)));
+    const valStr = Number(s.val_bil || 0).toFixed(2);
+    return `<tr class="click" data-act="stock" data-v="${s.sym}" data-stock-sym="${s.sym}">
+      <td><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(s.sym, 22)}<b style="color:var(--brand)">${s.sym}</b></div></td>
+      <td>${s.name}</td>
+      <td><span style="font-size:11px;color:var(--ink3)">${s.ex || 'HOSE'}</span></td>
+      <td class="num font-mono" style="text-align:right"><span class="mkt-price-pill" data-stock-role="price"><b>${priceThousand}</b></span></td>
+      <td class="num font-mono" style="text-align:right;color:${pctColor}" data-stock-role="pct"><b>${pctStr}</b></td>
+      <td class="num" style="text-align:right;color:var(--ink2)" data-stock-role="vol">${volStr}</td>
+      <td class="num font-mono" style="text-align:right;color:var(--ink)" data-stock-role="val"><b>${valStr}</b></td>
+      <td><span class="cmp-drating-badge">${dr.score.toFixed(1)}★ ${dr.rec}</span></td>
+      <td style="text-align:center"><button class="btn sm" data-act="stock" data-v="${s.sym}">360 ↗</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function recomputeMarketSectorsFromRealtime() {
+  if (typeof VN30_DATA_FEED === 'undefined') return;
+  const sectorDefs = [
+    { name: 'Ngân hàng', syms: ['VCB', 'BID', 'CTG', 'TCB', 'MBB', 'VPB', 'ACB', 'STB', 'HDB', 'SHB', 'LPB', 'VIB', 'TPB', 'MSB', 'SSB'] },
+    { name: 'Dầu khí & Năng lượng', syms: ['GAS', 'BSR', 'PLX', 'PVS', 'POW', 'NT2', 'REE'] },
+    { name: 'Hóa chất & Cao su', syms: ['GVR', 'DGC', 'DCM', 'BMP'] },
+    { name: 'Bất động sản & KCN', syms: ['VHM', 'VIC', 'VRE', 'BCM', 'KDH', 'IDC'] },
+    { name: 'Bán lẻ', syms: ['MWG', 'PNJ'] },
+    { name: 'Công nghệ thông tin', syms: ['FPT', 'CMG'] },
+    { name: 'Chứng khoán & Tài chính', syms: ['SSI', 'SHS', 'BVH'] },
+    { name: 'Thực phẩm & Tiêu dùng', syms: ['VNM', 'MSN', 'MCH', 'SAB', 'QNS'] },
+    { name: 'Thép & Công nghiệp', syms: ['HPG', 'VJC'] }
+  ];
+
+  const computed = sectorDefs.map(def => {
+    const list = def.syms.map(k => VN30_DATA_FEED[k]).filter(Boolean);
+    if (list.length === 0) return { name: def.name, pct: 0, val: '0 tỷ', leader: '—' };
+    const avgPct = +(list.reduce((acc, s) => acc + Number(s.pct || 0), 0) / list.length).toFixed(2);
+    const totalVal = list.reduce((acc, s) => acc + Number(s.val_bil || 0), 0);
+    const sortedByMove = [...list].sort((a, b) => Math.abs(b.pct || 0) - Math.abs(a.pct || 0));
+    const topLeaders = sortedByMove.slice(0, 2).map(s => `${s.sym} (${s.pct >= 0 ? '+' : ''}${Number(s.pct || 0).toFixed(2)}%)`).join(', ');
+    return {
+      name: def.name,
+      pct: avgPct,
+      val: totalVal.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' tỷ',
+      leader: topLeaders
+    };
+  });
+
+  MARKET_SECTORS = computed.sort((a, b) => b.pct - a.pct);
+}
+
+function renderMarketSectorsHtml() {
+  return MARKET_SECTORS.map(s => {
+    const isUp = s.pct >= 0;
+    const barColor = isUp ? 'var(--up)' : 'var(--down)';
+    return `<div class="mkt-sec-item">
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between">
+          <b>${s.name}</b>
+          <b style="font-family:var(--mono);color:${isUp ? 'var(--up)' : 'var(--down)'}">${isUp ? '+' : ''}${s.pct.toFixed(2)}%</b>
+        </div>
+        <div class="mkt-sec-bar" style="background:var(--line)">
+          <div style="height:100%;border-radius:2px;width:${Math.min(100, Math.max(4, Math.abs(s.pct) * 35))}%;background:${barColor}"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-top:4px">
+          <span>Thanh khoản rổ: ${s.val}</span>
+          <span>Dẫn dắt: ${s.leader}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderMarketImpactMoversHtml() {
+  ensureFullMarketUniverseInFeed();
+  const allStocks = (typeof VN30_DATA_FEED !== 'undefined') ? Object.values(VN30_DATA_FEED) : [];
+  const capWeights = {
+    VCB: 1.35, BID: 0.95, CTG: 0.72, VIC: 0.68, VHM: 0.65, GAS: 0.62, FPT: 0.68, HPG: 0.60,
+    TCB: 0.58, VPB: 0.55, MBB: 0.48, GVR: 0.45, VNM: 0.42, BSR: 0.40, MSN: 0.38, LPB: 0.36,
+    MWG: 0.35, ACB: 0.34, HDB: 0.32, STB: 0.30, VJC: 0.28, SAB: 0.26, BCM: 0.25, PLX: 0.22,
+    SHB: 0.22, VIB: 0.20, SSI: 0.20, VRE: 0.18, POW: 0.16, SSB: 0.16, TPB: 0.15, MSB: 0.14
+  };
+  const shortNames = {
+    VCB: 'Vietcombank', BID: 'BIDV', CTG: 'VietinBank', VIC: 'Vingroup', VHM: 'Vinhomes',
+    GAS: 'PV Gas', FPT: 'FPT Corp', HPG: 'Hòa Phát', TCB: 'Techcombank', VPB: 'VPBank',
+    MBB: 'MBBank', GVR: 'Cao su VN', VNM: 'Vinamilk', BSR: 'Lọc dầu Bình Sơn', MSN: 'Masan',
+    LPB: 'LPBank', MWG: 'Thế Giới Di Động', ACB: 'Á Châu', HDB: 'HDBank', STB: 'Sacombank',
+    VJC: 'Vietjet Air', SAB: 'Sabeco', BCM: 'Becamex', PLX: 'Petrolimex', SHB: 'SHB',
+    VIB: 'VIB', SSI: 'Chứng khoán SSI', VRE: 'Vincom Retail', POW: 'PV Power', SSB: 'SeABank',
+    TPB: 'TPBank', MSB: 'MSB', MCH: 'Masan Consumer', PNJ: 'Vàng bạc PNJ', DGC: 'Hóa chất Đức Giang'
+  };
+
+  const withImpact = allStocks.map(s => {
+    const w = capWeights[s.sym] || 0.15;
+    const impactPts = +((Number(s.pct || 0) * w)).toFixed(2);
+    return {
+      sym: s.sym,
+      shortName: shortNames[s.sym] || s.name.replace(/^(Ngân hàng TMCP|Công ty Cổ phần|Tập đoàn|Tổng Công ty)\s+/i, '').slice(0, 18),
+      pct: Number(s.pct || 0),
+      impactPts
+    };
+  });
+
+  const topUp = withImpact.filter(x => x.pct > 0).sort((a, b) => b.impactPts - a.impactPts || b.pct - a.pct).slice(0, 5);
+  const topDown = withImpact.filter(x => x.pct < 0).sort((a, b) => a.impactPts - b.impactPts || a.pct - b.pct).slice(0, 5);
+
+  return `
+    <div style="font-size:12px;font-weight:700;color:#22c55e;margin-bottom:6px">🟢 TOP KÉO TĂNG CHỈ SỐ (REALTIME)</div>
+    ${topUp.map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m.sym}" data-mover-sym="${m.sym}">
+      <div style="display:flex;align-items:center;gap:8px">
+        ${getCompanyLogo(m.sym, 24)}
+        <div>
+          <b style="color:#38bdf8">${m.sym}</b>
+          <span style="color:var(--ink3);font-size:11px;margin-left:4px">${m.shortName}</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <b style="color:#22c55e;font-family:var(--mono)">+${Math.max(0.05, Math.abs(m.impactPts)).toFixed(2)} đ</b>
+        <span data-mover-role="pct" style="font-size:11px;color:#22c55e;margin-left:6px">(▲ +${m.pct.toFixed(2)}%)</span>
+      </div>
+    </div>`).join('') || '<div class="muted" style="font-size:12px;padding:8px 0">Chưa ghi nhận mã kéo tăng</div>'}
+
+    <div style="font-size:12px;font-weight:700;color:#ef4444;margin:14px 0 6px">🔴 TOP KÉO GIẢM CHỈ SỐ (REALTIME)</div>
+    ${topDown.map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m.sym}" data-mover-sym="${m.sym}">
+      <div style="display:flex;align-items:center;gap:8px">
+        ${getCompanyLogo(m.sym, 24)}
+        <div>
+          <b style="color:#f87171">${m.sym}</b>
+          <span style="color:var(--ink3);font-size:11px;margin-left:4px">${m.shortName}</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <b style="color:#ef4444;font-family:var(--mono)">-${Math.max(0.05, Math.abs(m.impactPts)).toFixed(2)} đ</b>
+        <span data-mover-role="pct" style="font-size:11px;color:#ef4444;margin-left:6px">(▼ ${Math.abs(m.pct).toFixed(2)}%)</span>
+      </div>
+    </div>`).join('') || '<div class="muted" style="font-size:12px;padding:8px 0">Chưa ghi nhận mã kéo giảm</div>'}
+  `;
+}
+
+function updateMarketLeadersTableInDOM(changedMap) {
+  const tbody = document.getElementById('mkt-leaders-tbody');
+  if (tbody) {
+    const leaderMode = S.mktLeaderTab || 'val';
+    const { displayRows, leaderBadgeTxt } = getMarketLeadersConfig(leaderMode);
+    tbody.innerHTML = renderMarketLeadersRowsHtml(displayRows);
+    const badgeEl = document.getElementById('mkt-leaders-badge-txt');
+    if (badgeEl) {
+      badgeEl.textContent = `⚡ ${leaderBadgeTxt}${LAST_REALTIME_SYNC_TIME ? ` · Cập nhật: ${LAST_REALTIME_SYNC_TIME}` : ''}`;
+    }
+    if (changedMap) {
+      Object.keys(changedMap).forEach(sym => {
+        const delta = changedMap[sym];
+        if (!delta) return;
+        const row = tbody.querySelector(`[data-stock-sym="${sym}"]`);
+        if (row) {
+          const pill = row.querySelector('.mkt-price-pill');
+          if (pill) {
+            pill.classList.remove('flash-up', 'flash-down');
+            void pill.offsetWidth;
+            pill.classList.add(delta > 0 ? 'flash-up' : 'flash-down');
+          }
+        }
+      });
+    }
+  }
+
+  const secEl = document.getElementById('mkt-sector-heatmap-list');
+  if (secEl) {
+    secEl.innerHTML = renderMarketSectorsHtml();
+  }
+
+  const impEl = document.getElementById('mkt-impact-movers-list');
+  if (impEl) {
+    impEl.innerHTML = renderMarketImpactMoversHtml();
+  }
+}
+
+async function syncAllStocksUniverseRealtime() {
+  if (_IS_SYNCING_ALL_STOCKS) return {};
+  _IS_SYNCING_ALL_STOCKS = true;
+  const changedMap = {};
+  try {
+    ensureFullMarketUniverseInFeed();
+    const syms = Object.keys(VN30_DATA_FEED);
+    const results = await Promise.all(
+      syms.map(sym =>
+        fetch(`${CLOUDFLARE_MARKET_PROXY}/api/stock?symbol=${encodeURIComponent(sym)}`)
+          .then(r => (r.ok ? r.json() : null))
+          .catch(() => null)
+      )
+    );
+
+    let advCount = 0, refCount = 0, decCount = 0;
+    let vn30Adv = 0, vn30Ref = 0, vn30Dec = 0;
+    const vn30Set = new Set(['ACB','BCM','BID','BVH','CTG','FPT','GAS','GVR','HDB','HPG','MBB','MSN','MWG','PLX','POW','SAB','SHB','SSB','SSI','STB','TCB','TPB','VCB','VHM','VIB','VIC','VJC','VNM','VPB','VRE']);
+
+    results.forEach(d => {
+      if (!d || d.status !== 'SUCCESS' || !d.symbol || !d.price) return;
+      const sym = d.symbol;
+      const s = VN30_DATA_FEED[sym];
+      if (!s) return;
+
+      const oldPrice = s.price || d.price;
+      const oldVol = s.vol || 0;
+      const priceDelta = d.price - oldPrice;
+      const volDelta = (d.volume || 0) - oldVol;
+      if (priceDelta !== 0) {
+        changedMap[sym] = priceDelta;
+      } else if (volDelta > 0) {
+        changedMap[sym] = d.change >= 0 ? 1 : -1;
+      }
+
+      s.price = d.price;
+      s.ref = d.ref_price || s.ref || d.price;
+      s.open = d.open || s.open || d.price;
+      s.high = d.high || s.high || d.price;
+      s.low = d.low || s.low || d.price;
+      s.close = d.close || d.price;
+      s.chg = d.change;
+      s.pct = d.change_percent;
+      if (d.volume != null && d.volume > 0) {
+        s.vol = d.volume;
+        s.val_bil = +((d.price * d.volume) / 1e9).toFixed(2);
+      }
+      s.live_synced = true;
+      s.live_date = d.date;
+
+      if (s.metrics && Array.isArray(s.metrics.liq)) {
+        s.metrics.liq = [
+          ['KLGD', `${(s.vol || 0).toLocaleString('vi-VN')} CP`],
+          ['GTGD', `${(s.val_bil || 0).toLocaleString('vi-VN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} tỷ đồng`]
+        ];
+      }
+
+      if (s.pct > 0) { advCount++; if (vn30Set.has(sym)) vn30Adv++; }
+      else if (s.pct < 0) { decCount++; if (vn30Set.has(sym)) vn30Dec++; }
+      else { refCount++; if (vn30Set.has(sym)) vn30Ref++; }
+
+      // Đồng bộ sang UNI, ALL và DNSE_STOCKS_DB
+      if (typeof UNI !== 'undefined' && Array.isArray(UNI)) {
+        const uRow = UNI.find(u => u[0] === sym);
+        if (uRow) {
+          uRow[4] = +(d.price / 1000).toFixed(2);
+          uRow[5] = d.change_percent;
+          if (s.val_bil) uRow[6] = Math.round(s.val_bil);
+        }
+      }
+      if (typeof ALL !== 'undefined' && Array.isArray(ALL)) {
+        const aRow = ALL.find(r => r[0] === sym);
+        if (aRow) {
+          aRow[3] = d.price;
+          aRow[4] = d.change_percent;
+          aRow[5] = s.vol >= 1e6 ? (s.vol / 1e6).toFixed(2) + ' M' : (s.vol / 1e3).toFixed(1) + ' K';
+          aRow[6] = s.val_bil;
+        }
+      }
+      if (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[sym]) {
+        const db = DNSE_STOCKS_DB[sym];
+        db.price = d.price;
+        db.ref = d.ref_price || db.ref;
+        db.chg = d.change;
+        db.pct = d.change_percent;
+        db.open = d.open || db.open;
+        db.high = d.high || db.high;
+        db.low = d.low || db.low;
+        if (d.volume) db.vol = d.volume;
+      }
+    });
+
+    // Cập nhật độ rộng VN30 thực tế và ước lượng tỷ lệ HOSE
+    const totalSynced = advCount + refCount + decCount;
+    if (totalSynced >= 20 && Array.isArray(MARKET_INDICES)) {
+      const vn30Idx = MARKET_INDICES.find(m => m.name.includes('VN30'));
+      if (vn30Idx && (vn30Adv + vn30Ref + vn30Dec) > 0) {
+        vn30Idx.adv = vn30Adv;
+        vn30Idx.ref = vn30Ref;
+        vn30Idx.dec = vn30Dec;
+      }
+      const vniIdx = MARKET_INDICES.find(m => m.name.includes('VN-INDEX'));
+      if (vniIdx) {
+        const totalHose = 464;
+        vniIdx.adv = Math.round((advCount / totalSynced) * totalHose);
+        vniIdx.dec = Math.round((decCount / totalSynced) * totalHose);
+        vniIdx.ref = Math.max(10, totalHose - vniIdx.adv - vniIdx.dec);
+      }
+    }
+
+    // Cập nhật giá thực tế cho bảng Khối Ngoại
+    if (Array.isArray(MARKET_FOREIGN_TOP_BUY)) {
+      MARKET_FOREIGN_TOP_BUY.forEach(item => {
+        const s = VN30_DATA_FEED[item.sym];
+        if (s && s.price) {
+          item.price = (s.price / 1000).toFixed(2);
+          item.pct = s.pct;
+        }
+      });
+    }
+    if (Array.isArray(MARKET_FOREIGN_TOP_SELL)) {
+      MARKET_FOREIGN_TOP_SELL.forEach(item => {
+        const s = VN30_DATA_FEED[item.sym];
+        if (s && s.price) {
+          item.price = (s.price / 1000).toFixed(2);
+          item.pct = s.pct;
+        }
+      });
+    }
+
+    recomputeMarketSectorsFromRealtime();
+  } catch (e) {
+    console.warn('syncAllStocksUniverseRealtime error:', e);
+  } finally {
+    _IS_SYNCING_ALL_STOCKS = false;
+  }
+  return changedMap;
+}
 
 async function syncMarketDataRealtime(isManual) {
   try {
-    const res = await fetch(`${CLOUDFLARE_MARKET_PROXY}/api/market`);
-    if (res.ok) {
-      const data = await res.json();
+    const [mktRes, changedStocksMap] = await Promise.all([
+      fetch(`${CLOUDFLARE_MARKET_PROXY}/api/market`).catch(() => null),
+      syncAllStocksUniverseRealtime()
+    ]);
+
+    if (mktRes && mktRes.ok) {
+      const data = await mktRes.json();
       if (data && data.indices && Array.isArray(data.indices)) {
         data.indices.forEach(idx => {
           const target = MARKET_INDICES.find(m =>
@@ -8245,6 +8646,7 @@ async function syncMarketDataRealtime(isManual) {
             (m.name.includes('VN-INDEX') && idx.symbol === 'VNINDEX')
           );
           if (target && idx.score) {
+            const oldScore = target.score || idx.score;
             target.score = idx.score;
             target.chg = idx.change;
             target.pct = idx.change_percent;
@@ -8252,8 +8654,15 @@ async function syncMarketDataRealtime(isManual) {
             if (target.spark.length > 12) target.spark.shift();
             if (idx.volume) {
               target.vol = idx.volume >= 1e6 ? (idx.volume / 1e6).toFixed(1) + 'M' : idx.volume.toLocaleString('vi-VN');
+              // Ước tính GTGD thực tế của chỉ số từ khối lượng khớp lệnh
+              const avgPx = idx.symbol === 'VN30' ? 31500 : idx.symbol === 'VNINDEX' ? 23500 : idx.symbol === 'HNX' ? 18500 : 14500;
+              const estValBil = Math.round((idx.volume * avgPx) / 1e9);
+              if (estValBil > 0) {
+                target.val = estValBil.toLocaleString('vi-VN') + ' tỷ';
+              }
             }
             target.mcp_src = 'Cloudflare Live Proxy (DNSE)';
+            target._lastDelta = idx.score - oldScore;
           }
         });
       }
@@ -8309,21 +8718,21 @@ async function syncMarketDataRealtime(isManual) {
     
     if (S.route === 'market') {
       if (typeof updateAllMarketIndicesInDOM === 'function') {
-        updateAllMarketIndicesInDOM();
-      } else {
-        rerender();
+        MARKET_INDICES.forEach(idx => {
+          updateMarketIndexInDOM(idx.name, idx.score, idx.chg, idx.pct, idx._lastDelta || 0);
+        });
       }
+      updateMarketLeadersTableInDOM(changedStocksMap);
       const syncClockEl = document.getElementById('mkt-sync-clock');
       if (syncClockEl) syncClockEl.textContent = LAST_REALTIME_SYNC_TIME;
     }
     if (isManual && typeof toast === 'function') {
-      toast(`⚡ Đã đồng bộ Realtime (DNSE & Finhay MCP) lúc ${LAST_REALTIME_SYNC_TIME}`);
+      toast(`⚡ Đã đồng bộ Realtime 46 mã CK & Chỉ số (DNSE Entrade) lúc ${LAST_REALTIME_SYNC_TIME}`);
     }
     return true;
   } catch (err) {
     console.warn('Realtime market fetch error:', err);
   }
-  syncMarketDataTick(isManual);
 }
 
 async function syncStockQuoteRealtime(sym) {
@@ -8391,24 +8800,6 @@ async function syncStockQuoteRealtime(sym) {
 function syncMarketDataTick(isManual) {
   const session = getLiveTradingSessionInfo();
   if (!session.isOpen && !isManual) return;
-  MARKET_INDICES.forEach(idx => {
-    const delta = +((Math.random() * 1.2 - 0.6).toFixed(2));
-    idx.score = +(idx.score + delta).toFixed(2);
-    idx.chg = +(idx.chg + delta).toFixed(2);
-    idx.pct = +((idx.chg / (idx.score - idx.chg)) * 100).toFixed(2);
-    idx.spark.push(idx.score);
-    if (idx.spark.length > 12) idx.spark.shift();
-    const currVal = parseFloat(idx.val.replace(/[^\d.]/g, '')) || 30000;
-    idx.val = (currVal + Math.floor(Math.random() * 50 + 10)).toLocaleString('vi-VN') + ' tỷ';
-    if (delta > 0) { idx.adv += Math.floor(Math.random() * 2 + 1); idx.dec = Math.max(0, idx.dec - 1); }
-    else if (delta < 0) { idx.dec += Math.floor(Math.random() * 2 + 1); idx.adv = Math.max(0, idx.adv - 1); }
-  });
-
-  MARKET_SECTORS.forEach(sec => {
-    const sDelta = +((Math.random() * 0.16 - 0.08).toFixed(2));
-    sec.pct = +(sec.pct + sDelta).toFixed(2);
-  });
-
   if (isManual && typeof toast === 'function') {
     toast(`↻ Đã cập nhật dữ liệu thị trường lúc ${session.timeStr}`);
   }
@@ -8485,7 +8876,7 @@ function vMarket() {
       <div class="mkt-idx-head">
         <div style="display:flex;align-items:center;gap:6px">
           <b style="font-size:15px">${idx.name}</b>
-          <span class="live-pulse-dot" style="width:6px;height:6px" title="Streaming Live Tick (Binance-style)"></span>
+          <span class="live-pulse-dot" style="width:6px;height:6px" title="Streaming Live Tick (DNSE Entrade)"></span>
         </div>
         <span style="font-size:11px;color:var(--ink3)">${idx.ex}</span>
       </div>
@@ -8579,44 +8970,7 @@ function vMarket() {
     </div>`;
   } else if (tab === 'leaders') {
     const leaderMode = S.mktLeaderTab || 'val';
-    const allStocksList = (typeof VN30_DATA_FEED !== 'undefined') ? Object.values(VN30_DATA_FEED) : [];
-
-    const getStockDrating = (sym, price, ind) => {
-      const v = (typeof VND_STOCKS_DB !== 'undefined' && VND_STOCKS_DB[sym])
-        ? VND_STOCKS_DB[sym]
-        : (typeof synthesizeVndMcpData === 'function' ? synthesizeVndMcpData(sym, price, ind) : null);
-      const score = (v && v.drating && v.drating.score) ? v.drating.score : 4.2;
-      const rec = (v && v.consensus && v.consensus.recommendation)
-        ? v.consensus.recommendation
-        : (score >= 4.5 ? 'MUA' : 'KHẢ QUAN');
-      return { score, rec };
-    };
-
-    let displayRows = [];
-    let leaderBadgeTxt = '';
-
-    if (leaderMode === 'gainers') {
-      leaderBadgeTxt = 'Top 10 cổ phiếu Tăng giá mạnh nhất nhóm VN30 (Dẫn dắt đà tăng)';
-      displayRows = [...allStocksList]
-        .sort((a, b) => (b.pct || 0) - (a.pct || 0))
-        .slice(0, 10);
-    } else if (leaderMode === 'losers') {
-      leaderBadgeTxt = 'Top 10 cổ phiếu Giảm giá nhiều nhất nhóm VN30 (Áp lực điều chỉnh)';
-      displayRows = [...allStocksList]
-        .sort((a, b) => (a.pct || 0) - (b.pct || 0))
-        .slice(0, 10);
-    } else if (leaderMode === 'drating') {
-      leaderBadgeTxt = 'Top 10 cổ phiếu Dẫn đầu xếp hạng D-Rating VNDIRECT (4.5★ - 5.0★)';
-      displayRows = [...allStocksList]
-        .map(s => ({ ...s, _dr: getStockDrating(s.sym, s.price, s.ind) }))
-        .sort((a, b) => (b._dr.score - a._dr.score) || ((b.val_bil || 0) - (a.val_bil || 0)))
-        .slice(0, 10);
-    } else {
-      leaderBadgeTxt = 'Top 10 cổ phiếu có Giá trị giao dịch (GTGD) cao nhất toàn thị trường';
-      displayRows = [...allStocksList]
-        .sort((a, b) => (b.val_bil || 0) - (a.val_bil || 0))
-        .slice(0, 10);
-    }
+    const { displayRows, leaderBadgeTxt } = getMarketLeadersConfig(leaderMode);
 
     tabContent = `<div style="margin-top:16px">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;flex-wrap:wrap">
@@ -8626,8 +8980,9 @@ function vMarket() {
           <button class="btn sm ${leaderMode === 'losers' ? 'pri' : ''}" data-act="mktleadertab" data-v="losers">Top Giảm Giá (% Losers)</button>
           <button class="btn sm ${leaderMode === 'drating' ? 'pri' : ''}" data-act="mktleadertab" data-v="drating">Top D-Rating VND (4.5★ - 5.0★)</button>
         </div>
-        <div style="font-size:12px;color:var(--ink3)">
-          <span>⚡ ${leaderBadgeTxt}</span>
+        <div style="font-size:12px;color:var(--ink3);display:flex;align-items:center;gap:6px">
+          <span class="live-pulse-dot" style="width:6px;height:6px;background:#22c55e"></span>
+          <span id="mkt-leaders-badge-txt">⚡ ${leaderBadgeTxt}${LAST_REALTIME_SYNC_TIME ? ` · Cập nhật: ${LAST_REALTIME_SYNC_TIME}` : ''}</span>
         </div>
       </div>
 
@@ -8647,29 +9002,8 @@ function vMarket() {
                 <th style="text-align:center;width:90px">Thao tác</th>
               </tr>
             </thead>
-            <tbody>
-              ${displayRows.map(s => {
-                const dr = s._dr || getStockDrating(s.sym, s.price, s.ind);
-                const priceThousand = (s.price / 1000).toFixed(2);
-                const isUp = s.pct > 0;
-                const isDown = s.pct < 0;
-                const dirArrow = isUp ? '▲ +' : (isDown ? '▼ ' : '');
-                const pctStr = dirArrow + Math.abs(Number(s.pct || 0)).toFixed(2) + '%';
-                const pctColor = isUp ? 'var(--bn-green, #0ECB81)' : (isDown ? 'var(--bn-red, #F6465D)' : 'var(--ink3)');
-                const volStr = (s.vol >= 1e6 ? (s.vol / 1e6).toFixed(2) + ' M' : (s.vol >= 1e3 ? (s.vol / 1e3).toFixed(0) + ' K' : (s.vol || 0)));
-                const valStr = Number(s.val_bil || 0).toFixed(1);
-                return `<tr class="click" data-act="stock" data-v="${s.sym}" data-stock-sym="${s.sym}">
-                  <td><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(s.sym, 22)}<b style="color:var(--brand)">${s.sym}</b></div></td>
-                  <td>${s.name}</td>
-                  <td><span style="font-size:11px;color:var(--ink3)">${s.ex || 'HOSE'}</span></td>
-                  <td class="num font-mono" style="text-align:right"><span class="mkt-price-pill" data-stock-role="price"><b>${priceThousand}</b></span></td>
-                  <td class="num font-mono" style="text-align:right;color:${pctColor}" data-stock-role="pct"><b>${pctStr}</b></td>
-                  <td class="num" style="text-align:right;color:var(--ink2)" data-stock-role="vol">${volStr}</td>
-                  <td class="num font-mono" style="text-align:right;color:var(--ink)" data-stock-role="val"><b>${valStr}</b></td>
-                  <td><span class="cmp-drating-badge">${dr.score.toFixed(1)}★ ${dr.rec}</span></td>
-                  <td style="text-align:center"><button class="btn sm" data-act="stock" data-v="${s.sym}">360 ↗</button></td>
-                </tr>`;
-              }).join('')}
+            <tbody id="mkt-leaders-tbody">
+              ${renderMarketLeadersRowsHtml(displayRows)}
             </tbody>
           </table>
         </div>
@@ -8749,28 +9083,10 @@ function vMarket() {
         <div class="mkt-box">
           <div class="mkt-box-title">
             <span>🔥 Hiệu Suất &amp; Dòng Tiền Theo Ngành (Sector Heatmap)</span>
-            <span style="font-size:11px;color:var(--ink3)">Toàn thị trường</span>
+            <span style="font-size:11px;color:var(--ink3)">Realtime DNSE Entrade</span>
           </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            ${MARKET_SECTORS.map(s => {
-              const isUp = s.pct >= 0;
-              const barColor = isUp ? 'var(--up)' : 'var(--down)';
-              return `<div class="mkt-sec-item">
-                <div style="flex:1">
-                  <div style="display:flex;justify-content:space-between">
-                    <b>${s.name}</b>
-                    <b style="font-family:var(--mono);color:${isUp ? 'var(--up)' : 'var(--down)'}">${isUp ? '+' : ''}${s.pct.toFixed(2)}%</b>
-                  </div>
-                  <div class="mkt-sec-bar" style="background:var(--line)">
-                    <div style="height:100%;border-radius:2px;width:${Math.min(100, Math.abs(s.pct) * 35)}%;background:${barColor}"></div>
-                  </div>
-                  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-top:4px">
-                    <span>Thanh khoản: ${s.val}</span>
-                    <span>Dẫn dắt: ${s.leader}</span>
-                  </div>
-                </div>
-              </div>`;
-            }).join('')}
+          <div id="mkt-sector-heatmap-list" style="display:flex;flex-direction:column;gap:8px">
+            ${renderMarketSectorsHtml()}
           </div>
         </div>
 
@@ -8780,49 +9096,8 @@ function vMarket() {
             <span>⚖️ Tác Động Tới VN-Index (Index Impact Movers)</span>
             <span style="font-size:11px;color:var(--ink3)">Realtime Weighted</span>
           </div>
-
-          <div>
-            <div style="font-size:12px;font-weight:700;color:#22c55e;margin-bottom:6px">🟢 TOP KÉO TĂNG CHỈ SỐ</div>
-            ${[
-              ['HPG', 'Hòa Phát', '+2.85 đ', '+4.23%', '#38bdf8'],
-              ['VPB', 'VPBank', '+1.95 đ', '+2.52%', '#38bdf8'],
-              ['SHB', 'SHB', '+1.20 đ', '+2.50%', '#38bdf8'],
-              ['ACB', 'Á Châu', '+0.95 đ', '+1.49%', '#38bdf8'],
-              ['HDB', 'HDBank', '+0.88 đ', '+1.12%', '#38bdf8']
-            ].map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m[0]}" data-mover-sym="${m[0]}">
-              <div style="display:flex;align-items:center;gap:8px">
-                ${getCompanyLogo(m[0], 24)}
-                <div>
-                  <b style="color:${m[4]}">${m[0]}</b>
-                  <span style="color:var(--ink3);font-size:11px;margin-left:4px">${m[1]}</span>
-                </div>
-              </div>
-              <div style="text-align:right">
-                <b style="color:#22c55e;font-family:var(--mono)">${m[2]}</b>
-                <span data-mover-role="pct" style="font-size:11px;color:var(--ink3);margin-left:6px">(${m[3]})</span>
-              </div>
-            </div>`).join('')}
-
-            <div style="font-size:12px;font-weight:700;color:#ef4444;margin:14px 0 6px">🔴 TOP KÉO GIẢM CHỈ SỐ</div>
-            ${[
-              ['VIC', 'Vingroup', '-2.45 đ', '-2.71%', '#f87171'],
-              ['GAS', 'PV Gas', '-1.15 đ', '-2.35%', '#f87171'],
-              ['VHM', 'Vinhomes', '-1.10 đ', '-1.82%', '#f87171'],
-              ['PLX', 'Petrolimex', '-0.52 đ', '-2.01%', '#f87171'],
-              ['MSN', 'Masan', '-0.45 đ', '-0.94%', '#f87171']
-            ].map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m[0]}" data-mover-sym="${m[0]}">
-              <div style="display:flex;align-items:center;gap:8px">
-                ${getCompanyLogo(m[0], 24)}
-                <div>
-                  <b style="color:${m[4]}">${m[0]}</b>
-                  <span style="color:var(--ink3);font-size:11px;margin-left:4px">${m[1]}</span>
-                </div>
-              </div>
-              <div style="text-align:right">
-                <b style="color:#ef4444;font-family:var(--mono)">${m[2]}</b>
-                <span data-mover-role="pct" style="font-size:11px;color:var(--ink3);margin-left:6px">(${m[3]})</span>
-              </div>
-            </div>`).join('')}
+          <div id="mkt-impact-movers-list">
+            ${renderMarketImpactMoversHtml()}
           </div>
         </div>
       </div>
@@ -9432,9 +9707,15 @@ const A = {
       if (S.mktTab === 'global') {
         fetchBinanceLiveData();
         if (typeof initBinanceWebSocket === 'function') initBinanceWebSocket();
+      } else if (S.mktTab === 'leaders' || S.mktTab === 'pulse' || S.mktTab === 'foreign') {
+        syncMarketDataRealtime(false);
       }
     },
-  mktleadertab: el => { S.mktLeaderTab = el.dataset.v; rerender(); },
+  mktleadertab: el => {
+    S.mktLeaderTab = el.dataset.v;
+    rerender();
+    syncMarketDataRealtime(false);
+  },
   mktsync: () => {
     fetchBinanceLiveData();
     syncMarketDataRealtime(true);
@@ -17631,13 +17912,13 @@ setInterval(() => {
   }
 }, 10000);
 
-// Auto-trigger Cloudflare Worker Realtime Market & Stock Quote Sync (1 lần ban đầu để lấy giá chốt phiên)
+// Auto-trigger Cloudflare Worker Realtime Market & Stock Quote Sync ngay khi mở trang
 setTimeout(() => {
   syncMarketDataRealtime(false);
   if (typeof STOCK !== 'undefined' && STOCK.sym) {
     syncStockQuoteRealtime(STOCK.sym);
   }
-}, 800);
+}, 150);
 
 // Polling Cloudflare Worker Proxy every 6s for live index ticks (CHỈ polling khi trong phiên giao dịch có dữ liệu mới)
 setInterval(() => {

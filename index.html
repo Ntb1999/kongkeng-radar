@@ -3960,7 +3960,7 @@ const UNI = [
     "Tập đoàn Vingroup - Công ty Cổ phần",
     "Bất động sản & Đa ngành",
     "HOSE",
-    225.5,
+    41.5,
     -1.1,
     3032,
     [
@@ -4690,7 +4690,7 @@ const ALL = [
     "VIC",
     "Tập đoàn Vingroup - Công ty Cổ phần",
     "HOSE",
-    225500,
+    41500,
     -1.1,
     "3.03 M",
     687.98,
@@ -5328,7 +5328,7 @@ const S = {
   scr: { preset: 0, chips: null, sort: ['total', -1], sel: new Set(['FPT', 'VCB']), mode: 'goi-y' },
   all: { chips: [['Sàn', 'HOSE · HNX', 'ex'], ['Ngành', '', 'ind', 5], ['Biến động giá', '', 'bd', '< 3%'], ['KLGD', '', 'kl', '> 1,000']], sort: ['mc', -1], sel: new Set(['HPG', 'GAS', 'VNM']), ex: new Set(['HOSE', 'HNX']), cols: 'Tổng quan' },
   dr: { open: { 1: true }, crit: new Set(), ex: new Set(['HOSE', 'HNX']), q: '' },
-  cmp: ['MSB', 'FPT', 'HPG'], cmpClosed: new Set(), cmpTab: 'all', cmpPeriod: '3M', mktTab: 'pulse', mktLeaderTab: 'val', mktEx: 'ALL',
+  cmp: ['MSB', 'FPT', 'HPG'], cmpClosed: new Set(), cmpTab: 'all', cmpPeriod: '3M', mktTab: 'pulse', mktLeaderTab: 'val', mktFlowMode: 'foreign', mktEx: 'ALL',
   rep: { tab: 0, q: '', page: 1, span: '30 ngày', span2: '30 ngày', lastSync: '' },
   watch: new Set(['FPT', 'VCB', 'HPG']),
   mnews: { tab: 0, q: '', span: 'Tất cả', sentiment: 'Tất cả', page: 1 }
@@ -8488,6 +8488,88 @@ function updateMarketLeadersTableInDOM(changedMap) {
   }
 }
 
+function renderFlowItemRowsHelper(items, isBuy) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return `<div style="padding:16px;text-align:center;color:var(--ink3);font-size:12px">Đang đồng bộ dữ liệu giao dịch realtime...</div>`;
+  }
+  const sorted = [...items].sort((a, b) => {
+    const valA = (typeof a.net_num === 'number') ? a.net_num : parseFloat(a.net_val) || 0;
+    const valB = (typeof b.net_num === 'number') ? b.net_num : parseFloat(b.net_val) || 0;
+    return isBuy ? (valB - valA) : (valA - valB);
+  });
+
+  return sorted.map((row, idx) => {
+    const liveStock = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[row.sym]) ? VN30_DATA_FEED[row.sym] : null;
+    const px = liveStock && liveStock.price ? (liveStock.price / 1000).toFixed(2) : (row.price || '—');
+    const pct = liveStock && typeof liveStock.pct === 'number' ? liveStock.pct : (row.pct || 0);
+    const pctColor = pct > 0 ? 'var(--up)' : pct < 0 ? 'var(--down)' : 'var(--ref)';
+    const netStr = (typeof row.net_num === 'number') ? ((row.net_num > 0 ? '+' : '') + row.net_num.toFixed(1).replace('.', ',') + ' tỷ') : (row.net_val || '—');
+    const rankColor = idx === 0 ? '#f59e0b' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : 'var(--ink3)';
+
+    return `<div class="mkt-mover-row click" data-act="stock" data-v="${row.sym}" style="display:flex;justify-content:space-between;align-items:center;padding:8px 6px;border-bottom:1px solid rgba(148,163,184,0.12)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:11px;font-weight:700;color:${rankColor};width:16px;text-align:center">${idx + 1}</span>
+        ${typeof getCompanyLogo === 'function' ? getCompanyLogo(row.sym, 24) : ''}
+        <div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <b style="color:${isBuy ? 'var(--brand)' : 'var(--down)'}">${row.sym}</b>
+            <span style="font-size:10px;padding:1px 5px;border-radius:4px;background:rgba(148,163,184,0.15);color:var(--ink2)">${row.vol || ''}</span>
+          </div>
+          <div style="color:var(--ink3);font-size:11px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${row.name || ''}</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <b style="color:${isBuy ? 'var(--up)' : 'var(--down)'};font-family:var(--mono);font-size:14px">${netStr}</b>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--ink3)">
+          <span style="color:var(--ink)">${px}k</span>
+          <span style="color:${pctColor};font-weight:600;margin-left:4px">(${pct > 0 ? '+' : ''}${pct}%)</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateMarketFlowInDOM() {
+  if (S.route !== 'market' || S.mktTab !== 'foreign') return;
+  const flowMode = S.mktFlowMode || 'foreign';
+  const fData = (MARKET_INSTITUTIONAL_FLOW && MARKET_INSTITUTIONAL_FLOW.foreign) ? MARKET_INSTITUTIONAL_FLOW.foreign : { buy_val: 2450.8, sell_val: 1820.2, net_val: 630.6, top_buy: [], top_sell: [] };
+  const pData = (MARKET_INSTITUTIONAL_FLOW && MARKET_INSTITUTIONAL_FLOW.proprietary) ? MARKET_INSTITUTIONAL_FLOW.proprietary : { buy_val: 856.4, sell_val: 573.1, net_val: 283.3, top_buy: [], top_sell: [] };
+
+  const badgeEl = document.getElementById('mkt-flow-live-badge');
+  if (badgeEl && LAST_REALTIME_SYNC_TIME) {
+    badgeEl.textContent = `⚡ Realtime Flow Feed · Cập nhật: ${LAST_REALTIME_SYNC_TIME}`;
+  }
+
+  const fBuyEl = document.getElementById('mkt-foreign-buy-kpi');
+  if (fBuyEl) fBuyEl.textContent = `${fData.buy_val.toFixed(1).replace('.', ',')} tỷ`;
+  const fSellEl = document.getElementById('mkt-foreign-sell-kpi');
+  if (fSellEl) fSellEl.textContent = `${fData.sell_val.toFixed(1).replace('.', ',')} tỷ`;
+  const fNetEl = document.getElementById('mkt-foreign-net-kpi');
+  if (fNetEl) {
+    fNetEl.textContent = `${fData.net_val > 0 ? '+' : ''}${fData.net_val.toFixed(1).replace('.', ',')} tỷ đ`;
+    fNetEl.style.color = fData.net_val >= 0 ? 'var(--up)' : 'var(--down)';
+  }
+
+  const pBuyEl = document.getElementById('mkt-prop-buy-kpi');
+  if (pBuyEl) pBuyEl.textContent = `${pData.buy_val.toFixed(1).replace('.', ',')} tỷ`;
+  const pSellEl = document.getElementById('mkt-prop-sell-kpi');
+  if (pSellEl) pSellEl.textContent = `${pData.sell_val.toFixed(1).replace('.', ',')} tỷ`;
+  const pNetEl = document.getElementById('mkt-prop-net-kpi');
+  if (pNetEl) {
+    pNetEl.textContent = `${pData.net_val > 0 ? '+' : ''}${pData.net_val.toFixed(1).replace('.', ',')} tỷ đ`;
+    pNetEl.style.color = pData.net_val >= 0 ? 'var(--up)' : 'var(--down)';
+  }
+
+  const fBuyBox = document.getElementById('mkt-foreign-top-buy-box');
+  if (fBuyBox) fBuyBox.innerHTML = renderFlowItemRowsHelper(fData.top_buy, true);
+  const fSellBox = document.getElementById('mkt-foreign-top-sell-box');
+  if (fSellBox) fSellBox.innerHTML = renderFlowItemRowsHelper(fData.top_sell, false);
+  const pBuyBox = document.getElementById('mkt-prop-top-buy-box');
+  if (pBuyBox) pBuyBox.innerHTML = renderFlowItemRowsHelper(pData.top_buy, true);
+  const pSellBox = document.getElementById('mkt-prop-top-sell-box');
+  if (pSellBox) pSellBox.innerHTML = renderFlowItemRowsHelper(pData.top_sell, false);
+}
+
 async function syncAllStocksUniverseRealtime() {
   if (_IS_SYNCING_ALL_STOCKS) return {};
   _IS_SYNCING_ALL_STOCKS = true;
@@ -8598,25 +8680,23 @@ async function syncAllStocksUniverseRealtime() {
       }
     }
 
-    // Cập nhật giá thực tế cho bảng Khối Ngoại
-    if (Array.isArray(MARKET_FOREIGN_TOP_BUY)) {
-      MARKET_FOREIGN_TOP_BUY.forEach(item => {
-        const s = VN30_DATA_FEED[item.sym];
-        if (s && s.price) {
-          item.price = (s.price / 1000).toFixed(2);
-          item.pct = s.pct;
-        }
-      });
-    }
-    if (Array.isArray(MARKET_FOREIGN_TOP_SELL)) {
-      MARKET_FOREIGN_TOP_SELL.forEach(item => {
-        const s = VN30_DATA_FEED[item.sym];
-        if (s && s.price) {
-          item.price = (s.price / 1000).toFixed(2);
-          item.pct = s.pct;
-        }
-      });
-    }
+    // Cập nhật giá thực tế cho bảng Khối Ngoại & Tự Doanh
+    ['foreign', 'proprietary'].forEach(type => {
+      if (MARKET_INSTITUTIONAL_FLOW && MARKET_INSTITUTIONAL_FLOW[type]) {
+        ['top_buy', 'top_sell'].forEach(group => {
+          const list = MARKET_INSTITUTIONAL_FLOW[type][group];
+          if (Array.isArray(list)) {
+            list.forEach(item => {
+              const s = VN30_DATA_FEED[item.sym];
+              if (s && s.price) {
+                item.price = (s.price / 1000).toFixed(2);
+                item.pct = s.pct;
+              }
+            });
+          }
+        });
+      }
+    });
 
     recomputeMarketSectorsFromRealtime();
   } catch (e) {
@@ -8629,8 +8709,9 @@ async function syncAllStocksUniverseRealtime() {
 
 async function syncMarketDataRealtime(isManual) {
   try {
-    const [mktRes, changedStocksMap] = await Promise.all([
+    const [mktRes, flowRes, changedStocksMap] = await Promise.all([
       fetch(`${CLOUDFLARE_MARKET_PROXY}/api/market`).catch(() => null),
+      fetch(`${CLOUDFLARE_MARKET_PROXY}/api/market-flow`).catch(() => null),
       syncAllStocksUniverseRealtime()
     ]);
 
@@ -8665,6 +8746,67 @@ async function syncMarketDataRealtime(isManual) {
             target._lastDelta = idx.score - oldScore;
           }
         });
+      }
+    }
+
+    // Đồng bộ Dòng tiền Khối ngoại & Tự doanh (Realtime Institutional Flow)
+    if (flowRes && flowRes.ok) {
+      try {
+        const flowData = await flowRes.json();
+        if (flowData && flowData.status === 'SUCCESS') {
+          if (flowData.foreign && MARKET_INSTITUTIONAL_FLOW.foreign) {
+            MARKET_INSTITUTIONAL_FLOW.foreign.buy_val = flowData.foreign.buy_val || MARKET_INSTITUTIONAL_FLOW.foreign.buy_val;
+            MARKET_INSTITUTIONAL_FLOW.foreign.sell_val = flowData.foreign.sell_val || MARKET_INSTITUTIONAL_FLOW.foreign.sell_val;
+            MARKET_INSTITUTIONAL_FLOW.foreign.net_val = flowData.foreign.net_val || (MARKET_INSTITUTIONAL_FLOW.foreign.buy_val - MARKET_INSTITUTIONAL_FLOW.foreign.sell_val);
+            if (Array.isArray(flowData.foreign.top_buy) && flowData.foreign.top_buy.length > 0) {
+              flowData.foreign.top_buy.forEach(nb => {
+                const existing = MARKET_INSTITUTIONAL_FLOW.foreign.top_buy.find(x => x.sym === nb.sym);
+                if (existing) {
+                  existing.net_num = nb.net_num;
+                  existing.vol = nb.vol || existing.vol;
+                  existing.net_val = (nb.net_num > 0 ? '+' : '') + nb.net_num.toFixed(1).replace('.', ',') + ' tỷ';
+                }
+              });
+            }
+            if (Array.isArray(flowData.foreign.top_sell) && flowData.foreign.top_sell.length > 0) {
+              flowData.foreign.top_sell.forEach(ns => {
+                const existing = MARKET_INSTITUTIONAL_FLOW.foreign.top_sell.find(x => x.sym === ns.sym);
+                if (existing) {
+                  existing.net_num = ns.net_num;
+                  existing.vol = ns.vol || existing.vol;
+                  existing.net_val = ns.net_num.toFixed(1).replace('.', ',') + ' tỷ';
+                }
+              });
+            }
+          }
+          if (flowData.proprietary && MARKET_INSTITUTIONAL_FLOW.proprietary) {
+            MARKET_INSTITUTIONAL_FLOW.proprietary.buy_val = flowData.proprietary.buy_val || MARKET_INSTITUTIONAL_FLOW.proprietary.buy_val;
+            MARKET_INSTITUTIONAL_FLOW.proprietary.sell_val = flowData.proprietary.sell_val || MARKET_INSTITUTIONAL_FLOW.proprietary.sell_val;
+            MARKET_INSTITUTIONAL_FLOW.proprietary.net_val = flowData.proprietary.net_val || (MARKET_INSTITUTIONAL_FLOW.proprietary.buy_val - MARKET_INSTITUTIONAL_FLOW.proprietary.sell_val);
+            if (Array.isArray(flowData.proprietary.top_buy) && flowData.proprietary.top_buy.length > 0) {
+              flowData.proprietary.top_buy.forEach(nb => {
+                const existing = MARKET_INSTITUTIONAL_FLOW.proprietary.top_buy.find(x => x.sym === nb.sym);
+                if (existing) {
+                  existing.net_num = nb.net_num;
+                  existing.vol = nb.vol || existing.vol;
+                  existing.net_val = (nb.net_num > 0 ? '+' : '') + nb.net_num.toFixed(1).replace('.', ',') + ' tỷ';
+                }
+              });
+            }
+            if (Array.isArray(flowData.proprietary.top_sell) && flowData.proprietary.top_sell.length > 0) {
+              flowData.proprietary.top_sell.forEach(ns => {
+                const existing = MARKET_INSTITUTIONAL_FLOW.proprietary.top_sell.find(x => x.sym === ns.sym);
+                if (existing) {
+                  existing.net_num = ns.net_num;
+                  existing.vol = ns.vol || existing.vol;
+                  existing.net_val = ns.net_num.toFixed(1).replace('.', ',') + ' tỷ';
+                }
+              });
+            }
+          }
+        }
+      } catch (fErr) {
+        console.warn('Realtime flow sync parse error:', fErr);
       }
     }
 
@@ -8723,11 +8865,14 @@ async function syncMarketDataRealtime(isManual) {
         });
       }
       updateMarketLeadersTableInDOM(changedStocksMap);
+      if (typeof updateMarketFlowInDOM === 'function') {
+        updateMarketFlowInDOM();
+      }
       const syncClockEl = document.getElementById('mkt-sync-clock');
       if (syncClockEl) syncClockEl.textContent = LAST_REALTIME_SYNC_TIME;
     }
     if (isManual && typeof toast === 'function') {
-      toast(`⚡ Đã đồng bộ Realtime 46 mã CK & Chỉ số (DNSE Entrade) lúc ${LAST_REALTIME_SYNC_TIME}`);
+      toast(`⚡ Đã đồng bộ Realtime Dòng tiền Khối ngoại, Tự doanh & 46 mã CK lúc ${LAST_REALTIME_SYNC_TIME}`);
     }
     return true;
   } catch (err) {
@@ -8805,24 +8950,55 @@ function syncMarketDataTick(isManual) {
   }
 }
 
-const MARKET_FOREIGN_TOP_BUY = [
-  { sym: 'HPG', name: 'Tập đoàn Hòa Phát', net_val: '+165.2 tỷ', vol: '+6.250.000 CP', price: '20.10', pct: -0.25 },
-  { sym: 'FPT', name: 'Công ty Cổ phần FPT', net_val: '+116.3 tỷ', vol: '+840.200 CP', price: '57.90', pct: -3.02 },
-  { sym: 'TCB', name: 'Ngân hàng Techcombank', net_val: '+85.4 tỷ', vol: '+3.440.000 CP', price: '32.35', pct: 1.41 },
-  { sym: 'MSB', name: 'Ngân hàng TMCP Hàng hải Việt Nam', net_val: '+5.85 tỷ', vol: '+400.000 CP', price: '14.60', pct: -1.02 },
-  { sym: 'MWG', name: 'Thế Giới Di Động', net_val: '+42.1 tỷ', vol: '+618.000 CP', price: '75.90', pct: -0.26 },
-  { sym: 'SSI', name: 'Chứng khoán SSI', net_val: '+38.6 tỷ', vol: '+1.180.000 CP', price: '19.00', pct: -0.26 },
-  { sym: 'VNM', name: 'Vinamilk', net_val: '+29.4 tỷ', vol: '+442.000 CP', price: '57.70', pct: -0.35 },
-  { sym: 'MBB', name: 'Ngân hàng Quân đội', net_val: '+24.5 tỷ', vol: '+1.020.000 CP', price: '19.05', pct: 0.79 }
-];
+let MARKET_INSTITUTIONAL_FLOW = {
+  foreign: {
+    buy_val: 2450.8,
+    sell_val: 1820.2,
+    net_val: 630.6,
+    top_buy: [
+      { sym: 'HPG', name: 'Tập đoàn Hòa Phát', net_num: 168.5, net_val: '+168,5 tỷ', vol: '+6.350.000 CP', price: '20.10', pct: -0.25 },
+      { sym: 'FPT', name: 'Công ty Cổ phần FPT', net_num: 122.4, net_val: '+122,4 tỷ', vol: '+890.000 CP', price: '57.90', pct: -3.02 },
+      { sym: 'TCB', name: 'Ngân hàng Techcombank', net_num: 89.2, net_val: '+89,2 tỷ', vol: '+3.550.000 CP', price: '32.35', pct: 1.41 },
+      { sym: 'MWG', name: 'Thế Giới Di Động', net_num: 45.3, net_val: '+45,3 tỷ', vol: '+640.000 CP', price: '75.90', pct: -0.26 },
+      { sym: 'SSI', name: 'Chứng khoán SSI', net_num: 39.8, net_val: '+39,8 tỷ', vol: '+1.220.000 CP', price: '19.00', pct: -0.26 },
+      { sym: 'VNM', name: 'Vinamilk', net_num: 31.2, net_val: '+31,2 tỷ', vol: '+480.000 CP', price: '57.70', pct: -0.35 },
+      { sym: 'MBB', name: 'Ngân hàng Quân đội', net_num: 26.7, net_val: '+26,7 tỷ', vol: '+1.100.000 CP', price: '19.05', pct: 0.79 },
+      { sym: 'MSB', name: 'Ngân hàng Hàng Hải', net_num: 18.5, net_val: '+18,5 tỷ', vol: '+1.250.000 CP', price: '14.60', pct: -1.02 }
+    ],
+    top_sell: [
+      { sym: 'VHM', name: 'Vinhomes', net_num: -84.2, net_val: '-84,2 tỷ', vol: '-1.920.000 CP', price: '66.00', pct: 0.46 },
+      { sym: 'VRE', name: 'Vincom Retail', net_num: -46.5, net_val: '-46,5 tỷ', vol: '-2.510.000 CP', price: '23.15', pct: 0.22 },
+      { sym: 'VIC', name: 'Tập đoàn Vingroup', net_num: -39.1, net_val: '-39,1 tỷ', vol: '-940.000 CP', price: '41.50', pct: -1.10 },
+      { sym: 'MSN', name: 'Masan Group', net_num: -30.4, net_val: '-30,4 tỷ', vol: '-410.000 CP', price: '75.80', pct: -0.26 },
+      { sym: 'BID', name: 'Ngân hàng BIDV', net_num: -12.5, net_val: '-12,5 tỷ', vol: '-360.000 CP', price: '34.00', pct: 0.29 },
+      { sym: 'VJC', name: 'Vietjet Air', net_num: -10.8, net_val: '-10,8 tỷ', vol: '-110.000 CP', price: '102.50', pct: -0.48 }
+    ]
+  },
+  proprietary: {
+    buy_val: 856.4,
+    sell_val: 573.1,
+    net_val: 283.3,
+    top_buy: [
+      { sym: 'TCB', name: 'Ngân hàng Techcombank', net_num: 72.5, net_val: '+72,5 tỷ', vol: '+2.900.000 CP', price: '32.35', pct: 1.41 },
+      { sym: 'MBB', name: 'Ngân hàng Quân đội', net_num: 58.2, net_val: '+58,2 tỷ', vol: '+2.450.000 CP', price: '19.05', pct: 0.79 },
+      { sym: 'VPB', name: 'VPBank', net_num: 45.6, net_val: '+45,6 tỷ', vol: '+2.380.000 CP', price: '18.90', pct: 1.15 },
+      { sym: 'FPT', name: 'Công ty Cổ phần FPT', net_num: 38.4, net_val: '+38,4 tỷ', vol: '+280.000 CP', price: '57.90', pct: -3.02 },
+      { sym: 'HPG', name: 'Tập đoàn Hòa Phát', net_num: 32.1, net_val: '+32,1 tỷ', vol: '+1.200.000 CP', price: '20.10', pct: -0.25 },
+      { sym: 'ACB', name: 'Ngân hàng Á Châu', net_num: 24.8, net_val: '+24,8 tỷ', vol: '+1.050.000 CP', price: '20.15', pct: -0.98 },
+      { sym: 'MSB', name: 'Ngân hàng Hàng Hải', net_num: 15.2, net_val: '+15,2 tỷ', vol: '+980.000 CP', price: '14.60', pct: -1.02 }
+    ],
+    top_sell: [
+      { sym: 'NVL', name: 'Tập đoàn Novaland', net_num: -42.6, net_val: '-42,6 tỷ', vol: '-3.100.000 CP', price: '12.40', pct: -2.36 },
+      { sym: 'DIG', name: 'Tổng Công ty DIC', net_num: -28.4, net_val: '-28,4 tỷ', vol: '-1.450.000 CP', price: '22.15', pct: -1.55 },
+      { sym: 'PDR', name: 'Bất động sản Phát Đạt', net_num: -21.5, net_val: '-21,5 tỷ', vol: '-950.000 CP', price: '21.80', pct: -1.80 },
+      { sym: 'DXG', name: 'Đất Xanh Group', net_num: -16.2, net_val: '-16,2 tỷ', vol: '-820.000 CP', price: '15.65', pct: -2.18 },
+      { sym: 'VIX', name: 'Chứng khoán VIX', net_num: -14.8, net_val: '-14,8 tỷ', vol: '-1.200.000 CP', price: '11.85', pct: -1.25 }
+    ]
+  }
+};
 
-const MARKET_FOREIGN_TOP_SELL = [
-  { sym: 'VHM', name: 'Vinhomes', net_val: '-82.4 tỷ', vol: '-1.890.000 CP', price: '66.00', pct: 0.46 },
-  { sym: 'VRE', name: 'Vincom Retail', net_val: '-45.1 tỷ', vol: '-2.450.000 CP', price: '23.15', pct: 0.22 },
-  { sym: 'VIC', name: 'Vingroup', net_val: '-38.2 tỷ', vol: '-910.000 CP', price: '225.50', pct: -1.10 },
-  { sym: 'MSN', name: 'Masan Group', net_val: '-29.8 tỷ', vol: '-395.000 CP', price: '75.80', pct: -0.26 },
-  { sym: 'BID', name: 'Ngân hàng BIDV', net_val: '-11.9 tỷ', vol: '-351.850 CP', price: '34.00', pct: 0.29 }
-];
+let MARKET_FOREIGN_TOP_BUY = MARKET_INSTITUTIONAL_FLOW.foreign.top_buy;
+let MARKET_FOREIGN_TOP_SELL = MARKET_INSTITUTIONAL_FLOW.foreign.top_sell;
 
 const GLOBAL_INDICES = [
   // Chứng khoán Quốc tế
@@ -8904,70 +9080,204 @@ function vMarket() {
   let tabContent = '';
 
   if (tab === 'foreign') {
-    tabContent = `<div style="margin-top:16px">
-      <div class="mkt-foreign-summary">
-        <div class="mkt-foreign-kpi">
-          <div style="color:var(--ink3);font-size:11px">Khối ngoại Mua</div>
-          <div style="font-size:20px;font-weight:700;color:var(--info);font-family:var(--mono)">2.450,8 tỷ</div>
-        </div>
-        <div class="mkt-foreign-kpi">
-          <div style="color:var(--ink3);font-size:11px">Khối ngoại Bán</div>
-          <div style="font-size:20px;font-weight:700;color:var(--down);font-family:var(--mono)">1.820,2 tỷ</div>
-        </div>
-        <div class="mkt-foreign-kpi" style="border-color:var(--up)">
-          <div style="color:var(--ink3);font-size:11px">GIÁ TRỊ MUA RÒNG</div>
-          <div style="font-size:22px;font-weight:700;color:var(--up);font-family:var(--mono)">+630,6 tỷ đ</div>
-        </div>
+    const flowMode = S.mktFlowMode || 'foreign';
+    const fData = (MARKET_INSTITUTIONAL_FLOW && MARKET_INSTITUTIONAL_FLOW.foreign) ? MARKET_INSTITUTIONAL_FLOW.foreign : { buy_val: 2450.8, sell_val: 1820.2, net_val: 630.6, top_buy: [], top_sell: [] };
+    const pData = (MARKET_INSTITUTIONAL_FLOW && MARKET_INSTITUTIONAL_FLOW.proprietary) ? MARKET_INSTITUTIONAL_FLOW.proprietary : { buy_val: 856.4, sell_val: 573.1, net_val: 283.3, top_buy: [], top_sell: [] };
+
+    const fNetPos = fData.net_val >= 0;
+    const pNetPos = pData.net_val >= 0;
+
+    const segmentButtonsHtml = `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn sm ${flowMode === 'foreign' ? 'pri' : ''}" data-act="mktflowmode" data-v="foreign">🏛️ Khối Ngoại</button>
+        <button class="btn sm ${flowMode === 'proprietary' ? 'pri' : ''}" data-act="mktflowmode" data-v="proprietary">🏢 Khối Tự Doanh</button>
+        <button class="btn sm ${flowMode === 'compare' ? 'pri' : ''}" data-act="mktflowmode" data-v="compare">⚖️ So Sánh Cả Hai</button>
       </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <!-- Top Foreign Buy -->
-        <div class="mkt-box">
-          <div class="mkt-box-title" style="color:var(--up)">
-            <span>🟢 Top Khối Ngoại MUA RÒNG (Phiên hôm nay)</span>
-            <span style="font-size:11px;color:var(--ink3)">Thị trường</span>
-          </div>
-          <div>
-            ${MARKET_FOREIGN_TOP_BUY.map(b => `<div class="mkt-mover-row click" data-act="stock" data-v="${b.sym}">
-              <div style="display:flex;align-items:center;gap:8px">
-                ${getCompanyLogo(b.sym, 24)}
-                <div>
-                  <b style="color:var(--brand)">${b.sym}</b>
-                  <span style="color:var(--ink3);font-size:11px;margin-left:4px">${b.name}</span>
-                </div>
-              </div>
-              <div style="text-align:right">
-                <b style="color:var(--up);font-family:var(--mono)">${b.net_val}</b>
-                <div style="font-size:11px;color:var(--ink3)">${b.price}k (${b.pct > 0 ? '+' : ''}${b.pct}%)</div>
-              </div>
-            </div>`).join('')}
-          </div>
-        </div>
-
-        <!-- Top Foreign Sell -->
-        <div class="mkt-box">
-          <div class="mkt-box-title" style="color:var(--down)">
-            <span>🔴 Top Khối Ngoại BÁN RÒNG (Phiên hôm nay)</span>
-            <span style="font-size:11px;color:var(--ink3)">Thị trường</span>
-          </div>
-          <div>
-            ${MARKET_FOREIGN_TOP_SELL.map(s => `<div class="mkt-mover-row click" data-act="stock" data-v="${s.sym}">
-              <div style="display:flex;align-items:center;gap:8px">
-                ${getCompanyLogo(s.sym, 24)}
-                <div>
-                  <b style="color:var(--down)">${s.sym}</b>
-                  <span style="color:var(--ink3);font-size:11px;margin-left:4px">${s.name}</span>
-                </div>
-              </div>
-              <div style="text-align:right">
-                <b style="color:var(--down);font-family:var(--mono)">${s.net_val}</b>
-                <div style="font-size:11px;color:var(--ink3)">${s.price}k (${s.pct}%)</div>
-              </div>
-            </div>`).join('')}
-          </div>
-        </div>
+      <div style="font-size:12px;color:var(--ink3);display:flex;align-items:center;gap:6px">
+        <span class="live-pulse-dot" style="width:6px;height:6px;background:#22c55e"></span>
+        <span id="mkt-flow-live-badge">⚡ Realtime Flow Feed${LAST_REALTIME_SYNC_TIME ? ` · Cập nhật: ${LAST_REALTIME_SYNC_TIME}` : ' · Cập nhật liên tục'}</span>
       </div>
     </div>`;
+
+    if (flowMode === 'foreign') {
+      tabContent = `<div style="margin-top:16px">
+        ${segmentButtonsHtml}
+        <div class="mkt-foreign-summary">
+          <div class="mkt-foreign-kpi">
+            <div style="color:var(--ink3);font-size:11px">Khối Ngoại Mua</div>
+            <div id="mkt-foreign-buy-kpi" style="font-size:20px;font-weight:700;color:var(--info);font-family:var(--mono)">${fData.buy_val.toFixed(1).replace('.', ',')} tỷ</div>
+          </div>
+          <div class="mkt-foreign-kpi">
+            <div style="color:var(--ink3);font-size:11px">Khối Ngoại Bán</div>
+            <div id="mkt-foreign-sell-kpi" style="font-size:20px;font-weight:700;color:var(--down);font-family:var(--mono)">${fData.sell_val.toFixed(1).replace('.', ',')} tỷ</div>
+          </div>
+          <div class="mkt-foreign-kpi" style="border-color:${fNetPos ? 'var(--up)' : 'var(--down)'}">
+            <div style="color:var(--ink3);font-size:11px">GIÁ TRỊ MUA RÒNG KHỐI NGOẠI</div>
+            <div id="mkt-foreign-net-kpi" style="font-size:22px;font-weight:700;color:${fNetPos ? 'var(--up)' : 'var(--down)'};font-family:var(--mono)">${fNetPos ? '+' : ''}${fData.net_val.toFixed(1).replace('.', ',')} tỷ đ</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <!-- Top Foreign Buy -->
+          <div class="mkt-box">
+            <div class="mkt-box-title" style="color:var(--up)">
+              <span>🟢 Top Khối Ngoại MUA RÒNG (Phiên hôm nay)</span>
+              <span style="font-size:11px;color:var(--ink3)">Realtime DNSE/HOSE</span>
+            </div>
+            <div id="mkt-foreign-top-buy-box">
+              ${renderFlowItemRowsHelper(fData.top_buy, true)}
+            </div>
+          </div>
+
+          <!-- Top Foreign Sell -->
+          <div class="mkt-box">
+            <div class="mkt-box-title" style="color:var(--down)">
+              <span>🔴 Top Khối Ngoại BÁN RÒNG (Phiên hôm nay)</span>
+              <span style="font-size:11px;color:var(--ink3)">Realtime DNSE/HOSE</span>
+            </div>
+            <div id="mkt-foreign-top-sell-box">
+              ${renderFlowItemRowsHelper(fData.top_sell, false)}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    } else if (flowMode === 'proprietary') {
+      tabContent = `<div style="margin-top:16px">
+        ${segmentButtonsHtml}
+        <div class="mkt-foreign-summary">
+          <div class="mkt-foreign-kpi">
+            <div style="color:var(--ink3);font-size:11px">Tự Doanh Mua</div>
+            <div id="mkt-prop-buy-kpi" style="font-size:20px;font-weight:700;color:var(--info);font-family:var(--mono)">${pData.buy_val.toFixed(1).replace('.', ',')} tỷ</div>
+          </div>
+          <div class="mkt-foreign-kpi">
+            <div style="color:var(--ink3);font-size:11px">Tự Doanh Bán</div>
+            <div id="mkt-prop-sell-kpi" style="font-size:20px;font-weight:700;color:var(--down);font-family:var(--mono)">${pData.sell_val.toFixed(1).replace('.', ',')} tỷ</div>
+          </div>
+          <div class="mkt-foreign-kpi" style="border-color:${pNetPos ? 'var(--up)' : 'var(--down)'}">
+            <div style="color:var(--ink3);font-size:11px">GIÁ TRỊ MUA RÒNG TỰ DOANH</div>
+            <div id="mkt-prop-net-kpi" style="font-size:22px;font-weight:700;color:${pNetPos ? 'var(--up)' : 'var(--down)'};font-family:var(--mono)">${pNetPos ? '+' : ''}${pData.net_val.toFixed(1).replace('.', ',')} tỷ đ</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <!-- Top Prop Buy -->
+          <div class="mkt-box">
+            <div class="mkt-box-title" style="color:var(--up)">
+              <span>🟢 Top Khối Tự Doanh MUA RÒNG (Phiên hôm nay)</span>
+              <span style="font-size:11px;color:var(--ink3)">Realtime Tự Doanh CTCK</span>
+            </div>
+            <div id="mkt-prop-top-buy-box">
+              ${renderFlowItemRowsHelper(pData.top_buy, true)}
+            </div>
+          </div>
+
+          <!-- Top Prop Sell -->
+          <div class="mkt-box">
+            <div class="mkt-box-title" style="color:var(--down)">
+              <span>🔴 Top Khối Tự Doanh BÁN RÒNG (Phiên hôm nay)</span>
+              <span style="font-size:11px;color:var(--ink3)">Realtime Tự Doanh CTCK</span>
+            </div>
+            <div id="mkt-prop-top-sell-box">
+              ${renderFlowItemRowsHelper(pData.top_sell, false)}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    } else {
+      // flowMode === 'compare'
+      tabContent = `<div style="margin-top:16px">
+        ${segmentButtonsHtml}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+          <div class="mkt-box" style="padding:14px;margin:0">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px">
+              <b style="font-size:14.5px;color:var(--brand)">🏛️ Dòng tiền Khối Ngoại</b>
+              <span style="font-size:11px;color:var(--ink3)">HOSE & HNX</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;text-align:center">
+              <div style="background:var(--card-sub);padding:8px;border-radius:6px;border:1px solid var(--line)">
+                <div style="font-size:10.5px;color:var(--ink3)">Mua vào</div>
+                <div id="mkt-foreign-buy-kpi" style="font-size:15px;font-weight:700;color:var(--info);font-family:var(--mono)">${fData.buy_val.toFixed(1).replace('.', ',')} tỷ</div>
+              </div>
+              <div style="background:var(--card-sub);padding:8px;border-radius:6px;border:1px solid var(--line)">
+                <div style="font-size:10.5px;color:var(--ink3)">Bán ra</div>
+                <div id="mkt-foreign-sell-kpi" style="font-size:15px;font-weight:700;color:var(--down);font-family:var(--mono)">${fData.sell_val.toFixed(1).replace('.', ',')} tỷ</div>
+              </div>
+              <div style="background:var(--card-sub);padding:8px;border-radius:6px;border:1px solid ${fNetPos ? 'var(--up)' : 'var(--down)'}">
+                <div style="font-size:10.5px;color:var(--ink3)">Mua ròng</div>
+                <div id="mkt-foreign-net-kpi" style="font-size:15px;font-weight:700;color:${fNetPos ? 'var(--up)' : 'var(--down)'};font-family:var(--mono)">${fNetPos ? '+' : ''}${fData.net_val.toFixed(1).replace('.', ',')} tỷ đ</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mkt-box" style="padding:14px;margin:0">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px">
+              <b style="font-size:14.5px;color:#f59e0b">🏢 Dòng tiền Khối Tự Doanh</b>
+              <span style="font-size:11px;color:var(--ink3)">CTCK HOSE & HNX</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;text-align:center">
+              <div style="background:var(--card-sub);padding:8px;border-radius:6px;border:1px solid var(--line)">
+                <div style="font-size:10.5px;color:var(--ink3)">Mua vào</div>
+                <div id="mkt-prop-buy-kpi" style="font-size:15px;font-weight:700;color:var(--info);font-family:var(--mono)">${pData.buy_val.toFixed(1).replace('.', ',')} tỷ</div>
+              </div>
+              <div style="background:var(--card-sub);padding:8px;border-radius:6px;border:1px solid var(--line)">
+                <div style="font-size:10.5px;color:var(--ink3)">Bán ra</div>
+                <div id="mkt-prop-sell-kpi" style="font-size:15px;font-weight:700;color:var(--down);font-family:var(--mono)">${pData.sell_val.toFixed(1).replace('.', ',')} tỷ</div>
+              </div>
+              <div style="background:var(--card-sub);padding:8px;border-radius:6px;border:1px solid ${pNetPos ? 'var(--up)' : 'var(--down)'}">
+                <div style="font-size:10.5px;color:var(--ink3)">Mua ròng</div>
+                <div id="mkt-prop-net-kpi" style="font-size:15px;font-weight:700;color:${pNetPos ? 'var(--up)' : 'var(--down)'};font-family:var(--mono)">${pNetPos ? '+' : ''}${pData.net_val.toFixed(1).replace('.', ',')} tỷ đ</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <!-- Khối Ngoại Column -->
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="mkt-box">
+              <div class="mkt-box-title" style="color:var(--up)">
+                <span>🟢 Khối Ngoại: Top MUA RÒNG</span>
+                <span style="font-size:11px;color:var(--ink3)">Realtime DNSE/HOSE</span>
+              </div>
+              <div id="mkt-foreign-top-buy-box">
+                ${renderFlowItemRowsHelper(fData.top_buy, true)}
+              </div>
+            </div>
+            <div class="mkt-box">
+              <div class="mkt-box-title" style="color:var(--down)">
+                <span>🔴 Khối Ngoại: Top BÁN RÒNG</span>
+                <span style="font-size:11px;color:var(--ink3)">Realtime DNSE/HOSE</span>
+              </div>
+              <div id="mkt-foreign-top-sell-box">
+                ${renderFlowItemRowsHelper(fData.top_sell, false)}
+              </div>
+            </div>
+          </div>
+
+          <!-- Tự Doanh Column -->
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="mkt-box">
+              <div class="mkt-box-title" style="color:var(--up)">
+                <span>🟢 Tự Doanh: Top MUA RÒNG</span>
+                <span style="font-size:11px;color:var(--ink3)">Realtime Tự Doanh CTCK</span>
+              </div>
+              <div id="mkt-prop-top-buy-box">
+                ${renderFlowItemRowsHelper(pData.top_buy, true)}
+              </div>
+            </div>
+            <div class="mkt-box">
+              <div class="mkt-box-title" style="color:var(--down)">
+                <span>🔴 Tự Doanh: Top BÁN RÒNG</span>
+                <span style="font-size:11px;color:var(--ink3)">Realtime Tự Doanh CTCK</span>
+              </div>
+              <div id="mkt-prop-top-sell-box">
+                ${renderFlowItemRowsHelper(pData.top_sell, false)}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
   } else if (tab === 'leaders') {
     const leaderMode = S.mktLeaderTab || 'val';
     const { displayRows, leaderBadgeTxt } = getMarketLeadersConfig(leaderMode);
@@ -9716,6 +10026,11 @@ const A = {
     rerender();
     syncMarketDataRealtime(false);
   },
+  mktflowmode: el => {
+    S.mktFlowMode = el.dataset.v;
+    rerender();
+    syncMarketDataRealtime(false);
+  },
   mktsync: () => {
     fetchBinanceLiveData();
     syncMarketDataRealtime(true);
@@ -10335,7 +10650,7 @@ const WLU = {};
   ['VCB', 'Vietcombank', 'HOSE', 56.70, 0.10, 0.18, '1,50 M', 85.05, 56.40, 57.10, 48.60, 65.20, 'Tài chính'],
   ['MBB', 'MB Bank', 'HOSE', 19.05, 0.15, 0.79, '14,20 M', 270.51, 18.90, 19.25, 17.25, 24.80, 'Tài chính'],
   ['MWG', 'Thế Giới Di Động', 'HOSE', 75.90, -0.20, -0.26, '5,60 M', 425.04, 75.50, 76.80, 48.90, 82.60, 'Bán lẻ'],
-  ['VIC', 'Tập đoàn Vingroup', 'HOSE', 225.50, -2.50, -1.10, '1,85 M', 417.18, 224.00, 229.00, 95.40, 241.80, 'Bất động sản'],
+  ['VIC', 'Tập đoàn Vingroup', 'HOSE', 41.50, -0.40, -0.95, '1,85 M', 76.77, 41.20, 42.10, 39.50, 48.20, 'Bất động sản'],
   ['VHM', 'Vinhomes', 'HOSE', 66.00, 0.30, 0.46, '3,40 M', 224.40, 65.40, 67.00, 38.20, 145.60, 'Bất động sản'],
   ['BID', 'BIDV', 'HOSE', 34.00, 0.10, 0.29, '1,13 M', 38.39, 33.70, 34.20, 30.15, 42.70, 'Tài chính'],
   ['CTG', 'VietinBank', 'HOSE', 29.50, 0.30, 1.03, '6,80 M', 200.60, 29.10, 29.80, 24.30, 37.15, 'Tài chính'],

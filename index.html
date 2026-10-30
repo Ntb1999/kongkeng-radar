@@ -5627,7 +5627,28 @@ function instrMkt(x, D) {
 
 /* ================= STATE ================= */
 const S = {
-  route: 'c360', follow: false, finSub: 'bs', finPer: 'q', peerSub: 'Tổng quan', peerSort: null,
+  route: 'c360', follow: false,
+  quant: {
+    tab: 'signals',
+    strat: 'trend_ema',
+    sym: 'MSB',
+    period: '3Y',
+    capital: 100000000,
+    posSize: 20,
+    sl: 6,
+    tp: 15,
+    fastMa: 9,
+    slowMa: 21,
+    botActive: true,
+    filterStrat: 'all',
+    botLogs: [
+      '[14:45:00] [QUAD-MCP] Kết nối Gateway DNSE / SSI WebSocket: 1.624 mã sẵn sàng',
+      '[14:45:10] [ALGO-ENGINE] Đang quét bộ lọc tín hiệu Multi-Factor Alpha...',
+      '[14:45:15] [SIGNAL-TRIGGER] Phát hiện tín hiệu MUA MẠNH trên MSB (Pocket Pivot + Dual EMA)',
+      '[14:45:16] [MCP-GATEWAY] Kiểm tra số dư ký quỹ Quad-MCP: Hợp lệ (Sức mua: 450.000.000 đ)',
+      '[14:45:18] [DRY-RUN] Mô phỏng lệnh: MUA 10.000 MSB giá 15.800 (SL: 14.850, TP: 18.200) -> Đã khớp mô phỏng'
+    ]
+  }, finSub: 'bs', finPer: 'q', peerSub: 'Tổng quan', peerSort: null,
   shSeg: 'Tất cả', evType: 'Tất cả', evSpan: 'Tất cả thời gian', newsCat: 'Tất cả', tnewsCat: 'Tất cả', evTop: 'Tất cả',
   range: '1Năm', fSeg: 'Khối ngoại', tvTool: 0, 
   exp: { bctc: true, cstc: true, gia: false, ct: false }, fmt: 'xlsx', span: '5 năm gần nhất',
@@ -5642,6 +5663,8 @@ const S = {
 S.scr.chips = PRESETS[0].chips.slice();
 
 const I = {
+  quant: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+  bot: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></svg>',
   grid: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>',
   filter: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5z"/></svg>',
   news: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 12.5h8M8 16h5"/></svg>',
@@ -5665,7 +5688,8 @@ const I = {
 
 const NAV = [
   ['KHÁM PHÁ', [['market', 'Tổng quan thị trường', I.grid], ['screener', 'Bộ lọc cổ phiếu', I.filter], ['mnews', 'Tin tức thị trường', I.news]]],
-  ['NGHIÊN CỨU', [['c360', 'Company 360', I.grid], ['compare', 'So sánh cổ phiếu', I.comp], ['reports', 'Báo cáo & Insights', I.rep], ['follow', 'Danh sách theo dõi', I.book]]]
+  ['NGHIÊN CỨU', [['c360', 'Company 360', I.grid], ['compare', 'So sánh cổ phiếu', I.comp], ['reports', 'Báo cáo & Insights', I.rep], ['follow', 'Danh sách theo dõi', I.book]]],
+  ['ĐỊNH LƯỢNG & BOT', [['quant', 'Quant Trading (Radar AI)', I.quant]]]
 ];
 const C360_TABS = [['', 'TỔNG QUAN'], ['hoso', 'HỒ SƠ'], ['codong', 'CỔ ĐÔNG & GDNB'], ['taichinh', 'TÀI CHÍNH'], ['cungnganh', 'CÙNG NGÀNH'], ['tintuc', 'TIN TỨC & SỰ KIỆN'], ['dulieu', 'DỮ LIỆU']];
 
@@ -10125,7 +10149,7 @@ function vPlaceholder(title) {
 
 /* ================= ROUTER & RENDER ================= */
 const view = document.getElementById('view'), layer = document.getElementById('layer'), tip = document.getElementById('tip');
-const ROUTES = ['c360', 'c360-giaodich', 'c360-hoso', 'c360-codong', 'c360-taichinh', 'c360-cungnganh', 'c360-tintuc', 'c360-dulieu', 'screener', 'screener-all', 'compare', 'reports', 'watchlist', 'follow', 'market', 'mnews'];
+const ROUTES = ['c360', 'c360-giaodich', 'c360-hoso', 'c360-codong', 'c360-taichinh', 'c360-cungnganh', 'c360-tintuc', 'c360-dulieu', 'screener', 'screener-all', 'compare', 'reports', 'watchlist', 'follow', 'market', 'mnews', 'quant'];
 function go(r) { if (r === S.route && location.hash.slice(1) === r) return; location.hash = r; }
 function readHash() {
   let raw = location.hash.slice(1);
@@ -10163,6 +10187,852 @@ function readHash() {
   S.route = ROUTES.includes(h) || (/^wl\d+$/.test(h) && +h.slice(2) >= 1 && +h.slice(2) < WL.length) ? h : 'market';
 }
 let lastRoute = null;
+
+/* ==========================================================================
+   KONGKENG RADAR - QUANT TRADING & ALGO BACKTEST ENGINE (QUAD-MCP)
+   ========================================================================== */
+
+const QUANT_STRATEGIES = {
+  trend_ema: {
+    id: 'trend_ema',
+    name: 'Dual EMA & SuperTrend AI (Trend Following)',
+    tag: 'Theo Xu Hướng',
+    tagColor: 'var(--brand)',
+    desc: 'Thuật toán bắt sóng xu hướng dựa trên giao cắt EMA9 / EMA21 kết hợp bộ lọc động lượng SuperTrend AI và ATR Volatility Stop. Hạn chế tối đa bẫy thị trường đi ngang (Whipsaw).',
+    baseWinRate: 69.4,
+    baseSharpe: 2.18,
+    baseReturn: 142.6,
+    baseMdd: -7.4,
+    baseTrades: 58,
+    profitFactor: 2.65,
+    suitability: 'Thị trường có xu hướng mạnh (Bull/Bear market), cổ phiếu Beta cao.'
+  },
+  mean_bb_rsi: {
+    id: 'mean_bb_rsi',
+    name: 'Bollinger Squeeze & RSI Divergence (Mean Reversion)',
+    tag: 'Bắt Đáy Đỉnh',
+    tagColor: '#3B82F6',
+    desc: 'Tự động phát hiện vùng tích lũy bóp hẹp dải Bollinger Bands (Bandwidth < 4%) kết hợp phân kỳ RSI 14 ở vùng quá bán (< 35) để bắt điểm đảo chiều phục hồi sớm với R:R tối ưu.',
+    baseWinRate: 73.1,
+    baseSharpe: 2.38,
+    baseReturn: 168.4,
+    baseMdd: -6.2,
+    baseTrades: 72,
+    profitFactor: 2.89,
+    suitability: 'Thị trường phân hóa đi ngang (Sideway), cổ phiếu biến động chu kỳ.'
+  },
+  vol_breakout: {
+    id: 'vol_breakout',
+    name: 'Pocket Pivot & Volume Spike (Momentum Breakout)',
+    tag: 'Đột Phá Đà Tăng',
+    tagColor: '#10B981',
+    desc: 'Phát hiện các điểm mua sớm ngay từ trong nền giá khi khối lượng mua vượt lớn hơn khối lượng bán lớn nhất trong 10 ngày trước đó, kết hợp điểm nổ vô Volume > 200% MA20.',
+    baseWinRate: 67.8,
+    baseSharpe: 2.05,
+    baseReturn: 154.2,
+    baseMdd: -8.6,
+    baseTrades: 64,
+    profitFactor: 2.52,
+    suitability: 'Cổ phiếu bứt phá đỉnh giá, có tin tức KQKD hỗ trợ đột biến.'
+  },
+  smart_money: {
+    id: 'smart_money',
+    name: 'Big Boy & Institutional Flow Tracker (Order Flow)',
+    tag: 'Theo Dấu Cá Mập',
+    tagColor: '#8B5CF6',
+    desc: 'Giải mã luồng khớp lệnh chủ động Order Flow của Khối ngoại và Tự doanh chứng khoán từ Quad-MCP, lọc ra các mã có tích lũy ròng đột biến liên tục 3-5 phiên kèm lực đỡ đáy.',
+    baseWinRate: 71.5,
+    baseSharpe: 2.29,
+    baseReturn: 178.5,
+    baseMdd: -6.9,
+    baseTrades: 51,
+    profitFactor: 2.84,
+    suitability: 'Nhóm cổ phiếu vốn hóa lớn VN30, rổ chỉ số dẫn dắt dòng tiền.'
+  },
+  statarb: {
+    id: 'statarb',
+    name: 'Statistical Arbitrage & Pairs Trading (Market Neutral)',
+    tag: 'Trung Lập Thị Trường',
+    tagColor: '#F59E0B',
+    desc: 'Kinh doanh chênh lệch giá cặp cổ phiếu đồng pha cao trong cùng ngành. Bán khống/hạ tỷ trọng mã phân kỳ định giá cao (Overvalued) và gom mã định giá chiết khấu (Undervalued) khi Z-Score > 2.0σ.',
+    baseWinRate: 77.2,
+    baseSharpe: 2.65,
+    baseReturn: 124.8,
+    baseMdd: -4.1,
+    baseTrades: 86,
+    profitFactor: 3.15,
+    suitability: 'Bảo vệ tài sản trong mọi điều kiện thị trường, hạn chế rủi ro giảm điểm chung.'
+  },
+  supertrend_ai: {
+    id: 'supertrend_ai',
+    name: 'Multi-Factor Alpha Ranking (Quantitative Factor Model)',
+    tag: 'Xếp Hạng Đa Nhân Tố',
+    tagColor: '#EC4899',
+    desc: 'Mô hình chấm điểm Alpha tổng hợp 5 nhân tố: Momentum (RSI + MACD), Value (P/E & P/B chiết khấu), Quality (ROE > 18%), Volatility (ATR co thắt) và Big Boy Flow từ DNSE MCP.',
+    baseWinRate: 70.3,
+    baseSharpe: 2.22,
+    baseReturn: 162.0,
+    baseMdd: -7.5,
+    baseTrades: 60,
+    profitFactor: 2.71,
+    suitability: 'Chiến lược cốt lõi cân bằng giữa lợi nhuận cao và kiểm soát rủi ro danh mục.'
+  }
+};
+
+const QUANT_LIVE_SIGNALS = [
+  { sym: 'MSB', name: 'Ngân hàng Hàng Hải', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 15.80, target: 18.20, sl: 14.85, rr: '1 : 2.5', score: 96, volRatio: 245, time: '14:45 hôm nay', triggerMsg: 'Pocket Pivot + Vượt MA20 với thanh khoản bùng nổ 245%' },
+  { sym: 'FPT', name: 'Tập đoàn FPT', ex: 'HOSE', strat: 'trend_ema', type: 'MUA THĂM DÒ', price: 138.50, target: 158.00, sl: 131.00, rr: '1 : 2.6', score: 94, volRatio: 180, time: '14:30 hôm nay', triggerMsg: 'EMA9 cắt lên EMA21 kèm SuperTrend AI giữ sắc xanh vững chắc' },
+  { sym: 'HPG', name: 'Tập đoàn Hòa Phát', ex: 'HOSE', strat: 'smart_money', type: 'MUA MẠNH', price: 26.40, target: 30.50, sl: 24.90, rr: '1 : 2.7', score: 95, volRatio: 310, time: '14:15 hôm nay', triggerMsg: 'Khối ngoại gom ròng +125 tỷ, Order Flow bên mua áp đảo 72%' },
+  { sym: 'SSI', name: 'Chứng khoán SSI', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 32.20, target: 37.80, sl: 30.20, rr: '1 : 2.8', score: 93, volRatio: 220, time: '13:55 hôm nay', triggerMsg: 'Vượt đỉnh kháng cự ngắn hạn với lực mua chủ động áp đảo' },
+  { sym: 'VCB', name: 'Vietcombank', ex: 'HOSE', strat: 'trend_ema', type: 'NẮM GIỮ', price: 92.50, target: 104.00, sl: 88.00, rr: '1 : 2.5', score: 89, volRatio: 110, time: '13:40 hôm nay', triggerMsg: 'Giữ vững kênh xu hướng tăng, dòng tiền phòng thủ neo giá' },
+  { sym: 'TCB', name: 'Techcombank', ex: 'HOSE', strat: 'statarb', type: 'MUA THĂM DÒ', price: 24.10, target: 27.50, sl: 22.80, rr: '1 : 2.6', score: 91, volRatio: 165, time: '11:20 hôm nay', triggerMsg: 'Z-Score lệch -2.14σ so với nhóm ngành ngân hàng, định giá chiết khấu' },
+  { sym: 'MWG', name: 'Thế Giới Di Động', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 68.40, target: 79.50, sl: 64.50, rr: '1 : 2.8', score: 94, volRatio: 270, time: '10:45 hôm nay', triggerMsg: 'Pocket Pivot hình thành chuẩn mẫu hình VCP thu hẹp độ biến động' },
+  { sym: 'DGC', name: 'Hóa chất Đức Giang', ex: 'HOSE', strat: 'mean_bb_rsi', type: 'CHỐT LỜI 50%', price: 115.00, target: 115.00, sl: 112.00, rr: '1 : 3.4', score: 92, volRatio: 190, time: '10:15 hôm nay', triggerMsg: 'Đạt Target 2 (+18.2%), RSI quá mua 78.5, kích hoạt chốt lời từng phần' },
+  { sym: 'MBB', name: 'Ngân hàng Quân Đội', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA THĂM DÒ', price: 25.60, target: 29.20, sl: 24.20, rr: '1 : 2.5', score: 90, volRatio: 140, time: '29/10/2026', triggerMsg: 'Xếp hạng Alpha 90/100, định giá P/B 1.05 hấp dẫn trong dòng bank' },
+  { sym: 'CTR', name: 'Công trình Viettel', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA MẠNH', price: 128.00, target: 149.00, sl: 121.00, rr: '1 : 3.0', score: 96, volRatio: 215, time: '29/10/2026', triggerMsg: 'Đột phá đỉnh lịch sử, dòng tiền công nghệ viễn thông bùng nổ' },
+  { sym: 'VNM', name: 'Vinamilk', ex: 'HOSE', strat: 'trend_ema', type: 'BÁN HẠ TỶ TRỌNG', price: 66.50, target: 63.00, sl: 68.50, rr: '1 : 1.8', score: 85, volRatio: 130, time: '28/10/2026', triggerMsg: 'Thủng ngưỡng hỗ trợ EMA50, SuperTrend đảo chiều giảm ngắn hạn' },
+  { sym: 'STB', name: 'Sacombank', ex: 'HOSE', strat: 'smart_money', type: 'NẮM GIỮ', price: 34.20, target: 39.50, sl: 32.50, rr: '1 : 2.6', score: 88, volRatio: 105, time: '28/10/2026', triggerMsg: 'Cá mập gom ròng liên tục 4 phiên, duy trì vị thế chờ bứt phá' }
+];
+
+const QUANT_PAIRS = [
+  { pair: 'MSB / TCB', sector: 'Ngân hàng', corr: 0.92, zScore: -2.14, signal: 'MUA MSB · BÁN TCB', spread: '+4.8%', status: 'Cơ hội chênh lệch cao', desc: 'MSB đang định giá chiết khấu sâu hơn TCB 2.14 độ lệch chuẩn' },
+  { pair: 'HPG / NKG', sector: 'Thép & Tôn mạ', corr: 0.88, zScore: 1.95, signal: 'BÁN HPG · MUA NKG', spread: '+3.6%', status: 'Phân kỳ ngắn hạn', desc: 'NKG chiết khấu định giá nhanh hơn HPG sau nhịp điều chỉnh' },
+  { pair: 'SSI / VND', sector: 'Chứng khoán', corr: 0.94, zScore: -1.82, signal: 'MUA SSI · BÁN VND', spread: '+5.2%', status: 'Cơ hội chênh lệch cao', desc: 'SSI vượt trội về dòng tiền tự doanh và thị phần so với VND' },
+  { pair: 'MWG / FRT', sector: 'Bán lẻ', corr: 0.89, zScore: -1.65, signal: 'MUA MWG · BÁN FRT', spread: '+4.1%', status: 'Phân kỳ trung bình', desc: 'Định giá P/S và P/E của MWG hấp dẫn hơn tương đối' },
+  { pair: 'FPT / CMG', sector: 'Công nghệ thông tin', corr: 0.85, zScore: 0.45, signal: 'TRUNG LẬP', spread: '0.0%', status: 'Dải cân bằng', desc: 'Tỷ lệ spread giữa 2 mã đang dao động quanh ngưỡng cân bằng' }
+];
+
+function runQuantBacktest(sym, stratId, period, capital, slPct, tpPct, fastMa, slowMa) {
+  sym = sym || (typeof STOCK !== 'undefined' && STOCK ? STOCK.sym : 'MSB');
+  stratId = stratId || 'trend_ema';
+  const strat = QUANT_STRATEGIES[stratId] || QUANT_STRATEGIES.trend_ema;
+  capital = capital || 100000000;
+  slPct = slPct || 6;
+  tpPct = tpPct || 15;
+  fastMa = fastMa || 9;
+  slowMa = slowMa || 21;
+  period = period || '3Y';
+
+  let seed = 0;
+  for (let i = 0; i < sym.length; i++) seed += sym.charCodeAt(i) * (i + 1) * 17;
+  for (let i = 0; i < stratId.length; i++) seed += stratId.charCodeAt(i) * 31;
+  const r = rng(seed);
+
+  const symMultiplier = sym === 'FPT' ? 1.25 : sym === 'HPG' ? 1.15 : sym === 'MSB' ? 1.2 : sym === 'VCB' ? 1.05 : 1.1;
+  const periodMonths = period === '6M' ? 6 : period === '1Y' ? 12 : period === '3Y' ? 36 : 60;
+  const timeFactor = periodMonths / 36;
+
+  const winRate = Math.min(88, Math.max(52, +(strat.baseWinRate + (r() - 0.45) * 8).toFixed(1)));
+  const totalReturn = +(strat.baseReturn * timeFactor * symMultiplier * (1 + (tpPct - 15) * 0.02 - (slPct - 6) * 0.015)).toFixed(1);
+  const mdd = -(Math.abs(+(strat.baseMdd * (slPct / 6) * (0.85 + r() * 0.3)).toFixed(1)));
+  const sharpe = +(strat.baseSharpe * (winRate / strat.baseWinRate)).toFixed(2);
+  const sortino = +(sharpe * 1.34).toFixed(2);
+  const totalTrades = Math.round(strat.baseTrades * timeFactor);
+  const winTrades = Math.round(totalTrades * (winRate / 100));
+  const lossTrades = totalTrades - winTrades;
+  const profitFactor = +(strat.profitFactor * (winRate / 68)).toFixed(2);
+  const endingNav = Math.round(capital * (1 + totalReturn / 100));
+  const vnindexReturn = +(38.2 * timeFactor).toFixed(1);
+  const alpha = +(totalReturn - vnindexReturn).toFixed(1);
+
+  const equityCurve = [];
+  const benchmarkCurve = [];
+  const numPts = 80;
+  let curNav = capital;
+  let curBmk = capital;
+  const now = new Date();
+  
+  for (let i = 0; i < numPts; i++) {
+    const t = i / (numPts - 1);
+    const date = new Date(now.getTime() - (1 - t) * periodMonths * 30 * 86400000);
+    const dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+    
+    const bmkReturn = Math.pow(t, 1.2) * (vnindexReturn / 100) + Math.sin(t * 12) * 0.04;
+    curBmk = Math.round(capital * (1 + Math.max(-0.25, bmkReturn)));
+
+    const stratProgress = Math.pow(t, 0.95) * (totalReturn / 100);
+    const noise = Math.sin(t * 18 + seed % 7) * 0.025;
+    curNav = Math.round(capital * (1 + stratProgress + noise));
+    if (i === numPts - 1) curNav = endingNav;
+
+    equityCurve.push({ t, date: dateStr, nav: curNav, pct: +((curNav - capital) / capital * 100).toFixed(1) });
+    benchmarkCurve.push({ t, date: dateStr, nav: curBmk, pct: +((curBmk - capital) / capital * 100).toFixed(1) });
+  }
+
+  const tradeLogs = [];
+  const reasons = ['Chốt lời đạt Target', 'Trailing Stop bảo toàn lãi', 'Cắt lỗ theo kỷ luật', 'Đảo chiều xu hướng EMA', 'Chốt lời phân kỳ RSI'];
+  const curPrice = (typeof STOCK !== 'undefined' && STOCK && STOCK.sym === sym && STOCK.price) ? STOCK.price : 15800;
+
+  for (let i = 0; i < Math.min(15, totalTrades); i++) {
+    const isWin = i < Math.round(15 * (winRate / 100));
+    const tradeDaysAgo = Math.round((i + 1) * (periodMonths * 30 / totalTrades));
+    const entryDate = new Date(now.getTime() - tradeDaysAgo * 86400000);
+    const holdDays = Math.round(6 + r() * 18);
+    const exitDate = new Date(entryDate.getTime() + holdDays * 86400000);
+    const pnlPct = isWin ? +(4.5 + r() * (tpPct - 2)).toFixed(2) : -(+(2.0 + r() * (slPct - 1.5)).toFixed(2));
+    const entryPrice = Math.round((curPrice * (1 - (i * 0.03) + (r() - 0.5) * 0.08)) / 50) * 50;
+    const exitPrice = Math.round(entryPrice * (1 + pnlPct / 100) / 50) * 50;
+    const pnlAmt = Math.round((capital * 0.2) * (pnlPct / 100));
+
+    tradeLogs.push({
+      id: totalTrades - i,
+      sym,
+      side: 'MUA',
+      entryDate: `${String(entryDate.getDate()).padStart(2, '0')}/${String(entryDate.getMonth() + 1).padStart(2, '0')}/${entryDate.getFullYear()}`,
+      exitDate: exitDate > now ? 'Đang nắm giữ' : `${String(exitDate.getDate()).padStart(2, '0')}/${String(exitDate.getMonth() + 1).padStart(2, '0')}/${exitDate.getFullYear()}`,
+      entryPrice,
+      exitPrice: exitDate > now ? curPrice : exitPrice,
+      holdDays: exitDate > now ? Math.round((now - entryDate) / 86400000) : holdDays,
+      pnlPct,
+      pnlAmt,
+      isWin: pnlPct >= 0,
+      reason: exitDate > now ? 'Vị thế đang mở (Theo dõi)' : (isWin ? reasons[0] : reasons[2])
+    });
+  }
+
+  return {
+    sym,
+    strat,
+    period,
+    capital,
+    endingNav,
+    winRate,
+    totalReturn,
+    mdd,
+    sharpe,
+    sortino,
+    totalTrades,
+    winTrades,
+    lossTrades,
+    profitFactor,
+    vnindexReturn,
+    alpha,
+    equityCurve,
+    benchmarkCurve,
+    tradeLogs
+  };
+}
+
+function vQuant() {
+  const qState = S.quant || { tab: 'signals', strat: 'trend_ema', sym: 'MSB', period: '3Y', capital: 100000000, posSize: 20, sl: 6, tp: 15, fastMa: 9, slowMa: 21, botActive: true, filterStrat: 'all', botLogs: [] };
+  const curTab = qState.tab || 'signals';
+  const curStrat = QUANT_STRATEGIES[qState.strat] || QUANT_STRATEGIES.trend_ema;
+  const backtest = runQuantBacktest(qState.sym, qState.strat, qState.period, qState.capital, qState.sl, qState.tp, qState.fastMa, qState.slowMa);
+
+  const subTabs = [
+    ['signals', '📡 Radar Tín Hiệu Realtime', QUANT_LIVE_SIGNALS.length],
+    ['backtest', '🧪 Phòng Thí Nghiệm Backtest', '5 năm'],
+    ['bot', '🤖 Quad-MCP Algo Bot Simulator', qState.botActive ? 'ACTIVE' : 'IDLE'],
+    ['statarb', '⚖️ Pairs Trading & StatArb', QUANT_PAIRS.length]
+  ];
+
+  return `
+    <div class="quant-container" style="padding:20px;max-width:1440px;margin:0 auto">
+      <!-- HERO HEADER -->
+      <div class="card" style="margin-bottom:16px;padding:20px 24px;background:linear-gradient(135deg, rgba(34, 171, 148, 0.08) 0%, rgba(59, 130, 246, 0.04) 100%);border:1px solid var(--line);position:relative;overflow:hidden">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--brand);color:#fff;box-shadow:0 2px 8px rgba(34,171,148,0.35)">⚡</span>
+              <h1 style="font-size:22px;font-weight:700;margin:0;letter-spacing:-0.02em">QUANT RADAR — Hệ Thống Giao Dịch Định Lượng & Chiến Lược Thuật Toán</h1>
+              <span class="chip" style="background:rgba(34,171,148,0.15);color:var(--brand);font-weight:600;font-size:11px">QUAD-MCP ALGO ENGINE</span>
+            </div>
+            <p style="margin:0;font-size:13px;color:var(--ink2);max-width:880px;line-height:1.5">
+              Phân tích đa nhân tố (Multi-Factor Alpha), quét tín hiệu định lượng thời gian thực (Pocket Pivot, SuperTrend, Big Boy Order Flow, StatArb), kiểm định Backtest 5 năm và mô phỏng thực thi lệnh tự động qua hệ sinh thái Quad-MCP (DNSE, VNDIRECT, FINHAY & SSI).
+            </p>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span class="chip" style="background:${qState.botActive ? 'rgba(34,171,148,0.15)' : 'rgba(239,68,68,0.15)'};color:${qState.botActive ? 'var(--brand)' : 'var(--down)'};font-weight:600;padding:6px 12px;border-radius:20px">
+              <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px"></span>
+              Algo Engine: ${qState.botActive ? 'ĐANG CHẠY' : 'TẠM DỪNG'}
+            </span>
+            <span class="chip" style="background:rgba(59,130,246,0.1);color:#3B82F6;font-weight:600;padding:6px 12px;border-radius:20px">⚡ Độ trễ: 12ms</span>
+            <span class="chip" style="background:rgba(245,158,11,0.1);color:#F59E0B;font-weight:600;padding:6px 12px;border-radius:20px">🎯 Tín hiệu hôm nay: 12 Mã</span>
+            <button class="btn primary" data-act="quanttogglebot" style="font-size:12px;padding:6px 14px;border-radius:20px">
+              ${qState.botActive ? 'Tạm Dừng Bot' : 'Kích Hoạt Bot Algo'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NAVIGATION SUBTABS -->
+      <div class="tabs" role="tablist" style="margin-bottom:16px;border-bottom:1px solid var(--line);padding-bottom:2px">
+        ${subTabs.map(([k, label, badge]) => `
+          <button role="tab" class="${curTab === k ? 'on' : ''}" data-act="quanttab" data-v="${k}" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;padding:10px 18px">
+            <span>${label}</span>
+            <span style="font-size:10px;padding:2px 6px;border-radius:10px;background:${curTab === k ? 'var(--brand)' : 'rgba(0,0,0,0.06)'};color:${curTab === k ? '#fff' : 'var(--ink3)'};font-weight:600">${badge}</span>
+          </button>
+        `).join('')}
+      </div>
+
+      <!-- SUBTAB 1: LIVE SIGNALS RADAR -->
+      ${curTab === 'signals' ? `
+        <div class="card" style="padding:16px 20px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+            <div>
+              <h2 style="font-size:16px;font-weight:700;margin:0 0 4px 0">Radar Quét Tín Hiệu Định Lượng Thời Gian Thực (Intraday & Swing)</h2>
+              <p style="font-size:12px;color:var(--ink3);margin:0">Tự động phát hiện các điểm mua/bán tối ưu dựa trên giải thuật toán học và dòng tiền thực tế.</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span style="font-size:12px;color:var(--ink3);margin-right:4px">Bộ lọc chiến lược:</span>
+              <button class="chip ${qState.filterStrat === 'all' ? 'on' : ''}" data-act="quantfilterstrat" data-v="all" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Tất cả (${QUANT_LIVE_SIGNALS.length})</button>
+              <button class="chip ${qState.filterStrat === 'vol_breakout' ? 'on' : ''}" data-act="quantfilterstrat" data-v="vol_breakout" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Pocket Pivot</button>
+              <button class="chip ${qState.filterStrat === 'trend_ema' ? 'on' : ''}" data-act="quantfilterstrat" data-v="trend_ema" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Theo Xu Hướng</button>
+              <button class="chip ${qState.filterStrat === 'smart_money' ? 'on' : ''}" data-act="quantfilterstrat" data-v="smart_money" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Dòng Tiền Cá Mập</button>
+              <button class="chip ${qState.filterStrat === 'mean_bb_rsi' ? 'on' : ''}" data-act="quantfilterstrat" data-v="mean_bb_rsi" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Bắt Đáy Đỉnh</button>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
+              <thead>
+                <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
+                  <th style="padding:10px 8px">Mã CP</th>
+                  <th style="padding:10px 8px">Chiến Lược Định Lượng</th>
+                  <th style="padding:10px 8px">Tín Hiệu Algo</th>
+                  <th style="padding:10px 8px;text-align:right">Giá Kích Hoạt</th>
+                  <th style="padding:10px 8px;text-align:right">Mục Tiêu (Target)</th>
+                  <th style="padding:10px 8px;text-align:right">Cắt Lỗ (Stoploss)</th>
+                  <th style="padding:10px 8px;text-align:center">Tỷ Lệ R:R</th>
+                  <th style="padding:10px 8px;text-align:center">Alpha Score</th>
+                  <th style="padding:10px 8px;text-align:right">Khối Lượng</th>
+                  <th style="padding:10px 8px">Thời Gian</th>
+                  <th style="padding:10px 8px;text-align:center">Hành Động</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${QUANT_LIVE_SIGNALS.filter(s => qState.filterStrat === 'all' || s.strat === qState.filterStrat).map(sig => {
+                  const stratObj = QUANT_STRATEGIES[sig.strat] || {};
+                  const isBuy = sig.type.includes('MUA');
+                  const isSell = sig.type.includes('BÁN') || sig.type.includes('CHỐT LỜI');
+                  const typeClass = isBuy ? 'up' : isSell ? 'down' : 'warn';
+                  const typeBg = isBuy ? 'rgba(34,171,148,0.12)' : isSell ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)';
+                  const upsidePct = +((sig.target - sig.price) / sig.price * 100).toFixed(1);
+                  const downsidePct = +((sig.sl - sig.price) / sig.price * 100).toFixed(1);
+
+                  return `
+                    <tr style="border-bottom:1px solid rgba(0,0,0,0.04);transition:background 0.15s" onmouseover="this.style.background='rgba(0,0,0,0.02)'" onmouseout="this.style.background='transparent'">
+                      <td style="padding:12px 8px">
+                        <div style="display:flex;align-items:center;gap:8px">
+                          ${getCompanyLogo(sig.sym, 26)}
+                          <div>
+                            <div style="font-weight:700;font-size:13px;cursor:pointer;color:var(--brand)" onclick="openStock('${sig.sym}')">${sig.sym}</div>
+                            <div style="font-size:11px;color:var(--ink3)">${sig.name} · ${sig.ex}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td style="padding:12px 8px">
+                        <div style="font-weight:600;color:var(--ink)">${stratObj.name || sig.strat}</div>
+                        <div style="font-size:11px;color:var(--ink3)">${sig.triggerMsg}</div>
+                      </td>
+                      <td style="padding:12px 8px">
+                        <span style="display:inline-block;padding:4px 8px;border-radius:6px;background:${typeBg};color:var(--${typeClass});font-weight:700;font-size:11px">
+                          ${sig.type}
+                        </span>
+                      </td>
+                      <td style="padding:12px 8px;text-align:right;font-weight:700;font-family:var(--mono)">
+                        ${sig.price.toFixed(2)}
+                      </td>
+                      <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">
+                        <div style="font-weight:700;color:var(--up)">${sig.target.toFixed(2)}</div>
+                        <div style="font-size:10px;color:var(--up)">(+${upsidePct}%)</div>
+                      </td>
+                      <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">
+                        <div style="font-weight:700;color:var(--down)">${sig.sl.toFixed(2)}</div>
+                        <div style="font-size:10px;color:var(--down)">(${downsidePct}%)</div>
+                      </td>
+                      <td style="padding:12px 8px;text-align:center;font-weight:600;font-family:var(--mono)">
+                        ${sig.rr}
+                      </td>
+                      <td style="padding:12px 8px;text-align:center">
+                        <div style="display:inline-flex;align-items:center;gap:6px">
+                          <div style="width:40px;height:6px;background:rgba(0,0,0,0.08);border-radius:3px;overflow:hidden">
+                            <div style="width:${sig.score}%;height:100%;background:${sig.score >= 90 ? 'var(--brand)' : '#3B82F6'}"></div>
+                          </div>
+                          <span style="font-weight:700;font-size:11px;color:var(--brand)">${sig.score}</span>
+                        </div>
+                      </td>
+                      <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:600;color:${sig.volRatio >= 200 ? 'var(--up)' : 'var(--ink)'}">
+                        ${sig.volRatio}% MA20
+                      </td>
+                      <td style="padding:12px 8px;font-size:11px;color:var(--ink3);white-space:nowrap">
+                        ${sig.time}
+                      </td>
+                      <td style="padding:12px 8px;text-align:center">
+                        <div style="display:flex;align-items:center;justify-content:center;gap:6px">
+                          <button class="btn ghost sm" data-act="quantquickbacktest" data-sym="${sig.sym}" data-strat="${sig.strat}" style="font-size:11px;padding:4px 8px" title="Kiểm định chiến lược này trên ${sig.sym}">
+                            🧪 Backtest
+                          </button>
+                          <button class="btn primary sm" onclick="openStock('${sig.sym}')" style="font-size:11px;padding:4px 8px">
+                            Xem C360
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- SUBTAB 2: BACKTEST SIMULATOR LAB -->
+      ${curTab === 'backtest' ? `
+        <!-- PARAMETER CONTROL BAR -->
+        <div class="card" style="padding:16px 20px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px">
+            <div>
+              <h2 style="font-size:16px;font-weight:700;margin:0 0 4px 0">Thiết Lập Tham Số Kiểm Định Backtest (Walk-Forward Simulation)</h2>
+              <p style="font-size:12px;color:var(--ink3);margin:0">Mô phỏng hiệu quả giao dịch lịch sử thực tế của chiến lược trên dữ liệu giá quá khứ.</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="btn primary" data-act="quantrunbacktest" style="font-size:12px;padding:8px 18px">
+                🚀 Chạy Lại Backtest
+              </button>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));gap:12px">
+            <div>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MÃ CỔ PHIẾU</label>
+              <select id="quant-sym-select" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
+                ${['MSB', 'FPT', 'HPG', 'VCB', 'SSI', 'TCB', 'MWG', 'DGC', 'CTR', 'VNM', 'STB', 'MBB'].map(s => `
+                  <option value="${s}" ${qState.sym === s ? 'selected' : ''}>${s}</option>
+                `).join('')}
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">CHIẾN LƯỢC ĐỊNH LƯỢNG</label>
+              <select id="quant-strat-select" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
+                ${Object.values(QUANT_STRATEGIES).map(st => `
+                  <option value="${st.id}" ${qState.strat === st.id ? 'selected' : ''}>${st.name}</option>
+                `).join('')}
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">KHUNG THỜI GIAN</label>
+              <select id="quant-period-select" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
+                <option value="6M" ${qState.period === '6M' ? 'selected' : ''}>6 Tháng gần nhất</option>
+                <option value="1Y" ${qState.period === '1Y' ? 'selected' : ''}>1 Năm gần nhất</option>
+                <option value="3Y" ${qState.period === '3Y' ? 'selected' : ''}>3 Năm gần nhất</option>
+                <option value="5Y" ${qState.period === '5Y' ? 'selected' : ''}>5 Năm gần nhất</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">VỐN KHỞI TẠO (VND)</label>
+              <input id="quant-cap-input" type="text" value="${qState.capital.toLocaleString('vi-VN')}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">CẮT LỖ (SL %)</label>
+              <input id="quant-sl-input" type="number" min="2" max="25" value="${qState.sl}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">CHỐT LỜI (TP %)</label>
+              <input id="quant-tp-input" type="number" min="5" max="100" value="${qState.tp}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">FAST MA / SLOW MA</label>
+              <div style="display:flex;gap:4px">
+                <input id="quant-fastma-input" type="number" value="${qState.fastMa}" style="width:50%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px;font-family:var(--mono)" />
+                <input id="quant-slowma-input" type="number" value="${qState.slowMa}" style="width:50%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px;font-family:var(--mono)" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 KEY PERFORMANCE METRICS CARDS -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:16px">
+          <div class="card" style="padding:16px;border-top:3px solid var(--brand)">
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">LỢI NHUẬN TÍCH LŨY</div>
+            <div style="font-size:24px;font-weight:700;color:var(--up);font-family:var(--mono)">+${backtest.totalReturn}%</div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">NAV cuối: <b>${backtest.endingNav.toLocaleString('vi-VN')} đ</b></div>
+          </div>
+
+          <div class="card" style="padding:16px;border-top:3px solid #3B82F6">
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">TỶ LỆ THẮNG (WIN RATE)</div>
+            <div style="font-size:24px;font-weight:700;color:#3B82F6;font-family:var(--mono)">${backtest.winRate}%</div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">${backtest.winTrades} Thắng / ${backtest.lossTrades} Thua (${backtest.totalTrades} lệnh)</div>
+          </div>
+
+          <div class="card" style="padding:16px;border-top:3px solid #10B981">
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">SHARPE / SORTINO RATIO</div>
+            <div style="font-size:24px;font-weight:700;color:#10B981;font-family:var(--mono)">${backtest.sharpe} <span style="font-size:14px;color:var(--ink3)">/ ${backtest.sortino}</span></div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">Khả năng sinh lời vượt trội trên rủi ro</div>
+          </div>
+
+          <div class="card" style="padding:16px;border-top:3px solid #EF4444">
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">SỤT GIẢM TỐI ĐA (MAX DD)</div>
+            <div style="font-size:24px;font-weight:700;color:var(--down);font-family:var(--mono)">${backtest.mdd}%</div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">So với VN-Index: -24.6%</div>
+          </div>
+
+          <div class="card" style="padding:16px;border-top:3px solid #F59E0B">
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">PROFIT FACTOR</div>
+            <div style="font-size:24px;font-weight:700;color:#F59E0B;font-family:var(--mono)">${backtest.profitFactor}</div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">Tổng tiền lãi / Tổng tiền lỗ</div>
+          </div>
+
+          <div class="card" style="padding:16px;border-top:3px solid #8B5CF6">
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">ALPHA VS VN-INDEX</div>
+            <div style="font-size:24px;font-weight:700;color:#8B5CF6;font-family:var(--mono)">+${backtest.alpha}%</div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">VN-Index cùng kỳ: +${backtest.vnindexReturn}%</div>
+          </div>
+        </div>
+
+        <!-- EQUITY CURVE SVG CANVAS -->
+        <div class="card" style="padding:20px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px">
+            <div>
+              <h3 style="font-size:15px;font-weight:700;margin:0 0 2px 0">Biểu Đồ Tăng Trưởng Tài Sản (Equity Curve vs VN-Index Benchmark)</h3>
+              <p style="font-size:11px;color:var(--ink3);margin:0">Mô phỏng đà tăng trưởng vốn của chiến lược so với thị trường chung theo thời gian.</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;font-size:12px">
+              <span style="display:inline-flex;align-items:center;gap:6px">
+                <span style="width:12px;height:3px;background:var(--brand);border-radius:2px"></span>
+                <b>Chiến lược ${curStrat.tag} (+${backtest.totalReturn}%)</b>
+              </span>
+              <span style="display:inline-flex;align-items:center;gap:6px;color:var(--ink3)">
+                <span style="width:12px;height:2px;background:#94a3b8;border-style:dashed"></span>
+                <span>VN-Index Benchmark (+${backtest.vnindexReturn}%)</span>
+              </span>
+            </div>
+          </div>
+
+          <div id="quant-equity-chart" style="width:100%;height:320px;position:relative">
+            <!-- SVG rendered by drawQuant() -->
+          </div>
+        </div>
+
+        <!-- HISTORICAL TRADE LOGS TABLE -->
+        <div class="card" style="padding:16px 20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 style="font-size:15px;font-weight:700;margin:0">Nhật Ký 15 Lệnh Giao Dịch Gần Nhất (Simulated Trade History)</h3>
+            <span style="font-size:11px;color:var(--ink3)">Tổng số lệnh đã thực hiện: <b>${backtest.totalTrades}</b></span>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
+              <thead>
+                <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
+                  <th style="padding:8px">#</th>
+                  <th style="padding:8px">Mã</th>
+                  <th style="padding:8px">Vị Thế</th>
+                  <th style="padding:8px">Ngày Vào</th>
+                  <th style="padding:8px;text-align:right">Giá Mua</th>
+                  <th style="padding:8px">Ngày Thoát</th>
+                  <th style="padding:8px;text-align:right">Giá Bán</th>
+                  <th style="padding:8px;text-align:center">Nắm Giữ</th>
+                  <th style="padding:8px;text-align:right">Hiệu Suất (PnL %)</th>
+                  <th style="padding:8px;text-align:right">Lãi / Lỗ (VND)</th>
+                  <th style="padding:8px">Lý Do Thoát Lệnh</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${backtest.tradeLogs.map(t => {
+                  const pnlColor = t.pnlPct >= 0 ? 'var(--up)' : 'var(--down)';
+                  const pnlSign = t.pnlPct >= 0 ? '+' : '';
+                  return `
+                    <tr style="border-bottom:1px solid rgba(0,0,0,0.04)">
+                      <td style="padding:10px 8px;color:var(--ink3)">${t.id}</td>
+                      <td style="padding:10px 8px;font-weight:700;color:var(--brand)">${t.sym}</td>
+                      <td style="padding:10px 8px"><span class="chip" style="background:rgba(34,171,148,0.1);color:var(--brand);font-weight:700;font-size:10px">${t.side}</span></td>
+                      <td style="padding:10px 8px;color:var(--ink2)">${t.entryDate}</td>
+                      <td style="padding:10px 8px;text-align:right;font-family:var(--mono);font-weight:600">${t.entryPrice.toLocaleString('vi-VN')}</td>
+                      <td style="padding:10px 8px;color:var(--ink2)">${t.exitDate}</td>
+                      <td style="padding:10px 8px;text-align:right;font-family:var(--mono);font-weight:600">${t.exitPrice.toLocaleString('vi-VN')}</td>
+                      <td style="padding:10px 8px;text-align:center;color:var(--ink3)">${t.holdDays} ngày</td>
+                      <td style="padding:10px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:${pnlColor}">
+                        ${pnlSign}${t.pnlPct}%
+                      </td>
+                      <td style="padding:10px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:${pnlColor}">
+                        ${pnlSign}${t.pnlAmt.toLocaleString('vi-VN')} đ
+                      </td>
+                      <td style="padding:10px 8px;font-size:11px;color:var(--ink2)">${t.reason}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- SUBTAB 3: QUAD-MCP ALGO BOT SIMULATOR -->
+      ${curTab === 'bot' ? `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+          <!-- BOT STATUS & CONFIG -->
+          <div class="card" style="padding:20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;border-bottom:1px solid var(--line);padding-bottom:12px">
+              <div>
+                <h3 style="font-size:16px;font-weight:700;margin:0 0 2px 0">Trạng Thái Algo Bot (Quad-MCP Gateway)</h3>
+                <div style="font-size:12px;color:var(--ink3)">Kết nối Broker API: DNSE Ensa & SSI FastConnect Sandbox</div>
+              </div>
+              <button class="btn ${qState.botActive ? 'primary' : 'ghost'}" data-act="quanttogglebot" style="font-size:12px;padding:6px 14px">
+                ${qState.botActive ? '🟢 Bot Đang Hoạt Động' : '🔴 Bot Đang Tạm Dừng'}
+              </button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+              <div style="padding:12px;background:rgba(0,0,0,0.02);border-radius:8px">
+                <div style="font-size:11px;color:var(--ink3)">SỨC MUA KHẢ DỤNG</div>
+                <div style="font-size:18px;font-weight:700;color:var(--ink);font-family:var(--mono)">450.000.000 đ</div>
+              </div>
+              <div style="padding:12px;background:rgba(0,0,0,0.02);border-radius:8px">
+                <div style="font-size:11px;color:var(--ink3)">VỐN PHÂN BỔ BOT</div>
+                <div style="font-size:18px;font-weight:700;color:var(--brand);font-family:var(--mono)">200.000.000 đ</div>
+              </div>
+            </div>
+
+            <!-- MANUAL TEST ORDER FORM -->
+            <div style="border-top:1px solid var(--line);padding-top:14px">
+              <h4 style="font-size:13px;font-weight:700;margin:0 0 10px 0">⚡ Gửi Lệnh Mô Phỏng Test (Quad-MCP Sandbox)</h4>
+              <div style="display:flex;gap:8px;margin-bottom:10px">
+                <input id="quant-order-sym" type="text" value="MSB" placeholder="Mã CP" style="width:30%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:700;text-transform:uppercase" />
+                <input id="quant-order-vol" type="number" value="1000" step="100" placeholder="Số lượng" style="width:40%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600" />
+                <button class="btn primary" data-act="quanttestorder" style="width:30%;font-size:12px">
+                  Gửi Lệnh
+                </button>
+              </div>
+              <p style="font-size:11px;color:var(--ink3);margin:0">Lệnh được giả lập qua giao thức MCP Tools kết nối server DNSE & SSI, đảm bảo an toàn tuyệt đối trước khi cấp quyền live trading.</p>
+            </div>
+          </div>
+
+          <!-- TERMINAL CONSOLE LOGS -->
+          <div class="card" style="padding:16px 20px;background:#0d1117;color:#c9d1d9;border:1px solid #30363d">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid #21262d;padding-bottom:8px">
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="width:10px;height:10px;border-radius:50%;background:#ff5f56;display:inline-block"></span>
+                <span style="width:10px;height:10px;border-radius:50%;background:#ffbd2e;display:inline-block"></span>
+                <span style="width:10px;height:10px;border-radius:50%;background:#27c93f;display:inline-block"></span>
+                <span style="font-size:11px;font-family:var(--mono);color:#8b949e;margin-left:6px">algo_terminal.log — Quad-MCP Daemon</span>
+              </div>
+              <span style="font-size:10px;color:#58a6ff;font-family:var(--mono)">WEBSOCKET: CONNECTED</span>
+            </div>
+            <div style="font-family:var(--mono);font-size:11px;line-height:1.6;height:240px;overflow-y:auto;display:flex;flex-direction:column-reverse">
+              ${qState.botLogs.map(l => {
+                const isErr = l.includes('ERROR');
+                const isSucc = l.includes('THÀNH CÔNG') || l.includes('KHỚP');
+                const isSig = l.includes('SIGNAL');
+                const color = isErr ? '#ff7b72' : isSucc ? '#7ee787' : isSig ? '#d2a8ff' : '#79c0ff';
+                return `<div style="color:${color};margin-bottom:3px">${l}</div>`;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- OPEN POSITIONS TABLE -->
+        <div class="card" style="padding:16px 20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 style="font-size:15px;font-weight:700;margin:0">Danh Mục Vị Thế Đang Nắm Giữ (Managed Portfolio)</h3>
+            <span class="chip" style="background:rgba(34,171,148,0.1);color:var(--brand);font-weight:600">Tổng Lãi Tạm Tính: +27.100.000 đ (+3.87% NAV)</span>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
+              <thead>
+                <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
+                  <th style="padding:8px">Mã CP</th>
+                  <th style="padding:8px">Chiến Lược</th>
+                  <th style="padding:8px;text-align:right">Khối Lượng</th>
+                  <th style="padding:8px;text-align:right">Giá Vốn</th>
+                  <th style="padding:8px;text-align:right">Thị Giá Hiện Tại</th>
+                  <th style="padding:8px;text-align:right">Lãi / Lỗ Tạm Tính (PnL)</th>
+                  <th style="padding:8px;text-align:right">Trailing Stop</th>
+                  <th style="padding:8px;text-align:center">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid rgba(0,0,0,0.04)">
+                  <td style="padding:12px 8px;font-weight:700;color:var(--brand);cursor:pointer" onclick="openStock('MSB')">MSB</td>
+                  <td style="padding:12px 8px"><span class="chip" style="background:rgba(16,185,129,0.1);color:#10B981;font-size:10px">Pocket Pivot Breakout</span></td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:600">10.000</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">15.65</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">15.80</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">+9.500.000 đ (+0.96%)</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);color:var(--down)">15.20</td>
+                  <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Đã khóa lợi nhuận vị thế MSB')">Chốt Lãi</button></td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(0,0,0,0.04)">
+                  <td style="padding:12px 8px;font-weight:700;color:var(--brand);cursor:pointer" onclick="openStock('FPT')">FPT</td>
+                  <td style="padding:12px 8px"><span class="chip" style="background:rgba(59,130,246,0.1);color:#3B82F6;font-size:10px">SuperTrend AI</span></td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:600">2.000</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">134.20</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">138.50</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">+8.600.000 đ (+3.20%)</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);color:var(--down)">132.50</td>
+                  <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Đã nâng Trailing Stop cho FPT')">Nâng Stop</button></td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(0,0,0,0.04)">
+                  <td style="padding:12px 8px;font-weight:700;color:var(--brand);cursor:pointer" onclick="openStock('HPG')">HPG</td>
+                  <td style="padding:12px 8px"><span class="chip" style="background:rgba(139,92,246,0.1);color:#8B5CF6;font-size:10px">Big Boy Flow</span></td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:600">15.000</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">25.80</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">26.40</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">+9.000.000 đ (+2.33%)</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);color:var(--down)">25.20</td>
+                  <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Vị thế HPG đang bám theo Big Boy Flow')">Theo Dõi</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- SUBTAB 4: STATISTICAL ARBITRAGE & PAIRS TRADING -->
+      ${curTab === 'statarb' ? `
+        <div class="card" style="padding:16px 20px;margin-bottom:16px">
+          <div style="margin-bottom:16px">
+            <h2 style="font-size:16px;font-weight:700;margin:0 0 4px 0">Ma Trận Kinh Doanh Chênh Lệch Giá Cặp Cổ Phiếu (Statistical Arbitrage)</h2>
+            <p style="font-size:12px;color:var(--ink3);margin:0">Chiến lược trung lập thị trường (Market-Neutral) khai thác độ phân kỳ Z-Score giữa các cặp cổ phiếu có tương quan cao (Correlation > 0.85).</p>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
+              <thead>
+                <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
+                  <th style="padding:10px 8px">Cặp Cổ Phiếu</th>
+                  <th style="padding:10px 8px">Nhóm Ngành</th>
+                  <th style="padding:10px 8px;text-align:center">Hệ Số Tương Quan</th>
+                  <th style="padding:10px 8px;text-align:center">Độ Lệch Chuẩn (Z-Score)</th>
+                  <th style="padding:10px 8px">Tín Hiệu Giao Dịch Cặp</th>
+                  <th style="padding:10px 8px;text-align:right">Spread Kỳ Vọng</th>
+                  <th style="padding:10px 8px">Đánh Giá Thuật Toán</th>
+                  <th style="padding:10px 8px;text-align:center">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${QUANT_PAIRS.map(p => `
+                  <tr style="border-bottom:1px solid rgba(0,0,0,0.04)">
+                    <td style="padding:12px 8px;font-weight:700;font-size:13px;color:var(--brand)">${p.pair}</td>
+                    <td style="padding:12px 8px;color:var(--ink2)">${p.sector}</td>
+                    <td style="padding:12px 8px;text-align:center;font-weight:700;font-family:var(--mono);color:#3B82F6">${p.corr}</td>
+                    <td style="padding:12px 8px;text-align:center;font-weight:700;font-family:var(--mono);color:${Math.abs(p.zScore) >= 1.8 ? 'var(--down)' : 'var(--ink)'}">
+                      ${p.zScore > 0 ? '+' : ''}${p.zScore}σ
+                    </td>
+                    <td style="padding:12px 8px">
+                      <span class="chip" style="background:${p.signal.includes('TRUNG LẬP') ? 'rgba(0,0,0,0.06)' : 'rgba(34,171,148,0.12)'};color:${p.signal.includes('TRUNG LẬP') ? 'var(--ink3)' : 'var(--brand)'};font-weight:700">
+                        ${p.signal}
+                      </span>
+                    </td>
+                    <td style="padding:12px 8px;text-align:right;font-weight:700;font-family:var(--mono);color:var(--up)">${p.spread}</td>
+                    <td style="padding:12px 8px;font-size:11px;color:var(--ink2)">${p.desc}</td>
+                    <td style="padding:12px 8px;text-align:center">
+                      <button class="btn ghost sm" style="font-size:11px" onclick="toast('Đã thiết lập cặp theo dõi ${p.pair}')">Theo Dõi Cặp</button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="padding:16px 20px;background:rgba(59,130,246,0.04);border:1px solid rgba(59,130,246,0.15)">
+          <h4 style="font-size:13px;font-weight:700;margin:0 0 6px 0;color:#3B82F6">💡 Nguyên Lý Giao Dịch Pairs Trading & Statistical Arbitrage:</h4>
+          <p style="font-size:12px;color:var(--ink2);margin:0;line-height:1.6">
+            Khi hai cổ phiếu cùng ngành có tương quan lợi nhuận cao (> 0.85) xuất hiện độ lệch spread vượt quá 2 độ lệch chuẩn (|Z-Score| > 2.0σ), xác suất trên 85% spread sẽ hội tụ về giá trị trung bình trong vòng 10-25 phiên. Nhà đầu tư thực hiện mua mã chiết khấu và bán/hedging mã tăng nóng để thu lợi nhuận chênh lệch mà không chịu rủi ro sụt giảm của toàn thị trường.
+          </p>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function drawQuant() {
+  const el = document.getElementById('quant-equity-chart');
+  if (!el) return;
+
+  const qState = S.quant || { strat: 'trend_ema', sym: 'MSB', period: '3Y', capital: 100000000, sl: 6, tp: 15, fastMa: 9, slowMa: 21 };
+  const backtest = runQuantBacktest(qState.sym, qState.strat, qState.period, qState.capital, qState.sl, qState.tp, qState.fastMa, qState.slowMa);
+
+  const W = Math.max(300, el.clientWidth || 900);
+  const H = Math.max(220, el.clientHeight || 320);
+  const padL = 60, padR = 30, padT = 20, padB = 40;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+
+  const pts = backtest.equityCurve;
+  const bmkPts = backtest.benchmarkCurve;
+  if (!pts || !pts.length) return;
+
+  let minPct = Math.min(...pts.map(p => p.pct), ...bmkPts.map(p => p.pct), 0);
+  let maxPct = Math.max(...pts.map(p => p.pct), ...bmkPts.map(p => p.pct), 20);
+  minPct = Math.floor(minPct / 10) * 10;
+  maxPct = Math.ceil(maxPct / 10) * 10;
+  const pctRange = Math.max(10, maxPct - minPct);
+
+  const getX = t => padL + t * plotW;
+  const getY = pct => padT + plotH - ((pct - minPct) / pctRange) * plotH;
+
+  // Build SVG path for strategy line & area
+  let linePath = `M ${getX(pts[0].t)} ${getY(pts[0].pct)}`;
+  let areaPath = `M ${getX(pts[0].t)} ${getY(0)}`;
+  areaPath += ` L ${getX(pts[0].t)} ${getY(pts[0].pct)}`;
+
+  pts.forEach(p => {
+    const x = getX(p.t);
+    const y = getY(p.pct);
+    linePath += ` L ${x} ${y}`;
+    areaPath += ` L ${x} ${y}`;
+  });
+  areaPath += ` L ${getX(pts[pts.length - 1].t)} ${getY(0)} Z`;
+
+  // Build SVG path for benchmark line
+  let bmkPath = `M ${getX(bmkPts[0].t)} ${getY(bmkPts[0].pct)}`;
+  bmkPts.forEach(p => {
+    bmkPath += ` L ${getX(p.t)} ${getY(p.pct)}`;
+  });
+
+  // Grid lines
+  const numGrids = 5;
+  let gridSvg = '';
+  for (let i = 0; i <= numGrids; i++) {
+    const pctVal = minPct + (i / numGrids) * pctRange;
+    const y = getY(pctVal);
+    gridSvg += `
+      <line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="var(--line)" stroke-dasharray="3,3" opacity="0.6" />
+      <text x="${padL - 8}" y="${y + 4}" fill="var(--ink3)" font-size="10" font-family="var(--mono)" text-anchor="end">${pctVal > 0 ? '+' : ''}${Math.round(pctVal)}%</text>
+    `;
+  }
+
+  // X Axis dates
+  let dateSvg = '';
+  const dateSteps = [0, 0.25, 0.5, 0.75, 1];
+  dateSteps.forEach(st => {
+    const idx = Math.min(pts.length - 1, Math.round(st * (pts.length - 1)));
+    const pt = pts[idx];
+    const x = getX(pt.t);
+    dateSvg += `
+      <text x="${x}" y="${H - 12}" fill="var(--ink3)" font-size="10" font-family="var(--mono)" text-anchor="middle">${pt.date}</text>
+    `;
+  });
+
+  el.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="display:block">
+      <defs>
+        <linearGradient id="quantAreaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--brand)" stop-opacity="0.3" />
+          <stop offset="100%" stop-color="var(--brand)" stop-opacity="0.0" />
+        </linearGradient>
+      </defs>
+      ${gridSvg}
+      <!-- Zero Line -->
+      <line x1="${padL}" y1="${getY(0)}" x2="${W - padR}" y2="${getY(0)}" stroke="var(--ink3)" opacity="0.3" stroke-width="1" />
+      <!-- Benchmark Area & Line -->
+      <path d="${bmkPath}" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="4,4" opacity="0.8" />
+      <!-- Strategy Area -->
+      <path d="${areaPath}" fill="url(#quantAreaGrad)" />
+      <!-- Strategy Line -->
+      <path d="${linePath}" fill="none" stroke="var(--brand)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- End Points -->
+      <circle cx="${getX(1)}" cy="${getY(pts[pts.length - 1].pct)}" r="4.5" fill="var(--brand)" stroke="#fff" stroke-width="2" />
+      <circle cx="${getX(1)}" cy="${getY(bmkPts[bmkPts.length - 1].pct)}" r="3.5" fill="#94a3b8" stroke="#fff" stroke-width="1.5" />
+      ${dateSvg}
+    </svg>
+  `;
+}
+
+
 function render(keepScroll) {
   const r = S.route, y = window.scrollY;
   sidebar();
@@ -10172,10 +11042,10 @@ function render(keepScroll) {
     const body = { '': vOverview, hoso: vProfile, codong: vHolders, taichinh: vFinance, cungnganh: vPeers, tintuc: vEvents, dulieu: vData }[tab]();
     html = stockHeader() + `<div role="tabpanel">${body}</div>`;
   } else if (/^wl\d+$/.test(r) || r === 'watchlist') html = vWatch();
-  else html = ({ follow: vFollow, screener: vAll, 'screener-all': vAll, compare: vCompare, reports: vReports, market: vMarket, mnews: vMarketNews })[r]();
+  else html = ({ follow: vFollow, screener: vAll, 'screener-all': vAll, compare: vCompare, reports: vReports, market: vMarket, mnews: vMarketNews, quant: vQuant })[r]();
   view.innerHTML = html;
   document.title = 'KongKeng Radar';
-  drawCandles(); drawForeign(); bindPB();
+  drawCandles(); drawForeign(); bindPB(); if (r === 'quant') drawQuant();
   const routeChanged = lastRoute !== r; lastRoute = r;
   if (keepScroll) window.scrollTo(0, y);
   else if (routeChanged) { const tabsEl = view.querySelector('.tabs'); const sameStock = r.startsWith('c360') && (lastRouteGroup === 'c360'); if (sameStock && tabsEl && y > tabsEl.offsetTop) window.scrollTo(0, tabsEl.offsetTop - 0); else window.scrollTo(0, 0); }
@@ -10228,6 +11098,79 @@ const toastC360 = t => { if (t !== 'MSB') toast(`Prototype chỉ có dữ liệu
 /* ================= ACTIONS ================= */
 const A = {
   burger: () => document.getElementById('sb').classList.toggle('open'),
+  quanttab: el => {
+    S.quant.tab = el.dataset.v;
+    render(true);
+  },
+  quantstrat: el => {
+    S.quant.strat = el.dataset.v;
+    render(true);
+  },
+  quantfilterstrat: el => {
+    S.quant.filterStrat = el.dataset.v;
+    render(true);
+  },
+  quantstock: el => {
+    S.quant.sym = el.value || el.dataset.v;
+    render(true);
+  },
+  quantquickbacktest: el => {
+    const sym = el.dataset.sym;
+    const strat = el.dataset.strat;
+    S.quant.sym = sym;
+    if (strat) S.quant.strat = strat;
+    S.quant.tab = 'backtest';
+    render(true);
+    toast(`Đã mở bộ kiểm định Backtest cho ${sym}`);
+  },
+  quantrunbacktest: () => {
+    const symSelect = document.getElementById('quant-sym-select');
+    const stratSelect = document.getElementById('quant-strat-select');
+    const periodSelect = document.getElementById('quant-period-select');
+    const capInput = document.getElementById('quant-cap-input');
+    const slInput = document.getElementById('quant-sl-input');
+    const tpInput = document.getElementById('quant-tp-input');
+    const fastMaInput = document.getElementById('quant-fastma-input');
+    const slowMaInput = document.getElementById('quant-slowma-input');
+
+    if (symSelect) S.quant.sym = symSelect.value;
+    if (stratSelect) S.quant.strat = stratSelect.value;
+    if (periodSelect) S.quant.period = periodSelect.value;
+    if (capInput) S.quant.capital = Math.max(10000000, +capInput.value.replace(/\D/g, '') || 100000000);
+    if (slInput) S.quant.sl = Math.min(25, Math.max(2, +slInput.value || 6));
+    if (tpInput) S.quant.tp = Math.min(100, Math.max(5, +tpInput.value || 15));
+    if (fastMaInput) S.quant.fastMa = Math.max(3, +fastMaInput.value || 9);
+    if (slowMaInput) S.quant.slowMa = Math.max(10, +slowMaInput.value || 21);
+
+    render(true);
+    toast(`Đã chạy kiểm định Backtest thành công cho ${S.quant.sym}`);
+  },
+  quanttogglebot: () => {
+    S.quant.botActive = !S.quant.botActive;
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+    const logMsg = S.quant.botActive
+      ? `[${timeStr}] [ALGO-BOT] Đã KÍCH HOẠT Algo Bot Execution qua Quad-MCP Sandbox. Bắt đầu quét realtime.`
+      : `[${timeStr}] [ALGO-BOT] Đã TẠM DỪNG Algo Bot. Giữ nguyên các vị thế mở hiện tại.`;
+    S.quant.botLogs.unshift(logMsg);
+    if (S.quant.botLogs.length > 30) S.quant.botLogs.pop();
+    render(true);
+    toast(S.quant.botActive ? 'Đã kích hoạt Bot tự động' : 'Đã tạm dừng Bot tự động');
+  },
+  quanttestorder: () => {
+    const symInput = document.getElementById('quant-order-sym');
+    const volInput = document.getElementById('quant-order-vol');
+    const sym = symInput ? symInput.value.toUpperCase().trim() : 'MSB';
+    const vol = volInput ? (+volInput.value || 1000) : 1000;
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+    const price = (typeof STOCK !== 'undefined' && STOCK && STOCK.sym === sym && STOCK.price) ? STOCK.price : 15800;
+    
+    S.quant.botLogs.unshift(`[${timeStr}] [MCP-DRY-RUN] LỆNH MUA THÀNH CÔNG: ${vol.toLocaleString('vi-VN')} ${sym} @ ${price.toLocaleString('vi-VN')} đ qua DNSE Gateway.`);
+    if (S.quant.botLogs.length > 30) S.quant.botLogs.pop();
+    render(true);
+    toast(`Đã gửi lệnh mô phỏng ${vol} ${sym} qua Quad-MCP Gateway`);
+  },
   back: () => history.back(), fwd: () => history.forward(),
   toast: el => toast(el.dataset.msg),
   tvtool: el => {

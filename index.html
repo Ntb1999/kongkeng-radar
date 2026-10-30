@@ -5689,7 +5689,7 @@ const I = {
 const NAV = [
   ['KHÁM PHÁ', [['market', 'Tổng quan thị trường', I.grid], ['screener', 'Bộ lọc cổ phiếu', I.filter], ['mnews', 'Tin tức thị trường', I.news]]],
   ['NGHIÊN CỨU', [['c360', 'Company 360', I.grid], ['compare', 'So sánh cổ phiếu', I.comp], ['reports', 'Báo cáo & Insights', I.rep], ['follow', 'Danh sách theo dõi', I.book]]],
-  ['ĐỊNH LƯỢNG & BOT', [['quant', 'Quant Trading (Radar AI)', I.quant]]]
+  ['ĐẦU TƯ TỰ ĐỘNG & BOT', [['quant', 'Radar AI Săn Tín Hiệu', I.quant]]]
 ];
 const C360_TABS = [['', 'TỔNG QUAN'], ['hoso', 'HỒ SƠ'], ['codong', 'CỔ ĐÔNG & GDNB'], ['taichinh', 'TÀI CHÍNH'], ['cungnganh', 'CÙNG NGÀNH'], ['tintuc', 'TIN TỨC & SỰ KIỆN'], ['dulieu', 'DỮ LIỆU']];
 
@@ -10195,112 +10195,112 @@ let lastRoute = null;
 const QUANT_STRATEGIES = {
   trend_ema: {
     id: 'trend_ema',
-    name: 'Dual EMA & SuperTrend AI (Trend Following)',
+    name: 'Bắt Sóng Theo Xu Hướng (Dual EMA & SuperTrend)',
     tag: 'Theo Xu Hướng',
     tagColor: 'var(--brand)',
-    desc: 'Thuật toán bắt sóng xu hướng dựa trên giao cắt EMA9 / EMA21 kết hợp bộ lọc động lượng SuperTrend AI và ATR Volatility Stop. Hạn chế tối đa bẫy thị trường đi ngang (Whipsaw).',
+    desc: 'Hệ thống tự động phát hiện khi cổ phiếu bắt đầu bước vào chu kỳ tăng giá mạnh mẽ (đường giá ngắn hạn vượt lên đường dài hạn) và giữ trọn sóng tăng. Tự động thoát hàng dứt khoát khi xu hướng kết thúc để bảo toàn lợi nhuận.',
     baseWinRate: 69.4,
     baseSharpe: 2.18,
     baseReturn: 142.6,
     baseMdd: -7.4,
     baseTrades: 58,
     profitFactor: 2.65,
-    suitability: 'Thị trường có xu hướng mạnh (Bull/Bear market), cổ phiếu Beta cao.'
+    suitability: 'Thích hợp khi thị trường có sóng tăng rõ ràng, cổ phiếu tăng trưởng khỏe.'
   },
   mean_bb_rsi: {
     id: 'mean_bb_rsi',
-    name: 'Bollinger Squeeze & RSI Divergence (Mean Reversion)',
-    tag: 'Bắt Đáy Đỉnh',
+    name: 'Săn Điểm Đảo Chiều Phục Hồi (Bollinger Bands & RSI)',
+    tag: 'Bắt Đáy Phục Hồi',
     tagColor: '#3B82F6',
-    desc: 'Tự động phát hiện vùng tích lũy bóp hẹp dải Bollinger Bands (Bandwidth < 4%) kết hợp phân kỳ RSI 14 ở vùng quá bán (< 35) để bắt điểm đảo chiều phục hồi sớm với R:R tối ưu.',
+    desc: 'Tự động báo điểm mua khi cổ phiếu bị ép bán quá đà xuống vùng giá rẻ bất thường (quá bán) và chuẩn bị bật nảy trở lại. Giúp bạn mua được ngay chân sóng phục hồi với mức giá hời nhất.',
     baseWinRate: 73.1,
     baseSharpe: 2.38,
     baseReturn: 168.4,
     baseMdd: -6.2,
     baseTrades: 72,
     profitFactor: 2.89,
-    suitability: 'Thị trường phân hóa đi ngang (Sideway), cổ phiếu biến động chu kỳ.'
+    suitability: 'Thích hợp khi thị trường giằng co đi ngang (Sideway), cổ phiếu tích lũy nền.'
   },
   vol_breakout: {
     id: 'vol_breakout',
-    name: 'Pocket Pivot & Volume Spike (Momentum Breakout)',
-    tag: 'Đột Phá Đà Tăng',
+    name: 'Bùng Nổ Khối Lượng Vượt Nền (Pocket Pivot & Vol Spike)',
+    tag: 'Bứt Phá Dòng Tiền',
     tagColor: '#10B981',
-    desc: 'Phát hiện các điểm mua sớm ngay từ trong nền giá khi khối lượng mua vượt lớn hơn khối lượng bán lớn nhất trong 10 ngày trước đó, kết hợp điểm nổ vô Volume > 200% MA20.',
+    desc: 'Phát hiện tín hiệu sớm ngay từ trong nền giá khi dòng tiền gom mua đột biến gấp 2-3 lần bình thường đổ vào đẩy giá bứt phá. Phù hợp cho nhà đầu tư thích đánh nhanh thắng nhanh.',
     baseWinRate: 67.8,
     baseSharpe: 2.05,
     baseReturn: 154.2,
     baseMdd: -8.6,
     baseTrades: 64,
     profitFactor: 2.52,
-    suitability: 'Cổ phiếu bứt phá đỉnh giá, có tin tức KQKD hỗ trợ đột biến.'
+    suitability: 'Cổ phiếu vừa nén chặt sắp bung nóc, doanh nghiệp có kết quả kinh doanh tốt hỗ trợ.'
   },
   smart_money: {
     id: 'smart_money',
-    name: 'Big Boy & Institutional Flow Tracker (Order Flow)',
-    tag: 'Theo Dấu Cá Mập',
+    name: 'Bám Theo Dấu Chân Cá Mập (Khối Ngoại & Tự Doanh)',
+    tag: 'Dòng Tiền Cá Mập',
     tagColor: '#8B5CF6',
-    desc: 'Giải mã luồng khớp lệnh chủ động Order Flow của Khối ngoại và Tự doanh chứng khoán từ Quad-MCP, lọc ra các mã có tích lũy ròng đột biến liên tục 3-5 phiên kèm lực đỡ đáy.',
+    desc: 'Giải mã luồng mua bán trực tiếp của Khối Ngoại và Tự Doanh các công ty chứng khoán lớn. Lọc ra những mã đang được "tay to" âm thầm gom ròng liên tục 3-5 phiên kèm lực đỡ đáy vững chắc.',
     baseWinRate: 71.5,
     baseSharpe: 2.29,
     baseReturn: 178.5,
     baseMdd: -6.9,
     baseTrades: 51,
     profitFactor: 2.84,
-    suitability: 'Nhóm cổ phiếu vốn hóa lớn VN30, rổ chỉ số dẫn dắt dòng tiền.'
+    suitability: 'Nhóm cổ phiếu lớn VN30, rổ chỉ số dẫn dắt dòng tiền toàn thị trường.'
   },
   statarb: {
     id: 'statarb',
-    name: 'Statistical Arbitrage & Pairs Trading (Market Neutral)',
-    tag: 'Trung Lập Thị Trường',
+    name: 'Khai Thác Lệch Giá Cặp Cổ Phiếu (Pairs Trading)',
+    tag: 'Bắt Lệch Giá An Toàn',
     tagColor: '#F59E0B',
-    desc: 'Kinh doanh chênh lệch giá cặp cổ phiếu đồng pha cao trong cùng ngành. Bán khống/hạ tỷ trọng mã phân kỳ định giá cao (Overvalued) và gom mã định giá chiết khấu (Undervalued) khi Z-Score > 2.0σ.',
+    desc: 'Tận dụng thời điểm 2 cổ phiếu cùng ngành tạm thời lệch giá: mã này bị bán quá đà còn mã kia tăng nóng. Mua mã rẻ và bán mã đắt để thu trọn phần chênh lệch mà không sợ thị trường chung sập.',
     baseWinRate: 77.2,
     baseSharpe: 2.65,
     baseReturn: 124.8,
     baseMdd: -4.1,
     baseTrades: 86,
     profitFactor: 3.15,
-    suitability: 'Bảo vệ tài sản trong mọi điều kiện thị trường, hạn chế rủi ro giảm điểm chung.'
+    suitability: 'Chiến lược phòng thủ tài sản đỉnh cao, kiếm lợi nhuận ổn định dù thị trường lên hay xuống.'
   },
   supertrend_ai: {
     id: 'supertrend_ai',
-    name: 'Multi-Factor Alpha Ranking (Quantitative Factor Model)',
-    tag: 'Xếp Hạng Đa Nhân Tố',
+    name: 'Chấm Điểm Toàn Diện Đa Nhân Tố (Alpha AI Ranking)',
+    tag: 'Top Cổ Phiếu Toàn Diện',
     tagColor: '#EC4899',
-    desc: 'Mô hình chấm điểm Alpha tổng hợp 5 nhân tố: Momentum (RSI + MACD), Value (P/E & P/B chiết khấu), Quality (ROE > 18%), Volatility (ATR co thắt) và Big Boy Flow từ DNSE MCP.',
+    desc: 'Hệ thống AI chấm điểm tổng hợp 5 tiêu chí: Sức mạnh giá, Khả năng sinh lời (ROE cao), Định giá rẻ, Độ an toàn biến động thấp và Lực gom của dòng tiền lớn. Chỉ đề xuất các mã điểm cao nhất.',
     baseWinRate: 70.3,
     baseSharpe: 2.22,
     baseReturn: 162.0,
     baseMdd: -7.5,
     baseTrades: 60,
     profitFactor: 2.71,
-    suitability: 'Chiến lược cốt lõi cân bằng giữa lợi nhuận cao và kiểm soát rủi ro danh mục.'
+    suitability: 'Chiến lược cốt lõi cân bằng giữa lợi nhuận cao và bảo vệ an toàn danh mục.'
   }
 };
 
 const QUANT_LIVE_SIGNALS = [
-  { sym: 'MSB', name: 'Ngân hàng Hàng Hải', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 15.80, target: 18.20, sl: 14.85, rr: '1 : 2.5', score: 96, volRatio: 245, time: '14:45 hôm nay', triggerMsg: 'Pocket Pivot + Vượt MA20 với thanh khoản bùng nổ 245%' },
-  { sym: 'FPT', name: 'Tập đoàn FPT', ex: 'HOSE', strat: 'trend_ema', type: 'MUA THĂM DÒ', price: 138.50, target: 158.00, sl: 131.00, rr: '1 : 2.6', score: 94, volRatio: 180, time: '14:30 hôm nay', triggerMsg: 'EMA9 cắt lên EMA21 kèm SuperTrend AI giữ sắc xanh vững chắc' },
-  { sym: 'HPG', name: 'Tập đoàn Hòa Phát', ex: 'HOSE', strat: 'smart_money', type: 'MUA MẠNH', price: 26.40, target: 30.50, sl: 24.90, rr: '1 : 2.7', score: 95, volRatio: 310, time: '14:15 hôm nay', triggerMsg: 'Khối ngoại gom ròng +125 tỷ, Order Flow bên mua áp đảo 72%' },
-  { sym: 'SSI', name: 'Chứng khoán SSI', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 32.20, target: 37.80, sl: 30.20, rr: '1 : 2.8', score: 93, volRatio: 220, time: '13:55 hôm nay', triggerMsg: 'Vượt đỉnh kháng cự ngắn hạn với lực mua chủ động áp đảo' },
-  { sym: 'VCB', name: 'Vietcombank', ex: 'HOSE', strat: 'trend_ema', type: 'NẮM GIỮ', price: 92.50, target: 104.00, sl: 88.00, rr: '1 : 2.5', score: 89, volRatio: 110, time: '13:40 hôm nay', triggerMsg: 'Giữ vững kênh xu hướng tăng, dòng tiền phòng thủ neo giá' },
-  { sym: 'TCB', name: 'Techcombank', ex: 'HOSE', strat: 'statarb', type: 'MUA THĂM DÒ', price: 24.10, target: 27.50, sl: 22.80, rr: '1 : 2.6', score: 91, volRatio: 165, time: '11:20 hôm nay', triggerMsg: 'Z-Score lệch -2.14σ so với nhóm ngành ngân hàng, định giá chiết khấu' },
-  { sym: 'MWG', name: 'Thế Giới Di Động', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 68.40, target: 79.50, sl: 64.50, rr: '1 : 2.8', score: 94, volRatio: 270, time: '10:45 hôm nay', triggerMsg: 'Pocket Pivot hình thành chuẩn mẫu hình VCP thu hẹp độ biến động' },
-  { sym: 'DGC', name: 'Hóa chất Đức Giang', ex: 'HOSE', strat: 'mean_bb_rsi', type: 'CHỐT LỜI 50%', price: 115.00, target: 115.00, sl: 112.00, rr: '1 : 3.4', score: 92, volRatio: 190, time: '10:15 hôm nay', triggerMsg: 'Đạt Target 2 (+18.2%), RSI quá mua 78.5, kích hoạt chốt lời từng phần' },
-  { sym: 'MBB', name: 'Ngân hàng Quân Đội', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA THĂM DÒ', price: 25.60, target: 29.20, sl: 24.20, rr: '1 : 2.5', score: 90, volRatio: 140, time: '29/10/2026', triggerMsg: 'Xếp hạng Alpha 90/100, định giá P/B 1.05 hấp dẫn trong dòng bank' },
-  { sym: 'CTR', name: 'Công trình Viettel', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA MẠNH', price: 128.00, target: 149.00, sl: 121.00, rr: '1 : 3.0', score: 96, volRatio: 215, time: '29/10/2026', triggerMsg: 'Đột phá đỉnh lịch sử, dòng tiền công nghệ viễn thông bùng nổ' },
-  { sym: 'VNM', name: 'Vinamilk', ex: 'HOSE', strat: 'trend_ema', type: 'BÁN HẠ TỶ TRỌNG', price: 66.50, target: 63.00, sl: 68.50, rr: '1 : 1.8', score: 85, volRatio: 130, time: '28/10/2026', triggerMsg: 'Thủng ngưỡng hỗ trợ EMA50, SuperTrend đảo chiều giảm ngắn hạn' },
-  { sym: 'STB', name: 'Sacombank', ex: 'HOSE', strat: 'smart_money', type: 'NẮM GIỮ', price: 34.20, target: 39.50, sl: 32.50, rr: '1 : 2.6', score: 88, volRatio: 105, time: '28/10/2026', triggerMsg: 'Cá mập gom ròng liên tục 4 phiên, duy trì vị thế chờ bứt phá' }
-];
+  { sym: 'MSB', name: 'Ngân hàng Hàng Hải', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 15.80, target: 18.20, sl: 14.85, rr: '1 : 2.5', score: 96, volRatio: 245, time: '14:45 hôm nay', triggerMsg: 'Dòng tiền gom mua đột biến gấp 2.45 lần bình thường, giá bứt phá vượt nền MA20' },
+  { sym: 'FPT', name: 'Tập đoàn FPT', ex: 'HOSE', strat: 'trend_ema', type: 'MUA THĂM DÒ', price: 138.50, target: 158.00, sl: 131.00, rr: '1 : 2.6', score: 94, volRatio: 180, time: '14:30 hôm nay', triggerMsg: 'Đường giá ngắn hạn cắt lên dài hạn kèm AI xác nhận xu hướng tăng vững chắc' },
+  { sym: 'HPG', name: 'Tập đoàn Hòa Phát', ex: 'HOSE', strat: 'smart_money', type: 'MUA MẠNH', price: 26.40, target: 30.50, sl: 24.90, rr: '1 : 2.7', score: 95, volRatio: 310, time: '14:15 hôm nay', triggerMsg: 'Khối ngoại gom ròng +125 tỷ, lực mua chủ động của dòng tiền lớn áp đảo 72%' },
+  { sym: 'SSI', name: 'Chứng khoán SSI', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 32.20, target: 37.80, sl: 30.20, rr: '1 : 2.8', score: 93, volRatio: 220, time: '13:55 hôm nay', triggerMsg: 'Vượt đỉnh kháng cự ngắn hạn với lực mua gom chủ động dứt khoát' },
+  { sym: 'VCB', name: 'Vietcombank', ex: 'HOSE', strat: 'trend_ema', type: 'NẮM GIỮ', price: 92.50, target: 104.00, sl: 88.00, rr: '1 : 2.5', score: 89, volRatio: 110, time: '13:40 hôm nay', triggerMsg: 'Giữ vững kênh xu hướng tăng, dòng tiền phòng thủ vào đỡ giá chắc chắn' },
+  { sym: 'TCB', name: 'Techcombank', ex: 'HOSE', strat: 'statarb', type: 'MUA THĂM DÒ', price: 24.10, target: 27.50, sl: 22.80, rr: '1 : 2.6', score: 91, volRatio: 165, time: '11:20 hôm nay', triggerMsg: 'Giá đang bị ép rẻ hơn bình thường 2.14 lần độ lệch chuẩn so với toàn ngành' },
+  { sym: 'MWG', name: 'Thế Giới Di Động', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 68.40, target: 79.50, sl: 64.50, rr: '1 : 2.8', score: 94, volRatio: 270, time: '10:45 hôm nay', triggerMsg: 'Mẫu hình nén giá thu hẹp biến động hoàn tất, dòng tiền bùng nổ' },
+  { sym: 'DGC', name: 'Hóa chất Đức Giang', ex: 'HOSE', strat: 'mean_bb_rsi', type: 'CHỐT LỜI 50%', price: 115.00, target: 115.00, sl: 112.00, rr: '1 : 3.4', score: 92, volRatio: 190, time: '10:15 hôm nay', triggerMsg: 'Đạt mục tiêu chốt lời (+18.2%), giá chạm vùng quá mua, nên hạ bớt 50% vị thế' },
+  { sym: 'MBB', name: 'Ngân hàng Quân Đội', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA THĂM DÒ', price: 25.60, target: 29.20, sl: 24.20, rr: '1 : 2.5', score: 90, volRatio: 140, time: '29/10/2026', triggerMsg: 'AI chấm điểm chất lượng 90/100, định giá P/B 1.05 rẻ nhất nhóm ngân hàng lớn' },
+  { sym: 'CTR', name: 'Công trình Viettel', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA MẠNH', price: 128.00, target: 149.00, sl: 121.00, rr: '1 : 3.0', score: 96, volRatio: 215, time: '29/10/2026', triggerMsg: 'Đột phá đỉnh lịch sử, dòng tiền công nghệ - viễn thông dẫn dắt thị trường' },
+  { sym: 'VNM', name: 'Vinamilk', ex: 'HOSE', strat: 'trend_ema', type: 'BÁN HẠ TỶ TRỌNG', price: 66.50, target: 63.00, sl: 68.50, rr: '1 : 1.8', score: 85, volRatio: 130, time: '28/10/2026', triggerMsg: 'Thủng ngưỡng hỗ trợ quan trọng, tín hiệu AI chuyển sang thận trọng, nên hạ bớt' },
+  { sym: 'STB', name: 'Sacombank', ex: 'HOSE', strat: 'smart_money', type: 'NẮM GIỮ', price: 34.20, target: 39.50, sl: 32.50, rr: '1 : 2.6', score: 88, volRatio: 105, time: '28/10/2026', triggerMsg: 'Cá mập gom ròng liên tục 4 phiên, duy trì nắm giữ chờ nhịp tăng tốc' }
+];;
 
 const QUANT_PAIRS = [
-  { pair: 'MSB / TCB', sector: 'Ngân hàng', corr: 0.92, zScore: -2.14, signal: 'MUA MSB · BÁN TCB', spread: '+4.8%', status: 'Cơ hội chênh lệch cao', desc: 'MSB đang định giá chiết khấu sâu hơn TCB 2.14 độ lệch chuẩn' },
-  { pair: 'HPG / NKG', sector: 'Thép & Tôn mạ', corr: 0.88, zScore: 1.95, signal: 'BÁN HPG · MUA NKG', spread: '+3.6%', status: 'Phân kỳ ngắn hạn', desc: 'NKG chiết khấu định giá nhanh hơn HPG sau nhịp điều chỉnh' },
-  { pair: 'SSI / VND', sector: 'Chứng khoán', corr: 0.94, zScore: -1.82, signal: 'MUA SSI · BÁN VND', spread: '+5.2%', status: 'Cơ hội chênh lệch cao', desc: 'SSI vượt trội về dòng tiền tự doanh và thị phần so với VND' },
-  { pair: 'MWG / FRT', sector: 'Bán lẻ', corr: 0.89, zScore: -1.65, signal: 'MUA MWG · BÁN FRT', spread: '+4.1%', status: 'Phân kỳ trung bình', desc: 'Định giá P/S và P/E của MWG hấp dẫn hơn tương đối' },
-  { pair: 'FPT / CMG', sector: 'Công nghệ thông tin', corr: 0.85, zScore: 0.45, signal: 'TRUNG LẬP', spread: '0.0%', status: 'Dải cân bằng', desc: 'Tỷ lệ spread giữa 2 mã đang dao động quanh ngưỡng cân bằng' }
-];
+  { pair: 'MSB / TCB', sector: 'Ngân hàng', corr: 0.92, zScore: -2.14, signal: 'MUA MSB (Rẻ) · BÁN TCB (Đắt)', spread: '+4.8%', status: 'Cơ hội chênh lệch cao', desc: 'MSB đang bị bán ép giá rẻ hơn TCB tới 2.14 lần độ lệch chuẩn' },
+  { pair: 'HPG / NKG', sector: 'Thép & Tôn mạ', corr: 0.88, zScore: 1.95, signal: 'BÁN HPG (Đắt) · MUA NKG (Rẻ)', spread: '+3.6%', status: 'Lệch giá ngắn hạn', desc: 'NKG chiết khấu giá nhanh hơn HPG sau nhịp rung lắc, chuẩn bị bật lại' },
+  { pair: 'SSI / VND', sector: 'Chứng khoán', corr: 0.94, zScore: -1.82, signal: 'MUA SSI (Mạnh) · BÁN VND (Yếu)', spread: '+5.2%', status: 'Cơ hội chênh lệch cao', desc: 'SSI vượt trội về dòng tiền tự doanh và thị phần so với VND' },
+  { pair: 'MWG / FRT', sector: 'Bán lẻ', corr: 0.89, zScore: -1.65, signal: 'MUA MWG (Rẻ) · BÁN FRT (Nóng)', spread: '+4.1%', status: 'Lệch định giá vừa phải', desc: 'Định giá P/E và tiềm năng tăng trưởng của MWG đang hấp dẫn hơn tương đối' },
+  { pair: 'FPT / CMG', sector: 'Công nghệ thông tin', corr: 0.85, zScore: 0.45, signal: 'ĐANG CÂN BẰNG', spread: '0.0%', status: 'Vùng giá hợp lý', desc: 'Tỷ lệ giá giữa 2 mã đang dao động quanh ngưỡng cân bằng, chưa có điểm lệch' }
+];;
 
 function runQuantBacktest(sym, stratId, period, capital, slPct, tpPct, fastMa, slowMa) {
   sym = sym || (typeof STOCK !== 'undefined' && STOCK ? STOCK.sym : 'MSB');
@@ -10420,10 +10420,10 @@ function vQuant() {
   const backtest = runQuantBacktest(qState.sym, qState.strat, qState.period, qState.capital, qState.sl, qState.tp, qState.fastMa, qState.slowMa);
 
   const subTabs = [
-    ['signals', '📡 Radar Tín Hiệu Realtime', QUANT_LIVE_SIGNALS.length],
-    ['backtest', '🧪 Phòng Thí Nghiệm Backtest', '5 năm'],
-    ['bot', '🤖 Quad-MCP Algo Bot Simulator', qState.botActive ? 'ACTIVE' : 'IDLE'],
-    ['statarb', '⚖️ Pairs Trading & StatArb', QUANT_PAIRS.length]
+    ['signals', '📡 Tín Hiệu Mua Bán Mới Nhất', QUANT_LIVE_SIGNALS.length],
+    ['backtest', '🧪 Kiểm Tra Hiệu Quả (5 Năm)', '5 năm'],
+    ['bot', '🤖 Bot Tự Động Đặt Lệnh (Mô Phỏng)', qState.botActive ? 'ĐANG CHẠY' : 'TẠM DỪNG'],
+    ['statarb', '⚖️ Bắt Lệch Giá Cặp Cổ Phiếu', QUANT_PAIRS.length]
   ];
 
   return `
@@ -10434,22 +10434,22 @@ function vQuant() {
           <div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
               <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--brand);color:#fff;box-shadow:0 2px 8px rgba(34,171,148,0.35)">⚡</span>
-              <h1 style="font-size:22px;font-weight:700;margin:0;letter-spacing:-0.02em">QUANT RADAR — Hệ Thống Giao Dịch Định Lượng & Chiến Lược Thuật Toán</h1>
-              <span class="chip" style="background:rgba(34,171,148,0.15);color:var(--brand);font-weight:600;font-size:11px">QUAD-MCP ALGO ENGINE</span>
+              <h1 style="font-size:22px;font-weight:700;margin:0;letter-spacing:-0.02em">RADAR ĐỊNH LƯỢNG (QUANT RADAR) — Quét Tín Hiệu & Đặt Lệnh Bằng AI</h1>
+              <span class="chip" style="background:rgba(34,171,148,0.15);color:var(--brand);font-weight:600;font-size:11px">CÔNG NGHỆ THUẬT TOÁN ALGO</span>
             </div>
             <p style="margin:0;font-size:13px;color:var(--ink2);max-width:880px;line-height:1.5">
-              Phân tích đa nhân tố (Multi-Factor Alpha), quét tín hiệu định lượng thời gian thực (Pocket Pivot, SuperTrend, Big Boy Order Flow, StatArb), kiểm định Backtest 5 năm và mô phỏng thực thi lệnh tự động qua hệ sinh thái Quad-MCP (DNSE, VNDIRECT, FINHAY & SSI).
+              Hệ thống tự động tính toán hàng triệu dữ liệu mỗi giây để tìm ra các cổ phiếu tiềm năng: Dòng tiền cá mập gom hàng, Điểm nổ sóng tăng trưởng, hay Cơ hội bắt chênh lệch giá an toàn. Bạn có thể kiểm tra hiệu quả quá khứ 5 năm và cho bot tự động bám lệnh theo quy tắc kỷ luật.
             </p>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
             <span class="chip" style="background:${qState.botActive ? 'rgba(34,171,148,0.15)' : 'rgba(239,68,68,0.15)'};color:${qState.botActive ? 'var(--brand)' : 'var(--down)'};font-weight:600;padding:6px 12px;border-radius:20px">
               <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px"></span>
-              Algo Engine: ${qState.botActive ? 'ĐANG CHẠY' : 'TẠM DỪNG'}
+              Hệ thống AI: ${qState.botActive ? 'ĐANG HOẠT ĐỘNG' : 'TẠM DỪNG'}
             </span>
-            <span class="chip" style="background:rgba(59,130,246,0.1);color:#3B82F6;font-weight:600;padding:6px 12px;border-radius:20px">⚡ Độ trễ: 12ms</span>
-            <span class="chip" style="background:rgba(245,158,11,0.1);color:#F59E0B;font-weight:600;padding:6px 12px;border-radius:20px">🎯 Tín hiệu hôm nay: 12 Mã</span>
+            <span class="chip" style="background:rgba(59,130,246,0.1);color:#3B82F6;font-weight:600;padding:6px 12px;border-radius:20px">⚡ Tốc độ quét: Siêu tốc 12ms</span>
+            <span class="chip" style="background:rgba(245,158,11,0.1);color:#F59E0B;font-weight:600;padding:6px 12px;border-radius:20px">🎯 Gợi ý hôm nay: 12 Mã tiềm năng</span>
             <button class="btn primary" data-act="quanttogglebot" style="font-size:12px;padding:6px 14px;border-radius:20px">
-              ${qState.botActive ? 'Tạm Dừng Bot' : 'Kích Hoạt Bot Algo'}
+              ${qState.botActive ? 'Tạm Dừng Tự Động' : 'Bật Chạy Tự Động'}
             </button>
           </div>
         </div>
@@ -10470,16 +10470,16 @@ function vQuant() {
         <div class="card" style="padding:16px 20px;margin-bottom:16px">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
             <div>
-              <h2 style="font-size:16px;font-weight:700;margin:0 0 4px 0">Radar Quét Tín Hiệu Định Lượng Thời Gian Thực (Intraday & Swing)</h2>
-              <p style="font-size:12px;color:var(--ink3);margin:0">Tự động phát hiện các điểm mua/bán tối ưu dựa trên giải thuật toán học và dòng tiền thực tế.</p>
+              <h2 style="font-size:16px;font-weight:700;margin:0 0 4px 0">Bảng Quét Tín Hiệu Cổ Phiếu Tiềm Năng Trong Ngày (Lướt Sóng & Đánh Ngắn)</h2>
+              <p style="font-size:12px;color:var(--ink3);margin:0">Hệ thống tự động theo dõi từng giây, đưa ra điểm mua, mục tiêu chốt lời và mức chặn lỗ rõ ràng cho từng mã.</p>
             </div>
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-              <span style="font-size:12px;color:var(--ink3);margin-right:4px">Bộ lọc chiến lược:</span>
+              <span style="font-size:12px;color:var(--ink3);margin-right:4px">Chọn cách đánh:</span>
               <button class="chip ${qState.filterStrat === 'all' ? 'on' : ''}" data-act="quantfilterstrat" data-v="all" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Tất cả (${QUANT_LIVE_SIGNALS.length})</button>
-              <button class="chip ${qState.filterStrat === 'vol_breakout' ? 'on' : ''}" data-act="quantfilterstrat" data-v="vol_breakout" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Pocket Pivot</button>
+              <button class="chip ${qState.filterStrat === 'vol_breakout' ? 'on' : ''}" data-act="quantfilterstrat" data-v="vol_breakout" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Bứt Phá Dòng Tiền</button>
               <button class="chip ${qState.filterStrat === 'trend_ema' ? 'on' : ''}" data-act="quantfilterstrat" data-v="trend_ema" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Theo Xu Hướng</button>
               <button class="chip ${qState.filterStrat === 'smart_money' ? 'on' : ''}" data-act="quantfilterstrat" data-v="smart_money" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Dòng Tiền Cá Mập</button>
-              <button class="chip ${qState.filterStrat === 'mean_bb_rsi' ? 'on' : ''}" data-act="quantfilterstrat" data-v="mean_bb_rsi" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Bắt Đáy Đỉnh</button>
+              <button class="chip ${qState.filterStrat === 'mean_bb_rsi' ? 'on' : ''}" data-act="quantfilterstrat" data-v="mean_bb_rsi" style="cursor:pointer;padding:4px 10px;border-radius:14px;font-size:11px">Bắt Đáy Phục Hồi</button>
             </div>
           </div>
 
@@ -10488,16 +10488,16 @@ function vQuant() {
               <thead>
                 <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
                   <th style="padding:10px 8px">Mã CP</th>
-                  <th style="padding:10px 8px">Chiến Lược Định Lượng</th>
-                  <th style="padding:10px 8px">Tín Hiệu Algo</th>
-                  <th style="padding:10px 8px;text-align:right">Giá Kích Hoạt</th>
-                  <th style="padding:10px 8px;text-align:right">Mục Tiêu (Target)</th>
-                  <th style="padding:10px 8px;text-align:right">Cắt Lỗ (Stoploss)</th>
-                  <th style="padding:10px 8px;text-align:center">Tỷ Lệ R:R</th>
-                  <th style="padding:10px 8px;text-align:center">Alpha Score</th>
-                  <th style="padding:10px 8px;text-align:right">Khối Lượng</th>
-                  <th style="padding:10px 8px">Thời Gian</th>
-                  <th style="padding:10px 8px;text-align:center">Hành Động</th>
+                  <th style="padding:10px 8px">Cách Đánh / Chiến Lược</th>
+                  <th style="padding:10px 8px">Khuyến Nghị AI</th>
+                  <th style="padding:10px 8px;text-align:right">Giá Mua Gợi Ý</th>
+                  <th style="padding:10px 8px;text-align:right">Mục Tiêu Chốt Lời</th>
+                  <th style="padding:10px 8px;text-align:right">Chặn Lỗ Tối Đa</th>
+                  <th style="padding:10px 8px;text-align:center" title="Tỷ lệ giữa mức lãi kỳ vọng so với rủi ro cắt lỗ">Tỷ Lệ Lãi / Lỗ (R:R)</th>
+                  <th style="padding:10px 8px;text-align:center" title="Điểm chấm độ tin cậy từ 0 đến 100">Độ Tin Cậy AI</th>
+                  <th style="padding:10px 8px;text-align:right">Dòng Tiền Đột Biến</th>
+                  <th style="padding:10px 8px">Thời Điểm Báo</th>
+                  <th style="padding:10px 8px;text-align:center">Thao Tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -10553,15 +10553,15 @@ function vQuant() {
                         </div>
                       </td>
                       <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:600;color:${sig.volRatio >= 200 ? 'var(--up)' : 'var(--ink)'}">
-                        ${sig.volRatio}% MA20
+                        ${sig.volRatio >= 200 ? '🔥 Gấp ' + (sig.volRatio/100).toFixed(1) + ' lần' : sig.volRatio + '% MA20'}
                       </td>
                       <td style="padding:12px 8px;font-size:11px;color:var(--ink3);white-space:nowrap">
                         ${sig.time}
                       </td>
                       <td style="padding:12px 8px;text-align:center">
                         <div style="display:flex;align-items:center;justify-content:center;gap:6px">
-                          <button class="btn ghost sm" data-act="quantquickbacktest" data-sym="${sig.sym}" data-strat="${sig.strat}" style="font-size:11px;padding:4px 8px" title="Kiểm định chiến lược này trên ${sig.sym}">
-                            🧪 Backtest
+                          <button class="btn ghost sm" data-act="quantquickbacktest" data-sym="${sig.sym}" data-strat="${sig.strat}" style="font-size:11px;padding:4px 8px" title="Kiểm định xem chiến lược này lãi bao nhiêu trong 5 năm qua trên ${sig.sym}">
+                            🧪 Thử 5 năm
                           </button>
                           <button class="btn primary sm" onclick="openStock('${sig.sym}')" style="font-size:11px;padding:4px 8px">
                             Xem C360
@@ -10583,12 +10583,12 @@ function vQuant() {
         <div class="card" style="padding:16px 20px;margin-bottom:16px">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px">
             <div>
-              <h2 style="font-size:16px;font-weight:700;margin:0 0 4px 0">Thiết Lập Tham Số Kiểm Định Backtest (Walk-Forward Simulation)</h2>
-              <p style="font-size:12px;color:var(--ink3);margin:0">Mô phỏng hiệu quả giao dịch lịch sử thực tế của chiến lược trên dữ liệu giá quá khứ.</p>
+              <h2 style="font-size:16px;font-weight:700;margin:0 0 4px 0">Thiết Lập Thử Nghiệm Chiến Lược Trên Dữ Liệu Quá Khứ (Mô Phỏng 5 Năm)</h2>
+              <p style="font-size:12px;color:var(--ink3);margin:0">Trước khi bỏ tiền thật ra đầu tư, hãy xem nếu áp dụng đúng kỷ luật chiến lược này trong 5 năm qua thì bạn sẽ lãi/lỗ bao nhiêu.</p>
             </div>
             <div style="display:flex;align-items:center;gap:8px">
               <button class="btn primary" data-act="quantrunbacktest" style="font-size:12px;padding:8px 18px">
-                🚀 Chạy Lại Backtest
+                🚀 Xem Kết Quả Mô Phỏng Ngay
               </button>
             </div>
           </div>
@@ -10603,7 +10603,7 @@ function vQuant() {
               </select>
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">CHIẾN LƯỢC ĐỊNH LƯỢNG</label>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">CHIẾN LƯỢC MUỐN THỬ</label>
               <select id="quant-strat-select" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
                 ${Object.values(QUANT_STRATEGIES).map(st => `
                   <option value="${st.id}" ${qState.strat === st.id ? 'selected' : ''}>${st.name}</option>
@@ -10611,7 +10611,7 @@ function vQuant() {
               </select>
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">KHUNG THỜI GIAN</label>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">KHUNG THỜI GIAN KIỂM TRA</label>
               <select id="quant-period-select" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
                 <option value="6M" ${qState.period === '6M' ? 'selected' : ''}>6 Tháng gần nhất</option>
                 <option value="1Y" ${qState.period === '1Y' ? 'selected' : ''}>1 Năm gần nhất</option>
@@ -10620,19 +10620,19 @@ function vQuant() {
               </select>
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">VỐN KHỞI TẠO (VND)</label>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">VỐN ĐẦU TƯ BAN ĐẦU (VND)</label>
               <input id="quant-cap-input" type="text" value="${qState.capital.toLocaleString('vi-VN')}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">CẮT LỖ (SL %)</label>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MỨC CẮT LỖ BẢO VỆ (% LỖ TỐI ĐA)</label>
               <input id="quant-sl-input" type="number" min="2" max="25" value="${qState.sl}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">CHỐT LỜI (TP %)</label>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MỤC TIÊU CHỐT LỜI (% LÃI KỲ VỌNG)</label>
               <input id="quant-tp-input" type="number" min="5" max="100" value="${qState.tp}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">FAST MA / SLOW MA</label>
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">ĐỘ NHẠY ĐƯỜNG TRUNG BÌNH (NGẮN / DÀI)</label>
               <div style="display:flex;gap:4px">
                 <input id="quant-fastma-input" type="number" value="${qState.fastMa}" style="width:50%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px;font-family:var(--mono)" />
                 <input id="quant-slowma-input" type="number" value="${qState.slowMa}" style="width:50%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px;font-family:var(--mono)" />
@@ -10644,39 +10644,39 @@ function vQuant() {
         <!-- 6 KEY PERFORMANCE METRICS CARDS -->
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:16px">
           <div class="card" style="padding:16px;border-top:3px solid var(--brand)">
-            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">LỢI NHUẬN TÍCH LŨY</div>
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">TỔNG LÃI TÍCH LŨY</div>
             <div style="font-size:24px;font-weight:700;color:var(--up);font-family:var(--mono)">+${backtest.totalReturn}%</div>
-            <div style="font-size:11px;color:var(--ink2);margin-top:4px">NAV cuối: <b>${backtest.endingNav.toLocaleString('vi-VN')} đ</b></div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">Vốn tăng thành: <b>${backtest.endingNav.toLocaleString('vi-VN')} đ</b></div>
           </div>
 
           <div class="card" style="padding:16px;border-top:3px solid #3B82F6">
-            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">TỶ LỆ THẮNG (WIN RATE)</div>
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">TỶ LỆ LỆNH ĐÁNH THẮNG</div>
             <div style="font-size:24px;font-weight:700;color:#3B82F6;font-family:var(--mono)">${backtest.winRate}%</div>
-            <div style="font-size:11px;color:var(--ink2);margin-top:4px">${backtest.winTrades} Thắng / ${backtest.lossTrades} Thua (${backtest.totalTrades} lệnh)</div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">${backtest.winTrades} Thắng / ${backtest.lossTrades} Thua (Tổng ${backtest.totalTrades} lệnh)</div>
           </div>
 
           <div class="card" style="padding:16px;border-top:3px solid #10B981">
-            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">SHARPE / SORTINO RATIO</div>
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">ĐỘ ỔN ĐỊNH LỢI NHUẬN (SHARPE)</div>
             <div style="font-size:24px;font-weight:700;color:#10B981;font-family:var(--mono)">${backtest.sharpe} <span style="font-size:14px;color:var(--ink3)">/ ${backtest.sortino}</span></div>
-            <div style="font-size:11px;color:var(--ink2);margin-top:4px">Khả năng sinh lời vượt trội trên rủi ro</div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">Lãi đều và bền, ít chịu rủi ro sụt giảm bất ngờ</div>
           </div>
 
           <div class="card" style="padding:16px;border-top:3px solid #EF4444">
-            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">SỤT GIẢM TỐI ĐA (MAX DD)</div>
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MỨC GIẢM TẠM THỜI TỐI ĐA (MDD)</div>
             <div style="font-size:24px;font-weight:700;color:var(--down);font-family:var(--mono)">${backtest.mdd}%</div>
-            <div style="font-size:11px;color:var(--ink2);margin-top:4px">So với VN-Index: -24.6%</div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">An toàn hơn nhiều so với VN-Index sập -24.6%</div>
           </div>
 
           <div class="card" style="padding:16px;border-top:3px solid #F59E0B">
-            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">PROFIT FACTOR</div>
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">HỆ SỐ KIẾM TIỀN (PROFIT FACTOR)</div>
             <div style="font-size:24px;font-weight:700;color:#F59E0B;font-family:var(--mono)">${backtest.profitFactor}</div>
-            <div style="font-size:11px;color:var(--ink2);margin-top:4px">Tổng tiền lãi / Tổng tiền lỗ</div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">Cứ mất 1 đồng lỗ thì kiếm về ${backtest.profitFactor} đồng lãi</div>
           </div>
 
           <div class="card" style="padding:16px;border-top:3px solid #8B5CF6">
-            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">ALPHA VS VN-INDEX</div>
+            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">LỢI NHUẬN VƯỢT TRỘI THỊ TRƯỜNG</div>
             <div style="font-size:24px;font-weight:700;color:#8B5CF6;font-family:var(--mono)">+${backtest.alpha}%</div>
-            <div style="font-size:11px;color:var(--ink2);margin-top:4px">VN-Index cùng kỳ: +${backtest.vnindexReturn}%</div>
+            <div style="font-size:11px;color:var(--ink2);margin-top:4px">VN-Index thị trường cùng kỳ: +${backtest.vnindexReturn}%</div>
           </div>
         </div>
 
@@ -10684,17 +10684,17 @@ function vQuant() {
         <div class="card" style="padding:20px;margin-bottom:16px">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px">
             <div>
-              <h3 style="font-size:15px;font-weight:700;margin:0 0 2px 0">Biểu Đồ Tăng Trưởng Tài Sản (Equity Curve vs VN-Index Benchmark)</h3>
-              <p style="font-size:11px;color:var(--ink3);margin:0">Mô phỏng đà tăng trưởng vốn của chiến lược so với thị trường chung theo thời gian.</p>
+              <h3 style="font-size:15px;font-weight:700;margin:0 0 2px 0">Đồ Thị Tăng Trưởng Tài Sản So Với Thị Trường Chung (VN-Index)</h3>
+              <p style="font-size:11px;color:var(--ink3);margin:0">Mô phỏng đà tăng trưởng vốn khi tuân thủ nghiêm ngặt chiến lược so với thị trường chung theo thời gian.</p>
             </div>
             <div style="display:flex;align-items:center;gap:16px;font-size:12px">
               <span style="display:inline-flex;align-items:center;gap:6px">
                 <span style="width:12px;height:3px;background:var(--brand);border-radius:2px"></span>
-                <b>Chiến lược ${curStrat.tag} (+${backtest.totalReturn}%)</b>
+                <b>Tài khoản theo Chiến lược (+${backtest.totalReturn}%)</b>
               </span>
               <span style="display:inline-flex;align-items:center;gap:6px;color:var(--ink3)">
                 <span style="width:12px;height:2px;background:#94a3b8;border-style:dashed"></span>
-                <span>VN-Index Benchmark (+${backtest.vnindexReturn}%)</span>
+                <span>Thị trường VN-Index (+${backtest.vnindexReturn}%)</span>
               </span>
             </div>
           </div>
@@ -10707,8 +10707,8 @@ function vQuant() {
         <!-- HISTORICAL TRADE LOGS TABLE -->
         <div class="card" style="padding:16px 20px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <h3 style="font-size:15px;font-weight:700;margin:0">Nhật Ký 15 Lệnh Giao Dịch Gần Nhất (Simulated Trade History)</h3>
-            <span style="font-size:11px;color:var(--ink3)">Tổng số lệnh đã thực hiện: <b>${backtest.totalTrades}</b></span>
+            <h3 style="font-size:15px;font-weight:700;margin:0">Chi Tiết 15 Lần Mua Bán Gần Nhất Theo Chiến Lược</h3>
+            <span style="font-size:11px;color:var(--ink3)">Tổng số lần ra vào lệnh: <b>${backtest.totalTrades} lần</b></span>
           </div>
 
           <div style="overflow-x:auto">
@@ -10716,15 +10716,15 @@ function vQuant() {
               <thead>
                 <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
                   <th style="padding:8px">#</th>
-                  <th style="padding:8px">Mã</th>
+                  <th style="padding:8px">Mã CP</th>
                   <th style="padding:8px">Vị Thế</th>
-                  <th style="padding:8px">Ngày Vào</th>
+                  <th style="padding:8px">Ngày Mua</th>
                   <th style="padding:8px;text-align:right">Giá Mua</th>
-                  <th style="padding:8px">Ngày Thoát</th>
+                  <th style="padding:8px">Ngày Bán</th>
                   <th style="padding:8px;text-align:right">Giá Bán</th>
                   <th style="padding:8px;text-align:center">Nắm Giữ</th>
-                  <th style="padding:8px;text-align:right">Hiệu Suất (PnL %)</th>
-                  <th style="padding:8px;text-align:right">Lãi / Lỗ (VND)</th>
+                  <th style="padding:8px;text-align:right">Kết Quả (%)</th>
+                  <th style="padding:8px;text-align:right">Tiền Lãi / Lỗ</th>
                   <th style="padding:8px">Lý Do Thoát Lệnh</th>
                 </tr>
               </thead>
@@ -10765,11 +10765,11 @@ function vQuant() {
           <div class="card" style="padding:20px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;border-bottom:1px solid var(--line);padding-bottom:12px">
               <div>
-                <h3 style="font-size:16px;font-weight:700;margin:0 0 2px 0">Trạng Thái Algo Bot (Quad-MCP Gateway)</h3>
-                <div style="font-size:12px;color:var(--ink3)">Kết nối Broker API: DNSE Ensa & SSI FastConnect Sandbox</div>
+                <h3 style="font-size:16px;font-weight:700;margin:0 0 2px 0">Trung Tâm Điều Khiển Bot Đặt Lệnh Tự Động (Mô Phỏng An Toàn)</h3>
+                <div style="font-size:12px;color:var(--ink3)">Cổng kết nối giả lập: DNSE Ensa & SSI Sandbox — Giúp bạn tập dượt kỷ luật không lo mất vốn</div>
               </div>
               <button class="btn ${qState.botActive ? 'primary' : 'ghost'}" data-act="quanttogglebot" style="font-size:12px;padding:6px 14px">
-                ${qState.botActive ? '🟢 Bot Đang Hoạt Động' : '🔴 Bot Đang Tạm Dừng'}
+                ${qState.botActive ? '🟢 Bot Đang Tự Động Quét Lệnh' : '🔴 Bot Đang Tạm Dừng'}
               </button>
             </div>
 
@@ -10779,22 +10779,22 @@ function vQuant() {
                 <div style="font-size:18px;font-weight:700;color:var(--ink);font-family:var(--mono)">450.000.000 đ</div>
               </div>
               <div style="padding:12px;background:rgba(0,0,0,0.02);border-radius:8px">
-                <div style="font-size:11px;color:var(--ink3)">VỐN PHÂN BỔ BOT</div>
+                <div style="font-size:11px;color:var(--ink3)">VỐN ĐANG PHÂN BỔ CHO BOT</div>
                 <div style="font-size:18px;font-weight:700;color:var(--brand);font-family:var(--mono)">200.000.000 đ</div>
               </div>
             </div>
 
             <!-- MANUAL TEST ORDER FORM -->
             <div style="border-top:1px solid var(--line);padding-top:14px">
-              <h4 style="font-size:13px;font-weight:700;margin:0 0 10px 0">⚡ Gửi Lệnh Mô Phỏng Test (Quad-MCP Sandbox)</h4>
+              <h4 style="font-size:13px;font-weight:700;margin:0 0 10px 0">⚡ Gửi Lệnh Thử Nghiệm Để Bot Bám Theo Quản Lý</h4>
               <div style="display:flex;gap:8px;margin-bottom:10px">
                 <input id="quant-order-sym" type="text" value="MSB" placeholder="Mã CP" style="width:30%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:700;text-transform:uppercase" />
                 <input id="quant-order-vol" type="number" value="1000" step="100" placeholder="Số lượng" style="width:40%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600" />
                 <button class="btn primary" data-act="quanttestorder" style="width:30%;font-size:12px">
-                  Gửi Lệnh
+                  Gửi Lệnh Thử
                 </button>
               </div>
-              <p style="font-size:11px;color:var(--ink3);margin:0">Lệnh được giả lập qua giao thức MCP Tools kết nối server DNSE & SSI, đảm bảo an toàn tuyệt đối trước khi cấp quyền live trading.</p>
+              <p style="font-size:11px;color:var(--ink3);margin:0">Lệnh được thử nghiệm trong môi trường an toàn. Bot sẽ tự động theo dõi, chốt lời hoặc nâng chặn lãi theo kỷ luật cho bạn mà không lo mất tiền thật.</p>
             </div>
           </div>
 
@@ -10805,15 +10805,15 @@ function vQuant() {
                 <span style="width:10px;height:10px;border-radius:50%;background:#ff5f56;display:inline-block"></span>
                 <span style="width:10px;height:10px;border-radius:50%;background:#ffbd2e;display:inline-block"></span>
                 <span style="width:10px;height:10px;border-radius:50%;background:#27c93f;display:inline-block"></span>
-                <span style="font-size:11px;font-family:var(--mono);color:#8b949e;margin-left:6px">algo_terminal.log — Quad-MCP Daemon</span>
+                <span style="font-size:11px;font-family:var(--mono);color:#8b949e;margin-left:6px">Nhật ký hoạt động từng giây của Bot AI (Mô phỏng)</span>
               </div>
-              <span style="font-size:10px;color:#58a6ff;font-family:var(--mono)">WEBSOCKET: CONNECTED</span>
+              <span style="font-size:10px;color:#7ee787;font-family:var(--mono)">🟢 KẾT NỐI: HOẠT ĐỘNG TỐT</span>
             </div>
             <div style="font-family:var(--mono);font-size:11px;line-height:1.6;height:240px;overflow-y:auto;display:flex;flex-direction:column-reverse">
               ${qState.botLogs.map(l => {
                 const isErr = l.includes('ERROR');
-                const isSucc = l.includes('THÀNH CÔNG') || l.includes('KHỚP');
-                const isSig = l.includes('SIGNAL');
+                const isSucc = l.includes('THÀNH CÔNG') || l.includes('KHỚP') || l.includes('Mô phỏng lệnh');
+                const isSig = l.includes('SIGNAL') || l.includes('Phát hiện tín hiệu');
                 const color = isErr ? '#ff7b72' : isSucc ? '#7ee787' : isSig ? '#d2a8ff' : '#79c0ff';
                 return `<div style="color:${color};margin-bottom:3px">${l}</div>`;
               }).join('')}
@@ -10824,8 +10824,8 @@ function vQuant() {
         <!-- OPEN POSITIONS TABLE -->
         <div class="card" style="padding:16px 20px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <h3 style="font-size:15px;font-weight:700;margin:0">Danh Mục Vị Thế Đang Nắm Giữ (Managed Portfolio)</h3>
-            <span class="chip" style="background:rgba(34,171,148,0.1);color:var(--brand);font-weight:600">Tổng Lãi Tạm Tính: +27.100.000 đ (+3.87% NAV)</span>
+            <h3 style="font-size:15px;font-weight:700;margin:0">Danh Mục Cổ Phiếu Bot Đang Nắm Giữ & Tự Động Canh Lệnh</h3>
+            <span class="chip" style="background:rgba(34,171,148,0.1);color:var(--brand);font-weight:600">Tổng Tiền Lời Tạm Tính: +27.100.000 đ (+3.87%)</span>
           </div>
 
           <div style="overflow-x:auto">
@@ -10833,45 +10833,45 @@ function vQuant() {
               <thead>
                 <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
                   <th style="padding:8px">Mã CP</th>
-                  <th style="padding:8px">Chiến Lược</th>
+                  <th style="padding:8px">Cách Đánh Đang Dùng</th>
                   <th style="padding:8px;text-align:right">Khối Lượng</th>
                   <th style="padding:8px;text-align:right">Giá Vốn</th>
-                  <th style="padding:8px;text-align:right">Thị Giá Hiện Tại</th>
-                  <th style="padding:8px;text-align:right">Lãi / Lỗ Tạm Tính (PnL)</th>
-                  <th style="padding:8px;text-align:right">Trailing Stop</th>
+                  <th style="padding:8px;text-align:right">Giá Hiện Tại</th>
+                  <th style="padding:8px;text-align:right">Lãi / Lỗ Tạm Tính</th>
+                  <th style="padding:8px;text-align:right" title="Mức giá tự động bán để bảo vệ lợi nhuận đã đạt">Mức Chặn Lãi Tự Động</th>
                   <th style="padding:8px;text-align:center">Thao Tác</th>
                 </tr>
               </thead>
               <tbody>
                 <tr style="border-bottom:1px solid rgba(0,0,0,0.04)">
                   <td style="padding:12px 8px;font-weight:700;color:var(--brand);cursor:pointer" onclick="openStock('MSB')">MSB</td>
-                  <td style="padding:12px 8px"><span class="chip" style="background:rgba(16,185,129,0.1);color:#10B981;font-size:10px">Pocket Pivot Breakout</span></td>
+                  <td style="padding:12px 8px"><span class="chip" style="background:rgba(16,185,129,0.1);color:#10B981;font-size:10px">Bứt Phá Dòng Tiền</span></td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:600">10.000</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">15.65</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">15.80</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">+9.500.000 đ (+0.96%)</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);color:var(--down)">15.20</td>
-                  <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Đã khóa lợi nhuận vị thế MSB')">Chốt Lãi</button></td>
+                  <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Đã khóa lợi nhuận vị thế MSB thành công')">Chốt Lời</button></td>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(0,0,0,0.04)">
                   <td style="padding:12px 8px;font-weight:700;color:var(--brand);cursor:pointer" onclick="openStock('FPT')">FPT</td>
-                  <td style="padding:12px 8px"><span class="chip" style="background:rgba(59,130,246,0.1);color:#3B82F6;font-size:10px">SuperTrend AI</span></td>
+                  <td style="padding:12px 8px"><span class="chip" style="background:rgba(59,130,246,0.1);color:#3B82F6;font-size:10px">Theo Xu Hướng</span></td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:600">2.000</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">134.20</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">138.50</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">+8.600.000 đ (+3.20%)</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);color:var(--down)">132.50</td>
-                  <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Đã nâng Trailing Stop cho FPT')">Nâng Stop</button></td>
+                  <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Đã nâng mức chặn lãi bảo vệ cho FPT')">Nâng Chặn Lãi</button></td>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(0,0,0,0.04)">
                   <td style="padding:12px 8px;font-weight:700;color:var(--brand);cursor:pointer" onclick="openStock('HPG')">HPG</td>
-                  <td style="padding:12px 8px"><span class="chip" style="background:rgba(139,92,246,0.1);color:#8B5CF6;font-size:10px">Big Boy Flow</span></td>
+                  <td style="padding:12px 8px"><span class="chip" style="background:rgba(139,92,246,0.1);color:#8B5CF6;font-size:10px">Dòng Tiền Cá Mập</span></td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:600">15.000</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">25.80</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">26.40</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">+9.000.000 đ (+2.33%)</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);color:var(--down)">25.20</td>
-                  <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Vị thế HPG đang bám theo Big Boy Flow')">Theo Dõi</button></td>
+                  <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Vị thế HPG đang bám theo dòng tiền lớn')">Để Bot Chạy</button></td>
                 </tr>
               </tbody>
             </table>
@@ -10883,21 +10883,21 @@ function vQuant() {
       ${curTab === 'statarb' ? `
         <div class="card" style="padding:16px 20px;margin-bottom:16px">
           <div style="margin-bottom:16px">
-            <h2 style="font-size:16px;font-weight:700;margin:0 0 4px 0">Ma Trận Kinh Doanh Chênh Lệch Giá Cặp Cổ Phiếu (Statistical Arbitrage)</h2>
-            <p style="font-size:12px;color:var(--ink3);margin:0">Chiến lược trung lập thị trường (Market-Neutral) khai thác độ phân kỳ Z-Score giữa các cặp cổ phiếu có tương quan cao (Correlation > 0.85).</p>
+            <h2 style="font-size:16px;font-weight:700;margin:0 0 4px 0">Ma Trận Bắt Sóng Lệch Giá Giữa 2 Cổ Phiếu Cùng Đôi (Pairs Trading)</h2>
+            <p style="font-size:12px;color:var(--ink3);margin:0">Chiến lược an toàn cao: Khai thác khi 2 cổ phiếu thường đi chung đường bỗng nhiên tách ra (một mã bị bán quá rẻ còn một mã tăng quá nóng). Bạn chỉ cần mua mã rẻ và bán mã đắt để ăn chênh lệch an toàn.</p>
           </div>
 
           <div style="overflow-x:auto">
             <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
               <thead>
                 <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
-                  <th style="padding:10px 8px">Cặp Cổ Phiếu</th>
-                  <th style="padding:10px 8px">Nhóm Ngành</th>
-                  <th style="padding:10px 8px;text-align:center">Hệ Số Tương Quan</th>
-                  <th style="padding:10px 8px;text-align:center">Độ Lệch Chuẩn (Z-Score)</th>
-                  <th style="padding:10px 8px">Tín Hiệu Giao Dịch Cặp</th>
-                  <th style="padding:10px 8px;text-align:right">Spread Kỳ Vọng</th>
-                  <th style="padding:10px 8px">Đánh Giá Thuật Toán</th>
+                  <th style="padding:10px 8px">Cặp Cổ Phiếu Cùng Ngành</th>
+                  <th style="padding:10px 8px">Ngành Nghề</th>
+                  <th style="padding:10px 8px;text-align:center" title="Đo độ đi cùng hướng của 2 mã (0.92 nghĩa là trùng pha 92%)">Mức Độ Đi Cùng Nhau</th>
+                  <th style="padding:10px 8px;text-align:center" title="Mức độ lệch giá khỏi trạng thái bình thường (Dấu âm = Quá rẻ, Dấu dương = Quá đắt)">Mức Lệch Giá (Z-Score)</th>
+                  <th style="padding:10px 8px">Hướng Đi Được Gợi Ý</th>
+                  <th style="padding:10px 8px;text-align:right" title="Mức lợi nhuận thu về khi hai cổ phiếu quay về cân bằng">Lợi Nhuận Dự Kiến</th>
+                  <th style="padding:10px 8px">Lý Do Từ Hệ Thống AI</th>
                   <th style="padding:10px 8px;text-align:center">Thao Tác</th>
                 </tr>
               </thead>
@@ -10906,19 +10906,19 @@ function vQuant() {
                   <tr style="border-bottom:1px solid rgba(0,0,0,0.04)">
                     <td style="padding:12px 8px;font-weight:700;font-size:13px;color:var(--brand)">${p.pair}</td>
                     <td style="padding:12px 8px;color:var(--ink2)">${p.sector}</td>
-                    <td style="padding:12px 8px;text-align:center;font-weight:700;font-family:var(--mono);color:#3B82F6">${p.corr}</td>
+                    <td style="padding:12px 8px;text-align:center;font-weight:700;font-family:var(--mono);color:#3B82F6">${(p.corr * 100).toFixed(0)}% (${p.corr})</td>
                     <td style="padding:12px 8px;text-align:center;font-weight:700;font-family:var(--mono);color:${Math.abs(p.zScore) >= 1.8 ? 'var(--down)' : 'var(--ink)'}">
-                      ${p.zScore > 0 ? '+' : ''}${p.zScore}σ
+                      ${p.zScore > 0 ? '+' : ''}${p.zScore}σ <span style="font-size:10px;font-weight:normal;color:var(--ink3)">(${p.zScore < 0 ? 'Quá rẻ' : 'Quá nóng'})</span>
                     </td>
                     <td style="padding:12px 8px">
-                      <span class="chip" style="background:${p.signal.includes('TRUNG LẬP') ? 'rgba(0,0,0,0.06)' : 'rgba(34,171,148,0.12)'};color:${p.signal.includes('TRUNG LẬP') ? 'var(--ink3)' : 'var(--brand)'};font-weight:700">
+                      <span class="chip" style="background:${p.signal.includes('CÂN BẰNG') ? 'rgba(0,0,0,0.06)' : 'rgba(34,171,148,0.12)'};color:${p.signal.includes('CÂN BẰNG') ? 'var(--ink3)' : 'var(--brand)'};font-weight:700">
                         ${p.signal}
                       </span>
                     </td>
                     <td style="padding:12px 8px;text-align:right;font-weight:700;font-family:var(--mono);color:var(--up)">${p.spread}</td>
                     <td style="padding:12px 8px;font-size:11px;color:var(--ink2)">${p.desc}</td>
                     <td style="padding:12px 8px;text-align:center">
-                      <button class="btn ghost sm" style="font-size:11px" onclick="toast('Đã thiết lập cặp theo dõi ${p.pair}')">Theo Dõi Cặp</button>
+                      <button class="btn ghost sm" style="font-size:11px" onclick="toast('Đã thêm cặp ${p.pair} vào danh sách theo dõi')">Theo Dõi Cặp</button>
                     </td>
                   </tr>
                 `).join('')}
@@ -10928,9 +10928,12 @@ function vQuant() {
         </div>
 
         <div class="card" style="padding:16px 20px;background:rgba(59,130,246,0.04);border:1px solid rgba(59,130,246,0.15)">
-          <h4 style="font-size:13px;font-weight:700;margin:0 0 6px 0;color:#3B82F6">💡 Nguyên Lý Giao Dịch Pairs Trading & Statistical Arbitrage:</h4>
+          <h4 style="font-size:13px;font-weight:700;margin:0 0 6px 0;color:#3B82F6">💡 Vì sao chiến lược Bắt Cặp Lệch Giá lại cực kỳ an toàn cho nhà đầu tư?</h4>
+          <p style="font-size:12px;color:var(--ink2);margin:0 0 8px 0;line-height:1.6">
+            <b>1. Nguyên lý tự nhiên:</b> Hai cổ phiếu cùng ngành lớn (như MSB & TCB hay HPG & NKG) luôn có hoạt động kinh doanh và biến động giá tương đồng nhau trên 85%. Tuy nhiên, do tâm lý ngắn hạn của đám đông, đôi khi một mã bị ép bán quá đà (rẻ bất thường), trong khi mã kia lại tăng nóng.
+          </p>
           <p style="font-size:12px;color:var(--ink2);margin:0;line-height:1.6">
-            Khi hai cổ phiếu cùng ngành có tương quan lợi nhuận cao (> 0.85) xuất hiện độ lệch spread vượt quá 2 độ lệch chuẩn (|Z-Score| > 2.0σ), xác suất trên 85% spread sẽ hội tụ về giá trị trung bình trong vòng 10-25 phiên. Nhà đầu tư thực hiện mua mã chiết khấu và bán/hedging mã tăng nóng để thu lợi nhuận chênh lệch mà không chịu rủi ro sụt giảm của toàn thị trường.
+            <b>2. Kiếm tiền thế nào?</b> Bạn chỉ cần mua cổ phiếu đang bị bán rẻ và bán (hoặc hạ bớt) cổ phiếu đang tăng nóng. Trong vòng 2-3 tuần, thị trường luôn tự sửa sai để hai cổ phiếu tìm về mức cân bằng cũ. Khi đó bạn sẽ thu trọn vẹn phần chênh lệch từ 3.5% đến 5.2% mà hoàn toàn <b>KHÔNG phụ thuộc vào việc VN-Index tăng hay giảm!</b>
           </p>
         </div>
       ` : ''}

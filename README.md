@@ -1,7 +1,7 @@
-# KongKeng Radar - Nền tảng Phân tích & Tư vấn Đầu tư Chứng khoán Thế hệ mới
+# KongKeng Radar — Nền tảng Phân tích & Radar Quét Tín hiệu Đầu tư Chứng khoán Thế hệ mới
 > **Tích hợp Hệ sinh thái Quad-MCP đa tầng: DNSE, VNDIRECT, FINHAY & SSI**
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-brightgreen?logo=github)](https://ntb1999.github.io/maris-advisor/#market)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-brightgreen?logo=github)](https://ntb1999.github.io/kongkeng-radar/#market)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
 [![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20Mobile%20Responsive-orange.svg)]()
@@ -10,24 +10,26 @@
 
 ## 🌐 Live Demo & Trải nghiệm trực tuyến
 
-Trải nghiệm trực tiếp nền tảng Maris Advisor trên GitHub Pages:
+Trải nghiệm trực tiếp hệ thống **KongKeng Radar** trên GitHub Pages:
 
-* 📊 **Tổng quan thị trường (Market Overview):** [https://ntb1999.github.io/maris-advisor/#market](https://ntb1999.github.io/maris-advisor/#market)
-* 📰 **Tin tức thị trường & Lịch cổ tức (Market News):** [https://ntb1999.github.io/maris-advisor/#mnews](https://ntb1999.github.io/maris-advisor/#mnews)
-* 🏢 **Company 360 (Toàn cảnh cổ phiếu MSB, FPT, VNM...):** [https://ntb1999.github.io/maris-advisor/#c360](https://ntb1999.github.io/maris-advisor/#c360)
-* 🔍 **Bộ lọc Cổ phiếu Thông minh v2 (Smart Screener):** [https://ntb1999.github.io/maris-advisor/#screener](https://ntb1999.github.io/maris-advisor/#screener)
-* ⚖️ **So sánh Cổ phiếu Đa chiều (Stock Comparison):** [https://ntb1999.github.io/maris-advisor/#compare](https://ntb1999.github.io/maris-advisor/#compare)
-* 📑 **Báo cáo Phân tích Chuyên sâu (Research Reports):** [https://ntb1999.github.io/maris-advisor/#reports](https://ntb1999.github.io/maris-advisor/#reports)
+* 📊 **Radar Tổng quan Thị trường (Market Overview):** [https://ntb1999.github.io/kongkeng-radar/#market](https://ntb1999.github.io/kongkeng-radar/#market)
+* 📰 **Bản tin Thị trường & Lịch Sự kiện (Market News & Macro Calendar):** [https://ntb1999.github.io/kongkeng-radar/#mnews](https://ntb1999.github.io/kongkeng-radar/#mnews)
+* 🏢 **Company 360 (Toàn cảnh cổ phiếu MSB, FPT, VNM...):** [https://ntb1999.github.io/kongkeng-radar/#c360](https://ntb1999.github.io/kongkeng-radar/#c360)
+* 🔍 **Radar Lọc Cổ phiếu Thông minh v2 (Smart Screener):** [https://ntb1999.github.io/kongkeng-radar/#screener](https://ntb1999.github.io/kongkeng-radar/#screener)
+* ⚖️ **So sánh Cổ phiếu Đa chiều (Stock Comparison):** [https://ntb1999.github.io/kongkeng-radar/#compare](https://ntb1999.github.io/kongkeng-radar/#compare)
+* 📑 **Báo cáo Phân tích Chuyên sâu (Research Reports):** [https://ntb1999.github.io/kongkeng-radar/#reports](https://ntb1999.github.io/kongkeng-radar/#reports)
 
 ---
 
 ## 🚀 Giới thiệu Nền tảng
 
-**Maris Advisor** là nền tảng phân tích tài chính và tư vấn đầu tư chứng khoán được thiết kế chuẩn mực dành cho nhà đầu tư cá nhân và tổ chức tại thị trường Việt Nam. Hệ thống kết hợp giao diện hiện đại (Modern Financial UI/UX), cơ chế phản hồi siêu tốc dưới 16ms và tích hợp sâu kiến trúc **Quad-MCP (Model Context Protocol)** từ 4 định chế tài chính & công nghệ hàng đầu:
+**KongKeng Radar** là nền tảng radar quét tín hiệu thị trường, phân tích tài chính chuyên sâu và hỗ trợ ra quyết định đầu tư chứng khoán thông minh dành cho nhà đầu tư cá nhân và tổ chức tại Việt Nam.
 
-```
+Hệ thống kết hợp trải nghiệm giao diện tài chính tối tân (Modern Financial UI/UX), tốc độ phản hồi tức thì dưới 16ms (60 FPS) và tích hợp sâu kiến trúc **Quad-MCP (Model Context Protocol)** từ 4 định chế tài chính & công nghệ hàng đầu:
+
+`
                   ┌──────────────────────────────────────────────┐
-                  │          MARIS ADVISOR FRONTEND CORE         │
+                  │         KONGKENG RADAR FRONTEND CORE         │
                   │   (Pure ES6+, Canvas 2D, Light/Dark Theme)   │
                   └──────────────────────┬───────────────────────┘
                                          │
@@ -39,41 +41,38 @@ Trải nghiệm trực tiếp nền tảng Maris Advisor trên GitHub Pages:
 │& Ensa Trading│    │ & Industry   │     │ & Community  │    │  Research &  │
 │  Lightning)  │    │  Valuation)  │     │  Sentiment)  │    │  FastQuote)  │
 └──────────────┘    └──────────────┘     └──────────────┘    └──────────────┘
-```
+`
 
 ---
 
 ## 🧩 Hệ sinh thái Quad-MCP (Model Context Protocol)
 
-Maris Advisor tiên phong ứng dụng giao thức mở MCP nhằm hợp nhất dữ liệu từ nhiều nguồn độc lập vào chung một luồng ngữ cảnh (Context Stream):
+KongKeng Radar tiên phong ứng dụng giao thức mở MCP nhằm hợp nhất dữ liệu từ nhiều nguồn độc lập vào chung một luồng ngữ cảnh (Context Stream):
 
-| Nhà cung cấp MCP | Tài nguyên / Tools tích hợp | Phạm vi phục vụ trên Maris Advisor |
+| Nhà cung cấp MCP | Tài nguyên / Tools tích hợp | Phạm vi phục vụ trên KongKeng Radar |
 | :--- | :--- | :--- |
-| **DNSE MCP** *(OpenData)* | `dnse://market/snapshot`, `dnse://screener/quant`, `tools/fetch_realtime_orderbook` | Bảng giá thời gian thực, sổ lệnh bước giá L2, dòng tiền khối ngoại, dữ liệu khớp lệnh Tick-by-Tick. |
-| **VNDIRECT MCP** *(D-Research)* | `vndirect://industry/peers`, `vndirect://valuation/multiples`, `tools/calc_peer_valuation` | Định giá ngành tương quan (P/E, P/B vs Median ngành), vị thế thị phần, xếp hạng tài chính doanh nghiệp. |
-| **FINHAY MCP** *(Community)* | `finhay://sentiment/retail`, `finhay://fund/nav-flow`, `tools/analyze_retail_sentiment` | Chỉ số tâm lý nhà đầu tư cá nhân (Fear & Greed), xu hướng dòng tiền quỹ mở và NAV tracker. |
-| **SSI MCP** *(Institutional)* | `ssi://institutional/reports`, `ssi://market/fastquote`, `tools/fetch_institutional_coverage` | Báo cáo khuyến nghị định chế tài chính, consensus target price, radar sức mạnh cổ phiếu và dòng tiền tổ chức. |
-
-*Hệ thống trang bị tính năng **Quad-MCP Inspector Modal** cho phép trực tiếp kiểm tra cấu hình JSON-RPC, trạng thái kết nối socket, danh sách endpoints và gọi test tools ngay trên giao diện.*
+| **DNSE MCP** *(OpenData)* | dnse://market/snapshot, dnse://screener/quant, 	ools/fetch_realtime_orderbook | Bảng giá thời gian thực, sổ lệnh bước giá L2, dòng tiền khối ngoại, dữ liệu khớp lệnh Tick-by-Tick. |
+| **VNDIRECT MCP** *(D-Research)* | ndirect://industry/peers, ndirect://valuation/multiples, 	ools/calc_peer_valuation | Định giá ngành tương quan (P/E, P/B vs Median ngành), vị thế thị phần, xếp hạng tài chính doanh nghiệp. |
+| **FINHAY MCP** *(Community)* | inhay://sentiment/retail, inhay://fund/nav-flow, 	ools/analyze_retail_sentiment | Chỉ số tâm lý nhà đầu tư cá nhân (Fear & Greed), xu hướng dòng tiền tích lũy và danh mục mẫu. |
+| **SSI MCP** *(Institutional)* | ssi://research/consensus, ssi://macro/indicators, 	ools/fetch_consensus_rating | Đồng thuận phân tích CTCK (Target Price, Upside Potential), báo cáo vĩ mô và lịch sự kiện kinh tế. |
 
 ---
 
-## ✨ Các Phân hệ Tính năng Chính
+## 🌟 Tính năng Trọng tâm & Thiết kế Trải nghiệm (UX Highlights)
 
-### 1. 📊 Tổng quan Thị trường (`#market`)
-- **Market Indexes:** VN-Index, VN30, HNX-Index, UPCoM với chỉ báo thay đổi điểm số, thanh khoản và biên độ dao động.
-- **Biểu đồ Dòng tiền & Tác động chỉ số:** Top 10 cổ phiếu kéo tăng / giảm điểm số VN-Index, bản đồ phân bổ dòng tiền tăng - giảm - tham chiếu.
-- **Khối ngoại & Tự doanh:** Thống kê giá trị mua/bán ròng của khối ngoại theo phiên và chuỗi 10 phiên liên tiếp.
-- **Sức nóng Ngành (Sector Pulse):** Phân bổ hiệu suất các nhóm ngành trọng điểm: Ngân hàng, Bất động sản, Chứng khoán, Thép, Bán lẻ...
+### 1. 📊 Radar Tổng quan Thị trường (#market)
+- **Quét chỉ số thời gian thực:** VN-Index, VN30, HNX-Index, UPCOM kèm nhịp đập độ rộng thị trường (Số mã Tăng / Giảm / Không đổi / Trần / Sàn).
+- **Phân bổ Dòng tiền & Tác động Chỉ số:** Biểu đồ trực quan hóa nhóm cổ phiếu đóng góp tăng/giảm mạnh nhất vào chỉ số (Index Movers) và thống kê ròng Khối ngoại (Foreign Net Flow).
+- **Độ lệch Nhóm ngành (Industry Heatmap):** Nhận diện nhanh dòng tiền luân chuyển giữa Ngân hàng, Bất động sản, Chứng khoán, Thép, Bán lẻ.
 
-### 2. 📰 Tin tức Thị trường & Vĩ mô (`#mnews`)
-- **18 luồng tin tức độc quyền:** Phân loại đa tầng: Tin Nổi bật, Vĩ mô & Chính sách, KQKD & Doanh nghiệp, Dòng tiền & Khối ngoại, Báo cáo Chiến lược, Lịch Cổ tức.
-- **Interactive Reader Modal:** Hỗ trợ đọc toàn văn tin tức, phân tích tác động trực tiếp lên nhóm cổ phiếu liên quan (Impact Analysis) và gắn thẻ hành động khuyến nghị.
-- **Lịch Cổ tức & Đại hội cổ đông:** Thống kê chi tiết ngày GDKHQ, tỷ lệ chi trả tiền mặt / cổ phiếu, ngày thực hiện.
-- **Top Cổ phiếu được chú ý nhất (Trending Tickers):** Cập nhật liên tục các mã có lượng tìm kiếm và khối lượng đột biến.
+### 2. 📰 Bản tin Thị trường & Sự kiện Vĩ mô (#mnews)
+- **18 luồng tin tức chọn lọc:** Phân loại đa tầng: Tin Nổi bật, Vĩ mô & Chính sách, KQKD & Doanh nghiệp, Dòng tiền & Khối ngoại, Báo cáo Chiến lược, Lịch Cổ tức.
+- **Interactive Reader Modal:** Hỗ trợ đọc toàn văn tin tức, phân tích tác động trực tiếp lên nhóm cổ phiếu liên quan (Impact Analysis) và gắn thẻ hành động khuyến nghị rõ ràng.
+- **Lịch Cổ tức & Đại hội Cổ đông:** Thống kê chi tiết ngày GDKHQ, tỷ lệ chi trả tiền mặt / cổ phiếu, ngày thực hiện, giảm thiểu tối đa rủi ro bỏ lỡ quyền lợi.
+- **Top Cổ phiếu được chú ý nhất (Trending Tickers):** Cập nhật liên tục các mã có lượng tìm kiếm và khối lượng khớp lệnh đột biến.
 
-### 3. 🏢 Company 360 (`#c360`)
-- **Tổng quan giao diện đa tab:** Bao gồm 8 góc nhìn chuyên sâu:
+### 3. 🏢 Company 360 (#c360)
+- **Toàn cảnh doanh nghiệp với 8 góc nhìn chuyên sâu:**
   1. *Tổng quan:* Mini chart nến Nhật, sổ lệnh thời gian thực, sức mạnh giá RS, định giá P/E, P/B, EPS, Beta.
   2. *Hồ sơ Doanh nghiệp:* Lịch sử hình thành, ban lãnh đạo, cơ cấu công ty con và liên kết.
   3. *Cổ đông:* Cơ cấu sở hữu nhà nước, ban lãnh đạo, cổ đông lớn nước ngoài và biến động giao dịch nội bộ.
@@ -82,42 +81,43 @@ Maris Advisor tiên phong ứng dụng giao thức mở MCP nhằm hợp nhất 
   6. *Tin tức & Sự kiện:* Lịch sử công bố thông tin, biên bản họp ĐHCĐ, giao dịch người nội bộ.
   7. *Dữ liệu Lịch sử:* Thống kê giá đóng cửa, khối lượng, tỷ lệ khớp lệnh qua từng phiên.
 
-### 4. 🔍 Bộ lọc Cổ phiếu Thông minh v2 (`#screener`)
-- Tích hợp sẵn các chiến lược đầu tư kinh điển: **CANSLIM**, **Cổ tức cao**, **Định giá rẻ (Deep Value)**, **Bứt phá đỉnh 52 tuần**, **Dòng tiền bắt đáy**.
-- Hỗ trợ kết hợp bộ lọc kỹ thuật (RSI, MA20, MA50, Bollinger Bands) cùng chỉ tiêu cơ bản (ROE > 15%, Tăng trưởng LNST > 20%, P/E < 12).
-- Xuất dữ liệu tức thì, lọc tức thời trong trình duyệt không cần chờ tải lại trang.
+### 4. 🔍 Radar Lọc Cổ phiếu Thông minh v2 (#screener)
+- **Chiến lược đầu tư kinh điển tích hợp sẵn:** CANSLIM, Cổ tức cao, Định giá rẻ (Deep Value), Bứt phá đỉnh 52 tuần, Dòng tiền bắt đáy.
+- **Bộ lọc đa chiều linh hoạt:** Kết hợp chỉ báo kỹ thuật (RSI, MA20, MA50, Bollinger Bands) cùng tiêu chí cơ bản (ROE > 15%, Tăng trưởng LNST > 20%, P/E < 12).
+- **Phản hồi tức thì:** Tốc độ lọc dữ liệu mượt mà ngay trên trình duyệt, không gây giật lag hay tải lại trang.
 
-### 5. ⚖️ So sánh Cổ phiếu Đa chiều (`#compare`)
-- Đặt cạnh nhau tối đa 4 mã cổ phiếu trên cùng một hệ quy chiếu.
+### 5. ⚖️ So sánh Cổ phiếu Đa chiều (#compare)
+- Đặt cạnh nhau tối đa 4 mã cổ phiếu trên cùng một hệ quy chiếu trực quan.
 - So sánh toàn diện: Biên lợi nhuận gộp, Biên lợi nhuận ròng, Tỷ lệ đòn bẩy D/E, Khả năng sinh lời ROA/ROE, Định giá P/E & P/B.
 
-### 6. 📑 Báo cáo Phân tích Khuyến nghị (`#reports`)
+### 6. 📑 Báo cáo Phân tích Khuyến nghị (#reports)
 - Tập hợp hệ thống báo cáo từ các công ty chứng khoán hàng đầu (SSI, VNDIRECT, DNSE, Vietcap, HSC).
-- Đánh giá khuyến nghị: Mua / Khả quan / Nắm giữ / Bán với Giá mục tiêu (Target Price) và Tiềm năng tăng giá (Upside Potential).
-- Hỗ trợ bộ lọc theo Ngành, Khuyến nghị và Thời gian phát hành.
+- Đánh giá khuyến nghị minh bạch: Mua / Khả quan / Nắm giữ / Bán với Giá mục tiêu (Target Price) và Tiềm năng tăng giá (Upside Potential).
+- Hỗ trợ bộ lọc thông minh theo Ngành, Khuyến nghị và Thời gian phát hành.
 
 ---
 
 ## 🎨 Trải nghiệm Thiết kế & Công nghệ (Tech Stack)
 
 - **Pure HTML5 / CSS3 / ES6+:** 100% mã nguồn độc lập, không phụ thuộc framework cồng kềnh (No React/Vue overhead), tốc độ tải trang tức thì (< 0.2s).
-- **Dark Mode & Light Mode:** Hỗ trợ chuyển đổi chủ đề sáng/tối mượt mà với biến màu CSS CSS Custom Properties, tự động ghi nhớ trạng thái người dùng vào LocalStorage.
-- **Canvas 2D Graphics:** Toàn bộ biểu đồ nến kỹ thuật, phân bổ dòng tiền, radar định giá được vẽ trực tiếp qua Canvas 2D API với tần số quét 60fps.
-- **Typography:** Chuẩn Google Sans Flex phối hợp cùng IBM Plex Mono sắc nét cho số liệu tài chính.
+- **Dark Mode & Light Mode:** Hỗ trợ chuyển đổi chủ đề sáng/tối mượt mà với biến màu CSS Custom Properties, tự động ghi nhớ trạng thái người dùng vào LocalStorage (kongkeng_theme).
+- **Canvas 2D Graphics:** Toàn bộ biểu đồ nến kỹ thuật, phân bổ dòng tiền, radar định giá được vẽ trực tiếp qua Canvas 2D API với tần số quét 60fps mượt mà.
+- **Typography:** Chuẩn Google Sans Flex phối hợp cùng JetBrains Mono / IBM Plex Mono sắc nét cho số liệu tài chính.
+- **Chuẩn UX Writer:** Microcopy gãy gọn, tinh giản, không dùng từ kỹ thuật gây hoang mang, tạo sự tự tin và an tâm cho nhà đầu tư khi ra quyết định.
 - **Không lỗi Console:** Đảm bảo 0 console errors/warnings, tương thích tối đa trên Chrome, Edge, Firefox, Safari và Mobile Browsers.
 
 ---
 
 ## 💻 Hướng dẫn Chạy Thử trên Local
 
-Chỉ cần clone repository và mở trực tiếp file `index.html` trên trình duyệt:
+Chỉ cần clone repository và mở trực tiếp file index.html trên trình duyệt:
 
-```bash
+`ash
 # 1. Clone repository
-git clone https://github.com/Ntb1999/maris-advisor.git
+git clone https://github.com/Ntb1999/kongkeng-radar.git
 
 # 2. Di chuyển vào thư mục dự án
-cd maris-advisor
+cd kongkeng-radar
 
 # 3. Mở trên trình duyệt
 # Windows:
@@ -128,18 +128,18 @@ open index.html#market
 
 # Linux:
 xdg-open index.html#market
-```
+`
 
 Hoặc sử dụng bất kỳ HTTP Server đơn giản nào (Live Server, Python HTTP, Node http-server):
 
-```bash
+`ash
 python -m http.server 8080
 # Truy cập: http://localhost:8080/#market
-```
+`
 
 ---
 
 ## 📝 Bản quyền & Giấy phép
 
 Dự án được xây dựng và phát triển bởi **Ntb1999** (Đặng Kim Bảo).  
-Bản quyền thuộc về © 2026 Maris Advisor. Phát hành theo giấy phép [MIT License](LICENSE).
+Bản quyền thuộc về © 2026 KongKeng Radar. Phát hành theo giấy phép [MIT License](LICENSE).

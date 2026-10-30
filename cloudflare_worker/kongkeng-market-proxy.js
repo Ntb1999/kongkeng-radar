@@ -262,7 +262,7 @@ export default {
     }
 
     if (url.pathname === '/health') {
-      return new Response(JSON.stringify({ status: 'OK', worker: 'maris-market-proxy', version: '2.2.0-institutional-flow', timestamp: new Date().toISOString() }), { headers: corsHeaders });
+      return new Response(JSON.stringify({ status: 'OK', worker: 'kongkeng-radar-proxy', version: '2.2.0-institutional-flow', timestamp: new Date().toISOString() }), { headers: corsHeaders });
     }
 
     return new Response(JSON.stringify({ error: 'Route not found' }), { status: 404, headers: corsHeaders });

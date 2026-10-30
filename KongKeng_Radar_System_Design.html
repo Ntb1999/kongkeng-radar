@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Maris Advisor</title>
-<meta name="description" content="Interactive prototype of Maris Advisor: Company 360, stock screener, comparison and research reports.">
+<title>KongKeng Radar — Nền tảng Phân tích & Radar Quét Tín hiệu Đầu tư Chứng khoán</title>
+<meta name="description" content="KongKeng Radar: Hệ thống radar quét tín hiệu thị trường, Company 360, bộ lọc cổ phiếu thông minh, so sánh đa chiều và báo cáo phân tích đầu tư.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">
@@ -12,7 +12,7 @@
 <style>
 :root, [data-theme="light"] {
   color-scheme: light;
-  /* Maris design tokens (Figma variables) - Light Mode */
+  /* KongKeng Radar design tokens - Light Mode */
   --bg: #FFFFFF; --sub: #F6F6F6; --sub2: #E8E8E8; --hover: #F8F8F8;
   --line: #E8E8E8; --line2: #D0D0D0;
   --ink: #151515; --ink2: #5B5B5B; --ink3: #737373; --ink4: #A1A1A1;
@@ -45,7 +45,7 @@
 
 [data-theme="dark"] {
   color-scheme: dark;
-  /* Maris design tokens - Dark Mode */
+  /* KongKeng Radar design tokens - Dark Mode */
   --bg: #0B0F19;
   --sub: #111827;
   --sub2: #1E2638;
@@ -112,8 +112,8 @@ svg text{font-family:var(--sans)}
 /* ---------- shell ---------- */
 .app{display:flex;min-height:100%}
 .sb{width:200px;flex:none;border-right:1px solid var(--line);background:var(--bg);position:sticky;top:env(safe-area-inset-top,0px);height:100vh;display:flex;flex-direction:column;z-index:40;overflow-y:auto}
-.sb-logo{height:64px;flex:none;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--line)}
-.sb-logo>svg{display:block;width:126px;height:32px}
+.sb-logo{height:64px;flex:none;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--line);color:var(--ink)}
+.sb-logo>svg{display:block;width:145px;height:32px}
 .sb-group{flex:none}
 .sb-group h6{margin:0;padding:8px 16px;font-size:10px;line-height:16px;font-weight:600;color:var(--ink4);letter-spacing:0;text-transform:uppercase;border-bottom:1px solid var(--line)}
 .sb-items{padding-bottom:17px;border-bottom:1px solid var(--line)}
@@ -2404,7 +2404,7 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
 
 <div class="app">
   <aside class="sb" id="sb">
-    <div class="sb-logo"><svg role="img" aria-label="Maris Advisor" viewBox="0 0 118.13 30" fill="none" xmlns="http://www.w3.org/2000/svg"><svg x="0" y="0" width="117.92" height="21.73" viewBox="0 0 117.92 21.73" fill="none"><g clip-path="url(#mlc0)"><path d="M106.90 20.10C105.87 19.41 105.10 18.52 104.61 17.46C104.50 17.22 104.61 16.93 104.85 16.83L107.04 15.88C107.26 15.79 107.52 15.88 107.64 16.09C107.99 16.76 108.46 17.28 109.04 17.66C109.72 18.10 110.50 18.32 111.37 18.32C112.25 18.32 113.01 18.16 113.62 17.84C114.22 17.52 114.52 17.04 114.52 16.39C114.52 15.81 114.27 15.35 113.76 15.01C113.25 14.66 112.46 14.37 111.37 14.12L109.47 13.68C108.21 13.37 107.16 12.82 106.33 12.03C105.50 11.24 105.08 10.24 105.08 9.04C105.08 8.12 105.36 7.31 105.91 6.61C106.46 5.90 107.19 5.36 108.12 4.97C109.04 4.59 110.06 4.39 111.16 4.39C112.65 4.39 113.96 4.69 115.07 5.27C116.03 5.77 116.76 6.48 117.27 7.38C117.39 7.62 117.29 7.91 117.05 8.02L114.96 8.96C114.75 9.06 114.51 8.98 114.39 8.79C113.72 7.75 112.66 7.23 111.19 7.23C110.40 7.23 109.74 7.40 109.21 7.73C108.68 8.06 108.42 8.48 108.42 8.98C108.42 9.91 109.23 10.58 110.85 11.00L113.15 11.56C114.71 11.96 115.89 12.55 116.69 13.34C117.49 14.13 117.89 15.10 117.89 16.27C117.89 17.27 117.60 18.14 117.03 18.90C116.46 19.66 115.67 20.25 114.68 20.66C113.68 21.08 112.58 21.29 111.37 21.29C109.57 21.29 108.08 20.89 106.90 20.10L106.90 20.10Z" fill="#190004"/><path d="M102.73 7.69V20.86C102.73 21.11 102.53 21.31 102.28 21.31H99.57C99.32 21.31 99.12 21.11 99.12 20.86V7.69C99.12 7.44 99.32 7.24 99.57 7.24H102.28C102.52 7.24 102.73 7.44 102.73 7.69Z" fill="#190004"/><path d="M88.91 5.20C89.17 5.20 89.38 5.41 89.38 5.67V7.57H89.57C89.92 6.75 90.54 6.07 91.41 5.53C92.28 5.00 93.22 4.73 94.23 4.73C94.82 4.73 95.24 4.80 95.67 4.93C95.86 4.99 95.99 5.17 95.99 5.38V7.90C95.99 8.22 95.69 8.44 95.40 8.34C94.75 8.12 94.12 8.01 93.51 8.01C92.31 8.01 91.32 8.47 90.55 9.39C89.77 10.32 89.38 11.44 89.38 12.76V20.83C89.38 21.08 89.18 21.29 88.92 21.29H86.44C86.18 21.29 85.98 21.08 85.98 20.83V5.66C85.98 5.41 86.19 5.20 86.44 5.20H88.92L88.91 5.20Z" fill="#190004"/><path d="M71.89 21.00C71.00 20.56 70.30 19.93 69.80 19.12C69.30 18.31 69.06 17.38 69.06 16.34C69.06 15.24 69.35 14.29 69.93 13.50C70.51 12.70 71.30 12.08 72.30 11.66C73.29 11.23 74.40 11.02 75.63 11.02C76.56 11.02 77.41 11.11 78.17 11.28C78.93 11.46 79.53 11.66 79.99 11.89V11.05C79.99 10.03 79.61 9.21 78.87 8.57C78.12 7.94 77.15 7.62 75.97 7.62C75.16 7.62 74.39 7.81 73.67 8.17C73.08 8.46 72.59 8.84 72.19 9.30C72.03 9.49 71.76 9.52 71.56 9.37L69.98 8.15C69.77 7.99 69.74 7.70 69.90 7.50C70.54 6.70 71.36 6.07 72.34 5.60C73.47 5.06 74.72 4.79 76.06 4.79C78.35 4.79 80.12 5.36 81.38 6.49C82.63 7.62 83.26 9.20 83.26 11.24V20.82C83.26 21.08 83.05 21.29 82.80 21.29H80.45C80.20 21.29 79.99 21.08 79.99 20.83V19.21H79.80C79.35 19.92 78.69 20.50 77.84 20.97C76.99 21.44 76.02 21.67 74.94 21.67C73.80 21.67 72.79 21.45 71.89 21.00H71.89ZM77.81 18.32C78.49 17.92 79.03 17.37 79.41 16.69C79.80 16.00 79.99 15.26 79.99 14.48C79.49 14.18 78.92 13.96 78.27 13.79C77.63 13.63 76.96 13.54 76.25 13.54C74.94 13.54 73.98 13.80 73.37 14.32C72.76 14.84 72.45 15.53 72.45 16.38C72.45 17.12 72.73 17.74 73.29 18.21C73.85 18.69 74.60 18.93 75.53 18.93C76.36 18.93 77.12 18.73 77.81 18.32Z" fill="#190004"/><path d="M45.24 4.84C45.49 4.84 45.70 5.05 45.70 5.31V7.10H45.89C46.39 6.28 47.08 5.62 47.99 5.10C48.89 4.59 49.88 4.33 50.95 4.33C52.13 4.33 53.16 4.61 54.03 5.17C54.82 5.68 55.42 6.34 55.81 7.16C55.86 7.26 55.99 7.27 56.05 7.18C56.61 6.35 57.32 5.68 58.18 5.17C59.12 4.61 60.22 4.33 61.48 4.33C63.37 4.33 64.80 4.90 65.77 6.05C66.73 7.20 67.22 8.76 67.22 10.74V20.81C67.22 21.08 67.00 21.29 66.74 21.29H64.25C63.99 21.29 63.77 21.08 63.77 20.81V11.32C63.77 8.78 62.70 7.52 60.55 7.52C59.37 7.52 58.41 7.99 57.67 8.93C56.93 9.88 56.56 11.06 56.56 12.48V20.81C56.56 21.07 56.34 21.29 56.08 21.29H53.59C53.33 21.29 53.11 21.07 53.11 20.81V11.32C53.11 8.78 52.00 7.52 49.79 7.52C48.65 7.52 47.72 7.99 46.99 8.95C46.26 9.90 45.90 11.09 45.90 12.51V20.81C45.90 21.07 45.68 21.29 45.41 21.29H42.90C42.63 21.29 42.42 21.07 42.42 20.81V5.32C42.42 5.06 42.63 4.84 42.90 4.84H45.24L45.24 4.84Z" fill="#190004"/><path d="M24.30 11.89H27.42C30.62 11.89 33.21 14.49 33.21 17.68V20.84C33.21 21.10 33.00 21.31 32.74 21.31H28.20C27.95 21.31 27.74 21.10 27.74 20.84V18.93C27.74 18.21 27.15 17.62 26.43 17.62H24.31C23.99 17.62 23.84 17.34 23.84 17.17L23.83 12.36C23.83 12.15 24.00 11.90 24.30 11.89H24.30Z" fill="url(#mlp0)"/><path d="M33.21 0.54V7.73C33.21 7.97 33.02 8.17 32.78 8.19C25.86 8.60 20.30 14.03 19.68 20.89C19.66 21.13 19.47 21.31 19.23 21.31H12.03C11.77 21.31 11.56 21.09 11.57 20.82C12.24 9.54 21.39 0.53 32.74 0.08C33.00 0.07 33.21 0.28 33.21 0.54H33.21Z" fill="url(#mlp1)"/><path d="M0.50 21.31H8.66C8.78 21.31 8.95 21.24 9.04 21.10L20.78 0.73L20.79 0.71C20.93 0.42 20.72 0.06 20.39 0.06L16.47 0.03C13.70 0.00 11.05 1.57 9.60 4.09L0.11 20.62C0.11 20.62 0.03 20.74 0.05 20.89C0.06 21.09 0.23 21.31 0.50 21.31V21.31Z" fill="url(#mlp2)"/><path d="M98.06 0.51H99.69C101.36 0.51 102.72 1.87 102.72 3.54V5.19C102.72 5.33 102.61 5.43 102.48 5.43H100.10C99.97 5.43 99.86 5.33 99.86 5.19V4.19C99.86 3.81 99.55 3.51 99.17 3.51H98.06C97.89 3.50 97.81 3.36 97.82 3.27L97.81 0.75C97.81 0.64 97.90 0.51 98.05 0.51H98.06Z" fill="url(#mlp3)"/></g><defs><linearGradient id="mlp0" x1="23.73" y1="20.33" x2="31.30" y2="14.44" gradientUnits="userSpaceOnUse"><stop stop-color="#AB0000"/><stop offset="0.32" stop-color="#FF0000"/><stop offset="0.64" stop-color="#FF4C00"/><stop offset="1" stop-color="#FFB47C"/></linearGradient><linearGradient id="mlp1" x1="2.04" y1="20.71" x2="32.30" y2="6.95" gradientUnits="userSpaceOnUse"><stop stop-color="#AB0000"/><stop offset="0.32" stop-color="#FF0000"/><stop offset="0.64" stop-color="#FF4C00"/><stop offset="1" stop-color="#FFB47C"/></linearGradient><linearGradient id="mlp2" x1="0.40" y1="15.69" x2="31.57" y2="4.19" gradientUnits="userSpaceOnUse"><stop stop-color="#AB0000"/><stop offset="0.32" stop-color="#FF0000"/><stop offset="0.64" stop-color="#FF4C00"/><stop offset="1" stop-color="#FFB47C"/></linearGradient><linearGradient id="mlp3" x1="97.76" y1="4.92" x2="101.72" y2="1.84" gradientUnits="userSpaceOnUse"><stop stop-color="#AB0000"/><stop offset="0.32" stop-color="#FF0000"/><stop offset="0.64" stop-color="#FF4C00"/><stop offset="1" stop-color="#FFB47C"/></linearGradient><clipPath id="mlc0"><rect width="117.92" height="21.73" fill="white"/></clipPath></defs></svg><svg x="67.26" y="24.56" width="49.00" height="5.45" viewBox="0 0 49.00 5.45" fill="none"><g fill="#000"><path d="M44.97 5.37V0.07H46.89C47.43 0.07 47.85 0.21 48.17 0.49C48.48 0.78 48.64 1.16 48.64 1.65C48.64 2.12 48.48 2.50 48.17 2.79C47.86 3.08 47.45 3.23 46.93 3.23H45.35V2.57H46.83C47.15 2.57 47.40 2.49 47.57 2.33C47.74 2.17 47.83 1.95 47.83 1.66V1.66C47.83 1.38 47.74 1.17 47.57 1.01C47.40 0.85 47.15 0.77 46.83 0.77H45.79V5.37H44.97ZM48.06 5.37L46.57 2.95L47.40 2.84L49.00 5.37H48.06Z"/><path d="M38.56 5.45C37.78 5.45 37.14 5.19 36.63 4.67C36.12 4.15 35.86 3.50 35.86 2.72C35.86 1.94 36.11 1.29 36.62 0.78C37.13 0.26 37.78 0 38.56 0C39.34 0 39.99 0.26 40.50 0.78C41.01 1.30 41.27 1.95 41.27 2.72C41.27 3.49 41.01 4.14 40.49 4.66C39.98 5.19 39.34 5.45 38.56 5.45ZM38.56 4.68C39.11 4.68 39.57 4.50 39.92 4.12C40.27 3.75 40.45 3.28 40.45 2.72C40.45 2.16 40.27 1.69 39.92 1.32C39.57 0.95 39.11 0.76 38.56 0.76C38.01 0.76 37.56 0.95 37.21 1.32C36.86 1.69 36.68 2.16 36.68 2.72C36.68 3.29 36.86 3.75 37.21 4.13C37.56 4.50 38.01 4.68 38.56 4.68Z"/><path d="M30.57 5.45C30.22 5.45 29.93 5.40 29.67 5.31C29.43 5.22 29.22 5.09 29.05 4.92C28.88 4.75 28.75 4.57 28.66 4.38C28.58 4.19 28.54 4.10 28.54 4.10L29.25 3.83C29.25 3.83 29.28 3.90 29.34 4.04C29.40 4.18 29.49 4.30 29.60 4.41C29.71 4.52 29.85 4.61 30.01 4.67C30.18 4.74 30.37 4.77 30.59 4.77C30.92 4.77 31.17 4.70 31.36 4.55C31.54 4.40 31.64 4.20 31.64 3.93C31.64 3.67 31.55 3.47 31.37 3.34C31.19 3.20 30.85 3.06 30.36 2.92C29.76 2.74 29.34 2.53 29.12 2.28C28.89 2.04 28.78 1.74 28.78 1.39C28.78 0.99 28.94 0.65 29.26 0.39C29.58 0.13 30.00 0 30.53 0C30.83 0 31.09 0.03 31.3 0.10C31.51 0.17 31.69 0.28 31.85 0.43C32.02 0.57 32.14 0.73 32.22 0.89C32.31 1.04 32.35 1.12 32.35 1.12L31.66 1.40C31.66 1.40 31.63 1.34 31.57 1.23C31.51 1.12 31.44 1.02 31.34 0.93C31.24 0.83 31.13 0.77 31.01 0.73C30.88 0.69 30.73 0.66 30.55 0.66C30.26 0.66 30.03 0.73 29.85 0.85C29.67 0.97 29.58 1.14 29.58 1.36C29.58 1.54 29.65 1.69 29.79 1.82C29.92 1.95 30.28 2.10 30.86 2.28C31.45 2.45 31.86 2.67 32.09 2.93C32.32 3.19 32.44 3.51 32.44 3.90C32.44 4.37 32.26 4.74 31.92 5.03C31.57 5.31 31.12 5.45 30.57 5.45Z"/><path d="M24.11 5.37V0.07H24.93V5.37H24.11Z"/><path d="M17.86 5.37L15.85 0.07H16.69L18.18 4.08L18.24 4.24H18.25L18.30 4.08L19.81 0.07H20.62L18.56 5.37H17.86Z"/><path d="M8.43 5.37V0.07H10.25C11.06 0.07 11.71 0.31 12.20 0.80C12.68 1.28 12.93 1.92 12.93 2.72C12.93 3.51 12.68 4.15 12.19 4.64C11.70 5.13 11.05 5.37 10.25 5.37H8.43ZM9.24 4.64H10.22C10.80 4.64 11.25 4.47 11.59 4.13C11.92 3.78 12.09 3.32 12.09 2.74C12.09 2.14 11.92 1.68 11.59 1.33C11.26 0.98 10.81 0.81 10.22 0.81H9.24V4.64Z"/><path d="M0 5.37L2.08 0.07H2.84L4.93 5.37H4.06L2.50 1.28L2.45 1.14H2.45L2.40 1.28L0.83 5.37H0ZM0.94 4.04L1.17 3.41H3.71L3.94 4.04H0.94Z"/></g></svg></svg></div>
+    <div class="sb-logo"><svg role="img" aria-label="KongKeng Radar" viewBox="0 0 156 34" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="kkr-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF3B30"/><stop offset="50%" stop-color="#FF6B00"/><stop offset="100%" stop-color="#FF9500"/></linearGradient><linearGradient id="kkr-sweep" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF3B30" stop-opacity="0.85"/><stop offset="100%" stop-color="#FF9500" stop-opacity="0.05"/></linearGradient></defs><g transform="translate(1, 1)"><circle cx="16" cy="16" r="15" stroke="url(#kkr-grad)" stroke-width="1.8" opacity="0.45" stroke-dasharray="3 2"/><circle cx="16" cy="16" r="10" stroke="url(#kkr-grad)" stroke-width="1.4" opacity="0.8"/><circle cx="16" cy="16" r="5" stroke="url(#kkr-grad)" stroke-width="1.2" opacity="0.95"/><circle cx="16" cy="16" r="2.2" fill="url(#kkr-grad)"/><path d="M16 16 L30 8 A15 15 0 0 0 16 1 Z" fill="url(#kkr-sweep)"/><line x1="16" y1="1" x2="16" y2="31" stroke="url(#kkr-grad)" stroke-width="0.8" stroke-dasharray="1 3" opacity="0.6"/><line x1="1" y1="16" x2="31" y2="16" stroke="url(#kkr-grad)" stroke-width="0.8" stroke-dasharray="1 3" opacity="0.6"/></g><text x="38" y="18" font-family="'Google Sans Flex', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-weight="900" font-size="15" letter-spacing="-0.3" fill="currentColor">KongKeng</text><rect x="38" y="22" width="46" height="11" rx="2.5" fill="url(#kkr-grad)"/><text x="61" y="30.2" text-anchor="middle" font-family="'JetBrains Mono', 'IBM Plex Mono', monospace" font-weight="800" font-size="7.5" fill="#FFFFFF" letter-spacing="1.6">RADAR</text></svg></div>
     <nav id="sbnav"></nav>
       </aside>
   <div class="main">
@@ -5049,7 +5049,7 @@ const DAY = 864e5;
 const SIM_TODAY = (() => { const n = new Date(); return Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()); })();
 /* CW: ud = tài sản cơ sở, iss = tổ chức phát hành, k = giá thực hiện, r = tỷ lệ chuyển đổi (r:1),
    ltd = ngày giao dịch cuối cùng, mat = ngày đáo hạn, pay = ngày thanh toán, sp = giá thanh toán do TCPH công bố (spd = ngày công bố),
-   last = giá đóng cửa phiên cuối, mt = giá trị/CW Maris Trading hiển thị khi chờ thanh toán, mtDone = ngày Maris Trading ghi nhận thanh toán vào tài khoản */
+   last = giá đóng cửa phiên cuối, mt = giá trị/CW KongKeng Trading hiển thị khi chờ thanh toán, mtDone = ngày KongKeng Trading ghi nhận thanh toán vào tài khoản */
 const INSTR = {};
 [
   { t: 'CHPG2517', type: 'CW', ud: 'HPG', iss: 'KIS', k: 22000, r: 2, ltd: '13/10/2026', mat: '15/10/2026', pay: '21/10/2026', sp: 23180, spd: '16/10/2026', last: 520, c: 40, kl: '1,25 M', gt: 0.65, dl: 480, dh: 540, mtDone: '22/10/2026' },
@@ -7369,7 +7369,7 @@ function vReports() {
       <div class="tscroll"><table class="t upper rep-t"><thead><tr><th style="width:112px">Thời gian</th><th>Tiêu đề báo cáo</th><th style="width:104px">Loại</th><th style="width:112px">Khuyến nghị</th><th class="rt" style="width:100px">Giá mục tiêu</th><th class="rt" style="width:80px">Upside</th><th class="rt" style="width:88px">Trang</th></tr></thead>
       <tbody>${rows.map(r => `<tr class="click" data-act="report" data-v="${REPORTS.indexOf(REPORTS.find(x => x[1] === r[1]))}"><td class="muted">${r[0]}</td><td class="ti" title="${esc(r[1])}">${r[1]}</td><td class="ink2">${r[2]}</td><td>${r[3] === '—' ? '<span class="muted">—</span>' : `<span class="rec rec-${recKey(r[3])}">${r[3]}</span>`}</td><td class="rt ${r[4] ? 'num' : 'muted'}">${r[4] ? fmtVN(r[4]) : '—'}</td><td class="rt ${r[5] != null ? 'num ' + cls(r[5]) : 'muted'}">${r[5] != null ? (r[5] > 0 ? '+' : '-') + fmtVN(Math.abs(r[5]), 1) + '%' : '—'}</td><td class="rt num muted">${r[6]}</td></tr>`).join('') || `<tr><td colspan="7" class="muted" style="padding:24px 32px;height:auto">Không tìm thấy báo cáo khớp “${esc(R.q)}”.</td></tr>`}</tbody></table></div>
       <div class="pag"><span>Hiển thị ${rows.length ? (R.page - 1) * 20 + 1 : 0}–${(R.page - 1) * 20 + rows.length} trong ${fmtVN(total)} báo cáo</span><div class="r"><button data-act="page" data-v="${Math.max(1, R.page - 1)}" aria-label="Trang trước">‹</button>${[1, 2, 3].filter(p => p <= pages).map(pg).join('')}${pages > 4 ? `<span>…</span>${pg(pages)}` : ''}<button data-act="page" data-v="${Math.min(pages, R.page + 1)}" aria-label="Trang sau">›</button></div></div>
-      <div class="rep-foot"><span>Báo cáo do Khối Phân tích Maris và các đơn vị nghiên cứu đối tác (VNDIRECT Research, SSI Research, FiinGroup) phát hành; bản quyền thuộc về đơn vị phát hành. Nội dung mang tính tham khảo, không cấu thành khuyến nghị đầu tư.</span><span id="rep-updated-time">Cập nhật tự động theo thời gian thực</span></div>
+      <div class="rep-foot"><span>Báo cáo do Khối Phân tích KongKeng Radar và các đơn vị nghiên cứu đối tác (VNDIRECT Research, SSI Research, FiinGroup) phát hành; bản quyền thuộc về đơn vị phát hành. Nội dung mang tính tham khảo, không cấu thành khuyến nghị đầu tư.</span><span id="rep-updated-time">Cập nhật tự động theo thời gian thực</span></div>
     </div>
     <aside class="rep-r">
       <div class="rblk"><div class="hd"><span class="cap" style="text-transform:none">Báo cáo nổi bật</span><button class="chip sp" data-act="repspan">${R.span} ${I.chev}</button></div>
@@ -7748,7 +7748,7 @@ function vMarket() {
       <div class="mkt-box">
         <div class="mkt-box-title">
           <span>📅 Lịch Sự Kiện Kinh Tế &amp; Thị Trường (Tháng 10/2026)</span>
-          <span style="font-size:11px;color:var(--ink3)">Maris Macro Calendar</span>
+          <span style="font-size:11px;color:var(--ink3)">Lịch Vĩ mô KongKeng Radar</span>
         </div>
         <div>
           ${[
@@ -8240,7 +8240,7 @@ function render(keepScroll) {
   } else if (/^wl\d+$/.test(r) || r === 'watchlist') html = vWatch();
   else html = ({ follow: vFollow, screener: vAll, 'screener-all': vAll, compare: vCompare, reports: vReports, market: vMarket, mnews: vMarketNews })[r]();
   view.innerHTML = html;
-  document.title = 'Maris Advisor';
+  document.title = 'KongKeng Radar';
   drawCandles(); drawForeign(); bindPB();
   const routeChanged = lastRoute !== r; lastRoute = r;
   if (keepScroll) window.scrollTo(0, y);
@@ -8388,7 +8388,7 @@ const A = {
   },
   fseg: el => { S.fSeg = el.dataset.v; rerender(); },
   tnewscat: el => openMenu(el, ['Tất cả', 'Doanh nghiệp', 'Cổ tức', 'Thị trường'], S.tnewsCat, v => { S.tnewsCat = v; rerender(); }),
-  news: el => modal(`<div class="m-h"><h3>${esc(el.dataset.t)}</h3><button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button></div><div class="m-b"><p class="muted" style="margin:0 0 10px;font-size:12px">${STOCK.sym} · Nguồn: Maris News · ${getLiveDateString()}</p><p style="margin:0;line-height:1.65;color:var(--ink2)">Bản tin đầy đủ hiển thị tại đây trong sản phẩm thật. Prototype dùng nội dung tóm tắt để minh hoạ luồng đọc tin từ Company 360 mà không rời khỏi trang mã cổ phiếu.</p></div><div class="m-f"><button class="btn" data-act="closemodal">Đóng</button></div>`),
+  news: el => modal(`<div class="m-h"><h3>${esc(el.dataset.t)}</h3><button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button></div><div class="m-b"><p class="muted" style="margin:0 0 10px;font-size:12px">${STOCK.sym} · Nguồn: KongKeng Radar News · ${getLiveDateString()}</p><p style="margin:0;line-height:1.65;color:var(--ink2)">Bản tin đầy đủ hiển thị tại đây trong sản phẩm thật. Prototype dùng nội dung tóm tắt để minh hoạ luồng đọc tin từ Company 360 mà không rời khỏi trang mã cổ phiếu.</p></div><div class="m-f"><button class="btn" data-act="closemodal">Đóng</button></div>`),
   shseg: el => { S.shSeg = el.dataset.v; rerender(); },
   finsub: el => { S.finSub = el.dataset.v; rerender(); },
   finper: el => { S.finPer = el.dataset.v === 'Năm' ? 'y' : 'q'; rerender(); },
@@ -8449,7 +8449,7 @@ const A = {
   },
   mcpdiag: () => {
     modal(`<div class="m-h">
-      <h3>🔍 Cơ chế Realtime & Cập nhật Dữ liệu trong Maris Advisor</h3>
+      <h3>🔍 Cơ chế Realtime & Cập nhật Dữ liệu trong KongKeng Radar</h3>
       <button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button>
     </div>
     <div class="m-b" style="line-height:1.6;font-size:12.5px;color:var(--ink2)">
@@ -8466,7 +8466,7 @@ const A = {
       <p><b style="color:var(--ink)">3. Kiến trúc Luồng Dữ liệu ở Sản phẩm Thật (Production):</b><br>
       Ở phiên bản vận hành thật, hệ thống bao gồm 4 tầng liên tục:<br>
       <code style="background:var(--sub);padding:6px 10px;border-radius:4px;display:block;margin:6px 0;border:1px solid var(--line);font-size:11px;color:var(--brand)">
-      [HSX / HNX / VSD] ➔ [Data Core DNSE & VND] ➔ [Maris AI Gateway (MCP Host)] ➔ [WebSocket Client (Độ trễ &lt; 50ms)]
+      [HSX / HNX / VSD] ➔ [Data Core DNSE & VND] ➔ [KongKeng AI Gateway (MCP Host)] ➔ [WebSocket Client (Độ trễ &lt; 50ms)]
       </code></p>
       
       <p><b style="color:var(--ink)">4. Cơ chế Mô phỏng Vi mô (Tick Engine):</b><br>
@@ -8669,7 +8669,7 @@ function setTheme(t, silent) {
   if (t !== 'dark') t = 'light';
   document.documentElement.setAttribute('data-theme', t);
   if (typeof S !== 'undefined') S.theme = t;
-  try { localStorage.setItem('maris_theme', t); } catch(e){}
+  try { localStorage.setItem('kongkeng_theme', t); } catch(e){}
   const btn = document.getElementById('theme-toggle');
   const icon = document.getElementById('theme-icon');
   const label = document.getElementById('theme-label');
@@ -8859,7 +8859,7 @@ const SCR_SAVED = [
   { name: 'Tỷ suất cổ tức trên 6%', chips: [ch('dy', '> 6%', { v: 6 })], sort: ['dy', -1], cols: 'Cổ tức' }
 ];
 const SCR_SUGG = [
-  { name: 'Đề xuất bởi Maris', star: 1, chips: [exChip(['HOSE', 'HNX']), ch('score', '≥ 60', { v: 60 }), ch('roe', '> 12%', { v: 12 })], sort: ['mc', -1], cols: 'Tổng quan' },
+  { name: 'Chiến lược KongKeng Radar khuyên dùng', star: 1, chips: [exChip(['HOSE', 'HNX']), ch('score', '≥ 60', { v: 60 }), ch('roe', '> 12%', { v: 12 })], sort: ['mc', -1], cols: 'Tổng quan' },
   { name: 'Vốn hóa nhiều nhất', chips: [exChip(['HOSE', 'HNX', 'UPCOM']), ch('mc', '> 100 nghìn tỷ', { lo: 100 })], sort: ['mc', -1], cols: 'Tổng quan' },
   { name: 'Công nghệ tăng trưởng ổn định', chips: [ch('ind', '', { set: ['Công nghệ thông tin', 'Chứng khoán'], badge: 2 }), ch('teps', '> 10%', { v: 10 })], sort: ['teps', -1], cols: 'Tổng quan' },
   { name: 'Công ty có giá trị vốn hóa thấp nhưng có hiệu quả tốt', chips: [ch('mc', '< 200 nghìn tỷ', { hi: 200 }), ch('roe', '> 15%', { v: 15 })], sort: ['mc', 1], cols: 'Khả năng sinh lời' }
@@ -9036,18 +9036,18 @@ function instrStock(t) {
   const k = v => v == null ? null : v / 1000;
   return { t, n: x.n, ex: x.ex, type: x.type, x, st, p: m ? k(m.p) : null, c: m && m.c != null ? k(m.c) : null, pct: m && m.c != null ? m.c / (m.p - m.c) * 100 : null, kl: m ? m.kl : null, gt: m ? m.gt : null, dl: m ? k(m.dl) : null, dh: m ? k(m.dh) : null, wl: m ? k(m.wl) : null, wh: m ? k(m.wh) : null, ind: null };
 }
-/* trạng thái/giá hiệu lực của CW-ETF trong một danh mục. "Danh mục của tôi" theo đúng dữ liệu Maris Trading */
+/* trạng thái/giá hiệu lực của CW-ETF trong một danh mục. "Danh mục của tôi" theo đúng dữ liệu KongKeng Trading */
 function instrEff(L, t) {
   const s = ensureStock(t), x = s.x; let st = s.st;
   if (st && L.mine && st.k === 'paid') st = { k: 'wait', l: 'Đã đáo hạn – chờ thanh toán', mt: 1 };
   const wait = st && st.k === 'wait';
-  /* (c) chờ thanh toán: giữ vị thế, giá trị theo cách Maris Trading hiển thị (giá đóng cửa phiên cuối) */
+  /* (c) chờ thanh toán: giữ vị thế, giá trị theo cách KongKeng Trading hiển thị (giá đóng cửa phiên cuối) */
   const price = wait ? x.last / 1000 : s.p;
   return { s, x, st, price, c: wait ? null : s.c, pct: wait ? null : s.pct, mtv: wait };
 }
 const instrPool = () => Object.keys(INSTR).filter(t => !(INSTR[t].type === 'CW' && cwStatus(INSTR[t], S.sim).k === 'paid')).map(t => ensureStock(t));
 /* (c) Danh mục giả lập: tới ngày thanh toán thì đóng vị thế CW, cộng KL × giá trị thanh toán vào tiền mặt (không ghi lãi/lỗ đã chốt).
-   (d) Danh mục của tôi: không tự xử lý — phản ánh thời điểm Maris Trading ghi nhận (mtDone). */
+   (d) Danh mục của tôi: không tự xử lý — phản ánh thời điểm KongKeng Trading ghi nhận (mtDone). */
 function pfView(L) {
   const D = S.sim, V = { name: L.name, mine: L.mine, tickers: [], pos: {}, cash: L.cash, log: [] };
   L.tickers.forEach(t => {
@@ -9094,7 +9094,7 @@ const I_PLUS20 = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" st
 const I_COPY = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="8.5" y="8.5" width="12" height="12" rx="2"/><path d="M15.5 8.5V5.5a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"/></svg>';
 const I_LOCK = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>';
 const I_CHECK = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#009253" stroke-width="1.8"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-const RO_TIP = '“Danh mục của tôi” đồng bộ trực tiếp từ tài khoản Maris Trading nên chỉ cho phép xem. Tạo bản sao để chỉnh sửa mã và vị thế.';
+const RO_TIP = '“Danh mục của tôi” được đồng bộ trực tiếp từ tài khoản KongKeng Trading nên ở chế độ chỉ xem. Quý khách vui lòng tạo bản sao để tùy chỉnh mã và vị thế.';
 const I_SEARCH = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#151515" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>';
 const rng52 = (lo, hi, p) => { const k = hi > lo ? Math.max(0, Math.min(1, (p - lo) / (hi - lo))) : .5; return `<span class="rg"><b>${fx2(lo)}</b><i><s style="left:${(k * 100).toFixed(1)}%"></s></i><b>${fx2(hi)}</b></span>`; };
 const suspCell = s => s.susp ? `<span class="wl-warn" data-tip="${s.susp}">${I_ALERT}</span>` : '';
@@ -9161,7 +9161,7 @@ function wlHoldTable(L) {
 const DASH = '<span class="ink2">–</span>';
 const instrTag = s => `<span class="ity ${s.type.toLowerCase()}">${s.type}</span>`;
 function instrNameCell(L, s, st) {
-  const tip = s.type === 'CW' ? cwTip(s.x, S.sim) + (st && st.mt ? ' · Danh mục của tôi hiển thị theo Maris Trading (ghi nhận thanh toán ngày ' + s.x.mtDone + ')' : '')
+  const tip = s.type === 'CW' ? cwTip(s.x, S.sim) + (st && st.mt ? ' · Danh mục của tôi hiển thị theo KongKeng Trading (ghi nhận thanh toán ngày ' + s.x.mtDone + ')' : '')
     : s.x.nodata ? 'Quỹ ETF · nguồn dữ liệu thị trường chưa có dữ liệu của mã này' : 'Quỹ ETF';
   return `<td class="frz ink2" data-tip="${esc(tip + ' · Không có trang chi tiết, không có trong Bộ lọc, không áp dụng So sánh')}"><span class="nm2"><span>${esc(s.n)}</span>${st ? `<span class="cwst ${st.k}">${st.l}</span>` : s.x.nodata ? '<span class="cwst nd">Chưa có dữ liệu thị trường</span>' : ''}</span></td>`;
 }
@@ -9186,14 +9186,14 @@ function wlInstrRow(L, t, mode, on) {
     cells = `<td class="rt num">${mask(fmtVN(p.q))}</td><td class="rt num">${fx2(p.cost)}</td><td class="rt num ${e.c == null ? '' : cc(ltd)}">${e.c == null ? DASH : mask(sg2(ltd))}</td><td class="rt num ${k}">${mk(e.pct, v => sg2(v, 2, '%'))}</td><td class="rt num ${cc(tl)}">${mask(sg2(tl))}</td><td class="rt num ${cc(tlp)}">${sg2(tlp, 2, '%')}</td><td class="rt num">${mask(fx2(val))}</td>`;
   } else if (p) cells = `<td class="rt num">${mask(fmtVN(p.q))}</td><td class="rt num">${fx2(p.cost)}</td>${('<td class="rt num">' + DASH + '</td>').repeat(5)}`;
   else cells = `<td class="rt">${L.mine ? DASH : `<button class="addpos" data-act="wlpos" data-v="${t}">+ Thêm vị thế</button>`}</td>${('<td class="rt num">' + DASH + '</td>').repeat(6)}`;
-  const priceCell = e.mtv ? `<span data-tip="Đã đáo hạn – chờ thanh toán: giữ vị thế, giá trị theo cách Maris Trading đang hiển thị">${fx2(e.price)}<sup class="mt">MT</sup></span>` : mk(s.p, fx2);
+  const priceCell = e.mtv ? `<span data-tip="Đã đáo hạn – chờ thanh toán: giữ vị thế, giá trị theo cách KongKeng Trading đang hiển thị">${fx2(e.price)}<sup class="mt">MT</sup></span>` : mk(s.p, fx2);
   const html = `<tr class="${rowCls}">${chk}${tk}${instrNameCell(L, s, e.st)}<td class="rt num ${k}">${priceCell}</td><td class="rt num ${k}">${mk(e.c, v => sg2(v))}</td><td class="rt num ${k}">${mk(e.pct, v => sg2(v, 2, '%'))}</td>${cells}<td class="fill"></td></tr>`;
   return { html, ltd, tl, val, prev, cost };
 }
 /* nhật ký CW đáo hạn đã thanh toán (đóng vị thế, cộng tiền mặt) */
 function wlSettleLog(L) {
   if (!L.log.length) return '';
-  return `<section class="cwlog"><div class="cwlog-h"><b>Chứng quyền đã đáo hạn &amp; thanh toán</b><span>${L.mine ? 'Theo dữ liệu Maris Trading — hệ thống không tự xử lý' : 'Vị thế được đóng vào ngày thanh toán; giá trị thanh toán cộng vào tiền mặt. Danh mục không ghi nhận lãi/lỗ đã chốt.'}</span></div>
+  return `<section class="cwlog"><div class="cwlog-h"><b>Chứng quyền đã đáo hạn &amp; thanh toán</b><span>${L.mine ? 'Theo dữ liệu KongKeng Trading — hệ thống tự động đồng bộ' : 'Vị thế được đóng vào ngày thanh toán; giá trị thanh toán cộng vào tiền mặt. Danh mục không ghi nhận lãi/lỗ đã chốt.'}</span></div>
   <div class="tscroll"><table class="t upper hd cwlog-t"><thead><tr><th>Mã CW</th><th>Ngày thanh toán</th><th class="rt">KL đóng</th><th class="rt">Giá thanh toán</th><th class="rt">Giá thực hiện</th><th class="rt">Tỷ lệ CĐ</th><th class="rt">Giá trị thanh toán / CW</th><th class="rt">Cộng vào tiền mặt (tr)</th><th></th></tr></thead>
   <tbody>${L.log.map(g => `<tr><td><span class="tkr">${g.x.t}<span class="ity cw">CW</span></span></td><td>${g.date} <span class="muted">(${dWd(dParse(g.date))})</span></td><td class="rt num">${g.q ? fmtVN(g.q) : DASH}</td><td class="rt num">${fmtVN(g.x.sp)}</td><td class="rt num">${fmtVN(g.x.k)}</td><td class="rt num">${g.x.r}:1</td><td class="rt num">${g.v > 0 ? fmtVN(g.v) + ' đ' : '0 đ'}</td><td class="rt num ${g.amt > 0 ? 'up' : ''}">${g.q ? (g.amt > 0 ? '+' : '') + fx2(g.amt / 1000) : DASH}</td><td class="ink2">${g.v > 0 ? 'Có lãi · tự động thực hiện' : 'Không có lãi · đóng vị thế, không cộng tiền'}</td></tr>`).join('')}</tbody></table></div></section>`;
 }
@@ -9201,7 +9201,7 @@ function wlSettleLog(L) {
 function simEvents() {
   const ev = {};
   const add = (n, txt) => { (ev[n] = ev[n] || []).push(txt); };
-  Object.values(INSTR).filter(x => x.type === 'CW').forEach(x => { add(x.ltdN, x.t + ' giao dịch cuối cùng'); add(x.ltdN + DAY, x.t + ' → Ngừng giao dịch'); add(x.matN, x.t + ' đáo hạn'); add(x.matN + DAY, x.t + ' → Đã đáo hạn – chờ thanh toán'); add(x.spdN, x.t + ' công bố giá thanh toán'); add(x.payN, x.t + ' thanh toán' + (cwPayVal(x) > 0 ? ' (có lãi)' : ' (không có lãi)')); add(x.mtDoneN, 'Maris Trading ghi nhận ' + x.t); });
+  Object.values(INSTR).filter(x => x.type === 'CW').forEach(x => { add(x.ltdN, x.t + ' giao dịch cuối cùng'); add(x.ltdN + DAY, x.t + ' → Ngừng giao dịch'); add(x.matN, x.t + ' đáo hạn'); add(x.matN + DAY, x.t + ' → Đã đáo hạn – chờ thanh toán'); add(x.spdN, x.t + ' công bố giá thanh toán'); add(x.payN, x.t + ' thanh toán' + (cwPayVal(x) > 0 ? ' (có lãi)' : ' (không có lãi)')); add(x.mtDoneN, 'KongKeng Trading ghi nhận ' + x.t); });
   add(SIM_TODAY, 'Hôm nay');
   return Object.keys(ev).map(Number).sort((a, b) => a - b).map(n => [n, `${dFmt(n).slice(0, 5)} ${dWd(n)} · ${ev[n].join(' · ')}`]);
 }
@@ -9385,8 +9385,8 @@ Object.assign(A, {
   wlcopy: el => wlCopy(+el.dataset.v),
   wedel: () => { closeLayer(); wlDelete(S.wlCur); },
   wpadd: el => { const t = el.dataset.v, s = ensureStock(t); if (!s || WLP.rows.some(r => r.t === t)) return; WLP.rows.push({ t, q: '', d: '02/10/2026', cost: fx2(s.p), sub: false }); WLP.q = ''; wlPosRedraw(); const tb = layer.querySelector('.wp-tbl'); if (tb) tb.scrollTop = tb.scrollHeight; const x = layer.querySelector('#wpq'); if (x) x.focus(); toast(`Đã thêm ${t} · nhập khối lượng và giá vốn nếu có`); },
-  paywallgo: () => { closeLayer(); toast('Chuyển tới màn hình liên kết tài khoản Maris Trading (ngoài phạm vi prototype)'); },
-  usermenu: el => openMenu(el, ['Khách hàng đã liên kết tài khoản', 'Khách (Guest) · chưa liên kết'], S.guest ? 'Khách (Guest) · chưa liên kết' : 'Khách hàng đã liên kết tài khoản', v => { S.guest = /Guest/.test(v); document.querySelector('.user span').textContent = S.guest ? 'Guest' : 'Pro Trader'; rerender(); toast(S.guest ? 'Đang xem với vai trò Guest — chưa liên kết Maris Trading' : 'Đang xem với vai trò khách hàng đã liên kết Maris Trading'); }),
+  paywallgo: () => { closeLayer(); toast('Chuyển tới màn hình liên kết tài khoản KongKeng Trading (ngoài phạm vi prototype)'); },
+  usermenu: el => openMenu(el, ['Khách hàng đã liên kết tài khoản', 'Khách (Guest) · chưa liên kết'], S.guest ? 'Khách (Guest) · chưa liên kết' : 'Khách hàng đã liên kết tài khoản', v => { S.guest = /Guest/.test(v); document.querySelector('.user span').textContent = S.guest ? 'Guest' : 'Pro Trader'; rerender(); toast(S.guest ? 'Đang xem với vai trò Khách (Guest) — chưa liên kết tài khoản KongKeng Trading' : 'Đang xem với vai trò Khách hàng đã liên kết tài khoản KongKeng Trading'); }),
   wlpick: el => { const t = el.dataset.v; if (!WLA.picks.includes(t)) WLA.picks.push(t); WLA.q = ''; wlAddRedraw(); },
   wlunpick: el => { WLA.picks = WLA.picks.filter(t => t !== el.dataset.v); wlAddRedraw(); },
   wladdgo: () => { const L = WL[S.wlCur], add = WLA.picks.filter(t => !L.tickers.includes(t)); add.forEach(t => L.tickers.push(t)); if (!add.length) { closeLayer(); toast('Các mã đã có trong danh mục'); return; } rerender(); wlPosModal(add, 'add'); },
@@ -9408,7 +9408,7 @@ setCompare = function (list) {
 
 /* ================= DANH SÁCH THEO DÕI (WATCHLIST · cụm Nghiên cứu) =================
    Chỉ theo dõi diễn biến cổ phiếu: không có vị thế / tiền mặt / quản lý danh mục.
-   Tài khoản chính thức (đăng nhập hoặc liên kết Maris Trading): đồng bộ 2 chiều real-time. */
+   Tài khoản chính thức (đăng nhập hoặc liên kết KongKeng Trading): đồng bộ 2 chiều thời gian thực. */
 const WATCH = [
   { name: 'Danh sách 1', tickers: ['VIC', 'VHM', 'VCB', 'BID', 'CTG', 'TCB', 'VPB', 'MCH', 'MBB', 'HPG', 'GAS', 'LPB', 'VPL', 'ACV', 'HDB', 'VNM', 'E1VFVN30', 'CHPG2517', 'CVNM2508'] },
   { name: 'Chứng quyền & ETF', tickers: ['CHPG2517', 'CMWG2511', 'CVNM2508', 'CFPT2506', 'E1VFVN30', 'FUEVFVND', 'FUEMAV30'] },
@@ -9436,10 +9436,10 @@ function rowOf(t) {
 }
 const ALL_X = {};
 const nowStr = () => { const d = new Date(), z = n => String(n).padStart(2, '0'); return `${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())} ${z(d.getDate())}/${z(d.getMonth() + 1)}/${d.getFullYear()}`; };
-/* mỗi thay đổi → đồng bộ 2 chiều với Maris Trading (tài khoản chính thức) */
+/* mỗi thay đổi → đồng bộ 2 chiều với KongKeng Trading (tài khoản chính thức) */
 function wtTouch(msg) {
   S.wtSync = nowStr();
-  toast(S.guest ? `${msg} · lưu trên thiết bị này` : `${msg} · đã đồng bộ với Maris Trading`);
+  toast(S.guest ? `${msg} · lưu trên thiết bị này` : `${msg} · đã đồng bộ với KongKeng Trading`);
 }
 const MKT_COLS = ['price', 'chg', 'kl', 'gt'];
 const safeGet = (c, r) => { try { const v = c[2](r); return Number.isNaN(v) ? null : v; } catch (e) { return null; } };
@@ -9455,8 +9455,8 @@ function vFollow() {
     rows = rows.slice().sort((a, b) => { const x = get(a), y = get(b); if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * d; });
   }
   const sync = S.guest
-    ? `<div class="live off"><i></i>Chỉ lưu trên thiết bị này · <button class="lnk" data-act="wtlink">Liên kết Maris Trading để đồng bộ</button></div>`
-    : `<div class="live" data-tip="Đồng bộ 2 chiều real-time với danh sách theo dõi trên Maris Trading"><i></i>Đồng bộ <span class="mono">${S.wtSync}</span><button data-act="wtsync" aria-label="Đồng bộ lại">${I.ref}</button></div>`;
+    ? `<div class="live off"><i></i>Chỉ lưu trên thiết bị này · <button class="lnk" data-act="wtlink">Liên kết tài khoản KongKeng Trading để đồng bộ</button></div>`
+    : `<div class="live" data-tip="Đồng bộ 2 chiều thời gian thực với danh sách theo dõi trên KongKeng Trading"><i></i>Đồng bộ <span class="mono">${S.wtSync}</span><button data-act="wtsync" aria-label="Đồng bộ lại">${I.ref}</button></div>`;
   const head = `<div class="wl-head"><button class="wl-title" data-act="wtmenu" aria-haspopup="menu">${esc(L.name)} ${I.chev}</button>${sync}</div>`;
   const tabs = `<div class="wt-bar"><div class="stabs scr2-tabs" role="tablist">${Object.keys(COLSETS).map(k => `<button role="tab" aria-selected="${S.wtCols === k}" class="${S.wtCols === k ? 'on' : ''}" data-act="wtcols" data-v="${k}">${k}</button>`).join('')}</div>
     <div class="wl-btns">${S.wtSort ? `<button class="btn plain" data-act="wtunsort" data-tip="Trở về thứ tự bạn đã sắp xếp trong danh sách">Thứ tự của tôi</button>` : ''}<button class="btn" style="padding:0 12px 0 8px" data-act="wtedit" data-v="${S.wtCur}">${I_GEAR}Chỉnh sửa</button><button class="btn pri" style="padding:0 12px 0 8px" data-act="wtadd">${I_PLUS20}Thêm mã</button></div></div>`;
@@ -9515,7 +9515,7 @@ function wtCopy(i) {
 function wtDelete(i) {
   if (WATCH.length <= 1) { toast('Cần giữ lại ít nhất 1 danh sách theo dõi'); return; }
   modal(`<div class="m-h"><h3>Xoá “${esc(WATCH[i].name)}”?</h3><button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button></div>
-    <div class="m-b">Danh sách có ${WATCH[i].tickers.length} mã. ${S.guest ? '' : 'Danh sách cũng sẽ bị xoá trên Maris Trading do được đồng bộ 2 chiều.'}</div>
+    <div class="m-b">Danh sách có ${WATCH[i].tickers.length} mã. ${S.guest ? '' : 'Danh sách theo dõi này cũng sẽ được gỡ bỏ trên hệ thống KongKeng Trading do cơ chế đồng bộ 2 chiều.'}</div>
     <div class="m-f"><button class="btn" data-act="closemodal">Huỷ</button><button class="btn pri" data-act="wtdelok" data-v="${i}">Xoá danh sách</button></div>`);
 }
 
@@ -9635,7 +9635,7 @@ Object.assign(A, {
   simd: el => { const v = +el.dataset.v; S.sim = v ? S.sim + v * DAY : SIM_TODAY; rerender(); },
   simpick: el => { const ev = simEvents(); openMenu(el, ev.map(e => e[1]), (ev.find(e => e[0] === S.sim) || [])[1], v => { const e = ev.find(x => x[1] === v); if (e) { S.sim = e[0]; rerender(); } }); if (menuEl) { menuEl.classList.add('simmenu'); const r = el.getBoundingClientRect(); menuEl.style.left = Math.max(8, Math.min(r.left, window.innerWidth - menuEl.offsetWidth - 8)) + 'px'; } },
   wtrm: () => { const L = WATCH[S.wtCur], rm = [...S.wtSel].filter(t => L.tickers.includes(t)); L.tickers = L.tickers.filter(t => !rm.includes(t)); S.wtSel.clear(); rerender(); wtTouch(`Đã xoá ${rm.length} mã khỏi “${L.name}”`); },
-  wtsync: () => { S.wtSync = nowStr(); rerender(); toast('Đã đồng bộ với danh sách theo dõi trên Maris Trading'); },
+  wtsync: () => { S.wtSync = nowStr(); rerender(); toast('Đã đồng bộ thành công với danh sách theo dõi trên KongKeng Trading'); },
   wtlink: () => wlPaywall(),
   wtadd: () => wtAddModal(),
   wtpick: el => { const t = el.dataset.v; if (!WTA.picks.includes(t)) WTA.picks.push(t); WTA.q = ''; wtAddRedraw(); },
@@ -14999,7 +14999,7 @@ function updateLogoMcpPayloadsForSymbol(sym) {
           secondary_color: bInfo.secondary,
           accent_color: bInfo.accent,
           cdn_endpoint: `https://asset.brandfetch.io/hose-${sym.toLowerCase()}/logo.svg`,
-          local_cache_status: "HIT (Maris In-Memory Vector Store)"
+          local_cache_status: "HIT (KongKeng Radar Vector Store)"
         },
         mcp_provenance: {
           provider: "Brandfetch MCP Protocol (mcp.brandfetch.io)",
@@ -15640,7 +15640,7 @@ if (typeof STOCK !== 'undefined' && STOCK) {
 
 
 // Boot application after all data and MCP engines are loaded
-const savedTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('maris_theme')) || 'light';
+const savedTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('kongkeng_theme')) || 'light';
 setTheme(savedTheme, true);
 readHash(); render();
 initRealtimeTicks(STOCK.sym, STOCK.price);

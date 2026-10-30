@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <defs>
+    <linearGradient id="icon-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#161B22"/>
+      <stop offset="100%" stop-color="#090D13"/>
+    </linearGradient>
+    <linearGradient id="icon-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF3B30" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#FF9500" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="icon-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF3B30"/>
+      <stop offset="50%" stop-color="#FF6B00"/>
+      <stop offset="100%" stop-color="#FF9500"/>
+    </linearGradient>
+    <linearGradient id="icon-sweep" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF3B30" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#FF9500" stop-opacity="0.05"/>
+    </linearGradient>
+    <filter id="icon-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Squircle Base with Border -->
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#icon-bg)" stroke="url(#icon-border)" stroke-width="2"/>
+
+  <!-- Radar System -->
+  <g transform="translate(64, 64)">
+    <!-- Outer concentric ring -->
+    <circle cx="0" cy="0" r="44" stroke="url(#icon-grad)" stroke-width="2.2" opacity="0.35" stroke-dasharray="4 3"/>
+    <!-- Middle ring -->
+    <circle cx="0" cy="0" r="30" stroke="url(#icon-grad)" stroke-width="2" opacity="0.75"/>
+    <!-- Inner ring -->
+    <circle cx="0" cy="0" r="15" stroke="url(#icon-grad)" stroke-width="1.8" opacity="0.95"/>
+    <!-- Radar Sweep Sector -->
+    <path d="M0 0 L40 -20 A44 44 0 0 0 0 -44 Z" fill="url(#icon-sweep)"/>
+    <!-- Crosshairs -->
+    <line x1="0" y1="-44" x2="0" y2="44" stroke="url(#icon-grad)" stroke-width="1.2" stroke-dasharray="2 3" opacity="0.45"/>
+    <line x1="-44" y1="0" x2="44" y2="0" stroke="url(#icon-grad)" stroke-width="1.2" stroke-dasharray="2 3" opacity="0.45"/>
+    <!-- Dynamic Signal Blips -->
+    <circle cx="22" cy="-18" r="3.5" fill="#30D158" filter="url(#icon-glow)"/>
+    <circle cx="-16" cy="20" r="3" fill="#FFD60A" opacity="0.85"/>
+    <!-- Center Core Target -->
+    <circle cx="0" cy="0" r="6" fill="url(#icon-grad)" filter="url(#icon-glow)"/>
+  </g>
+</svg>

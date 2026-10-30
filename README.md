@@ -1,4 +1,4 @@
-# Maris Advisor - Nền tảng Phân tích & Tư vấn Đầu tư Chứng khoán Thế hệ mới
+# KongKeng Radar - Nền tảng Phân tích & Tư vấn Đầu tư Chứng khoán Thế hệ mới
 > **Tích hợp Hệ sinh thái Quad-MCP đa tầng: DNSE, VNDIRECT, FINHAY & SSI**
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-brightgreen?logo=github)](https://ntb1999.github.io/maris-advisor/#market)

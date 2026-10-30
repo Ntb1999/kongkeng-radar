@@ -2399,8 +2399,253 @@ sup.mt{font-size:8px;font-weight:700;color:var(--ink3);margin-left:2px;font-fami
   border-bottom: 0;
 }
 </style>
+<style id="kkr-gate-style">
+  #kkr-gate-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999999;
+    background: radial-gradient(circle at 50% 30%, #161B26 0%, #080C12 70%, #040609 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Google Sans Flex', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #FFFFFF;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+  #kkr-gate-overlay.unlocked {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .kkr-gate-card {
+    background: rgba(22, 27, 34, 0.92);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 107, 0, 0.4);
+    border-radius: 24px;
+    padding: 40px 36px;
+    max-width: 440px;
+    width: 100%;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85), 0 0 32px rgba(255, 59, 48, 0.18);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .kkr-gate-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #FF3B30 0%, #FF6B00 50%, #FF9500 100%);
+  }
+  .kkr-radar-scanner {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .kkr-radar-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 107, 0, 0.3);
+  }
+  .kkr-radar-ring.r1 { width: 78px; height: 78px; border-style: dashed; animation: kkr-spin 16s linear infinite; }
+  .kkr-radar-ring.r2 { width: 52px; height: 52px; border-color: rgba(255, 107, 0, 0.6); }
+  .kkr-radar-ring.r3 { width: 26px; height: 26px; border-color: rgba(255, 107, 0, 0.9); }
+  .kkr-radar-center {
+    width: 12px; height: 12px;
+    background: radial-gradient(circle, #FF9500 0%, #FF3B30 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 16px #FF3B30;
+    z-index: 2;
+  }
+  .kkr-radar-sweep {
+    position: absolute;
+    width: 39px; height: 39px;
+    top: 1px; right: 1px;
+    background: conic-gradient(from 0deg, rgba(255, 59, 48, 0.75) 0deg, rgba(255, 149, 0, 0) 90deg);
+    border-radius: 100% 0 0 0;
+    transform-origin: 0 39px;
+    animation: kkr-spin 3s linear infinite;
+  }
+  @keyframes kkr-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .kkr-gate-title {
+    font-size: 23px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, #FFFFFF 0%, #E6EDF3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .kkr-gate-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    background: rgba(255, 59, 48, 0.15);
+    border: 1px solid rgba(255, 59, 48, 0.4);
+    color: #FF6B00;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .kkr-gate-desc {
+    font-size: 13.5px;
+    color: #8B949E;
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+  .kkr-input-group {
+    position: relative;
+    margin-bottom: 16px;
+    text-align: left;
+  }
+  .kkr-input-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    color: #FF9500;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .kkr-input-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .kkr-input {
+    width: 100%;
+    height: 48px;
+    background: #0D1117;
+    border: 1.5px solid #30363D;
+    border-radius: 12px;
+    padding: 0 46px 0 16px;
+    font-size: 15px;
+    color: #FFFFFF;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 2px;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+  }
+  .kkr-input:focus {
+    border-color: #FF6B00;
+    box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.2);
+  }
+  .kkr-toggle-pwd {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #8B949E;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .kkr-toggle-pwd:hover { color: #FFFFFF; }
+  .kkr-btn-submit {
+    width: 100%;
+    height: 48px;
+    background: linear-gradient(135deg, #FF3B30 0%, #FF6B00 60%, #FF9500 100%);
+    border: none;
+    border-radius: 12px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(255, 59, 48, 0.35);
+  }
+  .kkr-btn-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(255, 107, 0, 0.45);
+    filter: brightness(1.08);
+  }
+  .kkr-btn-submit:active { transform: translateY(0); }
+  .kkr-error-msg {
+    color: #FF453A;
+    font-size: 12.5px;
+    margin-top: 12px;
+    min-height: 18px;
+    font-weight: 600;
+    display: none;
+  }
+  .kkr-error-msg.visible {
+    display: block;
+    animation: kkr-shake 0.4s ease;
+  }
+  @keyframes kkr-shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+  .kkr-gate-foot {
+    margin-top: 24px;
+    font-size: 11.5px;
+    color: #6E7681;
+    line-height: 1.5;
+  }
+  .app.kkr-blur {
+    filter: blur(14px);
+    pointer-events: none;
+    opacity: 0.15;
+    transition: filter 0.4s ease, opacity 0.4s ease;
+  }
+</style>
 </head>
 <body>
+<!-- KONGKENG RADAR SECURITY GATE OVERLAY -->
+<div id="kkr-gate-overlay">
+  <div class="kkr-gate-card">
+    <div class="kkr-radar-scanner">
+      <div class="kkr-radar-ring r1"></div>
+      <div class="kkr-radar-ring r2"></div>
+      <div class="kkr-radar-ring r3"></div>
+      <div class="kkr-radar-sweep"></div>
+      <div class="kkr-radar-center"></div>
+    </div>
+    
+    <div class="kkr-gate-badge">PRIVATE RADAR TERMINAL</div>
+    <h2 class="kkr-gate-title">KongKeng Radar</h2>
+    <p class="kkr-gate-desc">Hệ thống Phân tích & Quét Tín hiệu Thị trường Nội bộ.<br>Vui lòng nhập mã bảo mật (PIN / Passcode) để tiếp tục.</p>
+
+    <form id="kkr-gate-form">
+      <div class="kkr-input-group">
+        <label class="kkr-input-label" for="kkr-pin-input">MÃ BẢO MẬT TRUY CẬP</label>
+        <div class="kkr-input-box">
+          <input id="kkr-pin-input" class="kkr-input" type="password" placeholder="Nhập mã PIN hoặc passcode..." autocomplete="current-password" autofocus required>
+          <button type="button" id="kkr-toggle-pwd" class="kkr-toggle-pwd" aria-label="Hiện/Ẩn mật khẩu" title="Hiện/Ẩn">👁️</button>
+        </div>
+        <div id="kkr-error-msg" class="kkr-error-msg"></div>
+      </div>
+
+      <button type="submit" class="kkr-btn-submit">
+        <span>MỞ KHÓA RADAR</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </form>
+
+    <div class="kkr-gate-foot">
+      🔒 Quyền truy cập nội bộ · Dữ liệu thị trường thời gian thực Quad-MCP.<br>
+      Liên hệ Quản trị viên nếu bạn chưa có mã PIN truy cập.
+    </div>
+  </div>
+</div>
 
 <div class="app">
   <aside class="sb" id="sb">
@@ -15814,4 +16059,124 @@ startRealtimeEngine();
   </div>
 </div>
 
+<script id="kkr-gate-script">
+(function() {
+  const VALID_PINS = ['291099', 'bachnt'];
+
+  function checkAuth() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      const queryPin = urlParams.get('pin') || urlParams.get('access') || hashParams.get('pin') || hashParams.get('access');
+      if (queryPin && isPinValid(queryPin)) {
+        saveAuth();
+        return true;
+      }
+    } catch(e) {}
+
+    try {
+      if (localStorage.getItem('kkr_authenticated') === 'true' || sessionStorage.getItem('kkr_authenticated') === 'true') {
+        return true;
+      }
+    } catch(e) {}
+
+    return false;
+  }
+
+  function isPinValid(pin) {
+    if (!pin) return false;
+    const clean = String(pin).trim().toLowerCase();
+    return VALID_PINS.includes(clean);
+  }
+
+  function saveAuth() {
+    try {
+      localStorage.setItem('kkr_authenticated', 'true');
+      sessionStorage.setItem('kkr_authenticated', 'true');
+    } catch(e) {}
+  }
+
+  function unlockUI() {
+    const overlay = document.getElementById('kkr-gate-overlay');
+    const app = document.querySelector('.app');
+    if (overlay) overlay.classList.add('unlocked');
+    if (app) app.classList.remove('kkr-blur');
+  }
+
+  function lockUI() {
+    try {
+      localStorage.removeItem('kkr_authenticated');
+      sessionStorage.removeItem('kkr_authenticated');
+    } catch(e) {}
+    const overlay = document.getElementById('kkr-gate-overlay');
+    const app = document.querySelector('.app');
+    if (overlay) overlay.classList.remove('unlocked');
+    if (app) app.classList.add('kkr-blur');
+    const pinInput = document.getElementById('kkr-pin-input');
+    if (pinInput) {
+      pinInput.value = '';
+      setTimeout(() => pinInput.focus(), 150);
+    }
+  }
+
+  window.kkrLockRadar = lockUI;
+
+  function initGate() {
+    const form = document.getElementById('kkr-gate-form');
+    const pinInput = document.getElementById('kkr-pin-input');
+    const errorMsg = document.getElementById('kkr-error-msg');
+    const toggleBtn = document.getElementById('kkr-toggle-pwd');
+    const app = document.querySelector('.app');
+
+    if (checkAuth()) {
+      unlockUI();
+    } else {
+      if (app) app.classList.add('kkr-blur');
+      if (pinInput) setTimeout(() => pinInput.focus(), 250);
+    }
+
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const entered = pinInput.value;
+        if (isPinValid(entered)) {
+          if (errorMsg) errorMsg.classList.remove('visible');
+          saveAuth();
+          unlockUI();
+          if (typeof toast === 'function') {
+            toast('Đăng nhập thành công · Chào mừng đến với KongKeng Radar');
+          }
+        } else {
+          if (errorMsg) {
+            errorMsg.textContent = 'Mã PIN hoặc mật khẩu không chính xác. Quý khách vui lòng thử lại.';
+            errorMsg.classList.remove('visible');
+            void errorMsg.offsetWidth;
+            errorMsg.classList.add('visible');
+          }
+          pinInput.focus();
+          pinInput.select();
+        }
+      });
+    }
+
+    if (toggleBtn && pinInput) {
+      toggleBtn.addEventListener('click', function() {
+        if (pinInput.type === 'password') {
+          pinInput.type = 'text';
+          toggleBtn.textContent = '👁️‍🗨️';
+        } else {
+          pinInput.type = 'password';
+          toggleBtn.textContent = '👁️';
+        }
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGate);
+  } else {
+    initGate();
+  }
+})();
+</script>
 </body></html>

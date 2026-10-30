@@ -8476,7 +8476,7 @@ let MARKET_SECTORS = [
   { name: 'Công nghệ thông tin', pct: -3.02, val: '1.680 tỷ', leader: 'FPT (-3.02%)' }
 ];
 
-const CLOUDFLARE_MARKET_PROXY = 'https://kongkeng-radar-proxy.tungbachntb.workers.dev';
+const CLOUDFLARE_MARKET_PROXY = 'https://maris-market-proxy.tungbachntb.workers.dev';
 let LAST_REALTIME_SYNC_TIME = null;
 let _IS_SYNCING_ALL_STOCKS = false;
 
@@ -10315,7 +10315,7 @@ const A = {
     <div class="m-b" style="line-height:1.6;font-size:12.5px;color:var(--ink2)">
       <div style="background:rgba(34,197,94,0.08);padding:10px 14px;border-radius:6px;border:1px solid rgba(34,197,94,0.25);margin-bottom:12px">
         <b style="color:var(--up)">Trạng thái kết nối:</b> <span style="color:var(--ink);font-weight:700">100% Realtime Cloudflare Worker Proxy Đang Hoạt Động</span>
-        <div style="font-size:11.5px;color:var(--brand);margin-top:2px;font-family:var(--mono)">Endpoint: https://kongkeng-radar-proxy.tungbachntb.workers.dev</div>
+        <div style="font-size:11.5px;color:var(--brand);margin-top:2px;font-family:var(--mono)">Endpoint: https://maris-market-proxy.tungbachntb.workers.dev</div>
       </div>
       <p><b style="color:var(--ink)">1. Giải pháp Cloudflare Worker Proxy đã giải quyết điều gì?</b><br>
       Trình duyệt trước đây chặn CORS khi gọi trực tiếp API chứng khoán (như DNSE, TCBS, SSI). Hệ thống đã triển khai <b>Cloudflare Worker Proxy</b> chạy trên hạ tầng Edge toàn cầu của Cloudflare, tự động chuyển tiếp request và đính kèm đầy đủ CORS headers (<code>Access-Control-Allow-Origin: *</code>) cùng <code>Cache-Control: 2s</code>.</p>
@@ -10702,7 +10702,7 @@ qIn.addEventListener('keydown', e => {
 });
 
 let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { drawCandles(); drawForeign(); }, 120); });
-window.addEventListener('hashchange', () => { readHash(); closeMenu(); closeLayer(); render(); });
+window.addEventListener('hashchange', () => { readHash(); closeMenu(); closeLayer(); render(); if (S.route === 'market' && typeof syncMarketDataRealtime === 'function') syncMarketDataRealtime(false); });
 
 /* ================= BỘ LỌC CỔ PHIẾU v2 (SCR-01 · FS-01) ================= */
 const derX = r => { const d = der(r); if (d.score == null) { const q = rng(r[0].charCodeAt(0) * 53 + r[0].charCodeAt(1) * 7 + 11), u = (a, b) => a + (b - a) * q(); Object.assign(d, { score: Math.round(u(38, 88)), sq: Math.round(u(40, 90)), sv: Math.round(u(35, 85)), nn5: u(-3, 3) * 1e6, td5: u(-1, 1) * 1e6, fo: u(2, 49), room: u(0, 25), up: u(-10, 35), nrep: Math.round(u(0, 4)), rec: q() > .45 ? 'Mua' : 'Trung lập' }); } return d; };
@@ -18507,8 +18507,9 @@ setTimeout(() => {
 // Polling Cloudflare Worker Proxy every 6s for live index ticks (CHỈ polling khi trong phiên giao dịch có dữ liệu mới)
 setInterval(() => {
   const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
+  // Luôn đồng bộ dữ liệu thị trường mới nhất (cả trong và ngoài phiên)
+  syncMarketDataRealtime(false);
   if (session.isOpen) {
-    syncMarketDataRealtime(false);
     if (S.route === 'c360' && typeof STOCK !== 'undefined' && STOCK.sym) {
       syncStockQuoteRealtime(STOCK.sym);
     }
@@ -18650,6 +18651,10 @@ startRealtimeEngine();
     const app = document.querySelector('.app');
     if (overlay) overlay.classList.add('unlocked');
     if (app) app.classList.remove('kkr-blur');
+    setTimeout(() => {
+      if (typeof syncMarketDataRealtime === 'function') syncMarketDataRealtime(false);
+      if (typeof fetchBinanceLiveData === 'function') fetchBinanceLiveData();
+    }, 100);
   }
 
   function lockUI() {

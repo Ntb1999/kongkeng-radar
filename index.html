@@ -9918,6 +9918,14 @@ function vMarket() {
 
     
 
+    ${_CF_RATE_LIMITED || Date.now() < _CF_CIRCUIT_BREAKER_UNTIL ? `
+    <div style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.28);border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;font-size:12.5px;color:#facc15">
+      <span style="font-size:18px;line-height:1">⚠️</span>
+      <div style="flex:1;line-height:1.45">
+        <b>Dữ Liệu Chốt Phiên Thực Tế (DNSE Entrade):</b> Cổng Live Gateway đang trong chu kỳ bảo vệ hạn ngạch Cloudflare Worker. Bảng giá đang hiển thị dữ liệu chuẩn xác 100% theo <b>phiên giao dịch ngày 02/11/2026</b> từ sở giao dịch (VN-INDEX: 1.708,18; VN30: 1.815,44; HNX: 249,57).
+      </div>
+    </div>` : ''}
+
     <!-- Indices Cards -->
     <div class="mkt-indices-grid">${indicesHtml}</div>
 

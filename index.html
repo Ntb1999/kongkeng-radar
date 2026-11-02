@@ -9330,7 +9330,7 @@ async function syncMarketDataRealtime(isManual) {
       if (syncClockEl) syncClockEl.textContent = LAST_REALTIME_SYNC_TIME;
     }
     if (isManual && typeof toast === 'function') {
-      toast(`⚡ Đã đồng bộ Realtime Dòng tiền Khối ngoại, Tự doanh & 46 mã CK lúc ${LAST_REALTIME_SYNC_TIME}`);
+      toast(`Đã cập nhật dữ liệu thị trường mới nhất`);
     }
     return true;
   } catch (err) {
@@ -9481,19 +9481,19 @@ const GLOBAL_INDICES = [
   { name: 'Nikkei 225', region: 'Nhật Bản', val: '39,380.00', chg: '+220.00', pct: '+0.56%', up: true },
   { name: 'Hang Seng', region: 'Hồng Kông', val: '21,250.00', chg: '+380.00', pct: '+1.82%', up: true },
   
-  // Hàng hóa, Lợi suất & Ngoại tệ (Nguồn: Finhay MCP & Kitco)
-  { name: 'Chỉ số DXY', region: 'Vĩ mô Mỹ', val: '104.25', chg: '-0.18', pct: '-0.17%', up: false, mcp: 'finhay_get_macro_commodities' },
-  { name: 'Lợi suất US10Y', region: 'Trái phiếu Mỹ', val: '4.28%', chg: '+0.03', pct: '+0.71%', up: true, mcp: 'finhay_get_macro_commodities' },
+  // Hàng hóa, Lợi suất & Ngoại tệ
+  { name: 'Chỉ số DXY', region: 'Mỹ', val: '104.25', chg: '-0.18', pct: '-0.17%', up: false },
+  { name: 'Lợi suất US10Y', region: 'Mỹ', val: '4.28%', chg: '+0.03', pct: '+0.71%', up: true },
   { name: 'Dầu Brent', region: 'Hàng hóa', val: '78.50 $/thùng', chg: '+1.25', pct: '+1.62%', up: true },
-  { name: 'Vàng TG (Spot)', region: 'Kitco MCP', val: '4,206.50 $/oz', chg: '+12.80', pct: '+0.31%', up: true, mcp: 'finhay_get_macro_commodities' },
-  { name: 'Vàng SJC', region: 'Finhay MCP', val: '144.80 tr/lượng', chg: '0.00', pct: '0.00%', up: true, buy: '141.80 tr', sell: '144.80 tr', spread: '3.00 tr', mcp: 'finhay_get_gold_rate' },
-  { name: 'Tỷ giá USD/VND', region: 'VCB FX', val: '24,850 đ', chg: '+15', pct: '+0.06%', up: true },
+  { name: 'Vàng TG (Spot)', region: 'Thế giới', val: '4,206.50 $/oz', chg: '+12.80', pct: '+0.31%', up: true },
+  { name: 'Vàng SJC', region: 'Trong nước', val: '144.80 tr/lượng', chg: '0.00', pct: '0.00%', up: true, buy: '141.80 tr', sell: '144.80 tr', spread: '3.00 tr' },
+  { name: 'Tỷ giá USD/VND', region: 'VCB FX', val: '25,460 đ', chg: '+15.00', pct: '+0.06%', up: true },
 
-  // Tiền mã hóa Quốc tế (Nguồn: Binance Live API & WebSocket Feed)
-  { name: 'Bitcoin (BTC/USDT)', region: 'Binance', sym: 'BTCUSDT', val: '82,676.10 $', chg: '+683.50', pct: '+0.83%', up: true, live: true },
-  { name: 'Ethereum (ETH/USDT)', region: 'Binance', sym: 'ETHUSDT', val: '2,494.90 $', chg: '+13.70', pct: '+0.55%', up: true, live: true },
-  { name: 'BNB (BNB/USDT)', region: 'Binance', sym: 'BNBUSDT', val: '745.80 $', chg: '+8.80', pct: '+1.21%', up: true, live: true },
-  { name: 'Solana (SOL/USDT)', region: 'Binance', sym: 'SOLUSDT', val: '109.85 $', chg: '+0.09', pct: '+0.08%', up: true, live: true }
+  // Tiền mã hóa Quốc tế
+  { name: 'Bitcoin (BTC/USDT)', region: 'Tiền số', sym: 'BTCUSDT', val: '82,676.10 $', chg: '+683.50', pct: '+0.83%', up: true, live: true },
+  { name: 'Ethereum (ETH/USDT)', region: 'Tiền số', sym: 'ETHUSDT', val: '2,494.90 $', chg: '+13.70', pct: '+0.55%', up: true, live: true },
+  { name: 'BNB (BNB/USDT)', region: 'Tiền số', sym: 'BNBUSDT', val: '745.80 $', chg: '+8.80', pct: '+1.21%', up: true, live: true },
+  { name: 'Solana (SOL/USDT)', region: 'Tiền số', sym: 'SOLUSDT', val: '109.85 $', chg: '+0.09', pct: '+0.08%', up: true, live: true }
 ];
 
 function renderSparklineSVG(pts, isUp) {
@@ -9796,33 +9796,21 @@ function vMarket() {
     </div>`;
   } else if (tab === 'global') {
     tabContent = `<div style="margin-top:16px">
-      <div style="font-size:13px;color:var(--ink2);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-        <div>Dữ liệu chỉ số chứng khoán thế giới, hàng hóa chiến lược và thị trường tiền mã hóa ngày ${getLiveDateString()} (Nguồn: Quốc tế, Finhay MCP &amp; Binance).</div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <div style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#059669;background:rgba(5,150,105,0.1);padding:3px 10px;border-radius:12px;border:1px solid rgba(5,150,105,0.3)" onclick="openDnseMcpModal('fin')" title="Bấm để xem cổng MCP Finhay Vàng &amp; Hàng hóa">
-            <span class="live-pulse-dot" style="width:6px;height:6px;background:#059669"></span>
-            <span>⚡ Finhay MCP Gold Feed (SJC &amp; Kitco)</span>
-          </div>
-          <div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#16a34a;background:rgba(34,197,94,0.1);padding:3px 10px;border-radius:12px;border:1px solid rgba(34,197,94,0.3)">
-            <span class="live-pulse-dot" style="width:6px;height:6px"></span>
-            <span id="binance-status-text">Binance Live Feed (~1s/tick · 24/7)</span>
-          </div>
-        </div>
+      <div style="font-size:13px;color:var(--ink2);margin-bottom:12px">
+        Chỉ số chứng khoán quốc tế, hàng hóa chiến lược và ngoại tệ.
       </div>
       <div class="mkt-global-grid">
         ${GLOBAL_INDICES.map(g => {
-          const isCrypto = g.region === 'Binance';
+          const isCrypto = g.region === 'Tiền số' || g.region === 'Binance';
           const isGoldSjc = g.name === 'Vàng SJC';
-          const isGoldSpot = g.name.includes('Vàng TG');
-          const isGold = isGoldSjc || isGoldSpot;
           const symCode = g.sym || (g.name.includes('BTC') ? 'BTCUSDT' : g.name.includes('ETH') ? 'ETHUSDT' : g.name.includes('BNB') ? 'BNBUSDT' : g.name.includes('SOL') ? 'SOLUSDT' : '');
-          return `<div class="mkt-global-card" ${symCode ? `data-global-sym="${symCode}"` : ''} ${isGold ? `onclick="openDnseMcpModal('fin')"` : ''} style="${isCrypto ? 'border-color:rgba(240,185,11,0.35);background:linear-gradient(180deg, var(--card) 0%, rgba(240,185,11,0.04) 100%)' : isGold ? 'border-color:rgba(234,179,8,0.35);background:linear-gradient(180deg, var(--card) 0%, rgba(234,179,8,0.04) 100%);cursor:pointer' : ''}" ${isGold ? 'title="Bấm để mở cổng Finhay MCP kiểm tra chi tiết giá vàng"' : ''}>
+          return `<div class="mkt-global-card" ${symCode ? `data-global-sym="${symCode}"` : ''}>
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div style="display:flex;align-items:center;gap:6px">
-              ${isCrypto ? `<svg viewBox="0 0 32 32" width="16" height="16" style="flex-shrink:0"><circle cx="16" cy="16" r="16" fill="#F0B90B"/><path fill="#1E2026" d="M16 6.5l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm13.4 0l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm-3.2-3.2l3.2-3.2 3.2 3.2-3.2 3.2z"/></svg>` : isGold ? `<span style="font-size:14px">🪙</span>` : ''}
+              ${isCrypto ? `<svg viewBox="0 0 32 32" width="16" height="16" style="flex-shrink:0"><circle cx="16" cy="16" r="16" fill="#F0B90B"/><path fill="#1E2026" d="M16 6.5l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm13.4 0l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm-3.2-3.2l3.2-3.2 3.2 3.2-3.2 3.2z"/></svg>` : isGoldSjc ? `<span style="font-size:14px">🪙</span>` : ''}
               <b>${g.name}</b>
             </div>
-            <span style="font-size:11px;color:${isCrypto ? '#ca8a04' : isGold ? '#059669' : 'var(--ink3)'};font-weight:${isCrypto || isGold ? '700' : '400'}">${g.region}</span>
+            <span style="font-size:11px;color:${isCrypto ? '#ca8a04' : 'var(--ink3)'};font-weight:${isCrypto ? '700' : '400'}">${g.region}</span>
           </div>
           <div class="mkt-global-val" style="font-size:20px;font-weight:700;font-family:var(--mono);margin:2px 0;transition:background 0.3s, color 0.2s">${g.val}</div>
           ${isGoldSjc ? `<div style="font-size:11px;color:var(--ink2);margin-bottom:3px;font-family:var(--mono)">Mua: <b style="color:var(--ink)">${g.buy || '141.80 tr'}</b> · Bán: <b style="color:var(--ink)">${g.sell || '144.80 tr'}</b> <span style="color:#059669">(Spread: ${g.spread || '3.00 tr'})</span></div>` : ''}
@@ -9830,7 +9818,6 @@ function vMarket() {
             <div class="mkt-global-chg" style="font-size:12px;font-family:var(--mono);color:${g.up ? 'var(--up)' : 'var(--down)'}">
               ${g.chg} (${g.pct})
             </div>
-            ${isGold ? `<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(5,150,105,0.12);color:#059669;font-weight:600">⚡ Finhay MCP ↗</span>` : ''}
           </div>
         </div>`;
         }).join('')}
@@ -9896,35 +9883,16 @@ function vMarket() {
         <h2 style="margin:0">Tổng quan thị trường</h2>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        ${(() => {
-          const isMarketOpen = session.isOpen;
-          const isStreaming = REALTIME_ACTIVE && (isMarketOpen || REALTIME_MANUAL_SIM);
-          return `<button id="btn-mkt-realtime-toggle" onclick="toggleRealtimeStream()" style="font-size:11.5px;color:${isStreaming ? '#16a34a' : 'var(--ink3)'};display:inline-flex;align-items:center;gap:6px;background:${isStreaming ? 'rgba(34,197,94,0.08)' : 'rgba(148,163,184,0.12)'};padding:4px 10px;border-radius:4px;border:1px solid ${isStreaming ? 'rgba(34,197,94,0.3)' : 'var(--line2)'};cursor:pointer;outline:none" title="${isMarketOpen ? 'Bấm để Tạm dừng / Tiếp tục Live Stream Realtime' : 'Ngoài giờ giao dịch - Bấm để bật/tắt Mô phỏng'}">
-            <span id="mkt-live-dot" class="${isStreaming ? 'live-pulse-dot' : 'live-paused-dot'}" style="width:7px;height:7px"></span>
-            <b id="mkt-live-label">${isStreaming ? (isMarketOpen ? '⚡ Live Stream (~1.0s/tick)' : '⚡ Stream Mô Phỏng') : (isMarketOpen ? '⏸ Stream: Tạm dừng' : '⏸ Đã dừng (Ngoài phiên GD)')}</b> · <span class="muted" id="mkt-stream-rate">${isStreaming ? (_MKT_STREAM_TICK_COUNT > 0 ? `Tick #${_MKT_STREAM_TICK_COUNT}` : 'Binance Engine') : (isMarketOpen ? 'Tạm dừng' : 'Chốt phiên')}</span>
-          </button>`;
-        })()}
-        <span style="font-size:11.5px;color:${_CF_RATE_LIMITED ? '#eab308' : 'var(--brand)'};display:inline-flex;align-items:center;gap:6px;background:${_CF_RATE_LIMITED ? 'rgba(234,179,8,0.1)' : 'rgba(37,99,235,0.08)'};padding:4px 10px;border-radius:4px;border:1px solid ${_CF_RATE_LIMITED ? 'rgba(234,179,8,0.35)' : 'rgba(37,99,235,0.25)'}">
-          <span style="width:7px;height:7px;border-radius:50%;background:${_CF_RATE_LIMITED ? '#eab308' : '#22c55e'};box-shadow:0 0 6px ${_CF_RATE_LIMITED ? '#eab308' : '#22c55e'}"></span>
-          <b>${_CF_RATE_LIMITED ? 'DNSE Datafeed (Chốt phiên 02/11/2026)' : 'Quad-MCP Live Gateway'}</b> · <span class="muted" id="mkt-sync-clock">${LAST_REALTIME_SYNC_TIME || 'Chốt phiên chiều'}</span>
-        </span>
-        <span style="font-size:12px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;background:var(--card-sub);padding:4px 10px;border-radius:4px;border:1px solid var(--line)">
+        <span style="font-size:12px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;background:var(--card-sub);padding:5px 12px;border-radius:6px;border:1px solid var(--line)">
           <span id="mkt-session-dot" style="width:7px;height:7px;border-radius:50%;background:${session.isOpen ? 'var(--up)' : 'var(--warn)'}"></span>
           <b id="mkt-session-text">${session.statusText}</b>
+          <span class="muted" style="margin-left:4px">· Phiên ${getLiveDateString()}</span>
         </span>
-        <button class="btn sm primary" data-act="mktsync" title="Nhấn để đồng bộ dữ liệu thời gian thực qua Cloudflare Worker">⚡ Đồng bộ Realtime</button>
+        <button class="btn sm" data-act="mktsync" title="Cập nhật dữ liệu mới nhất" style="display:inline-flex;align-items:center;gap:5px;cursor:pointer">
+          <span>🔄</span> <b>Làm mới</b>
+        </button>
       </div>
     </div>
-
-    
-
-    ${_CF_RATE_LIMITED || Date.now() < _CF_CIRCUIT_BREAKER_UNTIL ? `
-    <div style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.28);border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;font-size:12.5px;color:#facc15">
-      <span style="font-size:18px;line-height:1">⚠️</span>
-      <div style="flex:1;line-height:1.45">
-        <b>Dữ Liệu Chốt Phiên Thực Tế (DNSE Entrade):</b> Cổng Live Gateway đang trong chu kỳ bảo vệ hạn ngạch Cloudflare Worker. Bảng giá đang hiển thị dữ liệu chuẩn xác 100% theo <b>phiên giao dịch ngày 02/11/2026</b> từ sở giao dịch (VN-INDEX: 1.708,18; VN30: 1.815,44; HNX: 249,57).
-      </div>
-    </div>` : ''}
 
     <!-- Indices Cards -->
     <div class="mkt-indices-grid">${indicesHtml}</div>
@@ -20464,7 +20432,7 @@ function stopBinanceWebSocket() {
     binanceWs = null;
   }
   binanceWsStarted = false;
-  updateBinanceStatusUI('Binance Live Stream (Tạm dừng khi ẩn tab)', false);
+  updateBinanceStatusUI('Paused', false);
 }
 
 function startBinanceWatchdog() {
@@ -20501,7 +20469,7 @@ function initBinanceWebSocket() {
     binanceWs.onopen = () => {
       binanceRetryCount = 0;
       lastBinanceDataTime = Date.now();
-      updateBinanceStatusUI('Binance Live Feed (~1s/tick · 24/7)', true);
+      updateBinanceStatusUI('Live', true);
     };
 
     binanceWs.onmessage = e => {
@@ -20552,7 +20520,7 @@ function initBinanceWebSocket() {
         clearInterval(binanceWatchdogTimer);
         binanceWatchdogTimer = null;
       }
-      updateBinanceStatusUI('Binance REST Fallback (Sync 10s · 24/7)', false);
+      updateBinanceStatusUI('Fallback', false);
       // Tự động kết nối lại nếu tab đang mở
       if (!document.hidden && binanceRetryCount < MAX_BINANCE_RETRIES) {
         binanceRetryCount++;

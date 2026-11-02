@@ -5632,6 +5632,7 @@ const S = {
     tab: 'signals',
     strat: 'trend_ema',
     sym: 'MSB',
+    fomoSym: 'MSB',
     period: '3Y',
     capital: 100000000,
     posSize: 20,
@@ -10280,18 +10281,222 @@ const QUANT_STRATEGIES = {
 };
 
 const QUANT_LIVE_SIGNALS = [
-  { sym: 'MSB', name: 'Ngân hàng Hàng Hải', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 15.80, target: 18.20, sl: 14.85, rr: '1 : 2.5', score: 96, volRatio: 245, time: '14:45 hôm nay', triggerMsg: 'Dòng tiền gom mua đột biến gấp 2.45 lần bình thường, giá bứt phá vượt nền MA20' },
-  { sym: 'FPT', name: 'Tập đoàn FPT', ex: 'HOSE', strat: 'trend_ema', type: 'MUA THĂM DÒ', price: 138.50, target: 158.00, sl: 131.00, rr: '1 : 2.6', score: 94, volRatio: 180, time: '14:30 hôm nay', triggerMsg: 'Đường giá ngắn hạn cắt lên dài hạn kèm AI xác nhận xu hướng tăng vững chắc' },
-  { sym: 'HPG', name: 'Tập đoàn Hòa Phát', ex: 'HOSE', strat: 'smart_money', type: 'MUA MẠNH', price: 26.40, target: 30.50, sl: 24.90, rr: '1 : 2.7', score: 95, volRatio: 310, time: '14:15 hôm nay', triggerMsg: 'Khối ngoại gom ròng +125 tỷ, lực mua chủ động của dòng tiền lớn áp đảo 72%' },
-  { sym: 'SSI', name: 'Chứng khoán SSI', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 32.20, target: 37.80, sl: 30.20, rr: '1 : 2.8', score: 93, volRatio: 220, time: '13:55 hôm nay', triggerMsg: 'Vượt đỉnh kháng cự ngắn hạn với lực mua gom chủ động dứt khoát' },
-  { sym: 'VCB', name: 'Vietcombank', ex: 'HOSE', strat: 'trend_ema', type: 'NẮM GIỮ', price: 92.50, target: 104.00, sl: 88.00, rr: '1 : 2.5', score: 89, volRatio: 110, time: '13:40 hôm nay', triggerMsg: 'Giữ vững kênh xu hướng tăng, dòng tiền phòng thủ vào đỡ giá chắc chắn' },
-  { sym: 'TCB', name: 'Techcombank', ex: 'HOSE', strat: 'statarb', type: 'MUA THĂM DÒ', price: 24.10, target: 27.50, sl: 22.80, rr: '1 : 2.6', score: 91, volRatio: 165, time: '11:20 hôm nay', triggerMsg: 'Giá đang bị ép rẻ hơn bình thường 2.14 lần độ lệch chuẩn so với toàn ngành' },
-  { sym: 'MWG', name: 'Thế Giới Di Động', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH', price: 68.40, target: 79.50, sl: 64.50, rr: '1 : 2.8', score: 94, volRatio: 270, time: '10:45 hôm nay', triggerMsg: 'Mẫu hình nén giá thu hẹp biến động hoàn tất, dòng tiền bùng nổ' },
-  { sym: 'DGC', name: 'Hóa chất Đức Giang', ex: 'HOSE', strat: 'mean_bb_rsi', type: 'CHỐT LỜI 50%', price: 115.00, target: 115.00, sl: 112.00, rr: '1 : 3.4', score: 92, volRatio: 190, time: '10:15 hôm nay', triggerMsg: 'Đạt mục tiêu chốt lời (+18.2%), giá chạm vùng quá mua, nên hạ bớt 50% vị thế' },
-  { sym: 'MBB', name: 'Ngân hàng Quân Đội', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA THĂM DÒ', price: 25.60, target: 29.20, sl: 24.20, rr: '1 : 2.5', score: 90, volRatio: 140, time: '29/10/2026', triggerMsg: 'AI chấm điểm chất lượng 90/100, định giá P/B 1.05 rẻ nhất nhóm ngân hàng lớn' },
-  { sym: 'CTR', name: 'Công trình Viettel', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA MẠNH', price: 128.00, target: 149.00, sl: 121.00, rr: '1 : 3.0', score: 96, volRatio: 215, time: '29/10/2026', triggerMsg: 'Đột phá đỉnh lịch sử, dòng tiền công nghệ - viễn thông dẫn dắt thị trường' },
-  { sym: 'VNM', name: 'Vinamilk', ex: 'HOSE', strat: 'trend_ema', type: 'BÁN HẠ TỶ TRỌNG', price: 66.50, target: 63.00, sl: 68.50, rr: '1 : 1.8', score: 85, volRatio: 130, time: '28/10/2026', triggerMsg: 'Thủng ngưỡng hỗ trợ quan trọng, tín hiệu AI chuyển sang thận trọng, nên hạ bớt' },
-  { sym: 'STB', name: 'Sacombank', ex: 'HOSE', strat: 'smart_money', type: 'NẮM GIỮ', price: 34.20, target: 39.50, sl: 32.50, rr: '1 : 2.6', score: 88, volRatio: 105, time: '28/10/2026', triggerMsg: 'Cá mập gom ròng liên tục 4 phiên, duy trì nắm giữ chờ nhịp tăng tốc' }
+  {
+    sym: 'MSB', name: 'Ngân hàng Hàng Hải', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
+    price: 15.80, target: 18.20, sl: 14.85, rr: '1 : 2.5', score: 96, volRatio: 245, time: '14:45 hôm nay',
+    triggerMsg: 'Dòng tiền gom mua đột biến gấp 2.45 lần bình thường, giá bứt phá vượt nền MA20',
+    fomo: {
+      recType: 'pullback',
+      recommendation: 'CHỜ CHỈNH 15.15 - 15.35',
+      marketBuy: { entry: 15.80, target: 16.50, sl: 14.85, rr: '1 : 0.74', verdict: 'R:R mỏng (1:0.74), áp lực chốt lời ngắn hạn lớn. Mua đuổi dễ dính nhịp rũ bỏ T+.' },
+      pullbackBuy: { zone: '15.15 - 15.35', midPrice: 15.25, target: 18.20, sl: 14.60, rr: '1 : 4.54', prob: 76, support: 'Hỗ trợ MA20 ngày & đỉnh tích lũy cũ 15.20', verdict: 'Tỷ lệ Lãi/Lỗ 1:4.54 vượt trội, điểm dừng lỗ rất gần và an toàn.' },
+      pros: [
+        'Dòng tiền tổ chức gom đột biến gấp 2.45 lần trung bình 20 phiên',
+        'Nền tích lũy hộp Darvas chặt chẽ 3 tháng qua, dư địa tăng trưởng lớn',
+        'Định giá P/B 0.88 lần, chiết khấu sâu nhất top ngân hàng thương mại cổ phần'
+      ],
+      con: 'Chỉ số RSI(14) tiệm cận 72 (vùng quá mua ngắn hạn), dễ xuất hiện nhịp rung lắc kỹ thuật 1-3 phiên',
+      fundDiscipline: 'Không mua đuổi giá xanh trên 15.6. Hãy kiên nhẫn treo lệnh Limit chờ gom tại vùng 15.15 - 15.35 để bảo vệ vốn và tối ưu tỷ lệ sinh lời.'
+    }
+  },
+  {
+    sym: 'FPT', name: 'Tập đoàn FPT', ex: 'HOSE', strat: 'trend_ema', type: 'MUA THĂM DÒ',
+    price: 138.50, target: 158.00, sl: 131.00, rr: '1 : 2.6', score: 94, volRatio: 180, time: '14:30 hôm nay',
+    triggerMsg: 'Đường giá ngắn hạn cắt lên dài hạn kèm AI xác nhận xu hướng tăng vững chắc',
+    fomo: {
+      recType: 'split',
+      recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 134',
+      marketBuy: { entry: 138.50, target: 145.00, sl: 133.00, rr: '1 : 1.18', verdict: 'R:R ở mức trung bình, giá đang bám sát dải trên Bollinger Bands.' },
+      pullbackBuy: { zone: '133.50 - 135.00', midPrice: 134.25, target: 158.00, sl: 130.00, rr: '1 : 5.58', prob: 68, support: 'EMA 21 ngày & đường trendline tăng trung hạn', verdict: 'Điểm vào lý tưởng theo xu hướng lớn, R:R đạt tới 1:5.58.' },
+      pros: [
+        'Tăng trưởng lợi nhuận mảng AI và Cloud quý vừa qua đạt trên 28%',
+        'Khối ngoại đảo chiều mua ròng trở lại 5 phiên liên tiếp',
+        'Kênh tăng giá trung hạn dốc lên vững chắc từ đầu năm'
+      ],
+      con: 'Thị giá ở vùng đỉnh lịch sử, áp lực chốt lời ngắn hạn từ nhà đầu tư cá nhân',
+      fundDiscipline: 'Có thể giải ngân trước 30% tỷ trọng thăm dò quanh 138; dành 70% còn lại kiên nhẫn chờ khớp khi giá test lại vùng 134 - 135.'
+    }
+  },
+  {
+    sym: 'HPG', name: 'Tập đoàn Hòa Phát', ex: 'HOSE', strat: 'smart_money', type: 'MUA MẠNH',
+    price: 26.40, target: 30.50, sl: 24.90, rr: '1 : 2.7', score: 95, volRatio: 310, time: '14:15 hôm nay',
+    triggerMsg: 'Khối ngoại gom ròng +125 tỷ, lực mua chủ động của dòng tiền lớn áp đảo 72%',
+    fomo: {
+      recType: 'pullback',
+      recommendation: 'CHỜ CHỈNH VÙNG 25.3 - 25.6',
+      marketBuy: { entry: 26.40, target: 27.50, sl: 25.20, rr: '1 : 0.92', verdict: 'R:R dưới 1.0 (1:0.92), rủi ro điều chỉnh theo nhịp rung lắc của nhóm Thép.' },
+      pullbackBuy: { zone: '25.30 - 25.60', midPrice: 25.45, target: 30.50, sl: 24.50, rr: '1 : 5.31', prob: 72, support: 'Vùng đáy hộp tích lũy & đường hỗ trợ MA50', verdict: 'Vùng đệm an toàn lớn, tỷ lệ Lãi/Lỗ đạt 1:5.31.' },
+      pros: [
+        'Khối ngoại mua ròng đột biến +125 tỷ phiên gần nhất',
+        'Kỳ vọng lò cao Dung Quất 2 vận hành thương mại nửa đầu năm tới',
+        'Biên lợi nhuận gộp hồi phục quý thứ 4 liên tiếp'
+      ],
+      con: 'Giá thép thế giới (HRC) đang trong giai đoạn dò đáy ngắn hạn',
+      fundDiscipline: 'Không FOMO khi giá vượt 26.5. Hãy kiên trì chờ phiên retest đáy hộp tại 25.3 - 25.6 để có vị thế an toàn cao nhất.'
+    }
+  },
+  {
+    sym: 'SSI', name: 'Chứng khoán SSI', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
+    price: 32.20, target: 37.80, sl: 30.20, rr: '1 : 2.8', score: 93, volRatio: 220, time: '13:55 hôm nay',
+    triggerMsg: 'Vượt đỉnh kháng cự ngắn hạn với lực mua gom chủ động dứt khoát',
+    fomo: {
+      recType: 'pullback',
+      recommendation: 'CHỜ CHỈNH 30.8 - 31.2',
+      marketBuy: { entry: 32.20, target: 34.00, sl: 30.50, rr: '1 : 1.06', verdict: 'R:R mỏng, giá đang tiệm cận cản chéo ngắn hạn.' },
+      pullbackBuy: { zone: '30.80 - 31.20', midPrice: 31.00, target: 37.80, sl: 29.80, rr: '1 : 5.67', prob: 74, support: 'Đỉnh cũ tháng trước đã chuyển thành hỗ trợ cứng', verdict: 'Tỷ lệ Lãi/Lỗ 1:5.67, rủi ro cắt lỗ chỉ khoảng 3.8%.' },
+      pros: [
+        'Thị phần môi giới và dư nợ cho vay margin top 1 thị trường',
+        'Hưởng lợi trực tiếp từ tiến trình nâng hạng thị trường chứng khoán FTSE',
+        'Thanh khoản thị trường hồi phục mạnh tạo đòn bẩy lợi nhuận quý'
+      ],
+      con: 'Biến động mạnh theo chỉ số VN-Index, hệ số Beta cao (1.45)',
+      fundDiscipline: 'Đặt lệnh đón sẵn quanh 30.8 - 31.2. Kỷ luật không đua lệnh giá trần hoặc giá xanh mạnh.'
+    }
+  },
+  {
+    sym: 'VCB', name: 'Vietcombank', ex: 'HOSE', strat: 'trend_ema', type: 'NẮM GIỮ',
+    price: 92.50, target: 104.00, sl: 88.00, rr: '1 : 2.5', score: 89, volRatio: 110, time: '13:40 hôm nay',
+    triggerMsg: 'Giữ vững kênh xu hướng tăng, dòng tiền phòng thủ vào đỡ giá chắc chắn',
+    fomo: {
+      recType: 'accumulate',
+      recommendation: 'MUA TÍCH LŨY 89.5 - 90.5',
+      marketBuy: { entry: 92.50, target: 96.00, sl: 89.50, rr: '1 : 1.17', verdict: 'Biên độ ăn ngắn hạn hẹp, cổ phiếu vốn hóa lớn chuyển động chậm.' },
+      pullbackBuy: { zone: '89.50 - 90.50', midPrice: 90.00, target: 104.00, sl: 87.50, rr: '1 : 5.60', prob: 65, support: 'Hỗ trợ đáy nền MA100 vững chắc', verdict: 'Phù hợp nắm giữ phòng thủ với mức sinh lời kỳ vọng +15%.' },
+      pros: [
+        'Tỷ lệ nợ xấu thấp nhất toàn hệ thống ngân hàng (< 1%)',
+        'Chất lượng tài sản và tỷ lệ bao phủ nợ xấu vượt trội',
+        'Trụ đỡ chỉ số chính của khối ngoại và các quỹ ETF'
+      ],
+      con: 'Tốc độ tăng giá chậm, không phù hợp cho nhà đầu tư thích lướt sóng nhanh',
+      fundDiscipline: 'Phù hợp giải ngân tích sản cho danh mục phòng thủ. Gom dần quanh 89.5 - 90.5, tỷ trọng tối đa 20% danh mục.'
+    }
+  },
+  {
+    sym: 'TCB', name: 'Techcombank', ex: 'HOSE', strat: 'statarb', type: 'MUA THĂM DÒ',
+    price: 24.10, target: 27.50, sl: 22.80, rr: '1 : 2.6', score: 91, volRatio: 165, time: '11:20 hôm nay',
+    triggerMsg: 'Giá đang bị ép rẻ hơn bình thường 2.14 lần độ lệch chuẩn so với toàn ngành',
+    fomo: {
+      recType: 'pullback',
+      recommendation: 'CHỜ CHỈNH VÙNG 23.4 - 23.6',
+      marketBuy: { entry: 24.10, target: 25.20, sl: 23.20, rr: '1 : 1.22', verdict: 'Biên độ hồi phục đang mở rộng nhưng cần thêm thời gian hấp thụ cung.' },
+      pullbackBuy: { zone: '23.40 - 23.60', midPrice: 23.50, target: 27.50, sl: 22.50, rr: '1 : 4.00', prob: 70, support: 'Đáy kép W ngắn hạn & hỗ trợ lực cầu chủ động', verdict: 'Mức định giá P/B chỉ 0.9x cho tỷ lệ Lãi/Lỗ 1:4.00.' },
+      pros: [
+        'Tỷ lệ CASA hàng đầu ngành ngân hàng, chi phí vốn thấp',
+        'Mảng tư vấn phát hành và ngân hàng đầu tư phục hồi tích cực',
+        'Lệch giá Z-Score -2.14 so với trung bình ngành (đang bị định giá rẻ bất thường)'
+      ],
+      con: 'Tỷ trọng cấp tín dụng mảng bất động sản còn tương đối lớn',
+      fundDiscipline: 'Tận dụng các nhịp rung lắc do tâm lý thị trường để gom quanh 23.4 - 23.6, nắm giữ theo nhịp hồi phục định giá.'
+    }
+  },
+  {
+    sym: 'MWG', name: 'Thế Giới Di Động', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
+    price: 68.40, target: 79.50, sl: 64.50, rr: '1 : 2.8', score: 94, volRatio: 270, time: '10:45 hôm nay',
+    triggerMsg: 'Mẫu hình nén giá thu hẹp biến động hoàn tất, dòng tiền bùng nổ',
+    fomo: {
+      recType: 'pullback',
+      recommendation: 'CHỜ LẤP GAP 65.2 - 66.0',
+      marketBuy: { entry: 68.40, target: 71.50, sl: 65.50, rr: '1 : 1.07', verdict: 'Giá vừa tăng một mạch 4 phiên, mua mới tại giá thị trường kém hấp dẫn.' },
+      pullbackBuy: { zone: '65.20 - 66.00', midPrice: 65.60, target: 79.50, sl: 63.80, rr: '1 : 7.72', prob: 78, support: 'Gap tăng giá và đường MA20 ngày', verdict: 'Tỷ lệ Lãi/Lỗ cực khủng 1:7.72 nếu kiên nhẫn đợi retest lấp Gap.' },
+      pros: [
+        'Bách Hóa Xanh đã qua điểm hòa vốn và bắt đầu đóng góp lợi nhuận dương',
+        'Hiệu quả chuỗi Thế Giới Di Động & Điện Máy Xanh tăng mạnh sau tái cấu trúc',
+        'Khối ngoại liên tục mua kín room ngoại'
+      ],
+      con: 'Sức mua tiêu dùng bán lẻ chung hồi phục chậm hơn kỳ vọng',
+      fundDiscipline: 'Tuyệt đối không mua đuổi khi cổ phiếu mở Gap tăng. Đặt lệnh đón lấp Gap tại vùng 65.2 - 66.0.'
+    }
+  },
+  {
+    sym: 'DGC', name: 'Hóa chất Đức Giang', ex: 'HOSE', strat: 'mean_bb_rsi', type: 'CHỐT LỜI 50%',
+    price: 115.00, target: 115.00, sl: 112.00, rr: '1 : 3.4', score: 92, volRatio: 190, time: '10:15 hôm nay',
+    triggerMsg: 'Đạt mục tiêu chốt lời (+18.2%), giá chạm vùng quá mua, nên hạ bớt 50% vị thế',
+    fomo: {
+      recType: 'take_profit',
+      recommendation: 'CHỐT LỜI 50% · CẤM MUA MỚI',
+      marketBuy: { entry: 115.00, target: 118.00, sl: 112.00, rr: '1 : 1.00', verdict: 'ĐÃ ĐẠT TARGET — Không có điểm mua mới an toàn.' },
+      pullbackBuy: { zone: '104.00 - 106.00', midPrice: 105.00, target: 125.00, sl: 101.00, rr: '1 : 5.00', prob: 82, support: 'Hỗ trợ nền tích lũy trước đó', verdict: 'Chờ nhịp điều chỉnh sâu lành mạnh để tái mở vị thế vòng mới.' },
+      pros: [
+        'Đã mang lại lợi nhuận +18.2% từ điểm mua ban đầu',
+        'Nhu cầu phốt pho vàng phục hồi mạnh theo làn sóng bán dẫn toàn cầu',
+        'Tình hình tài chính hoàn toàn sạch nợ vay, lượng tiền mặt dồi dào'
+      ],
+      con: 'Giá đang ở vùng quá mua rất nặng (RSI > 78), áp lực chốt lời lớn',
+      fundDiscipline: 'Kỷ luật chốt lời 50% vị thế, nâng chặn lãi cho 50% còn lại lên 112.0. Cấm mở vị thế mua mới tại đây.'
+    }
+  },
+  {
+    sym: 'MBB', name: 'Ngân hàng Quân Đội', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA THĂM DÒ',
+    price: 25.60, target: 29.20, sl: 24.20, rr: '1 : 2.5', score: 90, volRatio: 140, time: '29/10/2026',
+    triggerMsg: 'AI chấm điểm chất lượng 90/100, định giá P/B 1.05 rẻ nhất nhóm ngân hàng lớn',
+    fomo: {
+      recType: 'pullback',
+      recommendation: 'CHỜ CHỈNH 24.7 - 25.0',
+      marketBuy: { entry: 25.60, target: 26.80, sl: 24.60, rr: '1 : 1.20', verdict: 'Vào lệnh đuổi giá xanh rủi ro T+ lỗ ngược nhẹ.' },
+      pullbackBuy: { zone: '24.70 - 25.00', midPrice: 24.85, target: 29.20, sl: 24.00, rr: '1 : 5.12', prob: 73, support: 'Kênh xu hướng tăng và đường trung bình MA50', verdict: 'Điểm mua an toàn cao, tỷ lệ Lãi/Lỗ 1:5.12.' },
+      pros: [
+        'Định giá P/B chỉ 1.05 lần, thuộc nhóm hấp dẫn nhất VN30',
+        'Tăng trưởng tín dụng luôn nằm trong top đầu các ngân hàng cổ phần',
+        'Hệ sinh thái tài chính đa dạng (MB Ageas, MBS, MCredit)'
+      ],
+      con: 'Biên lãi thuần NIM chịu áp lực cạnh tranh lãi suất cho vay',
+      fundDiscipline: 'Canh nhịp rung lắc phiên sáng để gom vùng 24.7 - 25.0. Không vội mua giá đỉnh ngày.'
+    }
+  },
+  {
+    sym: 'CTR', name: 'Công trình Viettel', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA MẠNH',
+    price: 128.00, target: 149.00, sl: 121.00, rr: '1 : 3.0', score: 96, volRatio: 215, time: '29/10/2026',
+    triggerMsg: 'Đột phá đỉnh lịch sử, dòng tiền công nghệ - viễn thông dẫn dắt thị trường',
+    fomo: {
+      recType: 'pullback',
+      recommendation: 'CHỜ RETEST ĐỈNH 122 - 124',
+      marketBuy: { entry: 128.00, target: 134.00, sl: 123.00, rr: '1 : 1.20', verdict: 'Cổ phiếu vừa bứt phá đỉnh, mua ngay có rủi ro false breakout.' },
+      pullbackBuy: { zone: '122.00 - 124.00', midPrice: 123.00, target: 149.00, sl: 119.00, rr: '1 : 6.50', prob: 71, support: 'Đỉnh cũ vừa vượt qua chuyển thành ngưỡng đỡ', verdict: 'Retest đỉnh cũ thành công là điểm kích hoạt đòn bẩy tối ưu nhất (R:R 1:6.5).' },
+      pros: [
+        'Hưởng lợi trực tiếp từ tiến trình thương mại hóa mạng viễn thông 5G',
+        'Doanh thu cho thuê trạm BTS tăng trưởng ổn định đều đặn',
+        'Cơ cấu tài chính cực kỳ lành mạnh và minh bạch'
+      ],
+      con: 'Thanh khoản khớp lệnh trung bình phiên ở mức trung bình vừa phải',
+      fundDiscipline: 'Kiên nhẫn chờ kiểm định lại đỉnh cũ 122 - 124. Khi có nến rút chân với vô thấp, giải ngân 100% mục tiêu.'
+    }
+  },
+  {
+    sym: 'VNM', name: 'Vinamilk', ex: 'HOSE', strat: 'trend_ema', type: 'BÁN HẠ TỶ TRỌNG',
+    price: 66.50, target: 63.00, sl: 68.50, rr: '1 : 1.8', score: 85, volRatio: 130, time: '28/10/2026',
+    triggerMsg: 'Thủng ngưỡng hỗ trợ quan trọng, tín hiệu AI chuyển sang thận trọng, nên hạ bớt',
+    fomo: {
+      recType: 'avoid',
+      recommendation: 'HẠ TỶ TRỌNG · KHÔNG MUA',
+      marketBuy: { entry: 66.50, target: 67.50, sl: 68.50, rr: '1 : 0.50', verdict: 'TÍN HIỆU TIÊU CỰC — Không có điểm mua.' },
+      pullbackBuy: { zone: '58.00 - 60.00', midPrice: 59.00, target: 66.00, sl: 56.50, rr: '1 : 2.80', prob: 45, support: 'Đáy dài hạn 5 năm', verdict: 'Chỉ xem xét khi giá đã chiết khấu sâu về đáy chu kỳ.' },
+      pros: [
+        'Tỷ suất cổ tức tiền mặt đều đặn 6 - 8%/năm',
+        'Doanh nghiệp đầu ngành sữa với thị phần áp đảo tại Việt Nam',
+        'Tiền mặt ròng lớn, dòng tiền kinh doanh cực kỳ ổn định'
+      ],
+      con: 'Thủng MA200, dòng tiền lớn rút lui, tăng trưởng doanh thu bão hòa',
+      fundDiscipline: 'Tuân thủ kỷ luật quản trị rủi ro: Cắt lỗ / hạ tỷ trọng khi vi phạm ngưỡng cản. Không bao giờ trung bình giá xuống.'
+    }
+  },
+  {
+    sym: 'STB', name: 'Sacombank', ex: 'HOSE', strat: 'smart_money', type: 'NẮM GIỮ',
+    price: 34.20, target: 39.50, sl: 32.50, rr: '1 : 2.6', score: 88, volRatio: 105, time: '28/10/2026',
+    triggerMsg: 'Cá mập gom ròng liên tục 4 phiên, duy trì nắm giữ chờ nhịp tăng tốc',
+    fomo: {
+      recType: 'pullback',
+      recommendation: 'CHỜ CHỈNH 32.8 - 33.2',
+      marketBuy: { entry: 34.20, target: 36.00, sl: 32.80, rr: '1 : 1.29', verdict: 'R:R chưa đủ hấp dẫn để vào lệnh giải ngân lớn ngay lập tức.' },
+      pullbackBuy: { zone: '32.80 - 33.20', midPrice: 33.00, target: 39.50, sl: 31.80, rr: '1 : 5.42', prob: 75, support: 'Đường MA20 ngày và vùng tích lũy nền giá', verdict: 'Vùng giá chiết khấu an toàn, tỷ lệ Lãi/Lỗ 1:5.42.' },
+      pros: [
+        'Tiến trình xử lý nợ xấu VAMC cơ bản hoàn tất, chuẩn bị đấu giá cổ phần Phong Phú',
+        'Kỳ vọng lợi nhuận bứt phá mạnh khi hoàn tất tái cơ cấu toàn diện',
+        'Khối ngoại và tổ chức liên tục mua ròng tích lũy quanh nền'
+      ],
+      con: 'Độ biến động giá trong phiên tương đối cao do ảnh hưởng từ tin tức đồn thổi',
+      fundDiscipline: 'Không mua đuổi giá xanh tím. Đặt sẵn lệnh Limit quanh 32.8 - 33.2 để đón nhịp điều chỉnh rung rũ trong phiên.'
+    }
+  }
 ];;
 
 const QUANT_PAIRS = [
@@ -10414,10 +10619,13 @@ function runQuantBacktest(sym, stratId, period, capital, slPct, tpPct, fastMa, s
 }
 
 function vQuant() {
-  const qState = S.quant || { tab: 'signals', strat: 'trend_ema', sym: 'MSB', period: '3Y', capital: 100000000, posSize: 20, sl: 6, tp: 15, fastMa: 9, slowMa: 21, botActive: true, filterStrat: 'all', botLogs: [] };
+  const qState = S.quant || { tab: 'signals', strat: 'trend_ema', sym: 'MSB', fomoSym: 'MSB', period: '3Y', capital: 100000000, posSize: 20, sl: 6, tp: 15, fastMa: 9, slowMa: 21, botActive: true, filterStrat: 'all', botLogs: [] };
   const curTab = qState.tab || 'signals';
   const curStrat = QUANT_STRATEGIES[qState.strat] || QUANT_STRATEGIES.trend_ema;
   const backtest = runQuantBacktest(qState.sym, qState.strat, qState.period, qState.capital, qState.sl, qState.tp, qState.fastMa, qState.slowMa);
+  const fomoSym = qState.fomoSym || 'MSB';
+  const fomoSig = QUANT_LIVE_SIGNALS.find(s => s.sym === fomoSym) || QUANT_LIVE_SIGNALS[0];
+  const fomoData = fomoSig.fomo || {};
 
   const subTabs = [
     ['signals', '📡 Tín Hiệu Mua Bán Mới Nhất', QUANT_LIVE_SIGNALS.length],
@@ -10467,6 +10675,235 @@ function vQuant() {
 
       <!-- SUBTAB 1: LIVE SIGNALS RADAR -->
       ${curTab === 'signals' ? `
+        <!-- FOMO PULLBACK LADDER & AI FUND DISCIPLINE SPOTLIGHT (BUNNYQUANT-INSPIRED) -->
+        <div id="quant-fomo-spotlight" class="card" style="padding:20px 24px;margin-bottom:18px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.06);position:relative;overflow:hidden">
+          
+          <!-- Header & Stock Switcher -->
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:16px">
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span class="chip" style="background:rgba(239,68,68,0.12);color:var(--down);font-weight:700;font-size:11px;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:5px">
+                  🛡️ BỘ LỌC TÂM LÝ & CHỐNG ĐU ĐỈNH (ANTI-FOMO)
+                </span>
+                <span class="chip" style="background:rgba(34,171,148,0.12);color:var(--up);font-weight:700;font-size:11px;padding:4px 10px;border-radius:20px">
+                  💎 NGUYÊN TẮC KỶ LUẬT QUỸ
+                </span>
+              </div>
+              <h2 style="font-size:18px;font-weight:800;margin:0 0 4px 0;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px">
+                Thước Đo FOMO: Mua Đuổi Hiện Tại vs Chờ Nhịp Chỉnh (Pullback Ladder)
+              </h2>
+              <p style="font-size:13px;color:var(--ink2);margin:0;max-width:920px;line-height:1.5">
+                Hệ thống tự động đối chiếu việc <strong>mua đuổi giá xanh thị trường</strong> (R:R mỏng, dễ dính nhịp rũ bỏ T+) với việc <strong>kiên nhẫn chờ gom tại Vùng Mua Vàng kỹ thuật</strong> (R:R tối ưu, điểm dừng lỗ chặt chẽ).
+              </p>
+            </div>
+
+            <!-- Stock Switcher Selector -->
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+              <div style="font-size:11px;color:var(--ink3);font-weight:600">Chọn cổ phiếu soi tâm lý:</div>
+              <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;max-width:440px;justify-content:flex-end">
+                ${QUANT_LIVE_SIGNALS.map(s => `
+                  <button class="chip ${s.sym === fomoSym ? 'on' : ''}" data-act="quantfomosym" data-sym="${s.sym}" style="cursor:pointer;padding:4px 9px;border-radius:12px;font-size:11px;font-weight:700;transition:all 0.15s;border:${s.sym === fomoSym ? '1px solid var(--brand)' : '1px solid var(--line)'};background:${s.sym === fomoSym ? 'var(--brand)' : 'transparent'};color:${s.sym === fomoSym ? '#fff' : 'var(--ink)'}">
+                    ${s.sym}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Stock Highlight Banner -->
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:12px 16px;background:rgba(0,0,0,0.02);border:1px solid var(--line);border-radius:10px;margin-bottom:16px">
+            <div style="display:flex;align-items:center;gap:12px">
+              ${getCompanyLogo(fomoSig.sym, 36)}
+              <div>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="font-size:18px;font-weight:800;color:var(--brand);cursor:pointer" onclick="openStock('${fomoSig.sym}')">${fomoSig.sym}</span>
+                  <span style="font-size:13px;font-weight:600;color:var(--ink)">${fomoSig.name}</span>
+                  <span class="chip" style="font-size:10px;padding:2px 6px">${fomoSig.ex}</span>
+                </div>
+                <div style="font-size:12px;color:var(--ink3);margin-top:2px">
+                  Chiến lược thuật toán: <strong style="color:var(--ink)">${(QUANT_STRATEGIES[fomoSig.strat] || {}).name || fomoSig.strat}</strong> · Điểm sức mạnh AI: <strong style="color:var(--brand)">${fomoSig.score}/100</strong>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px">
+              <div style="text-align:right">
+                <div style="font-size:11px;color:var(--ink3);text-transform:uppercase">Giá thị trường hiện tại</div>
+                <div style="font-size:20px;font-weight:800;font-family:var(--mono);color:var(--ink)">${fomoSig.price.toFixed(2)}</div>
+              </div>
+              <div style="height:32px;width:1px;background:var(--line)"></div>
+              <div>
+                <div style="font-size:11px;color:var(--ink3);text-transform:uppercase">Khuyến nghị kỷ luật</div>
+                <div style="font-size:12px;font-weight:800;padding:4px 10px;border-radius:6px;background:${fomoData.recType === 'pullback' ? 'rgba(245,158,11,0.15)' : fomoData.recType === 'take_profit' ? 'rgba(239,68,68,0.15)' : fomoData.recType === 'avoid' ? 'rgba(239,68,68,0.12)' : 'rgba(34,171,148,0.15)'};color:${fomoData.recType === 'pullback' ? '#D97706' : fomoData.recType === 'take_profit' ? 'var(--down)' : fomoData.recType === 'avoid' ? 'var(--down)' : 'var(--up)'}">
+                  ${fomoData.recommendation || fomoSig.type}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2 COMPARISON COLUMNS: MARKET BUY VS PULLBACK BUY -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:16px;margin-bottom:18px">
+            
+            <!-- CỘT 1: MUA ĐUỔI GIÁ THỊ TRƯỜNG -->
+            <div style="padding:16px;border-radius:10px;border:1.5px solid rgba(239,68,68,0.3);background:linear-gradient(180deg, rgba(239,68,68,0.04) 0%, rgba(239,68,68,0.01) 100%);position:relative">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <span style="font-size:16px">⚠️</span>
+                  <span style="font-weight:800;font-size:13px;color:var(--down);letter-spacing:0.02em;text-transform:uppercase">Kịch Bản 1: Mua Đuổi Ngay Giá Hiện Tại</span>
+                </div>
+                <span class="chip" style="background:rgba(239,68,68,0.15);color:var(--down);font-size:10px;font-weight:700">RỦI RO CAO / R:R KÉM</span>
+              </div>
+
+              <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:12px;margin-bottom:12px">
+                <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;text-align:center">
+                  <div>
+                    <div style="font-size:10px;color:var(--ink3)">Giá Vào Lệnh</div>
+                    <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--ink);margin-top:2px">${fomoData.marketBuy.entry.toFixed(2)}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:10px;color:var(--ink3)">Mục Tiêu TP1</div>
+                    <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--up);margin-top:2px">${fomoData.marketBuy.target.toFixed(2)}</div>
+                    <div style="font-size:10px;color:var(--up)">(+${((fomoData.marketBuy.target - fomoData.marketBuy.entry) / fomoData.marketBuy.entry * 100).toFixed(1)}%)</div>
+                  </div>
+                  <div>
+                    <div style="font-size:10px;color:var(--ink3)">Cắt Lỗ (SL)</div>
+                    <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--down);margin-top:2px">${fomoData.marketBuy.sl.toFixed(2)}</div>
+                    <div style="font-size:10px;color:var(--down)">(${((fomoData.marketBuy.sl - fomoData.marketBuy.entry) / fomoData.marketBuy.entry * 100).toFixed(1)}%)</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Big R:R Display -->
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(239,68,68,0.08);border-radius:8px;margin-bottom:12px">
+                <div>
+                  <div style="font-size:11px;color:var(--ink3);font-weight:600">Tỷ Lệ Lãi / Lỗ (R:R):</div>
+                  <div style="font-size:22px;font-weight:900;font-family:var(--mono);color:var(--down);line-height:1.2">
+                    ${fomoData.marketBuy.rr} <span style="font-size:12px;font-weight:700">⚠️ Báo Động</span>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-size:10px;color:var(--ink3)">Khoảng cách đến SL</div>
+                  <div style="font-size:13px;font-weight:700;font-family:var(--mono);color:var(--down)">
+                    ${Math.abs((fomoData.marketBuy.sl - fomoData.marketBuy.entry) / fomoData.marketBuy.entry * 100).toFixed(1)}% rủi ro
+                  </div>
+                </div>
+              </div>
+
+              <div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-bottom:12px;padding:8px 10px;background:rgba(0,0,0,0.02);border-radius:6px">
+                <strong>Nhận định:</strong> ${fomoData.marketBuy.verdict}
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--down);font-weight:600">
+                <span>❌ Dễ dính bulltrap hoặc nhịp rũ bỏ T+</span>
+                <span>Kỷ luật: Không đua lệnh</span>
+              </div>
+            </div>
+
+            <!-- CỘT 2: CHỜ NHỊP CHỈNH (VÙNG MUA VÀNG PULLBACK) -->
+            <div style="padding:16px;border-radius:10px;border:1.5px solid rgba(34,171,148,0.4);background:linear-gradient(180deg, rgba(34,171,148,0.06) 0%, rgba(34,171,148,0.02) 100%);position:relative">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <span style="font-size:16px">💎</span>
+                  <span style="font-weight:800;font-size:13px;color:var(--up);letter-spacing:0.02em;text-transform:uppercase">Kịch Bản 2: Kiên Nhẫn Chờ Nhịp Chỉnh (Pullback)</span>
+                </div>
+                <span class="chip" style="background:rgba(34,171,148,0.18);color:var(--up);font-size:10px;font-weight:700">VÙNG MUA VÀNG / R:R TỐI ƯU</span>
+              </div>
+
+              <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(34,171,148,0.2);border-radius:8px;padding:12px;margin-bottom:12px">
+                <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;text-align:center">
+                  <div>
+                    <div style="font-size:10px;color:var(--ink3)">Vùng Mua Gom</div>
+                    <div style="font-size:15px;font-weight:800;font-family:var(--mono);color:var(--up);margin-top:2px">${fomoData.pullbackBuy.zone}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:10px;color:var(--ink3)">Mục Tiêu TP2</div>
+                    <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--up);margin-top:2px">${fomoData.pullbackBuy.target.toFixed(2)}</div>
+                    <div style="font-size:10px;color:var(--up)">(+${((fomoData.pullbackBuy.target - fomoData.pullbackBuy.midPrice) / fomoData.pullbackBuy.midPrice * 100).toFixed(1)}%)</div>
+                  </div>
+                  <div>
+                    <div style="font-size:10px;color:var(--ink3)">Cắt Lỗ SL Chặt</div>
+                    <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--down);margin-top:2px">${fomoData.pullbackBuy.sl.toFixed(2)}</div>
+                    <div style="font-size:10px;color:var(--down)">(${((fomoData.pullbackBuy.sl - fomoData.pullbackBuy.midPrice) / fomoData.pullbackBuy.midPrice * 100).toFixed(1)}%)</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Big R:R Display -->
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(34,171,148,0.1);border-radius:8px;margin-bottom:12px">
+                <div>
+                  <div style="font-size:11px;color:var(--ink3);font-weight:600">Tỷ Lệ Lãi / Lỗ (R:R):</div>
+                  <div style="font-size:22px;font-weight:900;font-family:var(--mono);color:var(--up);line-height:1.2">
+                    ${fomoData.pullbackBuy.rr} <span style="font-size:12px;font-weight:700">💎 Cực Chuẩn</span>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-size:10px;color:var(--ink3)">Xác suất có nhịp chỉnh</div>
+                  <div style="display:inline-flex;align-items:center;gap:4px">
+                    <span style="font-size:14px;font-weight:800;color:var(--brand)">${fomoData.pullbackBuy.prob}%</span>
+                    <div style="width:40px;height:6px;background:rgba(0,0,0,0.08);border-radius:3px;overflow:hidden">
+                      <div style="width:${fomoData.pullbackBuy.prob}%;height:100%;background:var(--brand)"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-bottom:12px;padding:8px 10px;background:rgba(0,0,0,0.02);border-radius:6px">
+                <strong>Điểm tựa kỹ thuật:</strong> ${fomoData.pullbackBuy.support} — ${fomoData.pullbackBuy.verdict}
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <button class="btn primary sm" onclick="toast('Đã lưu cảnh báo: Khi ${fomoSig.sym} rung lắc chạm vùng ${fomoData.pullbackBuy.zone}, hệ thống sẽ báo chuông ngay!')" style="font-size:11px;padding:6px 12px;width:100%;justify-content:center">
+                  🔔 Báo Động Vùng Mua Vàng (${fomoData.pullbackBuy.zone})
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI ONE-STOCK ONE-VERDICT REPORT (3 PROS + 1 CON + FUND DISCIPLINE) -->
+          <div style="background:rgba(0,0,0,0.02);border:1px solid var(--line);border-radius:10px;padding:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:16px">🤖</span>
+                <h3 style="font-size:14px;font-weight:800;margin:0;letter-spacing:-0.01em">
+                  Báo Cáo Tóm Tắt 60 Giây: "Một Mã — Một Kết Luận Theo Kỷ Luật Quỹ"
+                </h3>
+              </div>
+              <span style="font-size:11px;color:var(--ink3)">Hệ thống Quad-Factor Alpha Engine</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:14px;margin-bottom:14px">
+              <!-- 3 Pros -->
+              <div style="padding:12px;background:rgba(34,171,148,0.04);border:1px solid rgba(34,171,148,0.15);border-radius:8px">
+                <div style="font-size:12px;font-weight:700;color:var(--up);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+                  <span>🟢 3 Luận Điểm Mua & Động Lực Tăng Giá:</span>
+                </div>
+                <ul style="margin:0;padding-left:18px;font-size:12px;color:var(--ink);line-height:1.6">
+                  ${fomoData.pros.map(pro => `<li style="margin-bottom:4px">${pro}</li>`).join('')}
+                </ul>
+              </div>
+
+              <!-- 1 Con / Defense Risk -->
+              <div style="padding:12px;background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.15);border-radius:8px">
+                <div style="font-size:12px;font-weight:700;color:var(--down);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+                  <span>🔴 1 Rủi Ro Trọng Yếu Cần Phòng Thủ:</span>
+                </div>
+                <p style="margin:0;font-size:12px;color:var(--ink);line-height:1.6">
+                  ⚠️ ${fomoData.con}
+                </p>
+              </div>
+            </div>
+
+            <!-- Final Disciplined Verdict -->
+            <div style="padding:12px 16px;background:linear-gradient(90deg, rgba(34,171,148,0.1) 0%, rgba(59,130,246,0.08) 100%);border-left:4px solid var(--brand);border-radius:0 8px 8px 0;display:flex;align-items:flex-start;gap:10px">
+              <span style="font-size:18px;line-height:1">🎯</span>
+              <div style="font-size:12px;color:var(--ink);line-height:1.5">
+                <strong style="color:var(--brand)">KẾT LUẬN KỶ LUẬT QUỸ ĐỀ XUẤT:</strong>
+                ${fomoData.fundDiscipline}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
         <div class="card" style="padding:16px 20px;margin-bottom:16px">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
             <div>
@@ -10490,6 +10927,7 @@ function vQuant() {
                   <th style="padding:10px 8px">Mã CP</th>
                   <th style="padding:10px 8px">Cách Đánh / Chiến Lược</th>
                   <th style="padding:10px 8px">Khuyến Nghị AI</th>
+                  <th style="padding:10px 8px">Khuyến Nghị Chống FOMO</th>
                   <th style="padding:10px 8px;text-align:right">Giá Mua Gợi Ý</th>
                   <th style="padding:10px 8px;text-align:right">Mục Tiêu Chốt Lời</th>
                   <th style="padding:10px 8px;text-align:right">Chặn Lỗ Tối Đa</th>
@@ -10509,6 +10947,10 @@ function vQuant() {
                   const typeBg = isBuy ? 'rgba(34,171,148,0.12)' : isSell ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)';
                   const upsidePct = +((sig.target - sig.price) / sig.price * 100).toFixed(1);
                   const downsidePct = +((sig.sl - sig.price) / sig.price * 100).toFixed(1);
+                  const f = sig.fomo || {};
+                  const fRecColor = f.recType === 'pullback' ? '#D97706' : f.recType === 'take_profit' ? 'var(--down)' : f.recType === 'avoid' ? 'var(--down)' : 'var(--up)';
+                  const fRecBg = f.recType === 'pullback' ? 'rgba(245,158,11,0.12)' : f.recType === 'take_profit' ? 'rgba(239,68,68,0.12)' : f.recType === 'avoid' ? 'rgba(239,68,68,0.1)' : 'rgba(34,171,148,0.12)';
+                  const fIcon = f.recType === 'pullback' ? '⏳' : f.recType === 'take_profit' ? '🎯' : f.recType === 'avoid' ? '⛔' : '⚡';
 
                   return `
                     <tr style="border-bottom:1px solid rgba(0,0,0,0.04);transition:background 0.15s" onmouseover="this.style.background='rgba(0,0,0,0.02)'" onmouseout="this.style.background='transparent'">
@@ -10529,6 +10971,16 @@ function vQuant() {
                         <span style="display:inline-block;padding:4px 8px;border-radius:6px;background:${typeBg};color:var(--${typeClass});font-weight:700;font-size:11px">
                           ${sig.type}
                         </span>
+                      </td>
+                      <td style="padding:12px 8px">
+                        <div style="display:flex;flex-direction:column;gap:3px">
+                          <span style="display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:11px;padding:3px 7px;border-radius:5px;background:${fRecBg};color:${fRecColor};white-space:nowrap">
+                            ${fIcon} ${f.recommendation || 'Theo dõi'}
+                          </span>
+                          <span style="font-size:10px;color:var(--ink3)">
+                            ${f.pullbackBuy ? 'Chỉnh ' + f.pullbackBuy.prob + '% · R:R ' + f.pullbackBuy.rr : 'R:R ' + (f.marketBuy ? f.marketBuy.rr : sig.rr)}
+                          </span>
+                        </div>
                       </td>
                       <td style="padding:12px 8px;text-align:right;font-weight:700;font-family:var(--mono)">
                         ${sig.price.toFixed(2)}
@@ -10559,7 +11011,10 @@ function vQuant() {
                         ${sig.time}
                       </td>
                       <td style="padding:12px 8px;text-align:center">
-                        <div style="display:flex;align-items:center;justify-content:center;gap:6px">
+                        <div style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap">
+                          <button class="btn sm" data-act="quantfomosym" data-sym="${sig.sym}" style="font-size:11px;padding:4px 8px;background:rgba(239,68,68,0.08);color:var(--down);border:1px solid rgba(239,68,68,0.25)" title="So sánh Mua ngay vs Chờ nhịp chỉnh">
+                            ⚖️ So Sánh FOMO
+                          </button>
                           <button class="btn ghost sm" data-act="quantquickbacktest" data-sym="${sig.sym}" data-strat="${sig.strat}" style="font-size:11px;padding:4px 8px" title="Kiểm định xem chiến lược này lãi bao nhiêu trong 5 năm qua trên ${sig.sym}">
                             🧪 Thử 5 năm
                           </button>
@@ -11112,6 +11567,12 @@ const A = {
   quantfilterstrat: el => {
     S.quant.filterStrat = el.dataset.v;
     render(true);
+  },
+  quantfomosym: el => {
+    S.quant.fomoSym = el.dataset.sym;
+    render(true);
+    const spotlightEl = document.getElementById('quant-fomo-spotlight');
+    if (spotlightEl) spotlightEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   },
   quantstock: el => {
     S.quant.sym = el.value || el.dataset.v;

@@ -3566,9 +3566,10 @@ function bridgeCandlesToToday(bars, targetPriceVal, sym) {
   const lastBar = bars[bars.length - 1];
   const lastD = new Date(lastBar.d.getFullYear(), lastBar.d.getMonth(), lastBar.d.getDate());
   
-  const curTarget = (targetPriceVal && targetPriceVal > 0) 
+  let curTarget = (targetPriceVal && targetPriceVal > 0) 
     ? targetPriceVal 
     : ((typeof STOCK !== 'undefined' && STOCK && STOCK.sym === sym && STOCK.price) ? STOCK.price : lastBar.c);
+  if (curTarget > 0 && curTarget < 1000) curTarget = Math.round(curTarget * 1000);
   
   if (lastD.getTime() >= today.getTime()) {
     lastBar.c = curTarget;
@@ -3620,25 +3621,35 @@ function bridgeCandlesToToday(bars, targetPriceVal, sym) {
 
 function makeCandles(targetPrice, seed, chgVal, sym) {
   const curSym = sym || (typeof STOCK !== 'undefined' && STOCK ? STOCK.sym : 'MSB');
-  const targetPriceVal = targetPrice || (typeof STOCK !== 'undefined' && STOCK ? STOCK.price : 14600);
+  let targetPriceVal = targetPrice || (typeof STOCK !== 'undefined' && STOCK ? STOCK.price : 14600);
+  if (targetPriceVal > 0 && targetPriceVal < 1000) {
+    targetPriceVal = Math.round(targetPriceVal * 1000);
+  }
   if (curSym === 'MSB' && typeof REAL_MSB_CANDLES !== 'undefined' && REAL_MSB_CANDLES.length) {
+    const lastRawBar = REAL_MSB_CANDLES[REAL_MSB_CANDLES.length - 1];
+    const lastRawClose = lastRawBar ? lastRawBar[4] : targetPriceVal;
+    const scale = (lastRawClose && targetPriceVal > 0) ? (targetPriceVal / lastRawClose) : 1;
     const raw = REAL_MSB_CANDLES.map(r => ({
       d: new Date(r[0] + 'T00:00:00'),
-      o: r[1],
-      h: r[2],
-      l: r[3],
-      c: r[4],
+      o: Math.round((r[1] * scale) / 50) * 50,
+      h: Math.round((r[2] * scale) / 50) * 50,
+      l: Math.round((r[3] * scale) / 50) * 50,
+      c: Math.round((r[4] * scale) / 50) * 50,
       v: r[5]
     }));
     return bridgeCandlesToToday(raw, targetPriceVal, curSym);
   }
   if (typeof REAL_STOCKS_CANDLES !== 'undefined' && REAL_STOCKS_CANDLES[curSym] && REAL_STOCKS_CANDLES[curSym].length) {
-    const raw = REAL_STOCKS_CANDLES[curSym].map(r => ({
+    const rawBars = REAL_STOCKS_CANDLES[curSym];
+    const lastRawBar = rawBars[rawBars.length - 1];
+    const lastRawClose = lastRawBar ? lastRawBar[4] : targetPriceVal;
+    const scale = (lastRawClose && targetPriceVal > 0) ? (targetPriceVal / lastRawClose) : 1;
+    const raw = rawBars.map(r => ({
       d: new Date(r[0] + 'T00:00:00'),
-      o: r[1],
-      h: r[2],
-      l: r[3],
-      c: r[4],
+      o: Math.round((r[1] * scale) / 50) * 50,
+      h: Math.round((r[2] * scale) / 50) * 50,
+      l: Math.round((r[3] * scale) / 50) * 50,
+      c: Math.round((r[4] * scale) / 50) * 50,
       v: r[5]
     }));
     return bridgeCandlesToToday(raw, targetPriceVal, curSym);
@@ -17352,7 +17363,7 @@ const VN30_DATA_FEED = {
 const DNSE_STOCKS_DB = {
   BVH: {
     sym: 'BVH', ex: 'HOSE', name: 'Tập đoàn Bảo Việt', ind: 'Bảo hiểm',
-    price: 76200, ref: 77900, chg: -1700, pct: -2.18, vol: 654140, val_bil: 50.25,
+    price: 43500, ref: 44000, chg: -500, pct: -1.14, vol: 654140, val_bil: 50.25,
     metrics: {
       val: [
         ['EPS (TTM)', '4.700'],
@@ -17411,7 +17422,7 @@ const DNSE_STOCKS_DB = {
   },
   BID: {
     sym: 'BID', ex: 'HOSE', name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam', ind: 'Ngân hàng',
-    price: 34000, ref: 33900, chg: 100, pct: 0.29, vol: 1129100, val_bil: 38.39,
+    price: 48500, ref: 49500, chg: -1000, pct: -2.02, vol: 1129100, val_bil: 38.39,
     open: 33800, high: 34200, low: 33700, close: 34000, ceil: 36250, floor: 31550, avg: 33950,
     metrics: {
       val: [
@@ -17666,7 +17677,7 @@ const DNSE_STOCKS_DB = {
   },
   BCM: {
     sym: 'BCM', ex: 'HOSE', name: 'Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP', ind: 'Bất động sản KCN',
-    price: 38300, ref: 39150, chg: -850, pct: -2.17, vol: 447100, val_bil: 17.12,
+    price: 68000, ref: 69200, chg: -1200, pct: -1.73, vol: 447100, val_bil: 17.12,
     metrics: {
       val: [
         ['EPS (TTM)', '2.050'],
@@ -17725,7 +17736,7 @@ const DNSE_STOCKS_DB = {
   },
   MSB: {
     sym: 'MSB', ex: 'HOSE', name: 'Ngân hàng TMCP Hàng hải Việt Nam', ind: 'Ngân hàng',
-    price: 14600, ref: 14750, chg: -150, pct: -1.02, vol: 21380000, val_bil: 312.15,
+    price: 15800, ref: 15800, chg: 0, pct: 0.00, vol: 21380000, val_bil: 312.15,
     metrics: {
       val: [
         ['EPS (TTM)', '2.096'],
@@ -17785,7 +17796,7 @@ const DNSE_STOCKS_DB = {
 
   FPT: {
     sym: 'FPT', ex: 'HOSE', name: 'Công ty Cổ phần FPT', ind: 'Công nghệ thông tin',
-    price: 57900, ref: 59700, chg: -1800, pct: -3.02, vol: 10851700, val_bil: 632.45,
+    price: 138500, ref: 140000, chg: -1500, pct: -1.07, vol: 10851700, val_bil: 632.45,
     metrics: {
       liq: [['KLGD', '10.851.700 CP'], ['GTGD', '632,45 tỷ đồng']],
       frn: [['Khối lượng ròng', '+840.200', 'up'], ['Giá trị ròng', '+116,30 tỷ', 'up'], ['Room ngoại', '0 CP (Full 49%)']],
@@ -17826,7 +17837,7 @@ const DNSE_STOCKS_DB = {
 
   HPG: {
     sym: 'HPG', ex: 'HOSE', name: 'Công ty Cổ phần Tập đoàn Hòa Phát', ind: 'Thép & Kim loại',
-    price: 20100, ref: 20150, chg: -50, pct: -0.25, vol: 15779800, val_bil: 316.83,
+    price: 26400, ref: 26800, chg: -400, pct: -1.49, vol: 15779800, val_bil: 316.83,
     metrics: {
       liq: [['KLGD', '15.779.800 CP'], ['GTGD', '316,83 tỷ đồng']],
       frn: [['Khối lượng ròng', '+2.410.000', 'up'], ['Giá trị ròng', '+63,62 tỷ', 'up'], ['Room ngoại', '1.250.000.000 CP']],
@@ -17867,7 +17878,7 @@ const DNSE_STOCKS_DB = {
 
   VCB: {
     sym: 'VCB', ex: 'HOSE', name: 'Ngân hàng TMCP Ngoại thương Việt Nam', ind: 'Ngân hàng',
-    price: 56700, ref: 56600, chg: 100, pct: 0.18, vol: 3049500, val_bil: 172.36,
+    price: 92500, ref: 93500, chg: -1000, pct: -1.07, vol: 3049500, val_bil: 172.36,
     metrics: {
       liq: [['KLGD', '3.049.500 CP'], ['GTGD', '172,36 tỷ đồng']],
       frn: [['Khối lượng ròng', '+420.000', 'up'], ['Giá trị ròng', '+38,64 tỷ', 'up'], ['Room ngoại', '890.000.000 CP']],
@@ -17908,7 +17919,7 @@ const DNSE_STOCKS_DB = {
 
   TCB: {
     sym: 'TCB', ex: 'HOSE', name: 'Ngân hàng TMCP Kỹ thương Việt Nam', ind: 'Ngân hàng',
-    price: 32350, ref: 31900, chg: 450, pct: 1.41, vol: 15207700, val_bil: 487.98,
+    price: 24100, ref: 24500, chg: -400, pct: -1.63, vol: 15207700, val_bil: 487.98,
     metrics: {
       liq: [['KLGD', '15.207.700 CP'], ['GTGD', '487,98 tỷ đồng']],
       frn: [['Khối lượng ròng', '+1.120.000', 'up'], ['Giá trị ròng', '+27,78 tỷ', 'up'], ['Room ngoại', '0 CP (Full 22,5%)']],
@@ -17949,7 +17960,7 @@ const DNSE_STOCKS_DB = {
 
   MWG: {
     sym: 'MWG', ex: 'HOSE', name: 'Công ty Cổ phần Đầu tư Thế Giới Di Động', ind: 'Bán lẻ',
-    price: 75900, ref: 76100, chg: -200, pct: -0.26, vol: 2801400, val_bil: 211.76,
+    price: 68400, ref: 69500, chg: -1100, pct: -1.58, vol: 2801400, val_bil: 211.76,
     metrics: {
       liq: [['KLGD', '2.801.400 CP'], ['GTGD', '211,76 tỷ đồng']],
       frn: [['Khối lượng ròng', '+780.000', 'up'], ['Giá trị ròng', '+53,19 tỷ', 'up'], ['Room ngoại', '0 CP (Full 49%)']],
@@ -17990,7 +18001,7 @@ const DNSE_STOCKS_DB = {
 
   SSI: {
     sym: 'SSI', ex: 'HOSE', name: 'Công ty Cổ phần Chứng khoán SSI', ind: 'Dịch vụ tài chính / Chứng khoán',
-    price: 19000, ref: 19050, chg: -50, pct: -0.26, vol: 26053200, val_bil: 497.06,
+    price: 32200, ref: 32600, chg: -400, pct: -1.23, vol: 26053200, val_bil: 497.06,
     metrics: {
       liq: [['KLGD', '26.053.200 CP'], ['GTGD', '497,06 tỷ đồng']],
       frn: [['Khối lượng ròng', '+1.850.000', 'up'], ['Giá trị ròng', '+60,68 tỷ', 'up'], ['Room ngoại', '950.000.000 CP']],
@@ -18031,7 +18042,7 @@ const DNSE_STOCKS_DB = {
 
   VNM: {
     sym: 'VNM', ex: 'HOSE', name: 'Công ty Cổ phần Sữa Việt Nam', ind: 'Thực phẩm & Đồ uống',
-    price: 57700, ref: 57900, chg: -200, pct: -0.35, vol: 1355700, val_bil: 78.51,
+    price: 66500, ref: 67200, chg: -700, pct: -1.04, vol: 1355700, val_bil: 78.51,
     metrics: {
       liq: [['KLGD', '1.355.700 CP'], ['GTGD', '78,51 tỷ đồng']],
       frn: [['Khối lượng ròng', '+650.000', 'up'], ['Giá trị ròng', '+43,22 tỷ', 'up'], ['Room ngoại', '840.000.000 CP']],
@@ -18072,7 +18083,7 @@ const DNSE_STOCKS_DB = {
 
   ACB: {
     sym: 'ACB', ex: 'HOSE', name: 'Ngân hàng TMCP Á Châu', ind: 'Ngân hàng',
-    price: 20150, ref: 20350, chg: -200, pct: -0.98, vol: 11569900, val_bil: 234.76,
+    price: 25400, ref: 25800, chg: -400, pct: -1.55, vol: 11569900, val_bil: 234.76,
     metrics: {
       liq: [['KLGD', '11.569.900 CP'], ['GTGD', '234,76 tỷ đồng']],
       frn: [['Khối lượng ròng', '+450.000', 'up'], ['Giá trị ròng', '+11,52 tỷ', 'up'], ['Room ngoại', '0 CP (Full 30%)']],
@@ -18113,7 +18124,7 @@ const DNSE_STOCKS_DB = {
 
   VPB: {
     sym: 'VPB', ex: 'HOSE', name: 'Ngân hàng TMCP Việt Nam Thịnh Vượng', ind: 'Ngân hàng',
-    price: 23800, ref: 23450, chg: 350, pct: 1.49, vol: 20155900, val_bil: 476.51,
+    price: 19800, ref: 20200, chg: -400, pct: -1.98, vol: 20155900, val_bil: 476.51,
     metrics: {
       liq: [['KLGD', '20.155.900 CP'], ['GTGD', '476,51 tỷ đồng']],
       frn: [['Khối lượng ròng', '+1.200.000', 'up'], ['Giá trị ròng', '+23,28 tỷ', 'up'], ['Room ngoại', 'SMBC sở hữu 15%']],
@@ -18154,7 +18165,7 @@ const DNSE_STOCKS_DB = {
 
   MBB: {
     sym: 'MBB', ex: 'HOSE', name: 'Ngân hàng TMCP Quân đội', ind: 'Ngân hàng',
-    price: 19050, ref: 18900, chg: 150, pct: 0.79, vol: 14094300, val_bil: 266.49,
+    price: 25600, ref: 26000, chg: -400, pct: -1.54, vol: 14094300, val_bil: 266.49,
     metrics: {
       liq: [['KLGD', '14.094.300 CP'], ['GTGD', '266,49 tỷ đồng']],
       frn: [['Khối lượng ròng', '+980.000', 'up'], ['Giá trị ròng', '+23,61 tỷ', 'up'], ['Room ngoại', '0 CP (Full 23,2%)']],

@@ -10177,6 +10177,9 @@ function readHash() {
     if (params.get('sideTab')) {
       S_HERO_SIDE_TAB = params.get('sideTab');
     }
+    if (params.get('quantTab')) {
+      if (typeof S !== 'undefined' && S.quant) S.quant.tab = params.get('quantTab');
+    }
   }
   if (!symParam && raw.includes('/')) {
     const parts = raw.split('/');

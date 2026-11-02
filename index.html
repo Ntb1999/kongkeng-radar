@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+<link rel="icon" type="image/svg+xml" href="assets/kongkeng-radar-icon.svg">
+<link rel="alternate icon" href="assets/kongkeng-radar-icon.svg">
+<link rel="apple-touch-icon" href="assets/kongkeng-radar-icon.svg">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>KongKeng Radar — Nền tảng Phân tích & Radar Quét Tín hiệu Đầu tư Chứng khoán</title>
@@ -2489,7 +2492,47 @@ td[data-stock-role="price"],
 .mnews-trend-row:last-child {
   border-bottom: 0;
 }
-</style>
+
+    /* KongKeng Quant Radar UX Enhancements */
+    .quant-container h1 {
+      line-height: 1.35 !important;
+      word-break: break-word;
+    }
+    .quant-container .tabs {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+    .quant-container .tabs::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+    .quant-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 8px;
+    }
+    .quant-table-wrap table {
+      min-width: 880px;
+    }
+    @media (max-width: 768px) {
+      .quant-container {
+        padding: 12px 10px !important;
+      }
+      .quant-container h1 {
+        font-size: 18px !important;
+        line-height: 1.3 !important;
+      }
+      .quant-container .card {
+        padding: 14px !important;
+      }
+    }
+
+  </style>
 <style id="kkr-gate-style">
   #kkr-gate-overlay {
     position: fixed;
@@ -10641,7 +10684,7 @@ function runQuantBacktest(sym, stratId, period, capital, slPct, tpPct, fastMa, s
 }
 
 function vQuant() {
-  const qState = S.quant || { tab: 'signals', strat: 'trend_ema', sym: 'MSB', fomoSym: 'MSB', period: '3Y', capital: 100000000, posSize: 20, sl: 6, tp: 15, fastMa: 9, slowMa: 21, botActive: true, filterStrat: 'all', botLogs: [] };
+  const qState = S.quant || { tab: 'signals', strat: 'trend_ema', sym: 'MSB', fomoSym: 'MSB', period: '5Y', capital: 100000000, posSize: 20, sl: 6, tp: 15, fastMa: 9, slowMa: 21, botActive: true, filterStrat: 'all', botLogs: [] };
   const curTab = qState.tab || 'signals';
   const curStrat = QUANT_STRATEGIES[qState.strat] || QUANT_STRATEGIES.trend_ema;
   const backtest = runQuantBacktest(qState.sym, qState.strat, qState.period, qState.capital, qState.sl, qState.tp, qState.fastMa, qState.slowMa);
@@ -10664,8 +10707,30 @@ function vQuant() {
         <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
           <div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--brand);color:#fff;box-shadow:0 2px 8px rgba(34,171,148,0.35)">⚡</span>
-              <h1 style="font-size:22px;font-weight:700;margin:0;letter-spacing:-0.02em">RADAR ĐỊNH LƯỢNG (QUANT RADAR) — Quét Tín Hiệu & Đặt Lệnh Bằng AI</h1>
+              <span class="kk-radar-brand-badge" style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg, #1C2128 0%, #0F1318 100%);border:1.5px solid rgba(255,107,0,0.5);box-shadow:0 0 16px rgba(255,107,0,0.3), inset 0 1px 0 rgba(255,255,255,0.12);flex-shrink:0" title="KongKeng Radar">
+                <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="kk-badge-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#FF3B30"/>
+                      <stop offset="50%" stop-color="#FF6B00"/>
+                      <stop offset="100%" stop-color="#FF9500"/>
+                    </linearGradient>
+                    <linearGradient id="kk-badge-sweep" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#FF3B30" stop-opacity="0.9"/>
+                      <stop offset="100%" stop-color="#FF9500" stop-opacity="0.05"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="16" cy="16" r="14" stroke="url(#kk-badge-grad)" stroke-width="1.3" opacity="0.4" stroke-dasharray="3 2"/>
+                  <circle cx="16" cy="16" r="9.5" stroke="url(#kk-badge-grad)" stroke-width="1.2" opacity="0.75"/>
+                  <circle cx="16" cy="16" r="5" stroke="url(#kk-badge-grad)" stroke-width="1.1" opacity="0.95"/>
+                  <path d="M16 16 L29 9 A14 14 0 0 0 16 2 Z" fill="url(#kk-badge-sweep)"/>
+                  <line x1="16" y1="2" x2="16" y2="30" stroke="url(#kk-badge-grad)" stroke-width="0.8" stroke-dasharray="1 2" opacity="0.5"/>
+                  <line x1="2" y1="16" x2="30" y2="16" stroke="url(#kk-badge-grad)" stroke-width="0.8" stroke-dasharray="1 2" opacity="0.5"/>
+                  <circle cx="16" cy="16" r="2.8" fill="url(#kk-badge-grad)"/>
+                  <circle cx="23.5" cy="9.5" r="1.6" fill="#30D158"/>
+                </svg>
+              </span>
+              <h1 style="font-size:22px;font-weight:700;margin:0;letter-spacing:-0.02em;line-height:1.35">RADAR ĐỊNH LƯỢNG (QUANT RADAR) — Quét Tín Hiệu & Đặt Lệnh Bằng AI</h1>
               <span class="chip" style="background:rgba(34,171,148,0.15);color:var(--brand);font-weight:600;font-size:11px">CÔNG NGHỆ THUẬT TOÁN ALGO</span>
             </div>
             <p style="margin:0;font-size:13px;color:var(--ink2);max-width:880px;line-height:1.5">
@@ -10687,11 +10752,11 @@ function vQuant() {
       </div>
 
       <!-- NAVIGATION SUBTABS -->
-      <div class="tabs" role="tablist" style="margin-bottom:16px;border-bottom:1px solid var(--line);padding-bottom:2px">
+      <div class="quant-subtabs" role="tablist" style="display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;border-bottom:1px solid var(--line);padding:4px 0 8px 0;margin-bottom:16px">
         ${subTabs.map(([k, label, badge]) => `
-          <button role="tab" class="${curTab === k ? 'on' : ''}" data-act="quanttab" data-v="${k}" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;padding:10px 18px">
+          <button role="tab" class="${curTab === k ? 'on' : ''}" data-act="quanttab" data-v="${k}" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;padding:9px 16px;border-radius:8px;border:${curTab === k ? '1px solid var(--brand)' : '1px solid transparent'};background:${curTab === k ? 'rgba(228,95,53,0.12)' : 'transparent'};color:${curTab === k ? 'var(--brand)' : 'var(--ink2)'};font-weight:${curTab === k ? '700' : '600'};white-space:nowrap;cursor:pointer;transition:all 0.15s">
             <span>${label}</span>
-            <span style="font-size:10px;padding:2px 6px;border-radius:10px;background:${curTab === k ? 'var(--brand)' : 'rgba(0,0,0,0.06)'};color:${curTab === k ? '#fff' : 'var(--ink3)'};font-weight:600">${badge}</span>
+            <span style="font-size:10px;padding:2px 7px;border-radius:10px;background:${curTab === k ? 'var(--brand)' : 'rgba(0,0,0,0.06)'};color:${curTab === k ? '#fff' : 'var(--ink3)'};font-weight:700">${badge}</span>
           </button>
         `).join('')}
       </div>
@@ -10701,10 +10766,10 @@ function vQuant() {
         <!-- FOMO PULLBACK LADDER & AI FUND DISCIPLINE SPOTLIGHT (BUNNYQUANT-INSPIRED) -->
         <div id="quant-fomo-spotlight" class="card" style="padding:20px 24px;margin-bottom:18px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.06);position:relative;overflow:hidden">
           
-          <!-- Header & Stock Switcher -->
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:16px">
-            <div>
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <!-- Section Header: Full-Width Clean Hierarchy -->
+          <div style="margin-bottom:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                 <span class="chip" style="background:rgba(239,68,68,0.12);color:var(--down);font-weight:700;font-size:11px;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:5px">
                   🛡️ BỘ LỌC TÂM LÝ & CHỐNG ĐU ĐỈNH (ANTI-FOMO)
                 </span>
@@ -10712,52 +10777,68 @@ function vQuant() {
                   💎 NGUYÊN TẮC KỶ LUẬT QUỸ
                 </span>
               </div>
-              <h2 style="font-size:18px;font-weight:800;margin:0 0 4px 0;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px">
-                Thước Đo FOMO: Mua Đuổi Hiện Tại vs Chờ Nhịp Chỉnh (Pullback Ladder)
-              </h2>
-              <p style="font-size:13px;color:var(--ink2);margin:0;max-width:920px;line-height:1.5">
-                Hệ thống tự động đối chiếu việc <strong>mua đuổi giá xanh thị trường</strong> (R:R mỏng, dễ dính nhịp rũ bỏ T+) với việc <strong>kiên nhẫn chờ gom tại Vùng Mua Vàng kỹ thuật</strong> (R:R tối ưu, điểm dừng lỗ chặt chẽ).
-              </p>
+              <span class="chip" style="background:rgba(59,130,246,0.1);color:#3B82F6;font-weight:700;font-size:11px;padding:4px 10px;border-radius:20px">
+                ⚡ THUẬT TOÁN PULLBACK LADDER
+              </span>
             </div>
+            <h2 style="font-size:19px;font-weight:800;margin:0 0 6px 0;letter-spacing:-0.01em;color:var(--ink)">
+              Thước Đo FOMO: Mua Đuổi Hiện Tại vs Chờ Nhịp Chỉnh (Pullback Ladder)
+            </h2>
+            <p style="font-size:13px;color:var(--ink2);margin:0;line-height:1.55;max-width:960px">
+              Hệ thống tự động đối chiếu việc <strong>mua đuổi giá xanh thị trường</strong> (R:R mỏng, dễ dính nhịp rũ bỏ T+) với việc <strong>kiên nhẫn chờ gom tại Vùng Mua Vàng kỹ thuật</strong> (R:R tối ưu, điểm dừng lỗ chặt chẽ).
+            </p>
+          </div>
 
-            <!-- Stock Switcher Selector -->
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-              <div style="font-size:11px;color:var(--ink3);font-weight:600">Chọn cổ phiếu soi tâm lý:</div>
-              <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;max-width:440px;justify-content:flex-end">
-                ${QUANT_LIVE_SIGNALS.map(s => `
-                  <button class="chip ${s.sym === fomoSym ? 'on' : ''}" data-act="quantfomosym" data-sym="${s.sym}" style="cursor:pointer;padding:4px 9px;border-radius:12px;font-size:11px;font-weight:700;transition:all 0.15s;border:${s.sym === fomoSym ? '1px solid var(--brand)' : '1px solid var(--line)'};background:${s.sym === fomoSym ? 'var(--brand)' : 'transparent'};color:${s.sym === fomoSym ? '#fff' : 'var(--ink)'}">
-                    ${s.sym}
+          <!-- Dedicated Organized Ticker Selector Toolbar -->
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:10px 14px;background:rgba(0,0,0,0.025);border:1px solid var(--line);border-radius:10px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--ink)">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(228,95,53,0.15);color:var(--brand);font-size:11px">🎯</span>
+              <span>Chọn Cổ Phiếu Soi Tâm Lý:</span>
+              <span style="font-size:11px;font-weight:500;color:var(--ink3)">(Click mã để đổi kịch bản)</span>
+            </div>
+            <div class="quant-fomo-ticker-bar" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              ${QUANT_LIVE_SIGNALS.map(s => {
+                const isCur = s.sym === fomoSym;
+                return `
+                  <button class="chip ${isCur ? 'on' : ''}" data-act="quantfomosym" data-sym="${s.sym}" style="cursor:pointer;padding:5px 11px;border-radius:8px;font-size:12px;font-weight:700;transition:all 0.18s;border:${isCur ? '1.5px solid var(--brand)' : '1px solid var(--line)'};background:${isCur ? 'linear-gradient(135deg, #FF3B30 0%, #FF6B00 100%)' : 'var(--card)'};color:${isCur ? '#fff' : 'var(--ink)'};box-shadow:${isCur ? '0 2px 10px rgba(255,107,0,0.35)' : 'none'};display:inline-flex;align-items:center;gap:6px">
+                    ${getCompanyLogo(s.sym, 16)}
+                    <span>${s.sym}</span>
                   </button>
-                `).join('')}
-              </div>
+                `;
+              }).join('')}
             </div>
           </div>
 
-          <!-- Active Stock Highlight Banner -->
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:12px 16px;background:rgba(0,0,0,0.02);border:1px solid var(--line);border-radius:10px;margin-bottom:16px">
-            <div style="display:flex;align-items:center;gap:12px">
-              ${getCompanyLogo(fomoSig.sym, 36)}
+          <!-- Active Stock Highlight Banner: Terminal Style -->
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:14px 18px;background:linear-gradient(135deg, rgba(255,107,0,0.04) 0%, rgba(59,130,246,0.03) 100%);border:1px solid var(--line);border-radius:10px;margin-bottom:18px">
+            <div style="display:flex;align-items:center;gap:14px">
+              ${getCompanyLogo(fomoSig.sym, 40)}
               <div>
                 <div style="display:flex;align-items:center;gap:8px">
-                  <span style="font-size:18px;font-weight:800;color:var(--brand);cursor:pointer" onclick="openStock('${fomoSig.sym}')">${fomoSig.sym}</span>
-                  <span style="font-size:13px;font-weight:600;color:var(--ink)">${fomoSig.name}</span>
-                  <span class="chip" style="font-size:10px;padding:2px 6px">${fomoSig.ex}</span>
+                  <span style="font-size:20px;font-weight:800;color:var(--brand);cursor:pointer;letter-spacing:-0.02em" onclick="openStock('${fomoSig.sym}')">${fomoSig.sym}</span>
+                  <span style="font-size:14px;font-weight:700;color:var(--ink)">${fomoSig.name}</span>
+                  <span class="chip" style="font-size:10px;padding:2px 7px;font-weight:700">${fomoSig.ex}</span>
                 </div>
-                <div style="font-size:12px;color:var(--ink3);margin-top:2px">
-                  Chiến lược thuật toán: <strong style="color:var(--ink)">${(QUANT_STRATEGIES[fomoSig.strat] || {}).name || fomoSig.strat}</strong> · Điểm sức mạnh AI: <strong style="color:var(--brand)">${fomoSig.score}/100</strong>
+                <div style="font-size:12px;color:var(--ink3);margin-top:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span>Mô hình: <strong style="color:var(--ink)">${(QUANT_STRATEGIES[fomoSig.strat] || {}).name || fomoSig.strat}</strong></span>
+                  <span style="color:var(--line)">•</span>
+                  <span>Độ tin cậy AI: <strong style="color:var(--brand)">${fomoSig.score}/100</strong></span>
                 </div>
               </div>
             </div>
-            <div style="display:flex;align-items:center;gap:16px">
+            <div style="display:flex;align-items:center;gap:20px">
               <div style="text-align:right">
-                <div style="font-size:11px;color:var(--ink3);text-transform:uppercase">Giá thị trường hiện tại</div>
-                <div style="font-size:20px;font-weight:800;font-family:var(--mono);color:var(--ink)">${fomoSig.price.toFixed(2)}</div>
+                <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:600;letter-spacing:0.04em">Giá thị trường hiện tại</div>
+                <div style="font-size:22px;font-weight:800;font-family:var(--mono);color:var(--ink);display:flex;align-items:center;gap:6px;justify-content:flex-end">
+                  <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#30D158"></span>
+                  ${fomoSig.price.toFixed(2)}
+                </div>
               </div>
-              <div style="height:32px;width:1px;background:var(--line)"></div>
+              <div style="height:36px;width:1px;background:var(--line)"></div>
               <div>
-                <div style="font-size:11px;color:var(--ink3);text-transform:uppercase">Khuyến nghị kỷ luật</div>
-                <div style="font-size:12px;font-weight:800;padding:4px 10px;border-radius:6px;background:${fomoData.recType === 'pullback' ? 'rgba(245,158,11,0.15)' : fomoData.recType === 'take_profit' ? 'rgba(239,68,68,0.15)' : fomoData.recType === 'avoid' ? 'rgba(239,68,68,0.12)' : 'rgba(34,171,148,0.15)'};color:${fomoData.recType === 'pullback' ? '#D97706' : fomoData.recType === 'take_profit' ? 'var(--down)' : fomoData.recType === 'avoid' ? 'var(--down)' : 'var(--up)'}">
-                  ${fomoData.recommendation || fomoSig.type}
+                <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:600;letter-spacing:0.04em;margin-bottom:2px">Khuyến nghị kỷ luật</div>
+                <div style="font-size:13px;font-weight:800;padding:6px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;background:${fomoData.recType === 'pullback' ? 'rgba(245,158,11,0.15)' : fomoData.recType === 'take_profit' ? 'rgba(239,68,68,0.15)' : fomoData.recType === 'avoid' ? 'rgba(239,68,68,0.12)' : 'rgba(34,171,148,0.15)'};color:${fomoData.recType === 'pullback' ? '#D97706' : fomoData.recType === 'take_profit' ? 'var(--down)' : fomoData.recType === 'avoid' ? 'var(--down)' : 'var(--up)'}">
+                  <span>${fomoData.recommendation || fomoSig.type}</span>
                 </div>
               </div>
             </div>
@@ -10943,7 +11024,7 @@ function vQuant() {
             </div>
           </div>
 
-          <div style="overflow-x:auto">
+          <div class="quant-table-wrap" style="overflow-x:auto">
             <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
               <thead>
                 <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
@@ -10968,8 +11049,13 @@ function vQuant() {
                   const isSell = sig.type.includes('BÁN') || sig.type.includes('CHỐT LỜI');
                   const typeClass = isBuy ? 'up' : isSell ? 'down' : 'warn';
                   const typeBg = isBuy ? 'rgba(34,171,148,0.12)' : isSell ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)';
-                  const upsidePct = +((sig.target - sig.price) / sig.price * 100).toFixed(1);
-                  const downsidePct = +((sig.sl - sig.price) / sig.price * 100).toFixed(1);
+                  const upsideVal = +((sig.target - sig.price) / sig.price * 100).toFixed(1);
+                  const upsideSign = upsideVal > 0 ? '+' : '';
+                  const upsideColor = upsideVal >= 0 ? 'var(--up)' : 'var(--down)';
+
+                  const downsideVal = +((sig.sl - sig.price) / sig.price * 100).toFixed(1);
+                  const downsideSign = downsideVal > 0 ? '+' : '';
+                  const downsideColor = downsideVal <= 0 ? 'var(--down)' : 'var(--up)';
                   const f = sig.fomo || {};
                   const fRecColor = f.recType === 'pullback' ? '#D97706' : f.recType === 'take_profit' ? 'var(--down)' : f.recType === 'avoid' ? 'var(--down)' : 'var(--up)';
                   const fRecBg = f.recType === 'pullback' ? 'rgba(245,158,11,0.12)' : f.recType === 'take_profit' ? 'rgba(239,68,68,0.12)' : f.recType === 'avoid' ? 'rgba(239,68,68,0.1)' : 'rgba(34,171,148,0.12)';
@@ -11009,12 +11095,12 @@ function vQuant() {
                         ${sig.price.toFixed(2)}
                       </td>
                       <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">
-                        <div style="font-weight:700;color:var(--up)">${sig.target.toFixed(2)}</div>
-                        <div style="font-size:10px;color:var(--up)">(+${upsidePct}%)</div>
+                        <div style="font-weight:700;color:${upsideColor}">${sig.target.toFixed(2)}</div>
+                        <div style="font-size:10px;color:${upsideColor}">(${upsideSign}${upsideVal}%)</div>
                       </td>
                       <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">
-                        <div style="font-weight:700;color:var(--down)">${sig.sl.toFixed(2)}</div>
-                        <div style="font-size:10px;color:var(--down)">(${downsidePct}%)</div>
+                        <div style="font-weight:700;color:${downsideColor}">${sig.sl.toFixed(2)}</div>
+                        <div style="font-size:10px;color:${downsideColor}">(${downsideSign}${downsideVal}%)</div>
                       </td>
                       <td style="padding:12px 8px;text-align:center;font-weight:600;font-family:var(--mono)">
                         ${sig.rr}
@@ -11061,8 +11147,14 @@ function vQuant() {
         <div class="card" style="padding:16px 20px;margin-bottom:16px">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px">
             <div>
-              <h2 style="font-size:16px;font-weight:700;margin:0 0 4px 0">Thiết Lập Thử Nghiệm Chiến Lược Trên Dữ Liệu Quá Khứ (Mô Phỏng 5 Năm)</h2>
-              <p style="font-size:12px;color:var(--ink3);margin:0">Trước khi bỏ tiền thật ra đầu tư, hãy xem nếu áp dụng đúng kỷ luật chiến lược này trong 5 năm qua thì bạn sẽ lãi/lỗ bao nhiêu.</p>
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">
+                <h2 style="font-size:16px;font-weight:700;margin:0">Thiết Lập Thử Nghiệm Chiến Lược Trên Dữ Liệu Quá Khứ (Mô Phỏng 5 Năm)</h2>
+                <span class="chip" style="background:rgba(34,171,148,0.15);color:var(--brand);font-weight:700;font-size:10px">🇻🇳 CHU KỲ T+2.5</span>
+                <span class="chip" style="background:rgba(59,130,246,0.12);color:#3B82F6;font-weight:700;font-size:10px">THUẾ BÁN 0.1%</span>
+                <span class="chip" style="background:rgba(139,92,246,0.12);color:#8B5CF6;font-weight:700;font-size:10px">PHÍ CTCK 0.15%</span>
+                <span class="chip" style="background:rgba(245,158,11,0.12);color:#D97706;font-weight:700;font-size:10px">LÔ CHẴN 100 CP</span>
+              </div>
+              <p style="font-size:12px;color:var(--ink3);margin:0">Mô phỏng sát thực tế thị trường chứng khoán Việt Nam: Đã trừ thuế TNCN, phí giao dịch, trượt giá dự phòng 0.1% và khóa chu kỳ bán T+2.5.</p>
             </div>
             <div style="display:flex;align-items:center;gap:8px">
               <button class="btn primary" data-act="quantrunbacktest" style="font-size:12px;padding:8px 18px">
@@ -11073,24 +11165,24 @@ function vQuant() {
 
           <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));gap:12px">
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MÃ CỔ PHIẾU</label>
-              <select id="quant-sym-select" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
+              <label for="quant-sym-select" style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MÃ CỔ PHIẾU</label>
+              <select id="quant-sym-select" aria-label="Chọn mã cổ phiếu kiểm tra" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
                 ${['MSB', 'FPT', 'HPG', 'VCB', 'SSI', 'TCB', 'MWG', 'DGC', 'CTR', 'VNM', 'STB', 'MBB'].map(s => `
                   <option value="${s}" ${qState.sym === s ? 'selected' : ''}>${s}</option>
                 `).join('')}
               </select>
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">CHIẾN LƯỢC MUỐN THỬ</label>
-              <select id="quant-strat-select" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
+              <label for="quant-strat-select" style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">CHIẾN LƯỢC MUỐN THỬ</label>
+              <select id="quant-strat-select" aria-label="Chọn chiến lược muốn thử" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
                 ${Object.values(QUANT_STRATEGIES).map(st => `
                   <option value="${st.id}" ${qState.strat === st.id ? 'selected' : ''}>${st.name}</option>
                 `).join('')}
               </select>
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">KHUNG THỜI GIAN KIỂM TRA</label>
-              <select id="quant-period-select" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
+              <label for="quant-period-select" style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">KHUNG THỜI GIAN KIỂM TRA</label>
+              <select id="quant-period-select" aria-label="Chọn khung thời gian kiểm tra" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
                 <option value="6M" ${qState.period === '6M' ? 'selected' : ''}>6 Tháng gần nhất</option>
                 <option value="1Y" ${qState.period === '1Y' ? 'selected' : ''}>1 Năm gần nhất</option>
                 <option value="3Y" ${qState.period === '3Y' ? 'selected' : ''}>3 Năm gần nhất</option>
@@ -11098,22 +11190,22 @@ function vQuant() {
               </select>
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">VỐN ĐẦU TƯ BAN ĐẦU (VND)</label>
-              <input id="quant-cap-input" type="text" value="${qState.capital.toLocaleString('vi-VN')}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
+              <label for="quant-cap-input" style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">VỐN ĐẦU TƯ BAN ĐẦU (VND)</label>
+              <input id="quant-cap-input" type="text" aria-label="Vốn đầu tư ban đầu VND" value="${qState.capital.toLocaleString('vi-VN')}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MỨC CẮT LỖ BẢO VỆ (% LỖ TỐI ĐA)</label>
-              <input id="quant-sl-input" type="number" min="2" max="25" value="${qState.sl}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
+              <label for="quant-sl-input" style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MỨC CẮT LỖ BẢO VỆ (% LỖ TỐI ĐA)</label>
+              <input id="quant-sl-input" type="number" aria-label="Mức cắt lỗ bảo vệ phần trăm" min="2" max="25" value="${qState.sl}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MỤC TIÊU CHỐT LỜI (% LÃI KỲ VỌNG)</label>
-              <input id="quant-tp-input" type="number" min="5" max="100" value="${qState.tp}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
+              <label for="quant-tp-input" style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MỤC TIÊU CHỐT LỜI (% LÃI KỲ VỌNG)</label>
+              <input id="quant-tp-input" type="number" aria-label="Mục tiêu chốt lời phần trăm" min="5" max="100" value="${qState.tp}" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px;font-family:var(--mono)" />
             </div>
             <div>
               <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">ĐỘ NHẠY ĐƯỜNG TRUNG BÌNH (NGẮN / DÀI)</label>
               <div style="display:flex;gap:4px">
-                <input id="quant-fastma-input" type="number" value="${qState.fastMa}" style="width:50%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px;font-family:var(--mono)" />
-                <input id="quant-slowma-input" type="number" value="${qState.slowMa}" style="width:50%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px;font-family:var(--mono)" />
+                <input id="quant-fastma-input" type="number" aria-label="MA nhanh ngày" value="${qState.fastMa}" style="width:50%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px;font-family:var(--mono)" />
+                <input id="quant-slowma-input" type="number" aria-label="MA chậm ngày" value="${qState.slowMa}" style="width:50%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px;font-family:var(--mono)" />
               </div>
             </div>
           </div>
@@ -11189,7 +11281,7 @@ function vQuant() {
             <span style="font-size:11px;color:var(--ink3)">Tổng số lần ra vào lệnh: <b>${backtest.totalTrades} lần</b></span>
           </div>
 
-          <div style="overflow-x:auto">
+          <div class="quant-table-wrap" style="overflow-x:auto">
             <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
               <thead>
                 <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
@@ -11352,8 +11444,8 @@ function vQuant() {
             <div style="border-top:1px solid var(--line);padding-top:14px">
               <h4 style="font-size:13px;font-weight:700;margin:0 0 10px 0">⚡ Gửi Lệnh Thử Nghiệm Để Bot Bám Theo Quản Lý</h4>
               <div style="display:flex;gap:8px;margin-bottom:10px">
-                <input id="quant-order-sym" type="text" value="MSB" placeholder="Mã CP" style="width:30%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:700;text-transform:uppercase" />
-                <input id="quant-order-vol" type="number" value="1000" step="100" placeholder="Số lượng" style="width:40%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600" />
+                <input id="quant-order-sym" type="text" aria-label="Mã cổ phiếu đặt lệnh bot" value="MSB" placeholder="Mã CP" style="width:30%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:700;text-transform:uppercase" />
+                <input id="quant-order-vol" type="number" aria-label="Số lượng cổ phiếu đặt lệnh bot" value="1000" step="100" placeholder="Số lượng" style="width:40%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600" />
                 <button class="btn primary" data-act="quanttestorder" style="width:30%;font-size:12px">
                   Gửi Lệnh Thử
                 </button>
@@ -11389,10 +11481,10 @@ function vQuant() {
         <div class="card" style="padding:16px 20px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
             <h3 style="font-size:15px;font-weight:700;margin:0">Danh Mục Cổ Phiếu Bot Đang Nắm Giữ & Tự Động Canh Lệnh</h3>
-            <span class="chip" style="background:rgba(34,171,148,0.1);color:var(--brand);font-weight:600">Tổng Tiền Lời Tạm Tính: +27.100.000 đ (+3.87%)</span>
+            <span class="chip" style="background:rgba(34,171,148,0.1);color:var(--brand);font-weight:600">Tổng Tiền Lời Tạm Tính: +19.100.000 đ (+2.73%)</span>
           </div>
 
-          <div style="overflow-x:auto">
+          <div class="quant-table-wrap" style="overflow-x:auto">
             <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
               <thead>
                 <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">
@@ -11413,7 +11505,7 @@ function vQuant() {
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:600">10.000</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">15.65</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">15.80</td>
-                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">+9.500.000 đ (+0.96%)</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">+1.500.000 đ (+0.96%)</td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);color:var(--down)">15.20</td>
                   <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Đã khóa lợi nhuận vị thế MSB thành công')">Chốt Lời</button></td>
                 </tr>
@@ -11451,7 +11543,7 @@ function vQuant() {
             <p style="font-size:12px;color:var(--ink3);margin:0">Chiến lược an toàn cao: Khai thác khi 2 cổ phiếu thường đi chung đường bỗng nhiên tách ra (một mã bị bán quá rẻ còn một mã tăng quá nóng). Bạn chỉ cần mua mã rẻ và bán mã đắt để ăn chênh lệch an toàn.</p>
           </div>
 
-          <div style="overflow-x:auto">
+          <div class="quant-table-wrap" style="overflow-x:auto">
             <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
               <thead>
                 <tr style="border-bottom:1px solid var(--line);color:var(--ink3);font-size:11px;text-transform:uppercase">

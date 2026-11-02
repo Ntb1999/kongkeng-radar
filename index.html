@@ -7539,7 +7539,17 @@ function vFinance() {
 }
 
 function vPeers() {
-  const [head, rows0] = PEERS[S.peerSub] || [[], []]; let rows = (rows0 || []).slice();
+  const pData = (PEERS && PEERS[S.peerSub]) || [[], []];
+  let head = [], rows0 = [];
+  if (Array.isArray(pData)) {
+    head = pData[0] || [];
+    if (Array.isArray(pData[1]) && Array.isArray(pData[1][0])) {
+      rows0 = pData[1];
+    } else if (pData.length > 1 && Array.isArray(pData[1])) {
+      rows0 = pData.slice(1);
+    }
+  }
+  let rows = (rows0 || []).slice();
   if (S.peerSort) { const [c, dir] = S.peerSort; const num = s => parseFloat(String(s).replace(/[^\d,−-]/g, '').replace('−', '-').replace(/\./g, '').replace(',', '.')); rows.sort((a, b) => dir * (num(a[c]) - num(b[c]))); }
   return `<div class="peers">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 8px 0;flex-wrap:wrap;gap:8px">
@@ -10233,10 +10243,13 @@ function readHash() {
   if (!raw) { raw = 'market'; location.hash = 'market'; }
   let h = raw.split('?')[0].split('&')[0];
   let symParam = null;
-  const hashQuery = raw.includes('?') ? raw.split('?')[1] : (location.search ? location.search.slice(1) : '');
-  if (hashQuery) {
-    const params = new URLSearchParams(hashQuery);
-    if (params.get('sym')) symParam = params.get('sym');
+  const hashQuery = raw.includes('?') ? raw.split('?')[1] : '';
+  const searchParams = location.search ? new URLSearchParams(location.search) : null;
+  const hashParams = hashQuery ? new URLSearchParams(hashQuery) : null;
+  if (searchParams && searchParams.get('sym')) symParam = searchParams.get('sym');
+  if (hashParams && hashParams.get('sym')) symParam = hashParams.get('sym');
+  if (hashQuery || location.search) {
+    const params = hashParams || searchParams;
     if (params.get('theme')) {
       const th = params.get('theme');
       document.documentElement.setAttribute('data-theme', th);
@@ -12764,7 +12777,7 @@ function openStock(t) {
   if (typeof initRealtimeTicks === 'function' && typeof STOCK !== 'undefined') {
     initRealtimeTicks(t, STOCK.price);
   }
-  if (location.hash === '#c360' || S.route === 'c360') {
+  if (location.hash.startsWith('#c360') || (typeof S !== 'undefined' && S.route && S.route.startsWith('c360'))) {
     render();
   } else {
     location.hash = 'c360';
@@ -17825,7 +17838,7 @@ const DNSE_STOCKS_DB = {
       intro: 'Tập đoàn FPT là tập đoàn công nghệ hàng đầu Việt Nam, hoạt động trong 3 lĩnh vực cốt lõi: Công nghệ, Viễn thông và Giáo dục, vươn tầm nhà cung cấp dịch vụ CNTT đẳng cấp quốc tế.',
       miles: [['13/09/1988', 'Thành lập Công ty Công nghệ Chế biến Thực phẩm (tiền thân FPT)'], ['1999', 'Khởi xướng chiến lược xuất khẩu phần mềm toàn cầu'], ['13/12/2006', 'Niêm yết cổ phiếu trên sàn HOSE'], ['2024-2026', 'Đột phá chiến lược AI Factory, bán dẫn và đạt mốc 1 tỷ USD doanh thu phần mềm xuất khẩu']],
       leaders: [['Trương Gia Bình', 'Chủ tịch HĐQT'], ['Nguyễn Văn Khoa', 'Tổng Giám đốc'], ['Bùi Quang Ngọc', 'Phó Chủ tịch HĐQT'], ['Nguyễn Thế Phương', 'Phó TGĐ'], ['Hoàng Việt Anh', 'Phó TGĐ']],
-      subs: [['Cty TNHH Phần mềm FPT (FPT Software)', '100%', 'Xuất khẩu phần mềm'], ['Cty CP Viễn thông FPT (FPT Telecom)', '45,6%', 'Viễn thông, Internet'], ['Cty CP Dịch vụ Trực tuyến FPT (FPT Online)', '56,3%', 'Báo điện tử VnExpress'], ['Cty TNHH Giáo dục FPT', '100%', 'Đại học & Trường học FPT']]
+      subs: [['Cty TNHH Phần mềm FPT (FPT Software)', '100%', 'Xuất khẩu phần mềm · 8.000 tỷ'], ['Cty CP Viễn thông FPT (FPT Telecom)', '45,6%', 'Viễn thông, Internet · 4.900 tỷ'], ['Công ty TNHH Hệ thống Thông tin FPT (FPT IS)', '100%', 'Giải pháp CNTT, ERP & An ninh mạng · 1.200 tỷ'], ['Cty CP Dịch vụ Trực tuyến FPT (FPT Online)', '56,3%', 'Báo điện tử VnExpress · 200 tỷ'], ['Cty TNHH Giáo dục FPT', '100%', 'Đại học & Trường học FPT · 1.500 tỷ'], ['CTCP Bán lẻ Kỹ thuật số FPT (FPT Retail - FRT)', '46,5%', 'Chuỗi Long Châu & FPT Shop · 1.360 tỷ']]
     },
     peers: {
       'Tổng quan': [['Doanh nghiệp', 'Vốn hoá', 'P/E', 'P/B', 'ROE', 'Biên Gộp', 'Tăng trưởng DT'], [['FPT', '198.600 tỷ', '24,80', '5,62', '28,4%', '38,5%', '+21,5%'], ['CMG', '9.450 tỷ', '22,10', '2,80', '13,2%', '18,5%', '+12,4%'], ['ELC', '2.840 tỷ', '16,40', '1,95', '14,8%', '24,2%', '+18,6%'], ['ITD', '620 tỷ', '14,20', '1,10', '8,5%', '15,2%', '+6,2%'], ['CTR', '14.200 tỷ', '25,60', '4,20', '26,5%', '10,8%', '+18,9%']]],
@@ -20050,13 +20063,13 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
       ['Ban điều hành & Cán bộ nhân viên FPT', 'Cá nhân', 'Trong nước', '146,00 triệu', '10,00%', '30/06/2026'],
       ['Cổ đông đại chúng trong nước & khác', 'Đại chúng', 'Trong nước', '1.009,70 triệu', '69,16%', '30/06/2026']
     ];
-    ownership = [['Nước ngoài (Kín room)', 49.0], ['Nhà nước (SCIC)', 5.9], ['Ban Lãnh đạo & Sáng lập', 17.0], ['Cổ đông đại chúng', 28.1]];
+    ownership = [['Nước ngoài (Kín room)', 49.0, '#3b82f6'], ['Nhà nước (SCIC)', 5.9, '#ef4444'], ['Ban Lãnh đạo & Sáng lập', 17.0, '#10b981'], ['Cổ đông đại chúng', 28.1, '#f59e0b']];
     foreign_own = [['Tỷ lệ sở hữu nước ngoài', '49,00% (Full Room)'], ['Room ngoại tối đa', '49,00%'], ['KL Room còn lại', '0 CP'], ['Khối ngoại mua ròng 10P', '+4.850.000 CP']];
     insiders = [
-      ['Trương Gia Bình', 'Chủ tịch HĐQT', 'Nắm giữ', '102.800.000', '7,04%', '15/09/2026'],
-      ['Nguyễn Văn Khoa', 'Tổng Giám đốc', 'Nắm giữ', '8.650.000', '0,59%', '10/09/2026'],
-      ['Bùi Quang Ngọc', 'Phó Chủ tịch HĐQT', 'Nắm giữ', '24.200.000', '1,66%', '05/08/2026'],
-      ['Nguyễn Thế Phương', 'Phó Tổng Giám đốc', 'Nắm giữ', '7.450.000', '0,51%', '22/07/2026']
+      ['Trương Gia Bình', 'Chủ tịch HĐQT', 'Nắm giữ', '15/09/2026', '7,04% (102,8 tr CP)'],
+      ['Nguyễn Văn Khoa', 'Tổng Giám đốc', 'Nắm giữ', '10/09/2026', '0,59% (8,65 tr CP)'],
+      ['Bùi Quang Ngọc', 'Phó Chủ tịch HĐQT', 'Nắm giữ', '05/08/2026', '1,66% (24,2 tr CP)'],
+      ['Nguyễn Thế Phương', 'Phó Tổng Giám đốc', 'Nắm giữ', '22/07/2026', '0,51% (7,45 tr CP)']
     ];
   } else if (sym === 'VCB') {
     holders = [
@@ -20065,11 +20078,12 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
       ['Quỹ Đầu tư Trực tiếp Nước ngoài & ETF', 'Tổ chức', 'Nước ngoài', '167,40 triệu', '3,00%', '30/06/2026'],
       ['Cổ đông đại chúng trong nước & CBCNV', 'Đại chúng', 'Trong nước', '402,60 triệu', '7,20%', '30/06/2026']
     ];
-    ownership = [['Nhà nước (NHNN)', 74.8], ['Đối tác chiến lược Mizuho', 15.0], ['Quỹ ngoại khác', 3.0], ['Đại chúng trong nước', 7.2]];
+    ownership = [['Nhà nước (NHNN)', 74.8, '#ef4444'], ['Đối tác chiến lược Mizuho', 15.0, '#3b82f6'], ['Quỹ ngoại khác', 3.0, '#10b981'], ['Đại chúng trong nước', 7.2, '#f59e0b']];
     foreign_own = [['Tỷ lệ sở hữu nước ngoài', '18,00%'], ['Room ngoại tối đa', '30,00%'], ['KL Room còn lại', '669.800.000 CP'], ['Khối ngoại mua ròng 10P', '+1.240.000 CP']];
     insiders = [
-      ['Nguyễn Thanh Tùng', 'Chủ tịch HĐQT', 'Nắm giữ', '420.000', '0,01%', '12/09/2026'],
-      ['Lê Quang Vinh', 'Phó Tổng Giám đốc', 'Nắm giữ', '280.000', '0,005%', '28/08/2026']
+      ['Nguyễn Thanh Tùng', 'Chủ tịch HĐQT', 'Nắm giữ', '12/09/2026', '0,01% (420.000 CP)'],
+      ['Lê Quang Vinh', 'Phó Tổng Giám đốc phụ trách', 'Nắm giữ', '28/08/2026', '0,005% (280.000 CP)'],
+      ['Đỗ Việt Hùng', 'Thành viên HĐQT', 'Nắm giữ', '15/07/2026', '0,003% (195.000 CP)']
     ];
   } else if (sym === 'HPG') {
     holders = [
@@ -20080,12 +20094,12 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
       ['Ban điều hành & Cổ đông nội bộ khác', 'Cá nhân', 'Trong nước', '186,00 triệu', '3,20%', '30/06/2026'],
       ['Cổ đông đại chúng trong nước', 'Đại chúng', 'Trong nước', '3.162,00 triệu', '54,39%', '30/06/2026']
     ];
-    ownership = [['Gia đình Chủ tịch Trần Đình Long', 33.4], ['Khối ngoại & Quỹ đầu tư', 10.2], ['Cổ đông nội bộ', 3.2], ['Đại chúng trong nước', 53.2]];
+    ownership = [['Gia đình Chủ tịch Trần Đình Long', 33.4, '#ef4444'], ['Khối ngoại & Quỹ đầu tư', 10.2, '#3b82f6'], ['Cổ đông nội bộ', 3.2, '#10b981'], ['Đại chúng trong nước', 53.2, '#f59e0b']];
     foreign_own = [['Tỷ lệ sở hữu nước ngoài', '24,60%'], ['Room ngoại tối đa', '49,00%'], ['KL Room còn lại', '1.418.000.000 CP'], ['Khối ngoại mua ròng 10P', '+5.620.000 CP']];
     insiders = [
-      ['Trần Đình Long', 'Chủ tịch HĐQT', 'Nắm giữ', '1.516.000.000', '26,08%', '20/09/2026'],
-      ['Nguyễn Mạnh Tuấn', 'Phó Chủ tịch HĐQT', 'Nắm giữ', '185.000.000', '3,18%', '15/09/2026'],
-      ['Trần Tuấn Dương', 'Phó Chủ tịch HĐQT', 'Nắm giữ', '142.000.000', '2,44%', '01/09/2026']
+      ['Trần Đình Long', 'Chủ tịch HĐQT', 'Nắm giữ', '20/09/2026', '26,08% (1.516 tr CP)'],
+      ['Nguyễn Mạnh Tuấn', 'Phó Chủ tịch HĐQT', 'Nắm giữ', '15/09/2026', '3,18% (185 tr CP)'],
+      ['Trần Tuấn Dương', 'Phó Chủ tịch HĐQT', 'Nắm giữ', '01/09/2026', '2,44% (142 tr CP)']
     ];
   } else if (sym === 'SSI') {
     holders = [
@@ -20095,11 +20109,11 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
       ['EnTrust Partners Offshore Fund', 'Tổ chức', 'Nước ngoài', '45,00 triệu', '2,98%', '30/06/2026'],
       ['Cổ đông đại chúng & Nhà đầu tư', 'Đại chúng', 'Trong nước', '962,00 triệu', '63,71%', '30/06/2026']
     ];
-    ownership = [['Đối tác ngoại Daiwa', 15.3], ['Nhóm sáng lập NDH & Nguyễn Duy Hưng', 18.0], ['Quỹ đầu tư khác', 4.5], ['Đại chúng trong nước', 62.2]];
+    ownership = [['Đối tác ngoại Daiwa', 15.3, '#3b82f6'], ['Nhóm sáng lập NDH & Nguyễn Duy Hưng', 18.0, '#ef4444'], ['Quỹ đầu tư khác', 4.5, '#10b981'], ['Đại chúng trong nước', 62.2, '#f59e0b']];
     foreign_own = [['Tỷ lệ sở hữu nước ngoài', '38,20%'], ['Room ngoại tối đa', '100,00%'], ['KL Room còn lại', '933.000.000 CP'], ['Khối ngoại mua ròng 10P', '+2.410.000 CP']];
     insiders = [
-      ['Nguyễn Duy Hưng', 'Chủ tịch HĐQT', 'Nắm giữ', '124.000.000', '8,21%', '18/09/2026'],
-      ['Nguyễn Hồng Nam', 'Tổng Giám đốc', 'Nắm giữ', '35.000.000', '2,32%', '10/09/2026']
+      ['Nguyễn Duy Hưng', 'Chủ tịch HĐQT', 'Nắm giữ', '18/09/2026', '8,21% (124 tr CP)'],
+      ['Nguyễn Hồng Nam', 'Tổng Giám đốc', 'Nắm giữ', '10/09/2026', '2,32% (35 tr CP)']
     ];
   } else if (sym === 'MWG') {
     holders = [
@@ -20109,11 +20123,11 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
       ['Ban điều hành & Khối quản lý cửa hàng', 'Cá nhân', 'Trong nước', '98,00 triệu', '6,71%', '30/06/2026'],
       ['Cổ đông đại chúng & Quỹ ngoại khác', 'Đại chúng', 'Trong nước', '1.167,50 triệu', '79,98%', '30/06/2026']
     ];
-    ownership = [['Nước ngoài (Kín room 49%)', 49.0], ['Ban Lãnh đạo & Triều Tín', 16.4], ['Đại chúng trong nước', 34.6]];
+    ownership = [['Nước ngoài (Kín room 49%)', 49.0, '#3b82f6'], ['Ban Lãnh đạo & Triều Tín', 16.4, '#ef4444'], ['Đại chúng trong nước', 34.6, '#f59e0b']];
     foreign_own = [['Tỷ lệ sở hữu nước ngoài', '49,00% (Full Room)'], ['Room ngoại tối đa', '49,00%'], ['KL Room còn lại', '0 CP'], ['Khối ngoại mua ròng 10P', '+1.180.000 CP']];
     insiders = [
-      ['Nguyễn Đức Tài', 'Chủ tịch HĐQT', 'Nắm giữ', '35.100.000', '2,40%', '25/08/2026'],
-      ['Đoàn Văn Hiểu Em', 'Thành viên HĐQT', 'Nắm giữ', '12.800.000', '0,88%', '15/08/2026']
+      ['Nguyễn Đức Tài', 'Chủ tịch HĐQT', 'Nắm giữ', '25/08/2026', '2,40% (35,1 tr CP)'],
+      ['Đoàn Văn Hiểu Em', 'Thành viên HĐQT', 'Nắm giữ', '15/08/2026', '0,88% (12,8 tr CP)']
     ];
   } else {
     // Sector-adaptive holder profile
@@ -20123,11 +20137,11 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
       ['Hội đồng Quản trị & Ban Điều hành', 'Cá nhân', 'Trong nước', '45,60 triệu', '7,00%', '30/06/2026'],
       ['Cổ đông đại chúng trong nước', 'Đại chúng', 'Trong nước', '343,80 triệu', '52,60%', '30/06/2026']
     ];
-    ownership = [['Cổ đông lớn & Chiến lược', 28.4], ['Khối ngoại & Quỹ đầu tư', 12.0], ['Ban Lãnh đạo', 7.0], ['Đại chúng trong nước', 52.6]];
+    ownership = [['Cổ đông lớn & Chiến lược', 28.4, '#ef4444'], ['Khối ngoại & Quỹ đầu tư', 12.0, '#3b82f6'], ['Ban Lãnh đạo', 7.0, '#10b981'], ['Đại chúng trong nước', 52.6, '#f59e0b']];
     foreign_own = [['Tỷ lệ sở hữu nước ngoài', isBank ? '18,50%' : '23,40%'], ['Room ngoại tối đa', isBank ? '30,00%' : '49,00%'], ['KL Room còn lại', '168.000.000 CP'], ['Khối ngoại mua ròng 10P', '+850.000 CP']];
     insiders = [
-      ['Chủ tịch Hội đồng Quản trị', 'Chủ tịch HĐQT', 'Nắm giữ', '22.500.000', '3,45%', '15/09/2026'],
-      ['Tổng Giám đốc', 'Tổng Giám đốc', 'Nắm giữ', '12.100.000', '1,86%', '02/09/2026']
+      ['Chủ tịch Hội đồng Quản trị', 'Chủ tịch HĐQT', 'Nắm giữ', '15/09/2026', '3,45% (22,5 tr CP)'],
+      ['Tổng Giám đốc', 'Tổng Giám đốc', 'Nắm giữ', '02/09/2026', '1,86% (12,1 tr CP)']
     ];
   }
 
@@ -20296,17 +20310,17 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
       ['15/11/2026', '01/11/2026', '25/10/2026', 'Trả cổ tức bằng tiền', 'Tạm ứng cổ tức đợt 1/2026 bằng tiền mặt tỷ lệ 10% (1.000 đ/CP)'],
       ['25/10/2026', '—', '20/10/2026', 'Kết quả kinh doanh', 'Công bố BCTC quý 3/2026: LNST đạt 2.460 tỷ đồng (+22% YoY)'],
       ['18/09/2026', '04/09/2026', '28/08/2026', 'Khác', 'Phát hành cổ phiếu ESOP cho cán bộ nhân viên có đóng góp xuất sắc'],
-      ['10/04/2026', '25/03/2026', '15/03/2026', 'Đại hội cổ đông', 'ĐHĐCĐ thường niên 2026 thông qua kế hoạch doanh thu vượt 61.000 tỷ']
+      ['10/04/2026', '25/03/2026', '15/03/2026', 'Khác', 'ĐHĐCĐ thường niên 2026 thông qua kế hoạch doanh thu vượt 61.000 tỷ']
     ];
   } else if (sym === 'VCB') {
     events = [
       ['20/11/2026', '05/11/2026', '28/10/2026', 'Trả cổ tức bằng cổ phiếu', 'Phát hành cổ phiếu trả cổ tức tỷ lệ 38,8% tăng vốn điều lệ'],
       ['28/10/2026', '—', '20/10/2026', 'Kết quả kinh doanh', 'Công bố BCTC quý 3/2026: LNTT 9 tháng đạt 33.500 tỷ'],
-      ['27/04/2026', '10/04/2026', '25/03/2026', 'Đại hội cổ đông', 'ĐHĐCĐ thường niên thông qua phương án phát hành riêng lẻ cho nhà đầu tư ngoại']
+      ['27/04/2026', '10/04/2026', '25/03/2026', 'Khác', 'ĐHĐCĐ thường niên thông qua phương án phát hành riêng lẻ 6,5% cho đối tác chiến lược']
     ];
   } else if (sym === 'HPG') {
     events = [
-      ['25/11/2026', '10/11/2026', '01/11/2026', 'Sự kiện vận hành', 'Khánh thành giai đoạn 1 Khu liên hợp Gang thép Dung Quất 2'],
+      ['25/11/2026', '10/11/2026', '01/11/2026', 'Khác', 'Khánh thành giai đoạn 1 Khu liên hợp Gang thép Dung Quất 2'],
       ['26/10/2026', '—', '20/10/2026', 'Kết quả kinh doanh', 'Công bố BCTC quý 3/2026: LNST đạt 3.850 tỷ đồng'],
       ['15/06/2026', '02/06/2026', '25/05/2026', 'Trả cổ tức bằng tiền', 'Chi trả cổ tức tiền mặt năm 2025 tỷ lệ 10% (1.000 đ/CP)']
     ];
@@ -20314,13 +20328,13 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
     events = [
       ['18/11/2026', '03/11/2026', '25/10/2026', 'Cổ phiếu thưởng', 'Hoàn tất niêm yết bổ sung cổ phiếu thưởng tỷ lệ 10%'],
       ['25/10/2026', '—', '18/10/2026', 'Kết quả kinh doanh', 'Công bố BCTC quý 3/2026: LNTT đạt 1.380 tỷ đồng (+35% YoY)'],
-      ['25/04/2026', '10/04/2026', '28/03/2026', 'Đại hội cổ đông', 'ĐHĐCĐ thông qua kế hoạch nâng vốn điều lệ lên 20.000 tỷ đồng']
+      ['25/04/2026', '10/04/2026', '28/03/2026', 'Khác', 'ĐHĐCĐ thông qua kế hoạch nâng vốn điều lệ lên 20.000 tỷ đồng']
     ];
   } else {
     events = [
       ['20/11/2026', '05/11/2026', '28/10/2026', 'Trả cổ tức bằng tiền', `Thực hiện chi trả cổ tức tiền mặt đợt 1/2026`],
       ['25/10/2026', '—', '20/10/2026', 'Kết quả kinh doanh', `Công bố Báo cáo tài chính quý 3/2026`],
-      ['22/04/2026', '08/04/2026', '25/03/2026', 'Đại hội cổ đông', `ĐHĐCĐ thường niên 2026 thông qua kế hoạch sản xuất kinh doanh`]
+      ['22/04/2026', '08/04/2026', '25/03/2026', 'Khác', `ĐHĐCĐ thường niên 2026 thông qua kế hoạch sản xuất kinh doanh`]
     ];
   }
 
@@ -20969,6 +20983,9 @@ function syncDnseMcpLive() {
 
 // Initial initialization on load
 if (typeof STOCK !== 'undefined' && STOCK) {
+  if (typeof fetchAndApplyDnseMcpData === 'function') {
+    fetchAndApplyDnseMcpData(STOCK.sym);
+  }
   updateTvMcpPayloadsForSymbol(STOCK.sym);
   const dData = (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[STOCK.sym]) ? DNSE_STOCKS_DB[STOCK.sym] : synthesizeDnseMcpData(STOCK.sym);
   updateDnseMcpPayloadsForSymbol(dData);

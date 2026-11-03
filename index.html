@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>KongKeng Radar — Nền tảng Phân tích & Radar Quét Tín hiệu Đầu tư Chứng khoán</title>
-<meta name="description" content="KongKeng Radar: Hệ thống radar quét tín hiệu thị trường, Company 360, bộ lọc cổ phiếu thông minh, so sánh đa chiều và báo cáo phân tích đầu tư.">
+<meta name="description" content="KongKeng Radar: Hệ thống radar quét tín hiệu thị trường, Biến động Mã chứng khoán, bộ lọc cổ phiếu thông minh, so sánh đa chiều và báo cáo phân tích đầu tư.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">
@@ -213,7 +213,7 @@ table.t{width:100%;border-collapse:collapse;font-size:12px;line-height:16px}
 .t.lg td{font-size:14px;line-height:20px}
 .t.lg td.num,.t.lg .num{font-size:14px}
 
-/* ---------- Company 360 header ---------- */
+/* ---------- Biến động Mã chứng khoán header ---------- */
 .stock-h{display:flex;align-items:center;justify-content:flex-start;align-self:stretch;gap:24px;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--bg)}
 .logo-msb{width:42px;height:42px;border-radius:50%;overflow:hidden;flex:none;background:var(--bg);box-shadow:inset 0 0 0 1px var(--line)}
 .logo-msb img{width:42px;height:42px;display:block}
@@ -2532,7 +2532,118 @@ td[data-stock-role="price"],
       }
     }
 
-  </style>
+  
+/* ================= COINMARKETCAP 3-COLUMN LAYOUT FOR BIẾN ĐỘNG MÃ CHỨNG KHOÁN ================= */
+.cmc-c360-container {
+  display: grid;
+  grid-template-columns: 350px minmax(0, 1fr) 330px;
+  gap: 18px;
+  padding: 16px 20px 36px;
+  align-items: start;
+  max-width: 1820px;
+  margin: 0 auto;
+}
+.cmc-c360-left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: sticky;
+  top: 68px;
+  max-height: calc(100vh - 84px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.cmc-c360-mid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.cmc-c360-right {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: sticky;
+  top: 68px;
+  max-height: calc(100vh - 84px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.cmc-card {
+  background: var(--card-bg, #1e222d);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.cmc-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 4px 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow-x: auto;
+  position: sticky;
+  top: 60px;
+  z-index: 80;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.cmc-tabs button {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink3);
+  border-bottom: 2px solid transparent;
+  border-radius: 6px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  background: transparent;
+  cursor: pointer;
+}
+.cmc-tabs button:hover {
+  color: var(--ink);
+  background: var(--hover);
+}
+.cmc-tabs button.on {
+  color: var(--brand);
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+@media (max-width: 1440px) {
+  .cmc-c360-container {
+    grid-template-columns: 320px minmax(0, 1fr) 300px;
+    gap: 14px;
+    padding: 12px 14px 28px;
+  }
+}
+@media (max-width: 1200px) {
+  .cmc-c360-container {
+    grid-template-columns: 320px minmax(0, 1fr);
+  }
+  .cmc-c360-right {
+    grid-column: 1 / -1;
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+@media (max-width: 768px) {
+  .cmc-c360-container {
+    grid-template-columns: 1fr;
+    padding: 10px 10px 24px;
+  }
+  .cmc-c360-left, .cmc-c360-right {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+</style>
 <style id="kkr-gate-style">
   #kkr-gate-overlay {
     position: fixed;
@@ -5670,7 +5781,7 @@ const MNEWS_TABS = [
 ];
 
 /* ================= CHỨNG QUYỀN (CW) & ETF =================
-   Thêm được vào Danh sách theo dõi và Danh mục; không có trong Bộ lọc, không có Company 360, không So sánh.
+   Thêm được vào Danh sách theo dõi và Danh mục; không có trong Bộ lọc, không có Biến động Mã chứng khoán, không So sánh.
    Mọi mốc ngày của CW lấy từ dữ liệu mã (không giả định ngày làm việc). Giá: VND. */
 const dParse = s => { const [d, m, y] = s.split('/').map(Number); return Date.UTC(y, m - 1, d); };
 const dFmt = n => { const x = new Date(n), z = v => String(v).padStart(2, '0'); return `${z(x.getUTCDate())}/${z(x.getUTCMonth() + 1)}/${x.getUTCFullYear()}`; };
@@ -5786,7 +5897,7 @@ const I = {
 
 const NAV = [
   ['KHÁM PHÁ', [['market', 'Tổng quan thị trường', I.grid], ['screener', 'Bộ lọc cổ phiếu', I.filter], ['mnews', 'Tin tức thị trường', I.news]]],
-  ['NGHIÊN CỨU', [['c360', 'Company 360', I.grid], ['compare', 'So sánh cổ phiếu', I.comp], ['reports', 'Báo cáo & Insights', I.rep], ['follow', 'Danh sách theo dõi', I.book]]],
+  ['NGHIÊN CỨU', [['c360', 'Biến động Mã chứng khoán', I.grid], ['compare', 'So sánh cổ phiếu', I.comp], ['reports', 'Báo cáo & Insights', I.rep], ['follow', 'Danh sách theo dõi', I.book]]],
   ['ĐẦU TƯ TỰ ĐỘNG & BOT', [['quant', 'Radar AI Săn Tín Hiệu', I.quant]]]
 ];
 const C360_TABS = [['', 'TỔNG QUAN'], ['hoso', 'HỒ SƠ'], ['codong', 'CỔ ĐÔNG & GDNB'], ['taichinh', 'TÀI CHÍNH'], ['cungnganh', 'CÙNG NGÀNH'], ['tintuc', 'TIN TỨC & SỰ KIỆN'], ['dulieu', 'DỮ LIỆU']];
@@ -6466,7 +6577,7 @@ function tickRealtime() {
 
   if (!REALTIME_ACTIVE) return;
 
-  // 1. Tick for Company 360 when on #c360
+  // 1. Tick for Biến động Mã chứng khoán when on #c360
   if (typeof S !== 'undefined' && S.route && S.route.startsWith('c360')) {
     tickCompany360Realtime();
   }
@@ -6697,11 +6808,13 @@ function renderMcpOrderBook() {
   </div>`;
 }
 
-function stockHeader() {
-  const m = STOCK.metrics, kl = rows => rows.map(([a, b, c]) => `<div class="kl"><span>${a}</span><span class="${c || ''}">${b}</span></div>`).join('');
-  const cell = (t, rows) => `<div class="mc"><span class="cap">${t}</span><div class="kls">${kl(rows)}</div></div>`;
-  const f = typeof inAnyWL === 'function' ? inAnyWL(STOCK.sym) : S.watch.has(STOCK.sym);
-  const evs = STOCK.events.filter(e => S.evTop === 'Tất cả' || (S.evTop === 'Cổ tức' ? /cổ tức/i.test(e[1]) : S.evTop === 'ĐHĐCĐ & KQKD' ? /ĐHĐCĐ|kết quả/i.test(e[1]) : /ESOP|Niêm yết|nhà đầu tư/i.test(e[1])));
+function stockHeader(tab, body) {
+  if (typeof tab === 'undefined') tab = '';
+  if (typeof body === 'undefined') body = (typeof vOverview === 'function' ? vOverview() : '');
+
+  const m = STOCK.metrics || {};
+  const f = typeof inAnyWL === 'function' ? inAnyWL(STOCK.sym) : (S.watch && S.watch.has(STOCK.sym));
+  const evs = (STOCK.events || []).filter(e => S.evTop === 'Tất cả' || (S.evTop === 'Cổ tức' ? /cổ tức/i.test(e[1]) : S.evTop === 'ĐHĐCĐ & KQKD' ? /đhđcđ|kqkd|bctc/i.test(e[1]) : /phát hành/i.test(e[1])));
   const curPrice = STOCK.price || 33900;
   const isZeroChg = !STOCK.chg || Math.abs(STOCK.chg) < 0.001;
   const chgClass = isZeroChg ? 'ref' : (STOCK.chg > 0 ? 'up' : 'down');
@@ -6719,8 +6832,8 @@ function stockHeader() {
   const ceil = (STOCK.ceil && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.ceil : Math.floor(ref * (1 + exPct) / tickStep) * tickStep;
   const floor = (STOCK.floor && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.floor : Math.ceil(ref * (1 - exPct) / tickStep) * tickStep;
   const openPrice = (STOCK.open && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.open : ref;
-  const highPrice = (STOCK.high && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.high : Math.min(ceil, Math.max(curPrice, openPrice, ref + tickStep * 2));
-  const lowPrice = (STOCK.low && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.low : Math.max(floor, Math.min(curPrice, openPrice, ref - tickStep * 2));
+  const highPrice = (STOCK.high && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.high : Math.min(ceil, Math.max(curPrice, openPrice));
+  const lowPrice = (STOCK.low && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.low : Math.max(floor, Math.min(curPrice, openPrice));
   const avgPrice = (STOCK.avg && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.avg : Math.round(((highPrice + lowPrice + curPrice) / 3) / tickStep) * tickStep;
   const volStr = STOCK.vol ? (STOCK.vol >= 1e6 ? (STOCK.vol / 1e6).toFixed(2) + 'M' : fmtVN(STOCK.vol)) : (vn30Info ? (vn30Info.vol / 1e6).toFixed(2) + 'M' : '1.45M');
   const valStr = STOCK.val_bil ? STOCK.val_bil.toFixed(2) + ' tỷ' : (vn30Info ? vn30Info.val_bil.toFixed(2) + ' tỷ' : '49,42 tỷ');
@@ -6728,95 +6841,324 @@ function stockHeader() {
   const frnSell = Math.round((curPrice * 5.2) % 200000 + 120000);
   const frnNet = frnBuy - frnSell;
 
-  return `<div class="stock-h">
-    <div class="logo-msb">${getCompanyLogo(STOCK.sym, 42)}</div>
-    <div class="sym-block">
-      <div class="sym"><span class="dd" data-act="symmenu"><h1>${STOCK.sym}</h1>${I.chev}</span><span class="tg">${STOCK.ex}</span>
-        <button class="follow ${f ? 'on' : ''}" data-act="follow" aria-haspopup="menu" data-tip="${typeof wlPickTip === 'function' ? esc(wlPickTip(STOCK.sym)) : ''}">${f ? I.bmf + 'Đang theo dõi' : I.bm + 'Theo dõi'}</button></div>
-      <div class="sub-l"><span title="${STOCK.name}">${STOCK.name}</span><i></i><span>Ngành: ${STOCK.ind}</span></div>
-    </div>
-    <div class="price-b">
-      <div class="p ${chgClass}" id="c360-live-price">${fmtVN(curPrice, 0)}</div>
-      <div class="c ${chgClass}" id="c360-live-chg">${chgTxt}</div>
-    </div>
-  </div>
-  <div class="hero">
-    <div class="tv">
-      <div class="tv-tools" role="toolbar" aria-label="Công cụ vẽ">${TV_TOOLS.map((t, i) => `${i === 9 || i === 10 ? '<i></i>' : ''}<button class="${S.tvTool === i ? 'on' : ''}" data-act="tvtool" data-v="${i}" title="${t[0]}" aria-label="${t[0]}">${t[1]}</button>`).join('')}</div>
-      <div class="tv-main">
-        <!-- Claude Artifact Overlay Header (Stock Name · TF · Ex ● OHLC + Quick Trade + Volume) -->
-        <div class="tv-head">
-          <div class="tv-leg">
-            <div class="tv-logo" style="cursor:pointer" data-act="opentvmcpmodal" title="Bấm mở TradingView MCP Inspector"></div>
-            <b>${STOCK.name}</b> · <span id="tvint" style="cursor:pointer" title="Khung thời gian">${S_TV_TF || '1D'}</span> · <span>${STOCK.ex}</span>
-            <span class="tv-dot"></span>
-            <span id="ohlc" class="tv-ohlc"></span>
+  // 24h Slider Calculation (CoinMarketCap Price Performance)
+  const range = (highPrice - lowPrice) || 1;
+  const rangePct = Math.min(100, Math.max(0, Math.round(((curPrice - lowPrice) / range) * 100)));
+  const low52 = Math.round(curPrice * 0.72 / 100) * 100;
+  const high52 = Math.round(curPrice * 1.35 / 100) * 100;
+  const atlDist = (((curPrice - low52) / low52) * 100).toFixed(1);
+  const athDist = (((curPrice - high52) / high52) * 100).toFixed(1);
+  const mcapDisplay = STOCK.mcap_bil ? fmtVN(STOCK.mcap_bil) + ' tỷ' : (m.size && m.size[0] ? m.size[0][1] : '158,40 nghìn tỷ');
+
+  return `
+  <div class="cmc-c360-container">
+    <!-- CỘT TRÁI (LEFT SIDEBAR - ~350px STICKY): IDENTITY, PRICE, 24H SLIDER, KEY STATS, CONVERTER -->
+    <aside class="cmc-c360-left">
+      <!-- Card 1: Identity & Price & Slider -->
+      <div class="cmc-card">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+          <span style="cursor:pointer" data-go="screener">Cổ phiếu</span>
+          <span>›</span>
+          <span style="color:var(--brand);font-weight:700">${STOCK.sym}</span>
+          <span>›</span>
+          <span>Biến động</span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px">
+          <div class="logo-msb" style="width:44px;height:44px;border-radius:10px;overflow:hidden;flex:none;background:var(--sub);display:flex;align-items:center;justify-content:center;border:1px solid var(--line)">
+            ${getCompanyLogo(STOCK.sym, 44)}
           </div>
-          <div class="tv-trade">
-            <button class="sell" onclick="toast('Lệnh BÁN nhanh ${STOCK.sym}: ${fmtVN(bestBid, 0)}')">
-              <b id="tv-trade-bid">${fmtVN(bestBid, 0)}</b>
-              <span>BÁN</span>
-            </button>
-            <span class="tv-trade-qty">50</span>
-            <button class="buy" onclick="toast('Lệnh MUA nhanh ${STOCK.sym}: ${fmtVN(bestAsk, 0)}')">
-              <b id="tv-trade-ask">${fmtVN(bestAsk, 0)}</b>
-              <span>MUA</span>
-            </button>
-          </div>
-          <div class="tv-vol">Khối lượng <span id="tvvol" class="up">${volStr}</span><span id="tv-indicators-val" class="tv-indicators-val" style="margin-left:8px"></span></div>
-        </div>
-
-        <!-- TradingView Candlestick Canvas Container -->
-        <div id="candle" class="tv-chart"></div>
-
-        <!-- Claude Artifact Bottom Toolbar -->
-        <div class="tv-bar">
-          ${TV_RANGES.map(r => `<button class="${S.range === r ? 'on' : ''}" data-act="range" data-v="${r}">${r}</button>`).join('')}
-          <span class="sp"></span>
-          <span class="mono" id="tv-clock">${typeof getLiveTimeString === 'function' ? getLiveTimeString() : '14:45:02 UTC+7'}</span>
-          <span class="adj" style="cursor:pointer" data-act="opentvmcpmodal" title="TradingView MCP Inspector">ADJ</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Side: Claude-Native Metrics & Events -->
-    <div class="hero-side">
-      ${S_HERO_SIDE_TAB === 'orderbook' ? `
-        <div style="padding:8px 12px 0;display:flex;justify-content:space-between;align-items:center;background:var(--sub);border-bottom:1px solid var(--line)">
-          <span style="font-size:11.5px;font-weight:700;color:var(--brand);display:flex;align-items:center;gap:5px"><span class="tv-dot-live"></span>SỔ LỆNH &amp; KHỚP LỆNH MCP</span>
-          <button class="chip" data-act="herosidetab" data-v="metrics" style="font-size:10.5px;padding:2px 8px">📊 Quay lại Chỉ số</button>
-        </div>
-        ${renderMcpOrderBook()}
-      ` : `
-        <div class="hero-claude-wrap">
-          <div class="m4">
-            <div>
-              ${cell('ĐỊNH GIÁ &amp; LỢI NHUẬN', m.val ? m.val.slice(0, 4) : [])}
-              ${cell('THANH KHOẢN', m.liq)}
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="dd" data-act="symmenu" style="display:inline-flex;align-items:center;gap:4px;cursor:pointer">
+                <h1 style="margin:0;font-size:22px;font-weight:800;letter-spacing:-0.5px">${STOCK.sym}</h1>
+                ${I.chev}
+              </span>
+              <span class="tg" style="font-size:10.5px;padding:2px 6px;border-radius:4px;background:var(--sub2);color:var(--ink2);font-weight:700">${STOCK.ex}</span>
+              <span class="chip" style="font-size:10px;padding:2px 6px;background:rgba(20,166,250,0.12);color:var(--info);border:1px solid rgba(20,166,250,0.25);font-weight:700">#VN30</span>
             </div>
-            <div>
-              ${cell('QUY MÔ &amp; SỞ HỮU', m.size ? m.size.slice(0, 4) : [])}
-              ${cell('NĐT NƯỚC NGOÀI', m.frn)}
+            <div style="font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px" title="${esc(STOCK.name)}">
+              ${STOCK.name}
+            </div>
+            <div style="font-size:11px;color:var(--ink3);margin-top:1px">
+              Ngành: <b style="color:var(--ink2)">${STOCK.ind}</b>
             </div>
           </div>
-          <div class="hero-ev">
-            <div class="evh">
-              <span class="cap">SỰ KIỆN GẦN ĐÂY</span>
-              <div style="display:flex;align-items:center;gap:6px">
-                <button class="chip" data-act="herosidetab" data-v="orderbook" title="Xem Sổ lệnh &amp; Khớp lệnh MCP">⚡ Sổ lệnh MCP</button>
-                <button class="chip" data-act="evtop">${S.evTop} ${I.chev}</button>
+          <button class="follow ${f ? 'on' : ''}" data-act="follow" style="flex:none;width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:8px" title="${f ? 'Đang theo dõi (Bấm để đổi)' : 'Thêm vào theo dõi'}">
+            ${I.fav}
+          </button>
+        </div>
+
+        <!-- Hero Price Box -->
+        <div style="background:var(--sub);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px">
+          <div style="font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:4px">Thị giá hiện tại</div>
+          <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+            <div class="p ${chgClass}" id="c360-live-price" style="font-family:var(--mono);font-size:30px;font-weight:800;letter-spacing:-0.5px;font-variant-numeric:tabular-nums;line-height:1">
+              ${fmtVN(curPrice, 0)} <span style="font-size:13px;font-weight:500;color:var(--ink3)">đ</span>
+            </div>
+            <div class="c ${chgClass}" id="c360-live-chg" style="font-family:var(--mono);font-size:13px;font-weight:700;padding:2px 8px;border-radius:6px;background:${STOCK.chg > 0 ? 'rgba(0,146,83,0.12)' : STOCK.chg < 0 ? 'rgba(204,54,57,0.12)' : 'rgba(183,114,2,0.12)'}">
+              ${chgTxt}
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-family:var(--mono);font-size:11px">
+            <div><span style="color:var(--ink3)">Sàn:</span> <b style="color:#06b6d4">${fmtVN(floor, 0)}</b></div>
+            <div style="text-align:center"><span style="color:var(--ink3)">TC:</span> <b style="color:var(--warn)">${fmtVN(ref, 0)}</b></div>
+            <div style="text-align:right"><span style="color:var(--ink3)">Trần:</span> <b style="color:#a855f7">${fmtVN(ceil, 0)}</b></div>
+          </div>
+        </div>
+
+        <!-- CMC 24h Range Slider -->
+        <div class="cmc-range-box" style="padding-top:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--ink2);margin-bottom:6px">
+            <span style="font-weight:700">⚡ Biên độ phiên (24h Range)</span>
+            <span style="font-size:11px;color:var(--ink3)">Vị thế: <b style="color:var(--ink);font-family:var(--mono)">${rangePct}%</b></span>
+          </div>
+          <div class="cmc-slider-track" style="height:6px;background:var(--sub2);border-radius:4px;position:relative;margin:12px 0 8px">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:${rangePct}%;background:linear-gradient(90deg, #10b981, var(--brand));border-radius:4px"></div>
+            <div style="position:absolute;left:calc(${rangePct}% - 6px);top:-4px;width:14px;height:14px;border-radius:50%;background:#fff;border:2.5px solid var(--brand);box-shadow:0 0 6px rgba(0,0,0,0.35);cursor:pointer" title="Giá hiện tại: ${fmtVN(curPrice, 0)} đ"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;font-variant-numeric:tabular-nums">
+            <span style="color:var(--down)">Thấp: ${fmtVN(lowPrice, 0)}</span>
+            <span style="color:var(--warn);font-size:10.5px">TC: ${fmtVN(ref, 0)}</span>
+            <span style="color:var(--up)">Cao: ${fmtVN(highPrice, 0)}</span>
+          </div>
+
+          <div style="margin-top:10px;padding-top:8px;border-top:1px dashed var(--line);display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px">
+            <div>
+              <span style="color:var(--ink3)">Đáy 52 tuần:</span>
+              <div style="font-family:var(--mono);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums">
+                ${fmtVN(low52, 0)} <span style="color:var(--up);font-size:10px;font-weight:700">+${atlDist}%</span>
               </div>
             </div>
-            <div class="ev-list">
-              ${evs.map(([d, t]) => `<div><b>${d}</b><span title="${esc(t)}">${t}</span></div>`).join('') || '<span class="muted">Không có sự kiện trong nhóm này.</span>'}
+            <div style="text-align:right">
+              <span style="color:var(--ink3)">Đỉnh 52 tuần:</span>
+              <div style="font-family:var(--mono);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums">
+                ${fmtVN(high52, 0)} <span style="color:var(--down);font-size:10px;font-weight:700">${athDist}%</span>
+              </div>
             </div>
           </div>
         </div>
-      `}
-    </div>
-  </div>
-  <div class="tabs" role="tablist">${C360_TABS.map(([k, l]) => { const rt = k ? 'c360-' + k : 'c360'; return `<button role="tab" class="${S.route === rt ? 'on' : ''}" data-go="${rt}">${l}</button>`; }).join('')}</div>`;
+      </div>
+
+      <!-- Card 2: Key Metrics (Vốn hóa, Thanh khoản, Định giá) -->
+      <div class="cmc-card">
+        <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--ink2);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+          <span>📊 Chỉ Số Cốt Lõi</span>
+          <span style="font-size:11px;color:var(--brand);font-weight:600">MCP DNSE Feed</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:12px">
+          <div class="kl" style="display:flex;justify-content:space-between;border-bottom:1px solid var(--sub);padding-bottom:6px">
+            <span style="color:var(--ink2)">Vốn hoá thị trường</span>
+            <b style="font-family:var(--mono);font-variant-numeric:tabular-nums">${mcapDisplay}</b>
+          </div>
+          <div class="kl" style="display:flex;justify-content:space-between;border-bottom:1px solid var(--sub);padding-bottom:6px">
+            <span style="color:var(--ink2)">Khối lượng GD (24h)</span>
+            <b style="font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)">${volStr} CP <span style="font-size:11px;color:var(--ink3)">(${valStr})</span></b>
+          </div>
+          <div class="kl" style="display:flex;justify-content:space-between;border-bottom:1px solid var(--sub);padding-bottom:6px">
+            <span style="color:var(--ink2)">P/E (TTM)</span>
+            <b style="font-family:var(--mono);font-variant-numeric:tabular-nums">${m.val && m.val[1] ? m.val[1][1] : '6,85 lần'}</b>
+          </div>
+          <div class="kl" style="display:flex;justify-content:space-between;border-bottom:1px solid var(--sub);padding-bottom:6px">
+            <span style="color:var(--ink2)">P/B (MRQ)</span>
+            <b style="font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--brand)">${m.val && m.val[2] ? m.val[2][1] : '1,30 lần'}</b>
+          </div>
+          <div class="kl" style="display:flex;justify-content:space-between;border-bottom:1px solid var(--sub);padding-bottom:6px">
+            <span style="color:var(--ink2)">EPS (TTM)</span>
+            <b style="font-family:var(--mono);font-variant-numeric:tabular-nums">${m.val && m.val[0] ? m.val[0][1] : '4.387 đ'}</b>
+          </div>
+          <div class="kl" style="display:flex;justify-content:space-between;border-bottom:1px solid var(--sub);padding-bottom:6px">
+            <span style="color:var(--ink2)">ROE (TTM)</span>
+            <b style="font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--up)">${m.val && m.val[3] ? m.val[3][1] : '19,4%'}</b>
+          </div>
+          <div class="kl" style="display:flex;justify-content:space-between;border-bottom:1px solid var(--sub);padding-bottom:6px">
+            <span style="color:var(--ink2)">SLCP Lưu hành</span>
+            <b style="font-family:var(--mono);font-variant-numeric:tabular-nums">${m.size && m.size[3] ? m.size[3][1] : '5.370 tỷ'}</b>
+          </div>
+          <div class="kl" style="display:flex;justify-content:space-between;border-bottom:1px solid var(--sub);padding-bottom:6px">
+            <span style="color:var(--ink2)">Khối ngoại Mua/Bán</span>
+            <b style="font-family:var(--mono);font-variant-numeric:tabular-nums;color:${frnNet >= 0 ? 'var(--up)' : 'var(--down)'}">${frnNet >= 0 ? '+' : ''}${fmtVN(frnNet, 0)} CP</b>
+          </div>
+          <div class="kl" style="display:flex;justify-content:space-between">
+            <span style="color:var(--ink2)">Room ngoại còn lại</span>
+            <b style="font-family:var(--mono);font-variant-numeric:tabular-nums">${m.frn && m.frn[2] ? m.frn[2][1] : '429.244.922 CP'}</b>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Stock Converter (Quy đổi nhanh CP <-> VNĐ) -->
+      <div class="cmc-card cmc-converter-box">
+        <div style="font-size:12px;font-weight:800;color:var(--ink2);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+          <span>🔄 Quy Đổi Lô CP / Tiền</span>
+          <span style="font-size:11px;color:var(--brand);font-weight:700;font-family:var(--mono)">${fmtVN(curPrice, 0)} đ/CP</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;background:var(--sub);border:1px solid var(--line);border-radius:8px;padding:6px 10px;gap:8px">
+            <input type="number" id="cmc-conv-shares" value="1000" min="100" step="100" style="background:transparent;border:0;color:var(--ink);font-family:var(--mono);font-size:13px;font-weight:700;width:100%;outline:none;font-variant-numeric:tabular-nums" oninput="window.cmcCalcVal && window.cmcCalcVal(this.value, ${curPrice})">
+            <span style="font-size:11px;font-weight:700;color:var(--ink2);flex:none">CP (${STOCK.sym})</span>
+          </div>
+          <div style="text-align:center;font-size:11px;color:var(--ink3);line-height:1">⇄</div>
+          <div style="display:flex;align-items:center;background:var(--sub);border:1px solid var(--line);border-radius:8px;padding:6px 10px;gap:8px">
+            <input type="text" id="cmc-conv-money" value="${fmtVN(curPrice * 1000, 0)}" style="background:transparent;border:0;color:var(--up);font-family:var(--mono);font-size:13px;font-weight:700;width:100%;outline:none;font-variant-numeric:tabular-nums" oninput="window.cmcCalcShares && window.cmcCalcShares(this.value, ${curPrice})">
+            <span style="font-size:11px;font-weight:700;color:var(--ink2);flex:none">VNĐ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Metadata Tags & Links -->
+      <div class="cmc-card">
+        <div style="font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:10px">🏷️ Thẻ &amp; Thông Tin Doanh Nghiệp</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="chip" style="font-size:11px;padding:3px 8px;cursor:pointer" onclick="toast('Mở Cổng Thông tin UBCKNN & Sở GDCK TP.HCM')">🌐 Sở GDCK</span>
+          <span class="chip" style="font-size:11px;padding:3px 8px;cursor:pointer" onclick="toast('Xem Báo cáo thường niên ${STOCK.sym} đã kiểm toán')">📑 BCTN 2025-2026</span>
+          <span class="chip" style="font-size:11px;padding:3px 8px;cursor:pointer" onclick="toast('Xem Bản cáo bạch & Điều lệ doanh nghiệp')">📜 Bản cáo bạch</span>
+          <span class="chip" style="font-size:11px;padding:3px 8px;background:rgba(228,95,53,0.08);color:var(--brand);border:1px solid rgba(228,95,53,0.25)">🏷️ ICB: ${STOCK.ind}</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CỘT GIỮA (CENTER MAIN COLUMN - FLEX 1): STICKY TABS, TRADINGVIEW CHART, SUB-TAB PANEL -->
+    <main class="cmc-c360-mid">
+      <!-- Sticky Sub-Nav Tabs -->
+      <div class="cmc-tabs" role="tablist">
+        ${C360_TABS.map(([k, l]) => {
+          const rt = k ? 'c360-' + k : 'c360';
+          const icon = k === '' ? '📊' : k === 'hoso' ? '🏢' : k === 'codong' ? '👥' : k === 'taichinh' ? '📑' : k === 'cungnganh' ? '⚖️' : k === 'tintuc' ? '📰' : '📈';
+          return `<button role="tab" class="${S.route === rt ? 'on' : ''}" data-go="${rt}">
+            <span>${icon}</span> <span>${l}</span>
+          </button>`;
+        }).join('')}
+      </div>
+
+      <!-- TradingView Candlestick Chart Card -->
+      <div class="cmc-card cmc-chart-card" style="padding:0;overflow:hidden">
+        <div class="tv-head" style="padding:10px 14px;border-bottom:1px solid var(--line);background:var(--sub);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div class="tv-leg" style="display:flex;align-items:center;gap:8px;font-size:12.5px">
+            <div class="tv-logo" style="cursor:pointer" data-act="opentvmcpmodal" title="Bấm mở TradingView MCP Inspector"></div>
+            <b>${STOCK.name}</b> · <span id="tvint" style="cursor:pointer;font-weight:700;color:var(--brand)" title="Khung thời gian">${S_TV_TF || '1D'}</span> · <span>${STOCK.ex}</span>
+            <span class="tv-dot"></span>
+            <span id="ohlc" class="tv-ohlc" style="font-family:var(--mono);font-size:12px"></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="tv-trade" style="display:flex;align-items:center;gap:4px">
+              <button class="sell" onclick="toast('Lệnh BÁN nhanh ${STOCK.sym}: ${fmtVN(bestBid, 0)}')" style="cursor:pointer">
+                <b id="tv-trade-bid">${fmtVN(bestBid, 0)}</b>
+                <span>BÁN</span>
+              </button>
+              <span class="tv-trade-qty" style="padding:2px 8px;font-size:11px">50</span>
+              <button class="buy" onclick="toast('Lệnh MUA nhanh ${STOCK.sym}: ${fmtVN(bestAsk, 0)}')" style="cursor:pointer">
+                <b id="tv-trade-ask">${fmtVN(bestAsk, 0)}</b>
+                <span>MUA</span>
+              </button>
+            </div>
+            <div class="tv-vol" style="font-size:11.5px">KL: <span id="tvvol" class="up" style="font-family:var(--mono);font-weight:700">${volStr}</span></div>
+          </div>
+        </div>
+
+        <!-- TV Chart Container Canvas -->
+        <div id="candle" class="tv-chart" style="height:440px;position:relative;background:var(--card-bg, #131722)"></div>
+
+        <!-- TV Bottom Toolbar -->
+        <div class="tv-bar" style="padding:8px 14px;border-top:1px solid var(--line);background:var(--sub);display:flex;align-items:center;gap:6px">
+          ${TV_RANGES.map(r => `<button class="${S.range === r ? 'on' : ''}" data-act="range" data-v="${r}" style="font-size:11.5px;padding:3px 8px;border-radius:4px">${r}</button>`).join('')}
+          <span class="sp" style="flex:1"></span>
+          <span class="mono" id="tv-clock" style="font-size:11px;color:var(--ink3)">${typeof getLiveTimeString === 'function' ? getLiveTimeString() : '14:45:02 UTC+7'}</span>
+          <span class="adj" style="cursor:pointer;font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--sub2)" data-act="opentvmcpmodal" title="TradingView MCP Inspector">ADJ</span>
+        </div>
+      </div>
+
+      <!-- Active Subtab Content Panel -->
+      <div class="cmc-card cmc-tab-panel" style="padding:16px 20px" role="tabpanel">
+        ${body}
+      </div>
+    </main>
+
+    <!-- CỘT PHẢI (RIGHT ACTION & DEPTH COLUMN - ~330px): ORDER BOOK, QUANT SIGNALS, CTAS, EVENTS -->
+    <aside class="cmc-c360-right">
+      <!-- Card 1: Order Book Realtime (3 Mua, Khớp, 3 Bán) -->
+      <div class="cmc-card" style="padding:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:12px;font-weight:800;text-transform:uppercase;color:var(--brand);display:flex;align-items:center;gap:6px">
+            <span class="tv-dot-live" style="width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 6px var(--up)"></span>
+            Sổ Lệnh &amp; Khớp Lệnh
+          </span>
+          <span style="font-size:10.5px;color:var(--ink3);font-family:var(--mono)">Live EntradeX</span>
+        </div>
+        ${renderMcpOrderBook()}
+      </div>
+
+      <!-- Card 2: Quant Radar Spotlight (AI Sentiment & Discipline) -->
+      <div class="cmc-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:12px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px">
+            <span>🎯</span> Tín Hiệu Định Lượng AI
+          </span>
+          <span class="chip" style="font-size:10.5px;padding:2px 6px;background:rgba(0,146,83,0.12);color:var(--up);font-weight:700">Điểm AI: 94/100</span>
+        </div>
+        <div style="font-size:12px;color:var(--ink2);line-height:1.45;margin-bottom:10px">
+          Mô hình: <b style="color:var(--brand)">Bắt Sóng Theo Xu Hướng</b> (Dual EMA &amp; SuperTrend). Dòng tiền cá mập đang duy trì vị thế tích cực.
+        </div>
+        <div style="background:var(--sub);border:1px solid var(--line);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:11.5px">
+          <div style="display:flex;justify-content:space-between">
+            <span style="color:var(--ink3)">Vùng mua gom (Pullback):</span>
+            <b style="font-family:var(--mono);color:var(--up)">${fmtVN(Math.round(curPrice * 0.97 / 100) * 100, 0)} - ${fmtVN(curPrice, 0)}</b>
+          </div>
+          <div style="display:flex;justify-content:space-between">
+            <span style="color:var(--ink3)">Mục tiêu TP1 (+7.5%):</span>
+            <b style="font-family:var(--mono);color:var(--brand)">${fmtVN(Math.round(curPrice * 1.075 / 100) * 100, 0)}</b>
+          </div>
+          <div style="display:flex;justify-content:space-between">
+            <span style="color:var(--ink3)">Cắt lỗ SL (-4.0%):</span>
+            <b style="font-family:var(--mono);color:var(--down)">${fmtVN(Math.round(curPrice * 0.96 / 100) * 100, 0)}</b>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+          <button class="btn primary sm" onclick="toast('Mở phiếu đặt lệnh mua ${STOCK.sym} qua EntradeX Gateway')" style="width:100%;justify-content:center;font-weight:700;display:flex;align-items:center;gap:6px">
+            <span>⚡</span> Đặt Lệnh Mua Qua EntradeX
+          </button>
+          <button class="btn sm" onclick="toast('Đã thiết lập chuông cảnh báo giá cho ${STOCK.sym}')" style="width:100%;justify-content:center;font-size:11.5px;display:flex;align-items:center;gap:6px">
+            <span>🔔</span> Đặt Cảnh Báo Vùng Mua Vàng
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 3: Recent Events -->
+      <div class="cmc-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px;font-weight:700;color:var(--ink2)">📅 Sự Kiện Gần Đây</span>
+          <button class="chip" data-act="evtop" style="font-size:10px;padding:1px 6px">${S.evTop} ${I.chev}</button>
+        </div>
+        <div class="ev-list" style="height:auto;max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:6px">
+          ${evs.slice(0, 4).map(([d, t]) => `
+            <div style="font-size:11.5px;display:flex;gap:8px;align-items:flex-start">
+              <b style="color:var(--brand);font-family:var(--mono);flex:none;font-size:11px">${d}</b>
+              <span style="color:var(--ink2);line-height:1.35" title="${esc(t)}">${esc(t)}</span>
+            </div>
+          `).join('') || '<span class="muted" style="font-size:11px">Không có sự kiện phù hợp</span>'}
+        </div>
+      </div>
+    </aside>
+  </div>`;
 }
+
+
+// Global converter calculator functions (CoinMarketCap Benchmark)
+window.cmcCalcVal = function(shares, price) {
+  const sh = parseFloat(shares) || 0;
+  const money = Math.round(sh * price);
+  const moneyEl = document.getElementById('cmc-conv-money');
+  if (moneyEl) moneyEl.value = (typeof fmtVN === 'function') ? fmtVN(money, 0) : money.toLocaleString('vi-VN');
+};
+
+window.cmcCalcShares = function(moneyStr, price) {
+  const raw = String(moneyStr).replace(/[^0-9]/g, '');
+  const m = parseFloat(raw) || 0;
+  const sh = price > 0 ? Math.round(m / price) : 0;
+  const sharesEl = document.getElementById('cmc-conv-shares');
+  if (sharesEl) sharesEl.value = sh;
+};
+
 function niceStep(raw) { const p = Math.pow(10, Math.floor(Math.log10(raw))); const m = raw / p; return (m < 1.5 ? 1 : m < 3.5 ? 2.5 : m < 7.5 ? 5 : 10) * p; }
 let INTRA = null;
 function intraday() {
@@ -8499,7 +8841,7 @@ function vCompare() {
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
         ${T.length > 2 ? `<button class="x" data-act="cmprm" data-v="${t}" aria-label="Bỏ ${t}">${I.x}</button>` : ''}
-        <button class="btn sm" style="font-size:10px;padding:2px 6px;margin-top:auto" data-act="stock" data-v="${t}" title="Xem Company 360">360 ↗</button>
+        <button class="btn sm" style="font-size:10px;padding:2px 6px;margin-top:auto" data-act="stock" data-v="${t}" title="Xem Biến động Mã chứng khoán">360 ↗</button>
       </div>
     </div>`;
   }).join('');
@@ -8617,7 +8959,7 @@ function vWatch() {
   return `<div class="page"><div class="ph1"><h2>Danh sách theo dõi</h2><span class="muted">${list.length} mã</span></div>
   ${list.length ? `<div class="tscroll" style="border-top:1px solid var(--line)"><table class="t upper"><thead><tr><th>Mã</th><th>Doanh nghiệp</th><th>Ngành</th><th class="rt">Giá</th><th class="rt">+/− (%)</th><th class="rt">Điểm tổng hợp</th><th></th></tr></thead><tbody>
   ${list.map(t => { const d = q(t); return `<tr class="click" data-act="stock" data-v="${t}"><td><b>${t}</b></td><td>${d.n}</td><td class="ink2">${d.ind}</td><td class="rt num">${fmtVN(d.p, 2)}</td><td class="rt num ${cls(d.c)}">${sgn(d.c, 2)}</td><td class="rt"><span class="score ${scls(d.tot)}">${d.tot}</span></td><td class="rt"><button class="btn sm" data-act="unwatch" data-v="${t}">Bỏ theo dõi</button></td></tr>`; }).join('')}</tbody></table></div>`
-    : `<div class="empty"><h2>Chưa theo dõi mã nào</h2><p>Nhấn “Theo dõi” trên Company 360 hoặc chọn mã trong Bộ lọc cổ phiếu để thêm vào đây.</p><div class="row"><button class="btn pri" data-go="screener">Mở Bộ lọc cổ phiếu</button></div></div>`}</div>`;
+    : `<div class="empty"><h2>Chưa theo dõi mã nào</h2><p>Nhấn “Theo dõi” trên Biến động Mã chứng khoán hoặc chọn mã trong Bộ lọc cổ phiếu để thêm vào đây.</p><div class="row"><button class="btn pri" data-go="screener">Mở Bộ lọc cổ phiếu</button></div></div>`}</div>`;
 }
 
 /* ================= MARKET OVERVIEW (DASHBOARD) ================= */
@@ -10298,7 +10640,7 @@ function vMarketNews() {
 
 function vPlaceholder(title) {
   return `<div class="empty"><div class="ic">${I.grid.replace('<svg', '<svg width="22" height="22" stroke="#E45F35"')}</div><h2>${title}</h2><p>Màn hình này chưa có đủ thiết kế nên tạm thời chưa mở trong prototype. Hiện có thể xem:</p>
-  <div class="row"><button class="btn" data-go="c360">Company 360</button><button class="btn" data-go="screener">Bộ lọc cổ phiếu</button><button class="btn" data-go="compare">So sánh cổ phiếu</button><button class="btn" data-go="reports">Báo cáo &amp; Insights</button><button class="btn" data-go="watchlist">Danh mục</button></div></div>`;
+  <div class="row"><button class="btn" data-go="c360">Biến động Mã chứng khoán</button><button class="btn" data-go="screener">Bộ lọc cổ phiếu</button><button class="btn" data-go="compare">So sánh cổ phiếu</button><button class="btn" data-go="reports">Báo cáo &amp; Insights</button><button class="btn" data-go="watchlist">Danh mục</button></div></div>`;
 }
 
 
@@ -12137,7 +12479,7 @@ function render(keepScroll) {
   if (r.startsWith('c360')) {
     const tab = r.split('-')[1] || '';
     const body = { '': vOverview, hoso: vProfile, codong: vHolders, taichinh: vFinance, cungnganh: vPeers, tintuc: vEvents, dulieu: vData }[tab]();
-    html = stockHeader() + `<div role="tabpanel">${body}</div>`;
+    html = stockHeader(tab, body);
   } else if (/^wl\d+$/.test(r) || r === 'watchlist') html = vWatch();
   else html = ({ follow: vFollow, screener: vAll, 'screener-all': vAll, compare: vCompare, reports: vReports, market: vMarket, mnews: vMarketNews, quant: vQuant })[r]();
   view.innerHTML = html;
@@ -12385,7 +12727,7 @@ const A = {
   },
   fseg: el => { S.fSeg = el.dataset.v; rerender(); },
   tnewscat: el => openMenu(el, ['Tất cả', 'Doanh nghiệp', 'Cổ tức', 'Thị trường'], S.tnewsCat, v => { S.tnewsCat = v; rerender(); }),
-  news: el => modal(`<div class="m-h"><h3>${esc(el.dataset.t)}</h3><button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button></div><div class="m-b"><p class="muted" style="margin:0 0 10px;font-size:12px">${STOCK.sym} · Nguồn: KongKeng Radar News · ${getLiveDateString()}</p><p style="margin:0;line-height:1.65;color:var(--ink2)">Bản tin đầy đủ hiển thị tại đây trong sản phẩm thật. Prototype dùng nội dung tóm tắt để minh hoạ luồng đọc tin từ Company 360 mà không rời khỏi trang mã cổ phiếu.</p></div><div class="m-f"><button class="btn" data-act="closemodal">Đóng</button></div>`),
+  news: el => modal(`<div class="m-h"><h3>${esc(el.dataset.t)}</h3><button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button></div><div class="m-b"><p class="muted" style="margin:0 0 10px;font-size:12px">${STOCK.sym} · Nguồn: KongKeng Radar News · ${getLiveDateString()}</p><p style="margin:0;line-height:1.65;color:var(--ink2)">Bản tin đầy đủ hiển thị tại đây trong sản phẩm thật. Prototype dùng nội dung tóm tắt để minh hoạ luồng đọc tin từ Biến động Mã chứng khoán mà không rời khỏi trang mã cổ phiếu.</p></div><div class="m-f"><button class="btn" data-act="closemodal">Đóng</button></div>`),
   shseg: el => { S.shSeg = el.dataset.v; rerender(); },
   finsub: el => { S.finSub = el.dataset.v; rerender(); },
   finper: el => { S.finPer = el.dataset.v === 'Năm' ? 'y' : 'q'; rerender(); },
@@ -12653,7 +12995,7 @@ const A = {
     </div>
     <div class="m-f" style="display:flex;justify-content:space-between;align-items:center;gap:10px">
       <div style="display:flex;gap:8px">
-        ${sym ? `<button class="btn" data-act="stock" data-v="${sym}" style="font-size:12px;display:inline-flex;align-items:center;gap:6px"><span>📊</span> Mở Company 360 (${sym})</button>` : ''}
+        ${sym ? `<button class="btn" data-act="stock" data-v="${sym}" style="font-size:12px;display:inline-flex;align-items:center;gap:6px"><span>📊</span> Mở Biến động Mã chứng khoán (${sym})</button>` : ''}
         <button class="btn" data-act="mktmcpmodal" data-server="vnd" style="font-size:12px;display:inline-flex;align-items:center;gap:6px" title="Kiểm chứng nguồn dữ liệu và tham số định giá thời gian thực"><span>⚡</span> Nguồn dữ liệu &amp; Tham số</button>
       </div>
       <button class="btn pri" data-act="toast" data-msg="Đã tải toàn văn báo cáo phân tích (${esc(r[1])} · PDF ${r[6]} trang)!" style="font-size:12.5px;display:inline-flex;align-items:center;gap:6px">
@@ -12722,7 +13064,7 @@ const A = {
       </div>
     </div>
     <div class="m-f">
-      ${firstTicker ? `<button class="btn" data-act="stock" data-v="${firstTicker}">Mở Company 360 (${firstTicker})</button>` : ''}
+      ${firstTicker ? `<button class="btn" data-act="stock" data-v="${firstTicker}">Mở Biến động Mã chứng khoán (${firstTicker})</button>` : ''}
       
       <button class="btn pri" data-act="closemodal">Đóng</button>
     </div>`);
@@ -13141,7 +13483,7 @@ const WL = [
   { name: 'Danh mục 3', tickers: ['VCB', 'BID', 'CTG', 'TCB', 'MBB', 'ACB', 'LPB'], cash: 0, pos: {} }
 ];
 Object.assign(S, { wlCur: 0, wlTab: 'tq', wlLow: 'news', wlNewsCat: 'Tất cả', wlEvType: 'Tất cả', wlSel: new Set(), wlHide: false, wlSync: '14:32:10 25/07/2026', wlSort: null });
-/* "Theo dõi" ở Company 360 / Bộ lọc dùng danh mục đầu tiên */
+/* "Theo dõi" ở Biến động Mã chứng khoán / Bộ lọc dùng danh mục đầu tiên */
 S.watch = {
   has: t => WL[0].tickers.includes(t),
   add: t => { if (ensureStock(t) && !WL[0].tickers.includes(t)) WL[0].tickers.push(t); },
@@ -13657,7 +13999,7 @@ function wtEditBind() {
   });
 }
 
-/* ---------- chọn danh sách theo dõi khi thêm mã (Company 360 · Bộ lọc) ---------- */
+/* ---------- chọn danh sách theo dõi khi thêm mã (Biến động Mã chứng khoán · Bộ lọc) ---------- */
 const wlOf = t => WATCH.filter(L => L.tickers.includes(t));
 const inAnyWL = t => WATCH.some(L => L.tickers.includes(t));
 const wlPickTip = t => { const ls = wlOf(t); return ls.length ? 'Đang theo dõi trong: ' + ls.map(L => L.name).join(', ') : 'Thêm vào danh sách theo dõi'; };
@@ -21202,7 +21544,7 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   const vn30Base = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym]) ? VN30_DATA_FEED[sym] : null;
   const data = Object.assign({}, synth, dnseBase || {}, vn30Base || {});
   
-  // 1b. Resolve full authentic MCP datasets for ALL Company 360 tabs (Hồ sơ, Cổ đông, Tài chính, Cùng ngành, Tin tức & Sự kiện)
+  // 1b. Resolve full authentic MCP datasets for ALL Biến động Mã chứng khoán tabs (Hồ sơ, Cổ đông, Tài chính, Cùng ngành, Tin tức & Sự kiện)
   const mcpResolved = getMcpResolvedCompanyData(sym, data.price, data.ind, data.name);
   data.factors = (dnseBase && dnseBase.factors) || synth.factors;
   data.highlights = (dnseBase && dnseBase.highlights) || synth.highlights;

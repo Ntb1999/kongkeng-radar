@@ -9911,12 +9911,12 @@ function getMarketLeadersConfig(leaderMode) {
   let leaderBadgeTxt = '';
 
   if (leaderMode === 'gainers') {
-    leaderBadgeTxt = 'Top 10 cổ phiếu Tăng giá mạnh nhất theo thị trường thực tế (Realtime DNSE Entrade)';
+    leaderBadgeTxt = 'Top 10 cổ phiếu Tăng giá mạnh nhất theo thị trường thực tế';
     displayRows = [...allStocksList]
       .sort((a, b) => ((b.pct || 0) - (a.pct || 0)) || ((b.val_bil || 0) - (a.val_bil || 0)))
       .slice(0, 10);
   } else if (leaderMode === 'losers') {
-    leaderBadgeTxt = 'Top 10 cổ phiếu Giảm giá nhiều nhất theo thị trường thực tế (Realtime DNSE Entrade)';
+    leaderBadgeTxt = 'Top 10 cổ phiếu Giảm giá nhiều nhất theo thị trường thực tế';
     displayRows = [...allStocksList]
       .sort((a, b) => ((a.pct || 0) - (b.pct || 0)) || ((b.val_bil || 0) - (a.val_bil || 0)))
       .slice(0, 10);
@@ -9927,7 +9927,7 @@ function getMarketLeadersConfig(leaderMode) {
       .sort((a, b) => (b._dr.score - a._dr.score) || ((b.val_bil || 0) - (a.val_bil || 0)))
       .slice(0, 10);
   } else {
-    leaderBadgeTxt = 'Top 10 cổ phiếu có Giá trị giao dịch (GTGD) cao nhất theo thị trường thực tế (Realtime DNSE Entrade)';
+    leaderBadgeTxt = 'Top 10 cổ phiếu có Giá trị giao dịch (GTGD) cao nhất theo thị trường thực tế';
     displayRows = [...allStocksList]
       .sort((a, b) => ((b.val_bil || 0) - (a.val_bil || 0)) || ((b.vol || 0) - (a.vol || 0)))
       .slice(0, 10);
@@ -10048,7 +10048,7 @@ function renderMarketImpactMoversHtml() {
   const topDown = withImpact.filter(x => x.pct < 0).sort((a, b) => a.impactPts - b.impactPts || a.pct - b.pct).slice(0, 5);
 
   return `
-    <div style="font-size:12px;font-weight:700;color:#22c55e;margin-bottom:6px">🟢 TOP KÉO TĂNG CHỈ SỐ (REALTIME)</div>
+    <div style="font-size:12px;font-weight:700;color:#22c55e;margin-bottom:6px">🟢 TOP KÉO TĂNG CHỈ SỐ</div>
     ${topUp.map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m.sym}" data-mover-sym="${m.sym}">
       <div style="display:flex;align-items:center;gap:8px">
         ${getCompanyLogo(m.sym, 24)}
@@ -10063,7 +10063,7 @@ function renderMarketImpactMoversHtml() {
       </div>
     </div>`).join('') || '<div class="muted" style="font-size:12px;padding:8px 0">Chưa ghi nhận mã kéo tăng</div>'}
 
-    <div style="font-size:12px;font-weight:700;color:#ef4444;margin:14px 0 6px">🔴 TOP KÉO GIẢM CHỈ SỐ (REALTIME)</div>
+    <div style="font-size:12px;font-weight:700;color:#ef4444;margin:14px 0 6px">🔴 TOP KÉO GIẢM CHỈ SỐ</div>
     ${topDown.map(m => `<div class="mkt-mover-row click" data-act="stock" data-v="${m.sym}" data-mover-sym="${m.sym}">
       <div style="display:flex;align-items:center;gap:8px">
         ${getCompanyLogo(m.sym, 24)}
@@ -11102,7 +11102,7 @@ function vMarket() {
         <div class="mkt-box">
           <div class="mkt-box-title">
             <span>🔥 Hiệu Suất &amp; Dòng Tiền Theo Ngành (Sector Heatmap)</span>
-            <span style="font-size:11px;color:var(--ink3)">Realtime DNSE Entrade</span>
+            
           </div>
           <div id="mkt-sector-heatmap-list" style="display:flex;flex-direction:column;gap:8px">
             ${renderMarketSectorsHtml()}

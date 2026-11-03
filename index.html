@@ -5892,7 +5892,9 @@ const I = {
   cols: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M10 4v16M15 4v16"/></svg>',
   brief: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3.5" y="7" width="17" height="12.5" rx="1.5"/><path d="M9 7V4.5h6V7M3.5 12.5h17"/></svg>',
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>',
-  ref: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>'
+  ref: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>',
+  fav: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
+  favf: '<svg width="15" height="15" viewBox="0 0 24 24" fill="#ff7a45" stroke="#ff7a45" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
 };
 
 const NAV = [
@@ -6884,8 +6886,8 @@ function stockHeader(tab, body) {
               Ngành: <b style="color:var(--ink2)">${STOCK.ind}</b>
             </div>
           </div>
-          <button class="follow ${f ? 'on' : ''}" data-act="follow" style="flex:none;width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:8px" title="${f ? 'Đang theo dõi (Bấm để đổi)' : 'Thêm vào theo dõi'}">
-            ${I.fav}
+          <button class="follow ${f ? 'on' : ''}" data-act="follow" style="flex:none;width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer" title="${f ? 'Đang theo dõi (Bấm để đổi)' : 'Thêm vào theo dõi'}">
+            ${f ? I.favf : I.fav}
           </button>
         </div>
 

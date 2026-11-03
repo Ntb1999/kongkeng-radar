@@ -7608,12 +7608,23 @@ function vPeers() {
 }
 
 function vEvents() {
-  const ev = EVENTS.filter(e => S.evType === 'Tất cả' || e[3] === S.evType).filter(e => { if (S.evSpan === 'Tất cả thời gian') return true; const [d, m, y] = e[0].split('/').map(Number); const dt = new Date(y, m - 1, d), now = new Date(2026, 8, 17); return S.evSpan === 'Sắp diễn ra' ? dt >= now : dt < now; });
-  const nw = NEWS.filter(n => S.newsCat === 'Tất cả' || n[1] === S.newsCat);
+  const ev = (EVENTS || []).filter(e => S.evType === 'Tất cả' || e[3] === S.evType).filter(e => { 
+    if (S.evSpan === 'Tất cả thời gian') return true; 
+    const [d, m, y] = String((e && e[0]) || '').split('/').map(Number); 
+    if (!y || !m || !d) return true;
+    const dt = new Date(y, m - 1, d), now = new Date(2026, 8, 17); 
+    return S.evSpan === 'Sắp diễn ra' ? dt >= now : dt < now; 
+  });
+  const normalizedNews = (NEWS || []).map(n => {
+    if (Array.isArray(n)) return [n[0] || '', n[1] || 'Doanh nghiệp', n[2] || ''];
+    if (n && typeof n === 'object') return [n.time || n.date || 'Hôm nay', n.cat || n.category || 'Doanh nghiệp', n.title || n.text || ''];
+    return ['Hôm nay', 'Doanh nghiệp', String(n)];
+  });
+  const nw = normalizedNews.filter(n => S.newsCat === 'Tất cả' || n[1] === S.newsCat);
   return `<div class="evs">
     ${pnl('Lịch sự kiện', '', `<div class="evchips"><div class="evc">${['Tất cả', ...EV_TYPES].map(t => `<button class="chip m ${S.evType === t ? 'on' : ''}" data-act="evtype" data-v="${t}">${t}</button>`).join('')}</div><button class="ddin sp" data-act="evspan">${I.cal}<span>${S.evSpan === 'Tất cả thời gian' ? 'Chọn thời gian' : S.evSpan}</span>${I.chev}</button></div>
       <div class="tscroll"><table class="t ev-t"><thead><tr><th style="width:120px">Ngày sự kiện</th><th style="width:120px">Ngày GDKHQ</th><th style="width:120px">Ngày công bố</th><th style="width:190px">Loại sự kiện</th><th>Nội dung</th></tr></thead>
-      <tbody>${ev.map(e => `<tr><td style="font-weight:500">${e[0]}</td><td class="${e[1] === '—' ? 'muted' : 'ink2'}">${e[1]}</td><td class="muted">${e[2]}</td><td><span class="tag">${e[3]}</span></td><td class="wrap ink2" style="min-width:280px">${e[4]}</td></tr>`).join('') || `<tr><td colspan="5" class="muted" style="padding:20px 12px">Không có sự kiện nào khớp bộ lọc.</td></tr>`}</tbody></table></div>`)}
+      <tbody>${ev.map(e => `<tr><td style="font-weight:500">${e[0]}</td><td class="${e[1] === '-' ? 'muted' : 'ink2'}">${e[1]}</td><td class="muted">${e[2]}</td><td><span class="tag">${e[3]}</span></td><td class="wrap ink2" style="min-width:280px">${e[4]}</td></tr>`).join('') || `<tr><td colspan="5" class="muted" style="padding:20px 12px">Không có sự kiện nào khớp bộ lọc.</td></tr>`}</tbody></table></div>`)}
     ${pnl('Tin tức', `<button class="chip" data-act="newscat">${S.newsCat} ${I.chev}</button>`, `<div>${nw.map(([d, c, t]) => `<div class="nitem" data-act="news" data-t="${esc(t)}"><span class="d">${d}</span><span class="tag">${c}</span><p>${t}</p></div>`).join('')}</div>`, 'news-p')}
   </div>`;
 }
@@ -21276,7 +21287,12 @@ function fetchAndApplyDnseMcpData(sym, isManualDnse, isManualVnd) {
   if (data.ownership) OWNERSHIP = data.ownership;
   if (data.foreign_own) FOREIGN_OWN = data.foreign_own;
   if (data.insiders) INSIDERS = data.insiders;
-  if (data.news) NEWS = data.news;
+  if (data.news) {
+    NEWS = data.news.map(n => {
+      if (Array.isArray(n)) return n;
+      return [n.time || n.date || 'Hôm nay', n.cat || n.category || 'Doanh nghiệp', n.title || n.text || ''];
+    });
+  }
   if (data.eventsTable) EVENTS = data.eventsTable;
   else if (data.events && Array.isArray(data.events) && data.events.length && data.events[0].length >= 5) EVENTS = data.events;
   if (data.peers) {

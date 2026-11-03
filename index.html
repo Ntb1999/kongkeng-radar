@@ -114,16 +114,400 @@ svg text{font-family:var(--sans)}
 
 /* ---------- shell ---------- */
 .app{display:flex;min-height:100%}
-.sb{width:200px;flex:none;border-right:1px solid var(--line);background:var(--bg);position:sticky;top:env(safe-area-inset-top,0px);height:100vh;display:flex;flex-direction:column;z-index:40;overflow-y:auto}
-.sb-logo{height:64px;flex:none;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--line);color:var(--ink)}
-.sb-logo>svg{display:block;width:145px;height:32px}
-.sb-group{flex:none}
-.sb-group h6{margin:0;padding:8px 16px;font-size:10px;line-height:16px;font-weight:600;color:var(--ink4);letter-spacing:0;text-transform:uppercase;border-bottom:1px solid var(--line)}
-.sb-items{padding-bottom:17px;border-bottom:1px solid var(--line)}
-.sb a{display:flex;gap:12px;align-items:center;height:36px;padding:0 16px;color:var(--ink2);text-decoration:none;font-size:12px;line-height:16px;cursor:pointer}
-.sb a svg{width:16px;height:16px;flex:none;stroke:var(--ink2)}
-.sb a:hover{background:var(--hover);color:var(--ink)}
-.sb a.on{color:var(--brand);font-weight:500} .sb a.on svg{stroke:var(--brand)}
+/* ================= ADVANCED COLLAPSIBLE ICON RAIL SIDEBAR ================= */
+.sb {
+  width: 220px;
+  flex: none;
+  border-right: 1px solid var(--line);
+  background: var(--bg);
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.sb.collapsed {
+  width: 64px;
+  overflow-x: visible !important;
+}
+.sb-header {
+  height: 60px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.sb.collapsed .sb-header {
+  padding: 0;
+  justify-content: center;
+}
+.sb-logo-wrap {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  min-width: 0;
+}
+.sb-logo-mini {
+  display: none;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+.sb.collapsed .sb-logo-mini {
+  display: flex;
+}
+.sb.collapsed .sb-logo-mini:hover {
+  background: var(--hover);
+}
+.sb-logo-full {
+  display: flex;
+  align-items: center;
+}
+.sb-logo-full > svg {
+  display: block;
+  width: 145px;
+  height: 32px;
+}
+.sb.collapsed .sb-logo-full {
+  display: none;
+}
+.sb-toggle-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sub);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex: none;
+}
+.sb-toggle-btn:hover {
+  background: var(--hover);
+  color: var(--ink);
+  border-color: var(--brand);
+}
+.sb.collapsed .sb-toggle-btn {
+  display: none;
+}
+.sb-group {
+  flex: none;
+}
+.sb-group h6 {
+  margin: 0;
+  padding: 10px 14px 6px;
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 700;
+  color: var(--ink4);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+.sb-group h6:hover {
+  color: var(--ink2);
+}
+.sb-grp-arrow {
+  transition: transform 0.2s ease;
+}
+.sb-group.grp-closed .sb-grp-arrow {
+  transform: rotate(-90deg);
+}
+.sb-items.collapsed-group {
+  display: none;
+}
+.sb.collapsed .sb-group h6 {
+  height: 1px;
+  padding: 0;
+  margin: 6px 12px;
+  background: var(--line);
+  font-size: 0;
+  border: 0;
+  overflow: hidden;
+}
+.sb.collapsed .sb-grp-arrow {
+  display: none;
+}
+.sb-items {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.sb a {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  height: 38px;
+  padding: 0 14px;
+  margin: 2px 8px;
+  border-radius: 8px;
+  color: var(--ink2);
+  text-decoration: none;
+  font-size: 12.5px;
+  line-height: 16px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s ease;
+}
+.sb a svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  stroke: var(--ink2);
+  transition: stroke 0.15s ease, transform 0.15s ease;
+}
+.sb a:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+.sb a:hover svg {
+  stroke: var(--ink);
+}
+.sb a.on {
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-weight: 600;
+}
+.sb a.on svg {
+  stroke: var(--brand);
+}
+.sb-sub-indicator {
+  margin-left: auto;
+  font-size: 16px;
+  color: var(--ink4);
+  line-height: 1;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+.sb a:hover .sb-sub-indicator {
+  color: var(--brand);
+  transform: translateX(2px);
+}
+
+/* Collapsed Icon Rail specifics */
+.sb.collapsed a {
+  width: 44px;
+  height: 42px;
+  padding: 0;
+  margin: 4px auto;
+  justify-content: center;
+  gap: 0;
+}
+.sb.collapsed a svg {
+  width: 19px;
+  height: 19px;
+}
+.sb.collapsed a .sb-label,
+.sb.collapsed a .sb-sub-indicator {
+  display: none;
+}
+.sb.collapsed a.on {
+  background: var(--brand-soft);
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+
+/* Floating Tooltip in Collapsed Mode */
+.sb.collapsed a[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #181b24;
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.15);
+  white-space: nowrap;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.sb.collapsed a[data-tip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(2px);
+}
+.sb.collapsed a[data-tip]::before {
+  content: '';
+  position: absolute;
+  left: calc(100% + 5px);
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right-color: #181b24;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+}
+.sb.collapsed a[data-tip]:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Sidebar Footer */
+.sb-footer {
+  margin-top: auto;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  flex: none;
+  background: var(--bg);
+}
+.sb.collapsed .sb-footer {
+  padding: 10px 8px;
+  display: flex;
+  justify-content: center;
+}
+.sb-footer-btn {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  background: var(--sub);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink2);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.sb-footer-btn:hover {
+  background: var(--hover);
+  color: var(--ink);
+  border-color: var(--brand);
+}
+.sb.collapsed .sb-footer-btn {
+  width: 42px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
+}
+.sb.collapsed .sb-footer-txt {
+  display: none;
+}
+.sb-footer-btn .icon-expand,
+.sb-toggle-btn .icon-expand {
+  display: none;
+}
+.sb.collapsed .sb-footer-btn .icon-expand,
+.sb.collapsed .sb-toggle-btn .icon-expand {
+  display: block;
+}
+.sb.collapsed .sb-footer-btn .icon-collapse,
+.sb.collapsed .sb-toggle-btn .icon-collapse {
+  display: none;
+}
+
+/* Flyout Submenu Panel */
+.sb-flyout {
+  position: fixed;
+  left: 68px;
+  background: #1b1e28;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 12px;
+  min-width: 250px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
+  z-index: 1000;
+  animation: sbFlyoutIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes sbFlyoutIn {
+  from { opacity: 0; transform: translateX(-8px) scale(0.97); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+.sb-flyout-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ink3);
+  padding: 2px 6px 8px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sb-flyout-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.sb-flyout-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  color: var(--ink2);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.sb-flyout-item:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+.sb-flyout-item.on {
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-weight: 700;
+}
+.sb-flyout-footer {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.sb-flyout-expand-btn {
+  width: 100%;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--brand);
+  font-weight: 700;
+  background: transparent;
+  border: 1px dashed rgba(255,107,0,0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.sb-flyout-expand-btn:hover {
+  background: var(--brand-soft);
+}
 .main{flex:1;min-width:0;display:flex;flex-direction:column}
 .top{height:52px;flex:none;display:flex;align-items:center;gap:16px;padding:0 20px;border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:env(safe-area-inset-top,0px);z-index:30}
 .hist-g{display:flex;gap:4px;align-items:center}
@@ -1238,8 +1622,13 @@ table.fin-t th:first-child{padding-left:12px}
   .metrics>div:nth-child(2n){border-right:0}
 }
 @media (max-width:860px){
-  .sb{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s;box-shadow:none}
-  .sb.open{transform:none;box-shadow:10px 0 30px rgba(0,0,0,.15)}
+  .sb{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s;box-shadow:none;width:240px !important;overflow-x:hidden !important}
+  .sb.open{transform:none;box-shadow:10px 0 30px rgba(0,0,0,.25)}
+  .sb.collapsed a .sb-label, .sb.collapsed a .sb-sub-indicator{display:inline !important}
+  .sb.collapsed a{width:auto !important;justify-content:flex-start !important;padding:0 14px !important}
+  .sb.collapsed .sb-logo-full{display:flex !important}
+  .sb.collapsed .sb-logo-mini{display:none !important}
+  .sb.collapsed .sb-group h6{height:auto !important;padding:10px 14px 6px !important;font-size:10px !important}
   .burger{display:grid}
   .hist-g{display:none}
   .search input{width:170px}
@@ -2893,10 +3282,48 @@ td[data-stock-role="price"],
 </div>
 
 <div class="app">
-  <aside class="sb" id="sb">
-    <div class="sb-logo"><svg role="img" aria-label="KongKeng Radar" viewBox="0 0 156 34" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="kkr-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF3B30"/><stop offset="50%" stop-color="#FF6B00"/><stop offset="100%" stop-color="#FF9500"/></linearGradient><linearGradient id="kkr-sweep" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF3B30" stop-opacity="0.85"/><stop offset="100%" stop-color="#FF9500" stop-opacity="0.05"/></linearGradient></defs><g transform="translate(1, 1)"><circle cx="16" cy="16" r="15" stroke="url(#kkr-grad)" stroke-width="1.8" opacity="0.45" stroke-dasharray="3 2"/><circle cx="16" cy="16" r="10" stroke="url(#kkr-grad)" stroke-width="1.4" opacity="0.8"/><circle cx="16" cy="16" r="5" stroke="url(#kkr-grad)" stroke-width="1.2" opacity="0.95"/><circle cx="16" cy="16" r="2.2" fill="url(#kkr-grad)"/><path d="M16 16 L30 8 A15 15 0 0 0 16 1 Z" fill="url(#kkr-sweep)"/><line x1="16" y1="1" x2="16" y2="31" stroke="url(#kkr-grad)" stroke-width="0.8" stroke-dasharray="1 3" opacity="0.6"/><line x1="1" y1="16" x2="31" y2="16" stroke="url(#kkr-grad)" stroke-width="0.8" stroke-dasharray="1 3" opacity="0.6"/></g><text x="38" y="18" font-family="'Google Sans Flex', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-weight="900" font-size="15" letter-spacing="-0.3" fill="currentColor">KongKeng</text><rect x="38" y="22" width="46" height="11" rx="2.5" fill="url(#kkr-grad)"/><text x="61" y="30.2" text-anchor="middle" font-family="'JetBrains Mono', 'IBM Plex Mono', monospace" font-weight="800" font-size="7.5" fill="#FFFFFF" letter-spacing="1.6">RADAR</text></svg></div>
+  <aside class="sb collapsed" id="sb">
+    <div class="sb-header">
+      <div class="sb-logo-wrap" data-go="market" title="Trang chủ (Tổng quan thị trường)">
+        <div class="sb-logo-mini" title="KongKeng Radar · Click để về Trang chủ hoặc Mở rộng Menu">
+          <svg width="30" height="30" viewBox="0 0 34 34" fill="none">
+            <defs>
+              <linearGradient id="kkr-mini-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF3B30"/>
+                <stop offset="50%" stop-color="#FF6B00"/>
+                <stop offset="100%" stop-color="#FF9500"/>
+              </linearGradient>
+              <linearGradient id="kkr-mini-sweep" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#FF3B30" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#FF9500" stop-opacity="0.05"/>
+              </linearGradient>
+            </defs>
+            <circle cx="17" cy="17" r="15" stroke="url(#kkr-mini-grad)" stroke-width="1.8" opacity="0.45" stroke-dasharray="3 2"/>
+            <circle cx="17" cy="17" r="10" stroke="url(#kkr-mini-grad)" stroke-width="1.4" opacity="0.8"/>
+            <circle cx="17" cy="17" r="5" stroke="url(#kkr-mini-grad)" stroke-width="1.2" opacity="0.95"/>
+            <circle cx="17" cy="17" r="2.2" fill="url(#kkr-mini-grad)"/>
+            <path d="M17 17 L31 9 A15 15 0 0 0 17 2 Z" fill="url(#kkr-mini-sweep)"/>
+          </svg>
+        </div>
+        <div class="sb-logo-full">
+          <svg role="img" aria-label="KongKeng Radar" viewBox="0 0 156 34" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="kkr-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF3B30"/><stop offset="50%" stop-color="#FF6B00"/><stop offset="100%" stop-color="#FF9500"/></linearGradient><linearGradient id="kkr-sweep" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF3B30" stop-opacity="0.85"/><stop offset="100%" stop-color="#FF9500" stop-opacity="0.05"/></linearGradient></defs><g transform="translate(1, 1)"><circle cx="16" cy="16" r="15" stroke="url(#kkr-grad)" stroke-width="1.8" opacity="0.45" stroke-dasharray="3 2"/><circle cx="16" cy="16" r="10" stroke="url(#kkr-grad)" stroke-width="1.4" opacity="0.8"/><circle cx="16" cy="16" r="5" stroke="url(#kkr-grad)" stroke-width="1.2" opacity="0.95"/><circle cx="16" cy="16" r="2.2" fill="url(#kkr-grad)"/><path d="M16 16 L30 8 A15 15 0 0 0 16 1 Z" fill="url(#kkr-sweep)"/><line x1="16" y1="1" x2="16" y2="31" stroke="url(#kkr-grad)" stroke-width="0.8" stroke-dasharray="1 3" opacity="0.6"/><line x1="1" y1="16" x2="31" y2="16" stroke="url(#kkr-grad)" stroke-width="0.8" stroke-dasharray="1 3" opacity="0.6"/></g><text x="38" y="18" font-family="'Google Sans Flex', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-weight="900" font-size="15" letter-spacing="-0.3" fill="currentColor">KongKeng</text><rect x="38" y="22" width="46" height="11" rx="2.5" fill="url(#kkr-grad)"/><text x="61" y="30.2" text-anchor="middle" font-family="'JetBrains Mono', 'IBM Plex Mono', monospace" font-weight="800" font-size="7.5" fill="#FFFFFF" letter-spacing="1.6">RADAR</text></svg>
+        </div>
+      </div>
+      <button class="sb-toggle-btn" data-act="sbtoggle" id="sb-toggle-btn" title="Thu gọn / Mở rộng Menu (Ctrl+B)">
+        <svg class="icon-collapse" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+        <svg class="icon-expand" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
     <nav id="sbnav"></nav>
-      </aside>
+    <div class="sb-footer">
+      <button class="sb-footer-btn" data-act="sbtoggle" title="Thu gọn / Mở rộng Menu (Ctrl+B)">
+        <svg class="icon-collapse" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 19l-7-7 7-7M19 19l-7-7 7-7"/></svg>
+        <svg class="icon-expand" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+        <span class="sb-footer-txt">Thu gọn Menu</span>
+      </button>
+    </div>
+    <div id="sb-flyout" class="sb-flyout" style="display:none" data-stop="1"></div>
+  </aside>
   <div class="main">
     <header class="top">
       <button class="navbtn burger" data-act="burger" aria-label="Mở menu"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
@@ -5832,6 +6259,8 @@ function instrMkt(x, D) {
 /* ================= STATE ================= */
 const S = {
   route: 'c360', follow: false,
+  sbCollapsed: (typeof localStorage !== 'undefined' && localStorage.getItem('kkr_sb_collapsed') !== null) ? localStorage.getItem('kkr_sb_collapsed') === '1' : true,
+  sbGroupsClosed: {},
   quant: {
     tab: 'signals',
     strat: 'trend_ema',
@@ -5894,12 +6323,13 @@ const I = {
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>',
   ref: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>',
   fav: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
-  favf: '<svg width="15" height="15" viewBox="0 0 24 24" fill="#ff7a45" stroke="#ff7a45" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
+  favf: '<svg width="15" height="15" viewBox="0 0 24 24" fill="#ff7a45" stroke="#ff7a45" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
+  chart: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 3 5-7"/></svg>'
 };
 
 const NAV = [
   ['KHÁM PHÁ', [['market', 'Tổng quan thị trường', I.grid], ['screener', 'Bộ lọc cổ phiếu', I.filter], ['mnews', 'Tin tức thị trường', I.news]]],
-  ['NGHIÊN CỨU', [['c360', 'Biến động Mã chứng khoán', I.grid], ['compare', 'So sánh cổ phiếu', I.comp], ['reports', 'Báo cáo & Insights', I.rep], ['follow', 'Danh sách theo dõi', I.book]]],
+  ['NGHIÊN CỨU', [['c360', 'Biến động Mã chứng khoán', I.chart], ['compare', 'So sánh cổ phiếu', I.comp], ['reports', 'Báo cáo & Insights', I.rep], ['follow', 'Danh sách theo dõi', I.book]]],
   ['ĐẦU TƯ TỰ ĐỘNG & BOT', [['quant', 'Radar AI Săn Tín Hiệu', I.quant]]]
 ];
 const C360_TABS = [['', 'TỔNG QUAN'], ['hoso', 'HỒ SƠ'], ['codong', 'CỔ ĐÔNG & GDNB'], ['taichinh', 'TÀI CHÍNH'], ['cungnganh', 'CÙNG NGÀNH'], ['tintuc', 'TIN TỨC & SỰ KIỆN'], ['dulieu', 'DỮ LIỆU']];
@@ -6059,10 +6489,121 @@ function donut(data, size = 150) {
 /* ================= SHELL ================= */
 function sidebar() {
   const r = S.route.split('-')[0];
-  const grp = (h, items, last) => `<div class="sb-group"><h6>${h}</h6><div class="sb-items${last ? ' last' : ''}">${items}</div></div>`;
-  const link = ([k, l, ic]) => `<a data-go="${k}" class="${r === k ? 'on' : ''}">${ic}${l}</a>`;
-  document.getElementById('sbnav').innerHTML = NAV.map(([h, items]) => grp(h, items.map(link).join(''))).join('')
-    + grp('DANH MỤC', link(['watchlist', esc(WL[0].name), I.brief]) + WL.slice(1).map((L, i) => link(['wl' + (i + 1), esc(L.name), I.brief])).join('') + `<a class="new" data-act="wlnew">${I.plus}Tạo mới</a>`, 1);
+  const sb = document.getElementById('sb');
+  if (sb) {
+    if (S.sbCollapsed) sb.classList.add('collapsed');
+    else sb.classList.remove('collapsed');
+  }
+
+  const grp = (h, items, last, gid) => {
+    const isClosed = S.sbGroupsClosed && S.sbGroupsClosed[gid];
+    return `<div class="sb-group ${isClosed ? 'grp-closed' : ''}" data-gid="${gid}">
+      <h6 data-act="sbtogglegroup" data-v="${gid}" title="Bấm để đóng/mở nhóm ${h}">
+        <span>${h}</span>
+        <svg class="sb-grp-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </h6>
+      <div class="sb-items${last ? ' last' : ''}${isClosed ? ' collapsed-group' : ''}">${items}</div>
+    </div>`;
+  };
+
+  const link = ([k, l, ic]) => {
+    const isC360 = k === 'c360';
+    return `<a data-go="${k}" data-sb-key="${k}" class="sb-link ${r === k ? 'on' : ''}" data-tip="${esc(l)}" title="${esc(l)}">
+      <span class="sb-icon">${ic}</span>
+      <span class="sb-label">${l}</span>
+      ${isC360 ? '<span class="sb-sub-indicator" data-act="sbflyout" data-v="c360" title="Mở danh mục 7 tab con">›</span>' : ''}
+    </a>`;
+  };
+
+  const navHtml = NAV.map(([h, items], i) => grp(h, items.map(link).join(''), false, 'g' + i)).join('')
+    + grp('DANH MỤC', link(['watchlist', esc(WL[0].name), I.brief]) + WL.slice(1).map((L, i) => link(['wl' + (i + 1), esc(L.name), I.brief])).join('') + `<a class="new sb-link" data-act="wlnew" data-tip="Tạo mới danh mục" title="Tạo mới danh mục"><span class="sb-icon">${I.plus}</span><span class="sb-label">Tạo mới</span></a>`, 1, 'gwl');
+
+  const sbNavEl = document.getElementById('sbnav');
+  if (sbNavEl) sbNavEl.innerHTML = navHtml;
+}
+
+function showSbFlyout(anchorEl, type) {
+  const flyout = document.getElementById('sb-flyout');
+  if (!flyout) return;
+
+  const rect = anchorEl.getBoundingClientRect();
+  const topPos = Math.max(10, Math.min(window.innerHeight - 380, rect.top - 10));
+
+  let html = '';
+  if (type === 'c360') {
+    const curTab = (S.route.startsWith('c360-') ? S.route.split('-')[1] : '');
+    html = `
+      <div class="sb-flyout-header">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:14px">📈</span>
+          <span style="font-weight:800;color:var(--brand)">${STOCK.sym}</span>
+          <span style="font-size:11px;color:var(--ink3)">Biến động Mã</span>
+        </div>
+        <span class="tg" style="font-size:10px;padding:2px 5px">${fmtVN(STOCK.price, 0)} đ</span>
+      </div>
+      <div class="sb-flyout-list">
+        ${C360_TABS.map(([k, l]) => {
+          const rt = k ? `c360-${k}` : 'c360';
+          const icon = k === '' ? '📊' : k === 'hoso' ? '🏢' : k === 'codong' ? '👥' : k === 'taichinh' ? '📑' : k === 'cungnganh' ? '⚖️' : k === 'tintuc' ? '📰' : '📈';
+          const isAct = S.route === rt;
+          return `<a class="sb-flyout-item ${isAct ? 'on' : ''}" data-go="${rt}" onclick="closeSbFlyout()">
+            <span style="font-size:14px">${icon}</span>
+            <span style="flex:1">${l}</span>
+            ${isAct ? '<span style="font-size:10px;color:var(--brand)">● Đang xem</span>' : ''}
+          </a>`;
+        }).join('')}
+      </div>
+      <div class="sb-flyout-footer">
+        <button class="sb-flyout-expand-btn" data-act="sbtoggle" onclick="closeSbFlyout()">
+          <span>⇥ Mở rộng toàn bộ Menu</span>
+        </button>
+      </div>
+    `;
+  } else if (type === 'watchlist') {
+    html = `
+      <div class="sb-flyout-header">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:14px">💼</span>
+          <span style="font-weight:800;color:var(--ink)">DANH MỤC THEO DÕI</span>
+        </div>
+        <span class="tg" style="font-size:10px;padding:2px 5px">${WL.length} Danh mục</span>
+      </div>
+      <div class="sb-flyout-list">
+        <a class="sb-flyout-item ${S.route === 'watchlist' ? 'on' : ''}" data-go="watchlist" onclick="closeSbFlyout()">
+          <span>💼</span>
+          <span style="flex:1">${esc(WL[0].name)}</span>
+          <span class="tg" style="font-size:10px">${(WL[0].tickers || []).length} mã</span>
+        </a>
+        ${WL.slice(1).map((L, i) => {
+          const rt = 'wl' + (i + 1);
+          return `<a class="sb-flyout-item ${S.route === rt ? 'on' : ''}" data-go="${rt}" onclick="closeSbFlyout()">
+            <span>💼</span>
+            <span style="flex:1">${esc(L.name)}</span>
+            <span class="tg" style="font-size:10px">${(L.tickers || []).length} mã</span>
+          </a>`;
+        }).join('')}
+        <a class="sb-flyout-item" data-act="wlnew" onclick="closeSbFlyout()" style="color:var(--brand);font-weight:700">
+          <span>➕</span>
+          <span>Tạo danh mục mới...</span>
+        </a>
+      </div>
+      <div class="sb-flyout-footer">
+        <button class="sb-flyout-expand-btn" data-act="sbtoggle" onclick="closeSbFlyout()">
+          <span>⇥ Mở rộng toàn bộ Menu</span>
+        </button>
+      </div>
+    `;
+  }
+
+  flyout.innerHTML = html;
+  flyout.style.top = topPos + 'px';
+  flyout.style.left = '68px';
+  flyout.style.display = 'block';
+}
+
+function closeSbFlyout() {
+  const flyout = document.getElementById('sb-flyout');
+  if (flyout) flyout.style.display = 'none';
 }
 const panelH = (title, right = '') => `<div class="ph"><span class="cap">${title}</span><span class="r">${right}</span></div>`;
 const pnl = (title, right, body, cls = '', st = '') => `<section class="pnl ${cls}" ${st ? `style="${st}"` : ''}>${panelH(title, right)}${body}</section>`;
@@ -12538,7 +13079,33 @@ const toastC360 = t => { if (t !== 'MSB') toast(`Prototype chỉ có dữ liệu
 
 /* ================= ACTIONS ================= */
 const A = {
-  burger: () => document.getElementById('sb').classList.toggle('open'),
+  burger: () => {
+    if (window.innerWidth <= 860) {
+      document.getElementById('sb').classList.toggle('open');
+    } else {
+      A.sbtoggle();
+    }
+  },
+  sbtoggle: () => {
+    const sb = document.getElementById('sb');
+    if (!sb) return;
+    const isNowCollapsed = sb.classList.toggle('collapsed');
+    S.sbCollapsed = isNowCollapsed;
+    try { localStorage.setItem('kkr_sb_collapsed', isNowCollapsed ? '1' : '0'); } catch(e){}
+    closeSbFlyout();
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 240);
+  },
+  sbflyout: (el, e) => {
+    if (e) e.stopPropagation();
+    const v = el.dataset.v || 'c360';
+    showSbFlyout(el, v);
+  },
+  sbtogglegroup: el => {
+    const gid = el.dataset.v;
+    if (!S.sbGroupsClosed) S.sbGroupsClosed = {};
+    S.sbGroupsClosed[gid] = !S.sbGroupsClosed[gid];
+    sidebar();
+  },
   quanttab: el => {
     S.quant.tab = el.dataset.v;
     render(true);
@@ -13121,15 +13688,37 @@ document.addEventListener('click', e => {
   const pop = document.getElementById('tv-ind-popover');
   if (pop && pop.style.display !== 'none' && !e.target.closest('.tv-ind-btn-wrap')) pop.style.display = 'none';
   const t = e.target.closest('[data-act],[data-go]');
-  if (!t) { hideSuggest(); return; }
-  if (t.dataset.go) { e.preventDefault(); go(t.dataset.go); return; }
+  if (!t) { hideSuggest(); closeSbFlyout(); return; }
+  if (t.dataset.go) {
+    e.preventDefault();
+    const dest = t.dataset.go;
+    const sb = document.getElementById('sb');
+    const isCollapsed = sb && sb.classList.contains('collapsed');
+    go(dest);
+    if (isCollapsed) {
+      if (dest.startsWith('c360')) {
+        showSbFlyout(t, 'c360');
+      } else if (dest.startsWith('wl') || dest === 'watchlist') {
+        showSbFlyout(t, 'watchlist');
+      } else {
+        closeSbFlyout();
+      }
+    } else {
+      closeSbFlyout();
+    }
+    return;
+  }
   const act = t.dataset.act;
   if ((act === 'closedrawer' || act === 'closemodal') && t.classList.contains('scrim') && e.target.closest('[data-stop]')) return;
   if (t.disabled) return;
   if (A[act]) { e.stopPropagation(); A[act](t, e); }
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeMenu(); closeLayer(); hideSuggest(); }
+  if (e.key === 'Escape') { closeMenu(); closeLayer(); hideSuggest(); closeSbFlyout(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
+    e.preventDefault();
+    if (A && A.sbtoggle) A.sbtoggle();
+  }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role=checkbox],[data-act].xp-row')) { e.preventDefault(); e.target.click(); }
 });
 document.addEventListener('input', e => {

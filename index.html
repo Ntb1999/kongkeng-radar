@@ -1380,8 +1380,20 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .kv2 b.up{color:var(--up)}.kv2 b.down{color:var(--down)}
 .kvs12 .kv2{padding:8px 12px}
 .kvs12 .kv2 span{color:var(--ink3)}
-.prow1{display:grid;grid-template-columns:470px 470px minmax(0,1fr)}
-.prow2{display:grid;grid-template-columns:700px minmax(0,1fr)}
+.prow1{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:16px}
+.prow2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+.profile-hero-card{background:var(--card-bg);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;box-shadow:var(--card-shadow)}
+.profile-grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:16px}
+.profile-intro-full{margin-bottom:16px}
+.profile-intro-body{padding:16px 20px;background:var(--card-bg)}
+.profile-timeline-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+.profile-timeline-card{background:var(--sub);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;transition:border-color 0.15s ease}
+.profile-timeline-card:hover{border-color:var(--brand)}
+.profile-timeline-badge{display:inline-block;align-self:flex-start;font-size:11px;font-weight:700;color:var(--brand);background:rgba(255,107,0,0.12);padding:2px 8px;border-radius:4px;font-family:var(--mono)}
+.profile-timeline-text{font-size:12px;line-height:1.6;color:var(--ink2)}
+.sh-new-wrap{display:flex;flex-direction:column;gap:16px;width:100%}
+.sh-top-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.sh-tables{display:flex;flex-direction:column;gap:16px}
 .intro{display:flex;flex-direction:column;gap:10px;padding:12px 16px 16px;font-size:12px;line-height:16px}
 .intro h5{margin:0;font-size:12px;font-weight:500;color:var(--ink)}
 .intro p{margin:0;color:var(--ink2);font-size:12px;line-height:16px}
@@ -1446,7 +1458,7 @@ table.fin-t th:first-child{padding-left:12px}
 .peer-t tr.hl td{background:var(--brand-soft);border-bottom-color:var(--brand)}
 .peer-t tr.hl td:first-child{color:var(--brand)}
 /* events */
-.evs{display:grid;grid-template-columns:minmax(0,1fr) 520px}
+.evs{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,340px);gap:16px}
 .evs .evchips{border-top:0}
 /* data */
 .xp-wrap .xp{max-width:none}
@@ -8459,62 +8471,225 @@ function vProfile() {
   };
   const bInfo = brandColors[STOCK.sym] || { primary: '#2563EB', secondary: '#1E293B', accent: '#38BDF8', domain: `${STOCK.sym.toLowerCase()}.com.vn` };
 
-  const brandCard = `<div style="background:var(--card-bg);border:1px solid var(--line2);border-radius:8px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;box-shadow:var(--card-shadow)">
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      ${getCompanyLogo(STOCK.sym, 56, 'box-shadow:0 2px 6px rgba(0,0,0,0.12);')}
+  const brandCard = `<div class="profile-hero-card">
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      ${getCompanyLogo(STOCK.sym, 56, 'box-shadow:0 3px 8px rgba(0,0,0,0.18);border-radius:12px;')}
       <div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <h3 style="margin:0;font-size:16px;font-weight:800;color:var(--ink)">${STOCK.name}</h3>
+          <h3 style="margin:0;font-size:17px;font-weight:800;color:var(--ink)">${STOCK.name}</h3>
           <span style="font-size:11px;padding:2px 8px;border-radius:4px;background:var(--brand);color:#fff;font-weight:700">${STOCK.sym}</span>
-          <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--sub);border:1px solid var(--line2);color:var(--ink2);font-weight:600">${STOCK.ex || 'HOSE'}</span>
-          <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--sub);border:1px solid var(--line2);color:var(--ink2);font-weight:600">ICB: ${STOCK.ind}</span>
+          <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--sub);border:1px solid var(--line);color:var(--ink2);font-weight:600">${STOCK.ex || 'HOSE'}</span>
+          <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--sub);border:1px solid var(--line);color:var(--ink2);font-weight:600">ICB: ${STOCK.ind}</span>
         </div>
         <div style="display:flex;align-items:center;gap:12px;margin-top:6px;font-size:12px;color:var(--ink2);flex-wrap:wrap">
           <span>🌐 Website: <a href="https://${bInfo.domain}" target="_blank" rel="noopener noreferrer" style="color:var(--brand);font-weight:600;text-decoration:none">${bInfo.domain} ↗</a></span>
           <span>•</span>
-          <span style="display:inline-flex;align-items:center;gap:5px">
-            🎨 Bảng màu thương hiệu:
-            <span title="Primary: ${bInfo.primary}" style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${bInfo.primary};border:1px solid rgba(0,0,0,0.15)"></span>
-            <span title="Secondary: ${bInfo.secondary}" style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${bInfo.secondary};border:1px solid rgba(0,0,0,0.15)"></span>
-            <span title="Accent: ${bInfo.accent}" style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${bInfo.accent};border:1px solid rgba(0,0,0,0.15)"></span>
-          </span>
+          <span style="color:#10b981;font-weight:600">✓ Doanh nghiệp niêm yết chính thức</span>
           <span>•</span>
-          <span style="color:#10b981;font-weight:600">✓ Nhận diện thương hiệu &amp; Hồ sơ doanh nghiệp chính thức</span>
+          <span style="color:var(--ink3)">Năm thành lập: ${PROFILE.basic && PROFILE.basic.find(b => b[0].includes('thành lập')) ? PROFILE.basic.find(b => b[0].includes('thành lập'))[1] : '1991'}</span>
         </div>
       </div>
     </div>
-    <div style="display:flex;gap:8px">
-      <button onclick="openDnseMcpModal('logo')" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);color:#6366f1;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s">
-        <span>●</span> BRAND &amp; LOGO MCP Payload ↗
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <a href="https://${bInfo.domain}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;background:var(--sub);border:1px solid var(--line);color:var(--ink);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s">
+        <span>🌐</span> Trang chủ DN ↗
+      </a>
+      <button onclick="toast('Tải tài liệu Công bố thông tin & Báo cáo thường niên ${STOCK.sym}')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;background:rgba(255,107,0,0.1);border:1px solid rgba(255,107,0,0.25);color:var(--brand);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s">
+        <span>📑</span> Công bố thông tin
       </button>
     </div>
   </div>`;
 
-  return brandCard + `<div class="prow1">
-    ${pnl('Thông tin cơ bản', 'Nguồn: HOSE · FiinGroup', `<div>${kv2(PROFILE.basic)}</div>`)}
-    ${pnl('Thông tin niêm yết', 'Cập nhật ' + getLiveDateString(), `<div>${kv2(PROFILE.listing)}</div>`)}
-    ${pnl('Giới thiệu doanh nghiệp', STOCK.name, `<div class="intro"><h5>Tổng quan</h5><p>${PROFILE.intro}</p><h5>Lịch sử</h5>${PROFILE.miles.map(([d, t]) => `<div class="mile"><i>•</i><span>${d} — ${t}</span></div>`).join('')}</div>`, 'last')}
-  </div>
-  <div class="prow2">
-    ${pnl('Ban lãnh đạo', 'Cập nhật 12/08/2026', `<div class="tscroll"><table class="t dn"><thead><tr><th style="width:50px">#</th><th>Họ tên</th><th style="width:430px">Chức vụ</th></tr></thead><tbody>${PROFILE.leaders.map((r, i) => `<tr><td class="num">${i + 1}</td><td class="ink2">${r[0]}</td><td class="ink2">${r[1]}</td></tr>`).join('')}</tbody></table></div>`)}
-    ${pnl('Công ty con &amp; liên kết', `${(PROFILE.subs || []).length} đơn vị`, `<div class="tscroll"><table class="t dn"><thead><tr><th style="width:50px">#</th><th>Tên công ty</th><th class="rt" style="width:100px">% sở hữu</th><th style="width:220px">Lĩnh vực</th><th class="rt" style="width:120px">Quan hệ</th></tr></thead><tbody>${(PROFILE.subs || []).map((r, i) => `<tr><td class="num">${i + 1}</td><td class="ink2">${r[0]}</td><td class="rt num ink2">${r[1]}</td><td class="ink2">${r[2]}</td><td class="rt ink2">${r[3] || 'Công ty con'}</td></tr>`).join('')}</tbody></table></div>`, 'last')}
-  </div>`;
+  return brandCard + `
+    <!-- TẦNG 1: THÔNG TIN CƠ BẢN & NIÊM YẾT (2 CỘT CÂN XỨNG) -->
+    <div class="profile-grid-2">
+      ${pnl('Thông tin cơ bản &amp; Pháp lý', 'Nguồn: HOSE · FiinGroup', `<div class="kvs12">${kv2(PROFILE.basic)}</div>`)}
+      ${pnl('Thông tin niêm yết &amp; Cổ phiếu', 'Cập nhật ' + getLiveDateString(), `<div class="kvs12">${kv2(PROFILE.listing)}</div>`)}
+    </div>
+
+    <!-- TẦNG 2: GIỚI THIỆU DOANH NGHIỆP & MỐC LỊCH SỬ (FULL WIDTH 100%) -->
+    <div class="profile-intro-full">
+      ${pnl('Giới thiệu doanh nghiệp &amp; Dấu ấn lịch sử', STOCK.name, `
+        <div class="profile-intro-body">
+          <div style="margin-bottom:18px">
+            <h5 style="margin:0 0 8px;font-size:13px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px">
+              <span>🏢</span> Tổng quan doanh nghiệp
+            </h5>
+            <p style="margin:0;font-size:13px;line-height:1.7;color:var(--ink2)">
+              ${PROFILE.intro}
+            </p>
+          </div>
+          <div>
+            <h5 style="margin:0 0 12px;font-size:13px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px">
+              <span>⏳</span> Các mốc lịch sử phát triển
+            </h5>
+            <div class="profile-timeline-grid">
+              ${(PROFILE.miles || []).map(([d, t]) => `
+                <div class="profile-timeline-card">
+                  <span class="profile-timeline-badge">${d}</span>
+                  <div class="profile-timeline-text">${t}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `)}
+    </div>
+
+    <!-- TẦNG 3: BAN LÃNH ĐẠO & CÔNG TY CON (2 CỘT CÂN XỨNG) -->
+    <div class="profile-grid-2">
+      ${pnl('Ban lãnh đạo chủ chốt', 'Cập nhật 12/08/2026', `
+        <div class="tscroll" style="overflow-x:auto">
+          <table class="t dn" style="width:100%">
+            <thead>
+              <tr>
+                <th style="width:40px;text-align:center">#</th>
+                <th style="min-width:170px">Họ và tên</th>
+                <th style="min-width:180px">Chức vụ</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${(PROFILE.leaders || []).map((r, i) => {
+                const words = (r[0] || '').trim().split(/\s+/);
+                const initials = words.length >= 2 ? (words[0][0] + words[words.length - 1][0]).toUpperCase() : words[0].slice(0, 2).toUpperCase();
+                return `<tr>
+                  <td class="num" style="text-align:center;color:var(--ink3)">${i + 1}</td>
+                  <td style="font-weight:600;color:var(--ink)">
+                    <div style="display:flex;align-items:center;gap:10px">
+                      <span style="width:28px;height:28px;border-radius:50%;background:rgba(255,107,0,0.12);color:var(--brand);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${initials}</span>
+                      <span>${r[0]}</span>
+                    </div>
+                  </td>
+                  <td class="ink2" style="font-size:12px">${r[1]}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `)}
+      ${pnl('Công ty con &amp; Liên kết', `${(PROFILE.subs || []).length} đơn vị`, `
+        <div class="tscroll" style="overflow-x:auto">
+          <table class="t dn" style="width:100%">
+            <thead>
+              <tr>
+                <th style="width:36px;text-align:center">#</th>
+                <th style="min-width:170px">Tên đơn vị</th>
+                <th class="rt" style="width:85px">% sở hữu</th>
+                <th style="min-width:120px">Lĩnh vực</th>
+                <th class="rt" style="width:85px">Quan hệ</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${(PROFILE.subs || []).map((r, i) => `<tr>
+                <td class="num" style="text-align:center;color:var(--ink3)">${i + 1}</td>
+                <td class="ink2" style="font-weight:600;font-size:12px">${r[0]}</td>
+                <td class="rt num" style="font-weight:700;color:${r[1] === '100%' ? 'var(--up)' : 'var(--brand)'}">${r[1]}</td>
+                <td class="ink2" style="font-size:12px">${r[2]}</td>
+                <td class="rt" style="font-size:11px"><span class="tag" style="padding:2px 6px">${r[3] || 'Công ty con'}</span></td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      `)}
+    </div>
+  `;
 }
 
 function vHolders() {
   const rows = HOLDERS.filter(h => S.shSeg === 'Tất cả' || h[1] === S.shSeg);
-  return `<div class="sh">
-    <div style="min-width:0">
-      <section class="pnl"><div class="fbar"><span class="ftab">Cổ đông lớn</span></div>
-        <div style="padding:8px">${segCtl(['Tất cả', 'Cá nhân', 'Tổ chức'], S.shSeg, 'shseg')}</div>
-        <div class="tscroll"><table class="t dn2"><thead><tr><th style="width:46px">#</th><th>Tên cổ đông</th><th style="width:110px">Loại</th><th style="width:130px">Sở hữu gốc</th><th class="rt" style="width:130px">Số CP</th><th class="rt" style="width:90px">Tỷ lệ</th><th class="rt" style="width:120px">Cập nhật</th></tr></thead>
-        <tbody>${rows.map((h, i) => `<tr><td class="num ink2 lgx">${i + 1}</td><td class="lgx">${h[0]}</td><td><span class="tag">${h[1]}</span></td><td>${h[2] === '—' ? '<span class="ink2">—</span>' : `<span class="tag">${h[2]}</span>`}</td><td class="rt num">${h[3]}</td><td class="rt num">${h[4]}</td><td class="rt muted">${h[5]}</td></tr>`).join('')}</tbody></table></div></section>
-      ${pnl('Thay đổi sở hữu &amp; nhân sự nội bộ', '', `<div class="tscroll"><table class="t dn2"><thead><tr><th style="width:46px">#</th><th>Người liên quan</th><th style="width:260px">Chức vụ</th><th style="width:150px">Sự kiện</th><th class="rt" style="width:120px">Ngày</th><th class="rt" style="width:150px">% sở hữu hiện tại</th></tr></thead>
-        <tbody>${INSIDERS.map((r, i) => `<tr><td class="num ink2 lgx">${i + 1}</td><td class="lgx">${r[0]}</td><td class="lgx ink2">${r[1]}</td><td><span class="tag">${r[2]}</span></td><td class="rt muted">${r[3]}</td><td class="rt num">${r[4]}</td></tr>`).join('')}</tbody></table></div>`)}
+  return `<div class="sh-new-wrap">
+    <!-- HÀNG TRÊN: CƠ CẤU SỞ HỮU & SỞ HỮU NƯỚC NGOÀI (2 CARD CÂN XỨNG) -->
+    <div class="sh-top-grid">
+      ${pnl('Khối lượng cơ cấu sở hữu', '30/06/2026', `
+        <div class="donut-wrap" style="padding:14px 18px;display:flex;align-items:center;gap:18px;justify-content:center;flex-wrap:wrap">
+          <div id="donut">${donut(OWNERSHIP, 130)}</div>
+          <div class="legs" style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px">
+            ${OWNERSHIP.map((o, i) => `
+              <div class="leg-row" data-seg="${i}" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2)">
+                <i style="background:${o[2]};width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0"></i>
+                <span style="flex:1">${o[0]}</span>
+                <b style="font-family:var(--mono);color:var(--ink)">${fmtVN(o[1], 2)}%</b>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `)}
+      ${pnl('Sở hữu nước ngoài', 'Cập nhật ' + getLiveDateString(), `
+        <div class="kvs12" style="padding:10px 14px">
+          ${FOREIGN_OWN.map(([a, b, c]) => `
+            <div class="kv2">
+              <span>${a}</span>
+              <b class="${/CP$/.test(b) ? '' : 'mono'} ${c || ''}">${b}</b>
+            </div>
+          `).join('')}
+        </div>
+      `)}
     </div>
-    <div class="side376">
-      ${pnl('Khối lượng cơ cấu sở hữu', '30/06/2026', `<div class="donut-wrap"><div id="donut">${donut(OWNERSHIP, 130)}</div><div class="legs">${OWNERSHIP.map((o, i) => `<div class="leg-row" data-seg="${i}"><i style="background:${o[2]}"></i>${o[0]}<b>${fmtVN(o[1], 2)}%</b></div>`).join('')}</div></div>`, 'last')}
-      ${pnl('Sở hữu nước ngoài', 'Cập nhật ' + getLiveDateString(), `<div class="kvs12">${FOREIGN_OWN.map(([a, b, c]) => `<div class="kv2"><span>${a}</span><b class="${/CP$/.test(b) ? '' : 'mono'} ${c || ''}">${b}</b></div>`).join('')}</div>`, 'last')}
+
+    <!-- HÀNG DƯỚI: BẢNG CỔ ĐÔNG LỚN & THAY ĐỔI SỞ HỮU NỘI BỘ (FULL WIDTH 100%) -->
+    <div class="sh-tables">
+      <section class="pnl">
+        <div class="fbar">
+          <span class="ftab">Cổ đông lớn</span>
+          <span class="fsub" style="font-size:11.5px;color:var(--ink3)">Danh sách cổ đông nắm giữ từ 5% vốn điều lệ</span>
+        </div>
+        <div style="padding:8px 14px;background:var(--sub);border-bottom:1px solid var(--line)">
+          ${segCtl(['Tất cả', 'Cá nhân', 'Tổ chức'], S.shSeg, 'shseg')}
+        </div>
+        <div class="tscroll" style="overflow-x:auto">
+          <table class="t dn2" style="width:100%">
+            <thead>
+              <tr>
+                <th style="width:46px;text-align:center">#</th>
+                <th style="min-width:220px">Tên cổ đông</th>
+                <th style="width:100px">Loại</th>
+                <th style="width:120px">Sở hữu gốc</th>
+                <th class="rt" style="width:130px">Số lượng CP</th>
+                <th class="rt" style="width:90px">Tỷ lệ</th>
+                <th class="rt" style="width:110px">Cập nhật</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map((h, i) => `<tr>
+                <td class="num ink2 lgx" style="text-align:center">${i + 1}</td>
+                <td class="lgx" style="font-weight:600;color:var(--ink)">${h[0]}</td>
+                <td><span class="tag">${h[1]}</span></td>
+                <td>${h[2] === '—' ? '<span class="ink2">—</span>' : `<span class="tag">${h[2]}</span>`}</td>
+                <td class="rt num" style="font-weight:700">${h[3]}</td>
+                <td class="rt num" style="font-weight:700;color:var(--brand)">${h[4]}</td>
+                <td class="rt muted" style="font-size:11px">${h[5]}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      ${pnl('Thay đổi sở hữu &amp; nhân sự nội bộ', '', `
+        <div class="tscroll" style="overflow-x:auto">
+          <table class="t dn2" style="width:100%">
+            <thead>
+              <tr>
+                <th style="width:46px;text-align:center">#</th>
+                <th style="min-width:180px">Người liên quan</th>
+                <th style="min-width:220px">Chức vụ</th>
+                <th style="width:130px">Sự kiện</th>
+                <th class="rt" style="width:110px">Ngày</th>
+                <th class="rt" style="width:140px">% sở hữu hiện tại</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${INSIDERS.map((r, i) => `<tr>
+                <td class="num ink2 lgx" style="text-align:center">${i + 1}</td>
+                <td class="lgx" style="font-weight:600;color:var(--ink)">${r[0]}</td>
+                <td class="lgx ink2" style="font-size:12px">${r[1]}</td>
+                <td><span class="tag">${r[2]}</span></td>
+                <td class="rt muted" style="font-size:11px">${r[3]}</td>
+                <td class="rt num" style="font-weight:700;color:var(--brand)">${r[4]}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      `)}
     </div>
   </div>`;
 }
@@ -8581,10 +8756,47 @@ function vEvents() {
   });
   const nw = normalizedNews.filter(n => S.newsCat === 'Tất cả' || n[1] === S.newsCat);
   return `<div class="evs">
-    ${pnl('Lịch sự kiện', '', `<div class="evchips"><div class="evc">${['Tất cả', ...EV_TYPES].map(t => `<button class="chip m ${S.evType === t ? 'on' : ''}" data-act="evtype" data-v="${t}">${t}</button>`).join('')}</div><button class="ddin sp" data-act="evspan">${I.cal}<span>${S.evSpan === 'Tất cả thời gian' ? 'Chọn thời gian' : S.evSpan}</span>${I.chev}</button></div>
-      <div class="tscroll"><table class="t ev-t"><thead><tr><th style="width:120px">Ngày sự kiện</th><th style="width:120px">Ngày GDKHQ</th><th style="width:120px">Ngày công bố</th><th style="width:190px">Loại sự kiện</th><th>Nội dung</th></tr></thead>
-      <tbody>${ev.map(e => `<tr><td style="font-weight:500">${e[0]}</td><td class="${e[1] === '-' ? 'muted' : 'ink2'}">${e[1]}</td><td class="muted">${e[2]}</td><td><span class="tag">${e[3]}</span></td><td class="wrap ink2" style="min-width:280px">${e[4]}</td></tr>`).join('') || `<tr><td colspan="5" class="muted" style="padding:20px 12px">Không có sự kiện nào khớp bộ lọc.</td></tr>`}</tbody></table></div>`)}
-    ${pnl('Tin tức', `<button class="chip" data-act="newscat">${S.newsCat} ${I.chev}</button>`, `<div>${nw.map(([d, c, t]) => `<div class="nitem" data-act="news" data-t="${esc(t)}"><span class="d">${d}</span><span class="tag">${c}</span><p>${t}</p></div>`).join('')}</div>`, 'news-p')}
+    ${pnl('Lịch sự kiện', '', `
+      <div class="evchips">
+        <div class="evc">${['Tất cả', ...EV_TYPES].map(t => `<button class="chip m ${S.evType === t ? 'on' : ''}" data-act="evtype" data-v="${t}">${t}</button>`).join('')}</div>
+        <button class="ddin sp" data-act="evspan">${I.cal}<span>${S.evSpan === 'Tất cả thời gian' ? 'Chọn thời gian' : S.evSpan}</span>${I.chev}</button>
+      </div>
+      <div class="tscroll" style="overflow-x:auto">
+        <table class="t ev-t" style="width:100%">
+          <thead>
+            <tr>
+              <th style="width:90px">Ngày SK</th>
+              <th style="width:90px">GDKHQ</th>
+              <th style="width:90px">Công bố</th>
+              <th style="width:130px">Loại sự kiện</th>
+              <th style="min-width:180px">Nội dung sự kiện</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${ev.map(e => `<tr>
+              <td style="font-weight:600;font-size:12px;color:var(--ink)">${e[0]}</td>
+              <td class="${e[1] === '-' ? 'muted' : 'ink2'}" style="font-size:12px">${e[1]}</td>
+              <td class="muted" style="font-size:11.5px">${e[2]}</td>
+              <td><span class="tag" style="padding:2px 6px;font-size:11px">${e[3]}</span></td>
+              <td class="ink2" style="font-size:12px;line-height:1.5;word-break:break-word">${e[4]}</td>
+            </tr>`).join('') || `<tr><td colspan="5" class="muted" style="padding:20px 12px;text-align:center">Không có sự kiện nào khớp bộ lọc.</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    `)}
+    ${pnl('Tin tức thị trường &amp; DN', `<button class="chip" data-act="newscat">${S.newsCat} ${I.chev}</button>`, `
+      <div style="display:flex;flex-direction:column">
+        ${nw.map(([d, c, t]) => `
+          <div class="nitem" data-act="news" data-t="${esc(t)}" style="padding:10px 14px;border-top:1px solid var(--line);cursor:pointer;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="d" style="font-size:11px;color:var(--ink3);font-family:var(--mono)">${d}</span>
+              <span class="tag" style="font-size:10.5px;padding:1px 6px">${c}</span>
+            </div>
+            <p style="margin:0;font-size:12.5px;line-height:1.5;color:var(--ink);font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${t}</p>
+          </div>
+        `).join('')}
+      </div>
+    `, 'news-p')}
   </div>`;
 }
 
@@ -13772,11 +13984,19 @@ document.addEventListener('click', e => {
   if (menuEl && !e.target.closest('.menu')) closeMenu();
   const pop = document.getElementById('tv-ind-popover');
   if (pop && pop.style.display !== 'none' && !e.target.closest('.tv-ind-btn-wrap')) pop.style.display = 'none';
+  
+  // Rule UX: Click outside sidebar & flyout -> luon dong flyout menu
+  if (!e.target.closest('#sb') && !e.target.closest('#sb-flyout')) {
+    closeSbFlyout();
+  }
+
   const t = e.target.closest('[data-act],[data-go]');
-  if (!t) { hideSuggest(); closeSbFlyout(); return; }
+  if (!t) { hideSuggest(); return; }
   if (t.dataset.go) {
     e.preventDefault();
     const dest = t.dataset.go;
+    const inSb = !!t.closest('#sb');
+    const inFlyout = !!t.closest('#sb-flyout');
     const sb = document.getElementById('sb');
     const isCollapsed = sb && sb.classList.contains('collapsed');
     if (window.innerWidth <= 860) {
@@ -13786,11 +14006,23 @@ document.addEventListener('click', e => {
       if (scEl) scEl.classList.remove('active');
     }
     go(dest);
-    if (isCollapsed && !t.closest('#sb-flyout')) {
+    
+    // UX Rule: Khi click chon bat ky tinh nang/subtab nao tren trang hoac trong flyout -> LUON DONG FLYOUT
+    if (!inSb || inFlyout) {
+      closeSbFlyout();
+      return;
+    }
+
+    // Chi khi click TRUC TIEP TREN THANH SIDEBAR khi sidebar dang thu gon:
+    if (isCollapsed && inSb) {
+      const flyout = document.getElementById('sb-flyout');
+      const isOpen = flyout && flyout.style.display === 'block';
       if (dest.startsWith('c360')) {
-        showSbFlyout(t, 'c360');
+        if (isOpen) closeSbFlyout();
+        else showSbFlyout(t, 'c360');
       } else if (dest.startsWith('wl') || dest === 'watchlist') {
-        showSbFlyout(t, 'watchlist');
+        if (isOpen) closeSbFlyout();
+        else showSbFlyout(t, 'watchlist');
       } else {
         closeSbFlyout();
       }

@@ -302,7 +302,7 @@ svg text{font-family:var(--sans)}
 }
 
 /* Collapsed Icon Rail specifics */
-.sb.collapsed a {
+.sb.collapsed a.sb-link {
   width: 44px;
   height: 42px;
   padding: 0;
@@ -310,21 +310,37 @@ svg text{font-family:var(--sans)}
   justify-content: center;
   gap: 0;
 }
-.sb.collapsed a svg {
+.sb.collapsed a.sb-link svg {
   width: 19px;
   height: 19px;
 }
-.sb.collapsed a .sb-label,
-.sb.collapsed a .sb-sub-indicator {
+.sb.collapsed a.sb-link .sb-label,
+.sb.collapsed a.sb-link .sb-sub-indicator {
   display: none;
 }
-.sb.collapsed a.on {
+.sb.collapsed a.sb-link.on {
   background: var(--brand-soft);
   box-shadow: inset 3px 0 0 var(--brand);
 }
 
+/* Explicit Flyout Item Styles so it is never squished by sidebar collapsed styles */
+.sb-flyout a.sb-flyout-item {
+  width: 100% !important;
+  height: auto !important;
+  padding: 8px 10px !important;
+  margin: 0 !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+}
+.sb-flyout a.sb-flyout-item::before,
+.sb-flyout a.sb-flyout-item::after {
+  display: none !important;
+}
+
 /* Floating Tooltip in Collapsed Mode */
-.sb.collapsed a[data-tip]::after {
+.sb.collapsed a.sb-link[data-tip]::after {
   content: attr(data-tip);
   position: absolute;
   left: calc(100% + 12px);
@@ -350,7 +366,7 @@ svg text{font-family:var(--sans)}
   visibility: visible;
   transform: translateY(-50%) translateX(2px);
 }
-.sb.collapsed a[data-tip]::before {
+.sb.collapsed a.sb-link[data-tip]::before {
   content: '';
   position: absolute;
   left: calc(100% + 5px);
@@ -13695,7 +13711,7 @@ document.addEventListener('click', e => {
     const sb = document.getElementById('sb');
     const isCollapsed = sb && sb.classList.contains('collapsed');
     go(dest);
-    if (isCollapsed) {
+    if (isCollapsed && !t.closest('#sb-flyout')) {
       if (dest.startsWith('c360')) {
         showSbFlyout(t, 'c360');
       } else if (dest.startsWith('wl') || dest === 'watchlist') {

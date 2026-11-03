@@ -4563,9 +4563,9 @@ const UNI = [
     "Công ty Cổ phần FPT",
     "Công nghệ thông tin",
     "HOSE",
-    138.5,
-    -1.07,
-    812.5,
+    50.4,
+    0.40,
+    466.16,
     [
       75,
       79,
@@ -11619,20 +11619,20 @@ const QUANT_LIVE_SIGNALS = [
   },
   {
     sym: 'FPT', name: 'Tập đoàn FPT', ex: 'HOSE', strat: 'trend_ema', type: 'MUA THĂM DÒ',
-    price: 138.50, target: 158.00, sl: 131.00, rr: '1 : 2.6', score: 94, volRatio: 180, time: '14:30 hôm nay',
-    triggerMsg: 'Đường giá ngắn hạn cắt lên dài hạn kèm AI xác nhận xu hướng tăng vững chắc',
+    price: 50.40, target: 58.00, sl: 47.50, rr: '1 : 2.62', score: 94, volRatio: 180, time: '14:30 hôm nay',
+    triggerMsg: 'Đường giá ngắn hạn tiệm cận MA20 (50.57), AI xác nhận xung lực bắt đáy chủ động',
     fomo: {
       recType: 'split',
-      recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 134',
-      marketBuy: { entry: 138.50, target: 145.00, sl: 133.00, rr: '1 : 1.18', verdict: 'R:R ở mức trung bình, giá đang bám sát dải trên Bollinger Bands.' },
-      pullbackBuy: { zone: '133.50 - 135.00', midPrice: 134.25, target: 158.00, sl: 130.00, rr: '1 : 5.58', prob: 68, support: 'EMA 21 ngày & đường trendline tăng trung hạn', verdict: 'Điểm vào lý tưởng theo xu hướng lớn, R:R đạt tới 1:5.58.' },
+      recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 49',
+      marketBuy: { entry: 50.40, target: 54.20, sl: 48.50, rr: '1 : 2.00', verdict: 'R:R ở mức trung bình, giá đang bám sát dải trên Bollinger Bands & cản ngắn hạn MA20 (50.57).' },
+      pullbackBuy: { zone: '48.90 - 49.50', midPrice: 49.20, target: 58.00, sl: 47.50, rr: '1 : 5.18', prob: 68, support: 'Vùng hỗ trợ EMA 21 ngày & đường trendline hỗ trợ 48.9 - 49.2', verdict: 'Điểm vào lý tưởng theo xu hướng lớn, R:R đạt tới 1:5.18.' },
       pros: [
-        'Tăng trưởng lợi nhuận mảng AI và Cloud quý vừa qua đạt trên 28%',
-        'Khối ngoại đảo chiều mua ròng trở lại 5 phiên liên tiếp',
-        'Kênh tăng giá trung hạn dốc lên vững chắc từ đầu năm'
+        'Động lực tăng trưởng đột phá từ mảng AI Factory hợp tác cùng NVIDIA',
+        'Doanh thu ký mới dịch vụ CNTT nước ngoài tăng 28% YoY đạt 28.500 tỷ',
+        'Khối ngoại đảo chiều mua ròng trở lại, thanh khoản trên 9 triệu CP/phiên'
       ],
-      con: 'Thị giá ở vùng đỉnh lịch sử, áp lực chốt lời ngắn hạn từ nhà đầu tư cá nhân',
-      fundDiscipline: 'Có thể giải ngân trước 30% tỷ trọng thăm dò quanh 138; dành 70% còn lại kiên nhẫn chờ khớp khi giá test lại vùng 134 - 135.'
+      con: 'Áp lực chốt lời ngắn hạn và rung lắc quanh các vùng cản MA20 (50.57) và MA50 (54.24)',
+      fundDiscipline: 'Có thể giải ngân trước 30% tỷ trọng thăm dò quanh 50.4; dành 70% còn lại kiên nhẫn chờ khớp khi giá test lại vùng mua vàng 48.9 - 49.5.'
     }
   },
   {
@@ -11818,7 +11818,7 @@ const QUANT_LIVE_SIGNALS = [
 ];;
 
 const COLE_FACTOR_PREMIA = [
-  { sym: 'FPT', name: 'Tập đoàn FPT', sector: 'Công nghệ', price: 138.5, hv20: 17.2, atr14: 2.80, momentum: 96, value: 80, quality: 98, lowVol: 92, composite: 94, rank: 1, volSizing: '28% NAV', sizingDesc: 'Biến động thấp, chất lượng đỉnh cao — Phân bổ tỷ trọng lớn an toàn' },
+  { sym: 'FPT', name: 'Tập đoàn FPT', sector: 'Công nghệ', price: 50.4, hv20: 17.2, atr14: 1.15, momentum: 96, value: 80, quality: 98, lowVol: 92, composite: 94, rank: 1, volSizing: '28% NAV', sizingDesc: 'Biến động thấp, chất lượng đỉnh cao — Phân bổ tỷ trọng lớn an toàn' },
   { sym: 'MSB', name: 'Ngân hàng Hàng Hải', sector: 'Ngân hàng', price: 15.8, hv20: 21.4, atr14: 0.45, momentum: 95, value: 92, quality: 88, lowVol: 84, composite: 91, rank: 2, volSizing: '26% NAV', sizingDesc: 'Định giá P/B siêu rẻ, biến động nền vừa phải — Tăng tỷ trọng tích lũy' },
   { sym: 'TCB', name: 'Techcombank', sector: 'Ngân hàng', price: 24.1, hv20: 23.5, atr14: 0.70, momentum: 88, value: 94, quality: 92, lowVol: 82, composite: 90, rank: 3, volSizing: '22% NAV', sizingDesc: 'Lệch giá Z-Score sâu, tỷ lệ CASA vượt trội — Vị thế giải ngân tiêu chuẩn' },
   { sym: 'VCB', name: 'Vietcombank', sector: 'Ngân hàng', price: 92.5, hv20: 15.8, atr14: 1.85, momentum: 82, value: 75, quality: 96, lowVol: 96, composite: 88, rank: 4, volSizing: '30% NAV', sizingDesc: 'Cổ phiếu phòng thủ mẫu mực, độ lệch chuẩn thấp nhất VN30 — Tỷ trọng tối đa' },
@@ -12781,10 +12781,10 @@ function vQuant() {
                   <td style="padding:12px 8px;font-weight:700;color:var(--brand);cursor:pointer" onclick="openStock('FPT')">FPT</td>
                   <td style="padding:12px 8px"><span class="chip" style="background:rgba(59,130,246,0.1);color:#3B82F6;font-size:10px">Theo Xu Hướng</span></td>
                   <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:600">2.000</td>
-                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">134.20</td>
-                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">138.50</td>
-                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">+8.600.000 đ (+3.20%)</td>
-                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);color:var(--down)">132.50</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">49.20</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">50.40</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--up)">+2.400.000 đ (+2.44%)</td>
+                  <td style="padding:12px 8px;text-align:right;font-family:var(--mono);color:var(--down)">48.00</td>
                   <td style="padding:12px 8px;text-align:center"><button class="btn ghost sm" style="font-size:10px" onclick="toast('Đã nâng mức chặn lãi bảo vệ cho FPT')">Nâng Chặn Lãi</button></td>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(0,0,0,0.04)">
@@ -15634,12 +15634,12 @@ const VN30_DATA_FEED = {
     "name": "Công ty Cổ phần FPT",
     "ex": "HOSE",
     "ind": "Công nghệ thông tin",
-    "price": 138500,
-    "ref": 140000,
-    "chg": -1500,
-    "pct": -1.07,
-    "vol": 5850000,
-    "val_bil": 812.5,
+    "price": 50400,
+    "ref": 50200,
+    "chg": 200,
+    "pct": 0.40,
+    "vol": 9250000,
+    "val_bil": 466.16,
     "metrics": {
       "liq": [
         [
@@ -19426,7 +19426,7 @@ const DNSE_STOCKS_DB = {
 
   FPT: {
     sym: 'FPT', ex: 'HOSE', name: 'Công ty Cổ phần FPT', ind: 'Công nghệ thông tin',
-    price: 138500, ref: 140000, chg: -1500, pct: -1.07, vol: 10851700, val_bil: 632.45,
+    price: 50400, ref: 50200, chg: 200, pct: 0.40, vol: 9250000, val_bil: 466.16,
     metrics: {
       liq: [['KLGD', '10.851.700 CP'], ['GTGD', '632,45 tỷ đồng']],
       frn: [['Khối lượng ròng', '+840.200', 'up'], ['Giá trị ròng', '+116,30 tỷ', 'up'], ['Room ngoại', '0 CP (Full 49%)']],
@@ -22195,7 +22195,7 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
     peers = {
       'Tổng quan': [
         ['Mã', 'Giá (đ)', 'Thay đổi', 'P/E (TTM)', 'P/B (MRQ)', 'ROE', 'Vốn hoá (tỷ)', 'Khối lượng'],
-        ['FPT', '138.500', '+0,7%', '24,80', '5,62', '28,4%', '202.210', '5.850.000'],
+        ['FPT', '50.400', '+0,4%', '24,80', '5,62', '28,4%', '202.210', '5.850.000'],
         ['CMG', '52.400', '+1,2%', '21,40', '3,45', '16,2%', '10.580', '1.240.000'],
         ['ELC', '24.100', '-0,4%', '15,80', '2,10', '14,5%', '3.250', '850.000'],
         ['FOX', '72.000', '+0,5%', '14,20', '3,80', '26,8%', '35.400', '420.000'],

@@ -3390,7 +3390,7 @@ td[data-stock-role="price"],
     </form>
 
     <div class="kkr-gate-foot">
-      🔒 Quyền truy cập nội bộ · Dữ liệu thị trường thời gian thực Quad-MCP.<br>
+      🔒 Quyền truy cập nội bộ · Dữ liệu thị trường thời gian thực Realtime.<br>
       Liên hệ Quản trị viên nếu bạn chưa có mã PIN truy cập.
     </div>
   </div>
@@ -7913,19 +7913,15 @@ function renderMcpOrderBook() {
   const getColorClass = (p) => p > ref ? 'up' : p < ref ? 'down' : 'ref';
 
   return `<div class="mcp-ob-wrap">
-    <!-- Market Session Levels Strip (MCP Realtime Feed) -->
-    <div class="mcp-ob-session-strip">
-      <div class="mmb-item"><span class="lbl">Trần</span><b class="val ceil">${fmtVN(ceil, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">Sàn</span><b class="val floor">${fmtVN(floor, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">TC</span><b class="val ref">${fmtVN(ref, 0)}</b></div>
-      <div class="mmb-sep"></div>
-      <div class="mmb-item"><span class="lbl">Mở</span><b class="val">${fmtVN(openPrice, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">Cao</span><b class="val up">${fmtVN(highVal, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">Thấp</span><b class="val down">${fmtVN(lowVal, 0)}</b></div>
-      <div class="mmb-item"><span class="lbl">TB</span><b class="val">${fmtVN(avgPrice, 0)}</b></div>
-      <div class="mmb-sep"></div>
-      <div class="mmb-item"><span class="lbl">Tổng KL</span><b class="val">${volStr}</b></div>
-      <div class="mmb-item"><span class="lbl">Tổng GT</span><b class="val">${valStr}</b></div>
+    <!-- Market Session Levels Strip (Đơn vị: 1.000 đ) -->
+    <div class="mcp-ob-session-strip" style="gap:4px;padding:5px 8px">
+      <div class="mmb-item"><span class="lbl">Trần</span><b class="val ceil">${(ceil / 1000).toFixed(2)}</b></div>
+      <div class="mmb-item"><span class="lbl">Sàn</span><b class="val floor">${(floor / 1000).toFixed(2)}</b></div>
+      <div class="mmb-item"><span class="lbl">TC</span><b class="val ref">${(ref / 1000).toFixed(2)}</b></div>
+      <div class="mmb-sep" style="height:14px"></div>
+      <div class="mmb-item"><span class="lbl">Mở</span><b class="val">${(openPrice / 1000).toFixed(2)}</b></div>
+      <div class="mmb-item"><span class="lbl">Cao</span><b class="val up">${(highVal / 1000).toFixed(2)}</b></div>
+      <div class="mmb-item"><span class="lbl">Thấp</span><b class="val down">${(lowVal / 1000).toFixed(2)}</b></div>
     </div>
     <!-- Depth Ratio Bar -->
     <div class="mcp-ob-ratio-bar">
@@ -7939,15 +7935,15 @@ function renderMcpOrderBook() {
       </div>
     </div>
 
-    <!-- Real-time Match Summary Strip -->
+    <!-- Real-time Match Summary Strip (Giá x 1.000 đ) -->
     <div class="mcp-match-bar">
       <span style="color:var(--ink3)">Khớp lệnh:</span>
-      <b style="font-family:var(--mono);font-size:12.5px" class="${getColorClass(curPrice)}">${fmtVN(curPrice, 0)}</b>
-      <span class="${getColorClass(curPrice)}" style="font-family:var(--mono);font-size:10.5px">${STOCK.chg > 0 ? '+' : ''}${fmtVN(STOCK.chg, 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)</span>
-      <span style="color:var(--ink3);font-size:10px">KL: <b style="color:var(--ink);font-family:var(--mono)">${fmtVN(b1Vol, 0)}</b></span>
+      <b style="font-family:var(--mono);font-size:13px" class="${getColorClass(curPrice)}">${(curPrice / 1000).toFixed(2)}</b>
+      <span class="${getColorClass(curPrice)}" style="font-family:var(--mono);font-size:11px">${STOCK.chg > 0 ? '+' : ''}${(STOCK.chg / 1000).toFixed(2)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)</span>
+      <span style="color:var(--ink3);font-size:10.5px">KL: <b style="color:var(--ink);font-family:var(--mono)">${fmtVN(b1Vol, 0)}</b></span>
     </div>
 
-    <!-- 4-Column Professional Depth of Market (DOM) Table -->
+    <!-- 4-Column Professional Depth of Market (DOM) Table (Giá x 1.000 đ) -->
     <table class="mcp-dom-table">
       <thead>
         <tr>
@@ -7963,8 +7959,8 @@ function renderMcpOrderBook() {
             <div class="mcp-dom-bar buy" style="width:${b1Bar}%"></div>
             <span style="position:relative;z-index:1">${fmtVN(b1Vol, 0)}</span>
           </td>
-          <td style="color:${getColorClass(b1)};font-weight:700">${fmtVN(b1, 0)}</td>
-          <td style="color:${getColorClass(a1)};font-weight:700;padding-left:8px">${fmtVN(a1, 0)}</td>
+          <td style="color:${getColorClass(b1)};font-weight:700">${(b1 / 1000).toFixed(2)}</td>
+          <td style="color:${getColorClass(a1)};font-weight:700;padding-left:8px">${(a1 / 1000).toFixed(2)}</td>
           <td style="position:relative;overflow:hidden">
             <div class="mcp-dom-bar sell" style="width:${a1Bar}%"></div>
             <span style="position:relative;z-index:1">${fmtVN(a1Vol, 0)}</span>
@@ -7975,8 +7971,8 @@ function renderMcpOrderBook() {
             <div class="mcp-dom-bar buy" style="width:${b2Bar}%"></div>
             <span style="position:relative;z-index:1">${fmtVN(b2Vol, 0)}</span>
           </td>
-          <td style="color:${getColorClass(b2)};font-weight:700">${fmtVN(b2, 0)}</td>
-          <td style="color:${getColorClass(a2)};font-weight:700;padding-left:8px">${fmtVN(a2, 0)}</td>
+          <td style="color:${getColorClass(b2)};font-weight:700">${(b2 / 1000).toFixed(2)}</td>
+          <td style="color:${getColorClass(a2)};font-weight:700;padding-left:8px">${(a2 / 1000).toFixed(2)}</td>
           <td style="position:relative;overflow:hidden">
             <div class="mcp-dom-bar sell" style="width:${a2Bar}%"></div>
             <span style="position:relative;z-index:1">${fmtVN(a2Vol, 0)}</span>
@@ -7987,8 +7983,8 @@ function renderMcpOrderBook() {
             <div class="mcp-dom-bar buy" style="width:${b3Bar}%"></div>
             <span style="position:relative;z-index:1">${fmtVN(b3Vol, 0)}</span>
           </td>
-          <td style="color:${getColorClass(b3)};font-weight:700">${fmtVN(b3, 0)}</td>
-          <td style="color:${getColorClass(a3)};font-weight:700;padding-left:8px">${fmtVN(a3, 0)}</td>
+          <td style="color:${getColorClass(b3)};font-weight:700">${(b3 / 1000).toFixed(2)}</td>
+          <td style="color:${getColorClass(a3)};font-weight:700;padding-left:8px">${(a3 / 1000).toFixed(2)}</td>
           <td style="position:relative;overflow:hidden">
             <div class="mcp-dom-bar sell" style="width:${a3Bar}%"></div>
             <span style="position:relative;z-index:1">${fmtVN(a3Vol, 0)}</span>
@@ -7997,7 +7993,7 @@ function renderMcpOrderBook() {
       </tbody>
     </table>
 
-    <!-- Real-time Time & Sales (Nhật ký khớp lệnh từng giây) -->
+    <!-- Real-time Time & Sales (Nhật ký khớp lệnh từng giây - Giá x 1.000 đ) -->
     <div class="mcp-ts-section">
       <div class="mcp-ts-header">
         <span style="display:flex;align-items:center;gap:5px"><span class="tv-dot-live"></span><b>Nhật ký khớp lệnh Realtime (Time &amp; Sales)</b></span>
@@ -8014,21 +8010,20 @@ function renderMcpOrderBook() {
           </tr>
         </thead>
         <tbody>
-          ${trades.map(tr => `<tr>
-            <td>${tr.time}</td>
-            <td class="${getColorClass(tr.price)}"><b>${fmtVN(tr.price, 0)}</b></td>
-            <td>${fmtVN(tr.vol, 0)}</td>
-            <td class="${getColorClass(tr.price)}">${tr.price > ref ? '+' : ''}${fmtVN(tr.price - ref, 0)}</td>
-            <td style="text-align:center"><span class="trade-side-badge ${tr.side}">${tr.side === 'M' ? 'MUA' : 'BÁN'}</span></td>
-          </tr>`).join('')}
+          ${trades.map(tr => {
+            const diff = tr.price - ref;
+            const diffK = (diff / 1000).toFixed(2);
+            const sign = diff > 0 ? '+' : '';
+            return `<tr>
+              <td>${tr.time}</td>
+              <td class="${getColorClass(tr.price)}"><b>${(tr.price / 1000).toFixed(2)}</b></td>
+              <td>${fmtVN(tr.vol, 0)}</td>
+              <td class="${getColorClass(tr.price)}">${sign}${diffK}</td>
+              <td style="text-align:center"><span class="trade-side-badge ${tr.side}">${tr.side === 'M' ? 'MUA' : 'BÁN'}</span></td>
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>
-    </div>
-
-    <!-- Feed Status Footer -->
-    <div class="mcp-feed-footer">
-      <span><span class="tv-dot-live" style="display:inline-block;margin-right:4px"></span>Socket: <b>mcp.tradingview.com</b> &amp; <b>mcp.dnse.com.vn</b></span>
-      <button class="tv-mode-btn" data-act="opentvmcpmodal" style="height:20px;font-size:10px;padding:0 6px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="margin-right:3px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>MCP Inspector</button>
     </div>
   </div>`;
 }
@@ -8263,7 +8258,7 @@ function stockHeader(tab, body) {
       <div class="cmc-card cmc-chart-card" style="padding:0;overflow:hidden;position:relative">
         <div class="tv-head-cmc" style="padding:10px 14px;border-bottom:1px solid var(--line);background:var(--sub);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:relative;z-index:2">
           <div class="tv-leg" style="display:flex;align-items:center;gap:8px;font-size:12.5px">
-            <div class="tv-logo" style="cursor:pointer" data-act="opentvmcpmodal" title="Bấm mở TradingView MCP Inspector"></div>
+            <div class="tv-logo" style="cursor:pointer" data-act="opentvmcpmodal" title="Biểu đồ kỹ thuật TradingView"></div>
             <b>${STOCK.name}</b> · <span id="tvint" style="cursor:pointer;font-weight:700;color:var(--brand)" title="Khung thời gian">${S_TV_TF || '1D'}</span> · <span>${STOCK.ex}</span>
             <span class="tv-dot"></span>
             <span id="ohlc" class="tv-ohlc" style="font-family:var(--mono);font-size:12px"></span>
@@ -8278,7 +8273,7 @@ function stockHeader(tab, body) {
           ${TV_RANGES.map(r => `<button class="${S.range === r ? 'on' : ''}" data-act="range" data-v="${r}" style="font-size:11.5px;padding:3px 8px;border-radius:4px">${r}</button>`).join('')}
           <span class="sp" style="flex:1"></span>
           <span class="mono" id="tv-clock" style="font-size:11px;color:var(--ink3)">${typeof getLiveTimeString === 'function' ? getLiveTimeString() : '14:45:02 UTC+7'}</span>
-          <span class="adj" style="cursor:pointer;font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--sub2)" data-act="opentvmcpmodal" title="TradingView MCP Inspector">ADJ</span>
+          <span class="adj" style="font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--sub2);color:var(--ink3)" title="Điều chỉnh giá">ADJ</span>
         </div>
       </div>
 
@@ -8297,6 +8292,7 @@ function stockHeader(tab, body) {
             <span class="tv-dot-live" style="width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 6px var(--up)"></span>
             Sổ Lệnh &amp; Khớp Lệnh
           </span>
+          <span style="font-size:10.5px;color:var(--ink3);font-family:var(--mono)">(x 1.000 đ)</span>
         </div>
         ${renderMcpOrderBook()}
       </div>
@@ -9287,7 +9283,7 @@ function vFinance() {
   return `<div class="fin">
     <div class="fin-l">
       <div style="padding:8px 8px 0">${stabs(subs, S.finSub, 'finsub')}</div>
-      <div class="fin-bar">${segCtl(['Quý', 'Năm'], yr ? 'Năm' : 'Quý', 'finper')}<span style="display:inline-flex;align-items:center;gap:6px"><span class="tag" style="cursor:pointer;font-size:10px" onclick="openDnseMcpModal('ssi')">SSI MCP · BCTC 3 Báo cáo &amp; Chỉ số ↗</span><span class="r">${k.unit}</span></span></div>
+      <div class="fin-bar">${segCtl(['Quý', 'Năm'], yr ? 'Năm' : 'Quý', 'finper')}<span style="display:inline-flex;align-items:center;gap:6px"><span class="tag" style="font-size:10px">Nguồn: BCTC kiểm toán</span><span class="r">${k.unit}</span></span></div>
       <div class="tscroll"><table class="t fin-t"><thead><tr><th rowspan="2" style="width:240px;min-width:200px">Chỉ tiêu</th>${heads.map(h => `<th colspan="2" class="per">${h}</th>`).join('')}</tr><tr>${heads.map(() => `<th class="g0">Giá trị</th><th class="gr">±% kỳ trước</th>`).join('')}</tr></thead>
       <tbody>${rows.map(r => `<tr><td>${r[0]}</td>${r.slice(1).map(cell).join('')}</tr>`).join('')}</tbody></table></div>
     </div>

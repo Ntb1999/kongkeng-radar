@@ -5908,6 +5908,17 @@ const CMP_SECTIONS = [
     { l: "Dao động 1 tháng (%)", k: "fin" },
     { l: "Beta 1 năm", k: "fin" },
     { l: "Mức sụt giảm tối đa 1 năm", k: "fin" }
+  ]],
+  ["Phân tích Kỹ thuật & Tín hiệu Fialda", "Chỉ báo RSI, MACD, hệ thống đường trung bình MA20/MA50 và các ngưỡng cản hỗ trợ từ Fialda Web Terminal", [
+    { l: "Xu hướng kỹ thuật Fialda", k: "fia" },
+    { l: "RSI 14 ngày (Fialda)", k: "fia", hl: true },
+    { l: "MACD Histogram (12, 26, 9)", k: "fia", hl: true },
+    { l: "Đường trung bình MA20 (nghìn đ)", k: "fia" },
+    { l: "Đường trung bình MA50 (nghìn đ)", k: "fia" },
+    { l: "Đường trung bình MA200 (nghìn đ)", k: "fia" },
+    { l: "Dải Bollinger Bands (nghìn đ)", k: "fia" },
+    { l: "Vùng hỗ trợ Fialda (nghìn đ)", k: "fia" },
+    { l: "Vùng kháng cự Fialda (nghìn đ)", k: "fia" }
   ]]
 ];
 
@@ -8995,9 +9006,11 @@ function getCmpData(t) {
   const res = {
     sym: t, t, n: d.name, ex: d.ex, ind: d.ind,
     p, c, pct, mc, vol, gt,
-    hi: +(p * 1.18).toFixed(2), lo: +(p * 0.82).toFixed(2), pos52: 68.5,
-    beta: t === 'MSB' ? 0.95 : t === 'FPT' ? 1.05 : t === 'HPG' ? 1.28 : 1.10,
-    kl_tb20: 1.15,
+    hi: t === 'FPT' ? 68.00 : t === 'MSB' ? 18.20 : t === 'HPG' ? 32.50 : +(p * 1.18).toFixed(2),
+    lo: t === 'FPT' ? 36.30 : t === 'MSB' ? 12.10 : t === 'HPG' ? 24.20 : +(p * 0.82).toFixed(2),
+    pos52: t === 'FPT' ? 44.48 : t === 'MSB' ? 67.20 : t === 'HPG' ? 26.50 : 68.5,
+    beta: t === 'MSB' ? 0.95 : t === 'FPT' ? 1.08 : t === 'HPG' ? 1.28 : 1.10,
+    kl_tb20: t === 'FPT' ? 1.09 : t === 'MSB' ? 1.15 : 1.05,
     pe, pb, ps: +(pe * 0.16).toFixed(2), pcf: +(pe * 0.85).toFixed(2), pfcff: +(pe * 1.1).toFixed(2),
     peg: (v.valuation && v.valuation.peg) ? v.valuation.peg : 0.95,
     ev: +(mc * 1.08).toFixed(2), ev_rev: 1.85, ev_ebit: 9.40, ev_ebitda: 7.60,
@@ -9017,7 +9030,7 @@ function getCmpData(t) {
     capex: +(mc * 0.03).toFixed(2), capex_rev: 4.5,
     rep_period: 'Q2/2026', ttm_rev: +(mc * 0.55).toFixed(2), ttm_gp: +(mc * 0.20).toFixed(2),
     ttm_op: +(mc * 0.12).toFixed(2), ttm_np: +(mc * 0.09).toFixed(2), ebitda: +(mc * 0.15).toFixed(2),
-    eps: Math.round(p * 1000 / pe),
+    eps: (d.metrics && d.metrics.val && d.metrics.val.find(x => x[0].includes('EPS'))) ? parseInt(d.metrics.val.find(x => x[0].includes('EPS'))[1].replace(/[^0-9]/g, '')) : Math.round(p * 1000 / pe),
     plan_rev: 74.5, plan_np: 78.2,
     div_ps: Math.round(p * 1000 * 0.04), div_payout: 35.0, div_cov: 2.8,
     perf_1w: perfObj['1 tuần'] || 1.2,
@@ -9057,7 +9070,17 @@ function getCmpData(t) {
       tech: v.drating ? v.drating.technical : 72,
       growth: (d.factors && d.factors.find(f => f.t && f.t.includes('Tăng trưởng'))) ? d.factors.find(f => f.t && f.t.includes('Tăng trưởng')).s : (t === 'FPT' ? 92 : t === 'HPG' ? 88 : t === 'MSB' ? 85 : 75),
       money: v.drating && v.drating.money_flow ? (v.drating.money_flow.includes('Rất') ? 95 : v.drating.money_flow.includes('Tích') ? 82 : v.drating.money_flow.includes('Ổn') ? 74 : 65) : 75
-    }
+    },
+    // Fialda PTKT data
+    fia_trend: t === 'FPT' ? '▲ Tích lũy tăng (Bullish)' : t === 'MSB' ? '▲ Tích lũy kênh trên' : t === 'HPG' ? '▲ Hồi phục từ đáy' : '● Tích lũy',
+    fia_rsi: t === 'FPT' ? 54.20 : t === 'MSB' ? 58.60 : t === 'HPG' ? 52.40 : 50.00,
+    fia_macd: t === 'FPT' ? '+0.18' : t === 'MSB' ? '+0.12' : t === 'HPG' ? '+0.08' : '0.00',
+    fia_ma20: t === 'FPT' ? 50.57 : t === 'MSB' ? 15.45 : t === 'HPG' ? 26.10 : +(p * 0.98).toFixed(2),
+    fia_ma50: t === 'FPT' ? 54.24 : t === 'MSB' ? 15.10 : t === 'HPG' ? 26.80 : +(p * 0.95).toFixed(2),
+    fia_ma200: t === 'FPT' ? 46.80 : t === 'MSB' ? 14.20 : t === 'HPG' ? 25.50 : +(p * 0.90).toFixed(2),
+    fia_bb: t === 'FPT' ? '47.30 - 53.80' : t === 'MSB' ? '15.00 - 16.30' : t === 'HPG' ? '25.20 - 27.40' : +(p * 0.95).toFixed(2) + ' - ' + +(p * 1.05).toFixed(2),
+    fia_support: t === 'FPT' ? '48.90 - 49.50' : t === 'MSB' ? '15.15 - 15.35' : t === 'HPG' ? '25.30 - 25.60' : +(p * 0.95).toFixed(2),
+    fia_resistance: t === 'FPT' ? '54.20 - 58.00' : t === 'MSB' ? '16.20 - 16.50' : t === 'HPG' ? '27.50 - 30.50' : +(p * 1.10).toFixed(2)
   };
 
   CMP_MCP_CACHE[t] = res;
@@ -9193,6 +9216,17 @@ function cmpCell(t, row, key) {
   if (/Dao động 1 tháng/.test(L)) return { s: p.volatility_1m.toFixed(2) + '%' };
   if (/Mức sụt giảm tối đa/.test(L)) return { s: sp(p.mdd, 2, '%') };
 
+  // Fialda Technical Analysis
+  if (/^Xu hướng kỹ thuật Fialda/.test(L)) return { tag: p.fia_trend || '▲ Tích lũy tăng (Bullish)' };
+  if (/^RSI 14 ngày/.test(L)) return { s: (p.fia_rsi || 54.2).toFixed(2) };
+  if (/^MACD Histogram/.test(L)) return { s: p.fia_macd || '+0.18' };
+  if (/^Đường trung bình MA20/.test(L)) return { s: (p.fia_ma20 || 50.57).toFixed(2) };
+  if (/^Đường trung bình MA50/.test(L)) return { s: (p.fia_ma50 || 54.24).toFixed(2) };
+  if (/^Đường trung bình MA200/.test(L)) return { s: (p.fia_ma200 || 46.80).toFixed(2) };
+  if (/^Dải Bollinger Bands/.test(L)) return { s: p.fia_bb || '47.30 - 53.80' };
+  if (/^Vùng hỗ trợ Fialda/.test(L)) return { s: p.fia_support || '48.90 - 49.50' };
+  if (/^Vùng kháng cự Fialda/.test(L)) return { s: p.fia_resistance || '54.20 - 58.00' };
+
   return { s: '—' };
 }
 
@@ -9213,12 +9247,13 @@ function fmtCmp(o, row) {
   return { h: s, c: col };
 }
 
-const srcTip = r => `data-tip="${r.k === 'dnse' ? 'Dữ liệu DNSE · ' + esc(r.l) : r.k === 'vnd' ? 'VNDIRECT Research Server · ' + esc(r.l) : r.k === 'fin' ? 'Finhay Market Data · ' + esc(r.l) : r.src ? 'Datafeed FiinGroup · ' + esc(r.src) : ''}" class="srcl"`;
+const srcTip = r => `data-tip="${r.k === 'dnse' ? 'Dữ liệu DNSE · ' + esc(r.l) : r.k === 'vnd' ? 'VNDIRECT Research Server · ' + esc(r.l) : r.k === 'fin' ? 'Finhay Market Data · ' + esc(r.l) : r.k === 'fia' ? 'Fialda Technical Data · ' + esc(r.l) : r.src ? 'Datafeed FiinGroup · ' + esc(r.src) : ''}" class="srcl"`;
 
 const srcTag = r => {
   if (r.k === 'dnse') return `<span class="src" style="background:#0284c7;color:#fff" data-tip="Dữ liệu giá & giao dịch DNSE">DNSE</span>`;
   if (r.k === 'vnd') return `<span class="src" style="background:#ea580c;color:#fff" data-tip="VNDIRECT Research Server (mcp.vndirect.com.vn)">VND</span>`;
   if (r.k === 'fin') return `<span class="src" style="background:#059669;color:#fff" data-tip="Finhay Market Data">FIN</span>`;
+  if (r.k === 'fia') return `<span class="src" style="background:#2563eb;color:#fff" data-tip="Dữ liệu Phân tích Kỹ thuật Fialda Web Terminal">FIA</span>`;
   if (r.k === 'p') return `<span class="src p" data-tip="${SRC_P}">Giá SBSI</span>`;
   if (r.k === 'x') return `<span class="src x" data-tip="${SRC_X}">Ngoài datafeed</span>`;
   return '';
@@ -9691,7 +9726,7 @@ function vCompare() {
 
     <!-- SUB-TABS -->
     <div class="cmp-subtabs">
-      <button class="cmp-subtab ${S.cmpTab === 'all' ? 'active' : ''}" data-act="cmptab" data-v="all">📊 Bảng chỉ số toàn diện (12 nhóm)</button>
+      <button class="cmp-subtab ${S.cmpTab === 'all' ? 'active' : ''}" data-act="cmptab" data-v="all">📊 Bảng chỉ số toàn diện (13 nhóm - Kèm PTKT Fialda)</button>
       <button class="cmp-subtab ${S.cmpTab === 'drating' ? 'active' : ''}" data-act="cmptab" data-v="drating">⭐ Ma trận D-Rating VNDIRECT</button>
       <button class="cmp-subtab ${S.cmpTab === 'valuation' ? 'active' : ''}" data-act="cmptab" data-v="valuation">🎯 Định giá &amp; Đồng thuận Mục tiêu</button>
       <button class="cmp-subtab ${S.cmpTab === 'perf' ? 'active' : ''}" data-act="cmptab" data-v="perf">📈 Biểu đồ Tương quan Hiệu suất</button>
@@ -19428,10 +19463,10 @@ const DNSE_STOCKS_DB = {
     sym: 'FPT', ex: 'HOSE', name: 'Công ty Cổ phần FPT', ind: 'Công nghệ thông tin',
     price: 50400, ref: 50200, chg: 200, pct: 0.40, vol: 9250000, val_bil: 466.16,
     metrics: {
-      liq: [['KLGD', '10.851.700 CP'], ['GTGD', '632,45 tỷ đồng']],
-      frn: [['Khối lượng ròng', '+840.200', 'up'], ['Giá trị ròng', '+116,30 tỷ', 'up'], ['Room ngoại', '0 CP (Full 49%)']],
-      val: [['EPS (TTM)', '5.580 đ'], ['P/E (TTM)', '24,80 lần'], ['P/B (TTM)', '5,62 lần'], ['ROE (TTM)', '28,4%', 'up'], ['Biên LN gộp', '38,5%', 'up'], ['Biên LN ròng', '17,6%', 'up']],
-      size: [['Vốn hoá', '198,60 nghìn tỷ'], ['Vốn điều lệ', '14,60 nghìn tỷ'], ['VCSH', '35,32 nghìn tỷ'], ['SLCP lưu hành', '1,460 tỷ CP']]
+      liq: [['KLGD', '9.250.000 CP'], ['GTGD', '466,16 tỷ đồng'], ['KLGD TB 20P', '8.500.000 CP']],
+      frn: [['Khối lượng ròng', '+90.880', 'up'], ['Giá trị ròng', '+4,58 tỷ', 'up'], ['Room ngoại còn lại', '352.457.269 CP']],
+      val: [['EPS (TTM)', '2.706 đ'], ['P/E (TTM)', '21,40 lần'], ['P/B (MRQ)', '4,85 lần'], ['ROE (TTM)', '27,6%', 'up'], ['ROA (TTM)', '11,8%', 'up'], ['Biên LN gộp', '38,5%', 'up'], ['Biên LN ròng', '17,6%', 'up']],
+      size: [['Vốn hoá', '178,50 nghìn tỷ'], ['Vốn điều lệ', '14,60 nghìn tỷ'], ['VCSH', '36,80 nghìn tỷ'], ['SLCP lưu hành', '1,460 tỷ CP']]
     },
     factors: [
       { t: 'Chất lượng tài chính', w: 25, s: 88, lb: 'RẤT TÍCH CỰC', b: ['ROE 28,4% thuộc top thị trường', 'Đòn bẩy nợ thấp, tiền mặt ròng dồi dào', 'Dòng tiền tự do FCF mạnh mẽ'], n: 'Chất lượng tài sản và an toàn tài chính.' },
@@ -20387,33 +20422,34 @@ const VND_STOCKS_DB = {
 
   FPT: {
     sym: 'FPT',
-    drating: { score: 4.8, stars: '★★★★★', fundamental: 94, valuation: 68, technical: 90, money_flow: 'Rất tích cực' },
+    drating: { score: 4.8, stars: '★★★★★', fundamental: 94, valuation: 78, technical: 90, money_flow: 'Rất tích cực' },
     consensus: {
       recommendation: 'MUA (BUY)',
-      target_price: 165000,
-      target_price_fmt: '165.000 đ',
-      upside_pct: 19.1,
+      target_price: 58000,
+      target_price_fmt: '58.000 đ',
+      upside_pct: 15.1,
       coverage_count: 12,
-      target_range: '155.000 - 175.000 đ'
+      target_range: '55.000 - 62.000 đ'
     },
     reports: {
       title: 'FPT: Kỷ nguyên mới từ AI Factory và chuyển đổi số toàn cầu',
       analyst: 'Lê Bảo Trâm (VNDIRECT Research)',
       date: '28/09/2026',
-      target_price: '168.000 đ',
-      thesis: 'AI Factory với Nvidia và hợp đồng chuyển đổi số 1,2 tỷ USD khẳng định vị thế công nghệ toàn cầu; Tăng trưởng LNST duy trì trên 22%.'
+      target_price: '58.000 đ',
+      thesis: 'AI Factory hợp tác với Nvidia và các hợp đồng chuyển đổi số quy mô lớn khẳng định vị thế dẫn đầu công nghệ; Định giá P/E 21.4x hấp dẫn so với triển vọng tăng trưởng lợi nhuận >22%.'
     },
     institutional: {
-      foreign_net_10d: '+4.850.000 CP',
-      prop_net_10d: '+2.100.000 CP',
-      foreign_ratio: '49,00% (Kín room)',
+      foreign_net_10d: '+1.850.000 CP',
+      prop_net_10d: '+620.000 CP',
+      foreign_ratio: '24,14%',
+      foreign_room_pct: '24,14% (352.457.269 CP còn lại)',
       top_funds: ['Dragon Capital', 'Vanguard Emerging Markets', 'JPMorgan ASEAN']
     },
     forward_val: {
-      pe_forward: '20,2 lần',
-      pb_forward: '4,80 lần',
-      peg_ratio: '0,92',
-      dcf_fair_value: '170.000 đ'
+      pe_forward: '16,8 lần',
+      pb_forward: '3,80 lần',
+      peg_ratio: '0,85',
+      dcf_fair_value: '62.000 đ'
     },
     corporate_events: [
       ['10/10/2026', 'Cổ tức', 'Tạm ứng cổ tức đợt 1/2026 bằng tiền mặt 10%'],

@@ -538,15 +538,32 @@ svg text{font-family:var(--sans)}
 .burger{display:none}
 .top-r{margin-left:auto;display:flex;align-items:center;gap:16px}
 .top-r>.grp8{display:flex;gap:8px;align-items:center}
-.search{position:relative}
-.search input{width:260px;height:32px;border:1px solid var(--line);border-radius:99px;padding:0 12px 0 36px;background:var(--sub);outline:none;font-size:14px;line-height:20px}
-.search input::placeholder{color:var(--ink4)}
-.search input:focus{background:var(--bg);border-color:var(--line2)}
-.search svg{position:absolute;left:12px;top:8px;width:16px;height:16px;stroke:var(--ink2)}
-.suggest{position:absolute;top:38px;right:0;width:320px;background:var(--bg);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 28px rgba(20,20,20,.12);padding:6px;z-index:60}
-.suggest button{display:flex;width:100%;gap:10px;align-items:center;padding:8px;border-radius:4px;text-align:left;font-size:12px}
-.suggest button:hover,.suggest button.act{background:var(--sub)}
-.suggest b{font-family:var(--mono);font-size:12px;font-weight:500;width:40px}
+.search{position:relative;display:flex;align-items:center}
+.search input{width:280px;height:34px;border:1px solid var(--line);border-radius:99px;padding:0 34px 0 36px;background:var(--sub);outline:none;font-size:13px;line-height:20px;color:var(--ink);transition:all .2s cubic-bezier(.4,0,.2,1)}
+.search input::placeholder{color:var(--ink4);font-size:12px}
+.search input:focus{width:330px;background:var(--bg);border-color:var(--brand);box-shadow:0 0 0 3px rgba(255,107,0,0.18)}
+.search .search-icon{position:absolute;left:11px;top:9px;width:16px;height:16px;color:var(--ink3);pointer-events:none;transition:color .2s}
+.search input:focus ~ .search-icon{color:var(--brand)}
+.search-clear-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:var(--sub2);color:var(--ink2);display:inline-grid;place-items:center;font-size:11px;line-height:1;border:none;cursor:pointer;padding:0;transition:all .15s}
+.search-clear-btn:hover{background:var(--brand);color:#fff}
+.suggest{position:absolute;top:42px;right:0;width:420px;max-width:min(calc(100vw - 32px),440px);background:var(--bg);border:1px solid var(--line2);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.06);padding:8px;z-index:999;max-height:480px;overflow-y:auto;overflow-x:hidden}
+.suggest::-webkit-scrollbar{width:5px}
+.suggest::-webkit-scrollbar-thumb{background:var(--line2);border-radius:99px}
+.sug-header{display:flex;justify-content:space-between;align-items:center;padding:6px 8px 4px;font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px}
+.sug-clear-recent-btn{background:none;border:none;color:var(--brand);font-size:11px;cursor:pointer;padding:0;font-weight:600}
+.sug-clear-recent-btn:hover{text-decoration:underline}
+.sug-recent-chips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 8px 10px}
+.sug-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;background:var(--sub);border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .15s}
+.sug-chip:hover{background:rgba(255,107,0,0.12);border-color:rgba(255,107,0,0.3);color:var(--brand)}
+.suggest button.sug-row{display:flex;width:100%;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;text-align:left;font-size:12px;border:none;background:transparent;cursor:pointer;transition:background .12s,transform .08s;margin-bottom:2px}
+.suggest button.sug-row:hover,.suggest button.sug-row.act{background:rgba(255,107,0,0.1);border-left:3px solid var(--brand);padding-left:7px}
+.sug-hl{background:rgba(255,107,0,0.22);color:var(--brand);font-weight:700;border-radius:2px;padding:0 2px}
+.sug-footer{padding:8px 10px 4px;border-top:1px solid var(--line2);margin-top:6px;font-size:11px;color:var(--ink3);display:flex;align-items:center;justify-content:space-between}
+.sug-footer b{font-weight:700;color:var(--ink2)}
+.sug-empty{padding:24px 16px;text-align:center}
+.sug-suggest-chips{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-size:12px;color:var(--ink3)}
+.sug-suggest-chips button{background:var(--sub);border:1px solid var(--line);color:var(--brand);font-weight:700;font-size:11px;padding:3px 8px;border-radius:4px;cursor:pointer}
+.sug-suggest-chips button:hover{background:var(--brand);color:#fff}
 .pill{height:32px;display:inline-flex;align-items:center;gap:4px;padding:0 12px 0 8px;border:1px solid var(--line2);border-radius:99px;font-weight:600;font-size:14px;line-height:20px;background:var(--sub);white-space:nowrap}
 .pill:hover{background:var(--sub2)}
 .user{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px 0 8px;border-radius:999px;background:var(--sub);font-size:12px;font-weight:500;white-space:nowrap}
@@ -3410,9 +3427,10 @@ td[data-stock-role="price"],
       <div class="hist-g"><button class="navbtn hist" id="bk" data-act="back" aria-label="Quay lại"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></button>
       <button class="navbtn hist" id="fw" data-act="fwd" aria-label="Tiến"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg></button></div>
       <div class="top-r">
-        <div class="search">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-          <input id="q" type="search" placeholder="Tìm mã CK, báo cáo, tin tức..." autocomplete="off">
+        <div class="search" id="top-search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <input id="q" type="text" placeholder="Tìm mã CK, báo cáo, tin tức... (Nhấn /)" autocomplete="off" spellcheck="false" aria-label="Tìm kiếm mã chứng khoán">
+          <button id="q-clear" class="search-clear-btn" style="display:none" aria-label="Xóa tìm kiếm" title="Xóa">✕</button>
           <div id="suggest" class="suggest" hidden></div>
         </div>
         <button class="pill" data-act="toast" data-msg="Bảng giá mở ở ứng dụng giao dịch SBSI (ngoài phạm vi prototype)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20h18M6 16v-5M10 16V7M14 16v-3M18 16V9"/><path d="M5 9l5-4 4 3 5-4"/></svg>Đi đến bảng giá</button>
@@ -14012,8 +14030,13 @@ document.addEventListener('click', e => {
     closeSbFlyout();
   }
 
+  // Đóng gợi ý tìm kiếm nếu click ra bên ngoài ô tìm kiếm .search
+  if (!e.target.closest('.search')) {
+    hideSuggest();
+  }
+
   const t = e.target.closest('[data-act],[data-go]');
-  if (!t) { hideSuggest(); return; }
+  if (!t) return;
   if (t.dataset.go) {
     e.preventDefault();
     const dest = t.dataset.go;
@@ -14077,36 +14100,293 @@ document.addEventListener('mouseover', e => { const t = e.target.closest('[data-
 document.addEventListener('mouseout', e => { if (e.target.closest('[data-tip]')) hideTip(); if (e.target.closest('[data-seg]')) highlightSeg(-1); });
 function highlightSeg(i) { view.querySelectorAll('#donut path').forEach((p, k) => p.style.opacity = i < 0 || i === k ? 1 : .3); view.querySelectorAll('.leg-row').forEach((p, k) => p.style.fontWeight = i === k ? 600 : 400); }
 
-/* search */
-const qIn = document.getElementById('q'), sug = document.getElementById('suggest');
+/* ================= SEARCH & AUTOCOMPLETE ENGINE (BA/FE MASTER) ================= */
+const qIn = document.getElementById('q'),
+  sug = document.getElementById('suggest'),
+  qClear = document.getElementById('q-clear');
 let sugIdx = -1, sugItems = [];
-function hideSuggest() { sug.hidden = true; }
-qIn.addEventListener('input', () => {
-  const q = qIn.value.trim().toLowerCase(); if (!q) { hideSuggest(); return; }
-  const st = UNI.filter(u => u[0].toLowerCase().startsWith(q) || u[1].toLowerCase().includes(q) || (u[2] && u[2].toLowerCase().includes(q))).slice(0, 8).map(u => ({ k: 's', t: u[0], l: u[1], ind: u[2], p: u[4], c: u[5] }));
-  const rp = REPORTS.filter(r => r[1].toLowerCase().includes(q)).slice(0, 3).map(r => ({ k: 'r', t: 'BC', l: r[1], i: REPORTS.indexOf(r) }));
-  sugItems = [...st, ...rp]; sugIdx = -1;
-  sug.innerHTML = sugItems.length ? sugItems.map((s, i) => `
-    <button data-si="${i}" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:6px;gap:8px;width:100%;text-align:left;border-bottom:1px solid rgba(0,0,0,0.04)">
-      <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
-        ${s.k === 's' ? getCompanyLogo(s.t, 26) : '<span style="font-size:16px">📄</span>'}
-        <div style="display:flex;flex-direction:column;min-width:0">
-          <div style="display:flex;align-items:center;gap:6px">
-            <b style="font-family:var(--mono);font-size:13px;color:var(--ink)">${s.t}</b>
-            ${s.ind ? `<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:var(--sub);color:var(--ink3);font-weight:500">${esc(s.ind)}</span>` : ''}
+
+const RECENT_SEARCH_KEY = 'kk_recent_searches_v2';
+function getRecentSearches() {
+  try {
+    const raw = localStorage.getItem(RECENT_SEARCH_KEY);
+    return raw ? JSON.parse(raw) : ['FPT', 'HPG', 'MSB'];
+  } catch(e) {
+    return ['FPT', 'HPG', 'MSB'];
+  }
+}
+function saveRecentSearch(sym) {
+  if (!sym) return;
+  sym = sym.toUpperCase().trim();
+  try {
+    let rec = getRecentSearches().filter(x => x !== sym);
+    rec.unshift(sym);
+    if (rec.length > 6) rec = rec.slice(0, 6);
+    localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(rec));
+  } catch(e) {}
+}
+function clearRecentSearches() {
+  try {
+    localStorage.removeItem(RECENT_SEARCH_KEY);
+  } catch(e) {}
+  renderSuggest();
+}
+window.clearRecentSearches = clearRecentSearches;
+
+function stripVN(str) {
+  if (!str) return '';
+  return String(str)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .toLowerCase()
+    .trim();
+}
+
+function highlightMatch(text, query) {
+  if (!text || !query) return esc(text || '');
+  const tStr = String(text);
+  const tNorm = stripVN(tStr);
+  const qNorm = stripVN(query);
+  const idx = tNorm.indexOf(qNorm);
+  if (idx === -1) return esc(tStr);
+  const before = tStr.slice(0, idx);
+  const match = tStr.slice(idx, idx + query.length);
+  const after = tStr.slice(idx + query.length);
+  return `${esc(before)}<mark class="sug-hl">${esc(match)}</mark>${esc(after)}`;
+}
+
+function hideSuggest() {
+  if (sug) sug.hidden = true;
+  sugIdx = -1;
+}
+
+function showSuggest() {
+  if (sug) sug.hidden = false;
+}
+
+function renderSuggest() {
+  if (!qIn || !sug) return;
+  const q = qIn.value.trim();
+  if (qClear) qClear.style.display = q ? 'inline-grid' : 'none';
+
+  if (!q) {
+    // EMPTY STATE: Lịch sử tìm kiếm gần đây + Cổ phiếu thịnh hành
+    const recents = getRecentSearches();
+    const trending = ['FPT', 'HPG', 'MSB', 'SSI', 'VCB', 'TCB'];
+
+    const trendItems = trending.map(sym => {
+      const u = UNI.find(x => x[0] === sym);
+      if (u) return { k: 's', t: u[0], l: u[1], ind: u[2] || '', p: u[4], c: u[5] };
+      const d = (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[sym]) ? DNSE_STOCKS_DB[sym] : null;
+      if (d) return { k: 's', t: sym, l: d.name, ind: d.ind || '', p: d.price / 1000, c: d.pct || 0 };
+      return { k: 's', t: sym, l: 'CTCP ' + sym, ind: '', p: 25.0, c: 0.0 };
+    });
+
+    sugItems = trendItems;
+    sugIdx = -1;
+
+    let html = '';
+    if (recents && recents.length) {
+      const recentChips = recents.map(r => `
+        <button class="sug-chip" data-quick="${r}" title="Xem cổ phiếu ${r}">
+          <span style="display:inline-flex;align-items:center;justify-content:center">${getCompanyLogo(r, 16)}</span>
+          <b>${r}</b>
+        </button>
+      `).join('');
+
+      html += `
+        <div class="sug-header">
+          <span>🕒 Tìm kiếm gần đây</span>
+          <button class="sug-clear-recent-btn" onclick="clearRecentSearches()" title="Xóa toàn bộ lịch sử">Xóa lịch sử</button>
+        </div>
+        <div class="sug-recent-chips">${recentChips}</div>
+      `;
+    }
+
+    const trendHtml = trendItems.map((s, i) => `
+      <button class="sug-row" data-si="${i}">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+          <div style="display:inline-flex;align-items:center;justify-content:center;flex:none">${getCompanyLogo(s.t, 26)}</div>
+          <div style="display:flex;flex-direction:column;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px">
+              <b style="font-family:var(--mono);font-size:13px;color:var(--ink)">${s.t}</b>
+              ${s.ind ? `<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:var(--sub);color:var(--ink3);font-weight:500">${esc(s.ind)}</span>` : ''}
+              <span style="font-size:10px;color:var(--brand);font-weight:600">🔥 Top Quan Tâm</span>
+            </div>
+            <span style="font-size:11.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.l)}</span>
           </div>
-          <span style="font-size:11.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.l)}</span>
+        </div>
+        ${s.p ? `<div style="text-align:right;flex:none;font-family:var(--mono);font-size:12px;margin-left:8px">
+          <b style="color:var(--ink)">${fmtVN(s.p >= 1000 ? s.p : Math.round(s.p * 1000), 0)}</b>
+          <div style="font-size:11px;font-weight:600;color:${s.c > 0 ? 'var(--up)' : s.c < 0 ? 'var(--down)' : 'var(--ink3)'}">${s.c > 0 ? '▲ +' : s.c < 0 ? '▼ ' : '● '}${s.c != null ? Math.abs(s.c).toFixed(2) : "0.00"}%</div>
+        </div>` : ''}
+      </button>
+    `).join('');
+
+    html += `
+      <div class="sug-header" style="${recents.length ? 'border-top:1px solid var(--line2);padding-top:8px;margin-top:4px' : ''}">
+        <span>🔥 Cổ phiếu thịnh hành hôm nay</span>
+      </div>
+      <div>${trendHtml}</div>
+      <div class="sug-footer">
+        <span>Gõ mã CK hoặc tên DN để tìm</span>
+        <span><b>/</b> tìm nhanh • <b>Esc</b> đóng</span>
+      </div>
+    `;
+
+    sug.innerHTML = html;
+    showSuggest();
+    return;
+  }
+
+  // SEARCH RESULTS: Stock and Reports
+  const qNorm = stripVN(q);
+  const qRaw = q.toLowerCase();
+
+  // 1. Build unified pool
+  const pool = UNI.map(u => ({ k: 's', t: u[0], l: u[1], ind: u[2] || '', p: u[4], c: u[5] }));
+  const seen = new Set(pool.map(p => p.t));
+  if (typeof DNSE_STOCKS_DB !== 'undefined') {
+    Object.keys(DNSE_STOCKS_DB).forEach(k => {
+      if (!seen.has(k)) {
+        const d = DNSE_STOCKS_DB[k];
+        pool.push({ k: 's', t: k, l: d.name || ('CTCP ' + k), ind: d.ind || '', p: (d.price || 25000) / 1000, c: d.pct || 0 });
+        seen.add(k);
+      }
+    });
+  }
+
+  // 2. Score and sort stocks
+  const matchedStocks = pool.map(item => {
+    const sym = item.t.toLowerCase();
+    const nameNorm = stripVN(item.l);
+    const indNorm = stripVN(item.ind);
+
+    let score = 0;
+    if (sym === qRaw) score = 1000;
+    else if (sym.startsWith(qRaw)) score = 800 - sym.length;
+    else if (sym.includes(qRaw)) score = 600;
+    else if (nameNorm.startsWith(qNorm)) score = 400;
+    else if (nameNorm.includes(' ' + qNorm) || nameNorm.includes(qNorm)) score = 300;
+    else if (indNorm.includes(qNorm)) score = 100;
+
+    return { item, score };
+  }).filter(x => x.score > 0).sort((a, b) => b.score - a.score).slice(0, 8).map(x => x.item);
+
+  // 3. Score reports
+  const matchedReports = REPORTS.map((r, i) => {
+    const titleNorm = stripVN(r[1]);
+    const symNorm = stripVN(r[0] || '');
+    let score = 0;
+    if (symNorm === qRaw) score = 400;
+    else if (titleNorm.includes(qNorm) || symNorm.includes(qNorm)) score = 200;
+    return { item: { k: 'r', t: r[0] || 'BC', l: r[1], rec: r[2], time: r[3], i }, score };
+  }).filter(x => x.score > 0).slice(0, 3).map(x => x.item);
+
+  sugItems = [...matchedStocks, ...matchedReports];
+  sugIdx = -1;
+
+  if (!sugItems.length) {
+    sug.innerHTML = `
+      <div class="sug-empty">
+        <div style="font-size:26px;margin-bottom:8px">🔍</div>
+        <b style="font-size:13px;color:var(--ink)">Không tìm thấy kết quả phù hợp cho "${esc(q)}"</b>
+        <p style="font-size:12px;color:var(--ink3);margin:6px 0 12px;line-height:1.5">
+          Vui lòng kiểm tra lại chính tả hoặc tìm theo mã CK (FPT, HPG, MSB...), tên doanh nghiệp (Hòa Phát, FPT...) hoặc ngành (Công nghệ, Ngân hàng, Thép...)
+        </p>
+        <div class="sug-suggest-chips">
+          <span>Gợi ý:</span>
+          <button data-quick="FPT">FPT</button>
+          <button data-quick="HPG">HPG</button>
+          <button data-quick="MSB">MSB</button>
+          <button data-quick="SSI">SSI</button>
         </div>
       </div>
-      ${s.p ? `<div style="text-align:right;flex:none;font-family:var(--mono);font-size:12px;margin-left:8px">
-        <b style="color:var(--ink)">${fmtVN(s.p >= 1000 ? s.p : Math.round(s.p * 1000), 0)}</b>
-        ${s.c ? `<div style="font-size:11px;font-weight:600;color:${s.c > 0 ? 'var(--up)' : 'var(--down)'}">${s.c > 0 ? '▲ +' : '▼ '}${Math.abs(s.c)}%</div>` : ''}
-      </div>` : ''}
-    </button>
-  `).join('') : '<p class="muted" style="margin:8px;font-size:12px">Không tìm thấy cổ phiếu hoặc báo cáo phù hợp</p>';
-  sug.hidden = false;
-});
-function pickSug(i) { const s = sugItems[i]; if (!s) return; hideSuggest(); qIn.value = ''; if (s.k === 's') openStock(s.t); else { S.rep.q = ''; S.rep.tab = 0; go('reports'); } }
+    `;
+    showSuggest();
+    return;
+  }
+
+  let html = '';
+  if (matchedStocks.length) {
+    html += `
+      <div class="sug-header">
+        <span>📈 Cổ phiếu (${matchedStocks.length})</span>
+        <span style="font-size:10.5px;color:var(--ink3);text-transform:none;letter-spacing:0">Nhấn Enter để mở Cổ phiếu 360</span>
+      </div>
+    `;
+    html += matchedStocks.map((s, i) => `
+      <button class="sug-row" data-si="${i}">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+          <div style="display:inline-flex;align-items:center;justify-content:center;flex:none">${getCompanyLogo(s.t, 26)}</div>
+          <div style="display:flex;flex-direction:column;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px">
+              <b style="font-family:var(--mono);font-size:13px;color:var(--ink)">${highlightMatch(s.t, q)}</b>
+              ${s.ind ? `<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:var(--sub);color:var(--ink3);font-weight:500">${highlightMatch(s.ind, q)}</span>` : ''}
+            </div>
+            <span style="font-size:11.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${highlightMatch(s.l, q)}</span>
+          </div>
+        </div>
+        ${s.p ? `<div style="text-align:right;flex:none;font-family:var(--mono);font-size:12px;margin-left:8px">
+          <b style="color:var(--ink)">${fmtVN(s.p >= 1000 ? s.p : Math.round(s.p * 1000), 0)}</b>
+          <div style="font-size:11px;font-weight:600;color:${s.c > 0 ? 'var(--up)' : s.c < 0 ? 'var(--down)' : 'var(--ink3)'}">${s.c > 0 ? '▲ +' : s.c < 0 ? '▼ ' : '● '}${s.c != null ? Math.abs(s.c).toFixed(2) : "0.00"}%</div>
+        </div>` : ''}
+      </button>
+    `).join('');
+  }
+
+  if (matchedReports.length) {
+    const offset = matchedStocks.length;
+    html += `
+      <div class="sug-header" style="border-top:1px solid var(--line2);padding-top:8px;margin-top:4px">
+        <span>📄 Báo cáo phân tích (${matchedReports.length})</span>
+      </div>
+    `;
+    html += matchedReports.map((s, i) => `
+      <button class="sug-row" data-si="${offset + i}">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+          <span style="font-size:18px;flex:none">📄</span>
+          <div style="display:flex;flex-direction:column;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px">
+              <b style="font-family:var(--mono);font-size:12.5px;color:var(--brand)">${s.t}</b>
+              ${s.rec ? `<span style="font-size:9.5px;padding:1px 5px;border-radius:3px;background:${s.rec === 'MUA' ? 'rgba(34,197,94,0.15)' : 'var(--sub)'};color:${s.rec === 'MUA' ? '#22c55e' : 'var(--ink2)'};font-weight:700">${s.rec}</span>` : ''}
+              ${s.time ? `<span style="font-size:10px;color:var(--ink4)">${s.time}</span>` : ''}
+            </div>
+            <span style="font-size:11.5px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${highlightMatch(s.l, q)}</span>
+          </div>
+        </div>
+      </button>
+    `).join('');
+  }
+
+  html += `
+    <div class="sug-footer">
+      <span><b>↑↓</b> di chuyển • <b>Enter</b> chọn</span>
+      <span><b>Esc</b> đóng</span>
+    </div>
+  `;
+
+  sug.innerHTML = html;
+  showSuggest();
+}
+
+function pickSug(i) {
+  const s = sugItems[i];
+  if (!s) return;
+  hideSuggest();
+  if (qIn) qIn.value = '';
+  if (qClear) qClear.style.display = 'none';
+  if (s.k === 's') {
+    saveRecentSearch(s.t);
+    openStock(s.t);
+  } else {
+    S.rep.q = s.t !== 'BC' ? s.t : '';
+    S.rep.tab = 0;
+    go('reports');
+  }
+}
+
 function openStock(t) {
   if (!t) return;
   t = t.toUpperCase().trim();
@@ -14129,11 +14409,104 @@ function openStock(t) {
     location.hash = 'c360';
   }
 }
-sug.addEventListener('click', e => { const b = e.target.closest('[data-si]'); if (b) { e.stopPropagation(); pickSug(+b.dataset.si); } });
-qIn.addEventListener('keydown', e => {
-  if (sug.hidden) return; const n = sugItems.length;
-  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); sugIdx = (sugIdx + (e.key === 'ArrowDown' ? 1 : -1) + n) % n; sug.querySelectorAll('button').forEach((b, i) => b.classList.toggle('act', i === sugIdx)); }
-  if (e.key === 'Enter') pickSug(sugIdx < 0 ? 0 : sugIdx);
+
+if (qIn) {
+  qIn.addEventListener('input', renderSuggest);
+  qIn.addEventListener('focus', renderSuggest);
+  qIn.addEventListener('click', e => {
+    e.stopPropagation();
+    renderSuggest();
+  });
+  qIn.addEventListener('keydown', e => {
+    if (sug && sug.hidden) {
+      if (e.key === 'ArrowDown' || e.key === 'Enter') {
+        renderSuggest();
+        return;
+      }
+    }
+    const n = sugItems.length;
+    if (!n) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      sugIdx = (sugIdx + 1) % n;
+      const rows = sug.querySelectorAll('.sug-row');
+      rows.forEach((b, i) => b.classList.toggle('act', i === sugIdx));
+      if (rows[sugIdx]) rows[sugIdx].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      sugIdx = (sugIdx - 1 + n) % n;
+      const rows = sug.querySelectorAll('.sug-row');
+      rows.forEach((b, i) => b.classList.toggle('act', i === sugIdx));
+      if (rows[sugIdx]) rows[sugIdx].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (sugItems.length > 0) {
+        pickSug(sugIdx < 0 ? 0 : sugIdx);
+      } else if (qIn.value.trim().length >= 3) {
+        const sym = qIn.value.trim().toUpperCase();
+        saveRecentSearch(sym);
+        openStock(sym);
+        hideSuggest();
+        qIn.value = '';
+      }
+    } else if (e.key === 'Escape') {
+      hideSuggest();
+      qIn.blur();
+    }
+  });
+}
+
+if (qClear) {
+  qClear.addEventListener('click', e => {
+    e.stopPropagation();
+    if (qIn) {
+      qIn.value = '';
+      qIn.focus();
+    }
+    renderSuggest();
+  });
+}
+
+if (sug) {
+  sug.addEventListener('click', e => {
+    e.stopPropagation();
+    if (e.target.closest('.sug-clear-recent-btn')) {
+      clearRecentSearches();
+      return;
+    }
+    const qBtn = e.target.closest('[data-quick]');
+    if (qBtn) {
+      const sym = qBtn.dataset.quick;
+      saveRecentSearch(sym);
+      openStock(sym);
+      hideSuggest();
+      if (qIn) qIn.value = '';
+      return;
+    }
+    const b = e.target.closest('[data-si]');
+    if (b) {
+      pickSug(+b.dataset.si);
+    }
+  });
+}
+
+// Global shortcut: press '/' or 'Ctrl+K' to focus search
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    if (qIn) {
+      qIn.focus();
+      qIn.select();
+      renderSuggest();
+    }
+  } else if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+    e.preventDefault();
+    if (qIn) {
+      qIn.focus();
+      qIn.select();
+      renderSuggest();
+    }
+  }
 });
 
 let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { drawCandles(); drawForeign(); }, 120); });

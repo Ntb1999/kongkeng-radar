@@ -302,6 +302,11 @@ svg text{font-family:var(--sans)}
 }
 
 /* Collapsed Icon Rail specifics */
+.sb a.sb-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .sb.collapsed a.sb-link {
   width: 44px;
   height: 42px;
@@ -1324,9 +1329,10 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .mcp-ob-track-sell{background:#F23645;height:100%}
 
 .mcp-dom-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
-.mcp-dom-table th{font-size:9.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;padding:4px 6px;border-bottom:1px solid var(--line);background:var(--sub)}
-.mcp-dom-table td{padding:5px 6px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line);position:relative;font-size:11px}
+.mcp-dom-table th{font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;padding:4px 6px;border-bottom:1px solid var(--line);background:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mcp-dom-table td{padding:5px 6px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line);position:relative;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mcp-dom-table tr:hover td{background:var(--hover)}
+.mcp-match-bar{display:flex;align-items:center;justify-content:space-between;background:var(--sub);padding:5px 8px;border-radius:6px;border:1px solid var(--line);margin-bottom:6px;font-size:11px}
 .mcp-dom-bar{position:absolute;top:0;bottom:0;opacity:0.18;pointer-events:none}
 .mcp-dom-bar.buy{left:0;background:#22AB94}
 .mcp-dom-bar.sell{right:0;background:#F23645}
@@ -1637,9 +1643,34 @@ table.fin-t th:first-child{padding-left:12px}
   .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
   .metrics>div:nth-child(2n){border-right:0}
 }
+/* Drawer Scrim Backdrop Overlay for Tablet / Mobile */
+.drawer-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 95;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+.drawer-scrim.active {
+  opacity: 1;
+  pointer-events: auto;
+}
 @media (max-width:860px){
-  .sb{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s;box-shadow:none;width:240px !important;overflow-x:hidden !important}
-  .sb.open{transform:none;box-shadow:10px 0 30px rgba(0,0,0,.25)}
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+  .app, .main, #view {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  .sb{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s;box-shadow:none;width:240px !important;overflow-x:hidden !important;z-index:100 !important}
+  .sb.open{transform:none;box-shadow:10px 0 30px rgba(0,0,0,.35)}
   .sb.collapsed a .sb-label, .sb.collapsed a .sb-sub-indicator{display:inline !important}
   .sb.collapsed a{width:auto !important;justify-content:flex-start !important;padding:0 14px !important}
   .sb.collapsed .sb-logo-full{display:flex !important}
@@ -3036,15 +3067,33 @@ td[data-stock-role="price"],
     overflow-y: visible;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .cmc-c360-container {
-    grid-template-columns: 1fr;
-    padding: 10px 10px 24px;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 8px 10px 24px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
-  .cmc-c360-left, .cmc-c360-right {
-    position: static;
-    max-height: none;
-    overflow-y: visible;
+  .cmc-c360-left, .cmc-c360-mid, .cmc-c360-right {
+    position: static !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .cmc-tabs {
+    position: static !important;
+    top: auto !important;
+  }
+  .tv-head, .tv-top, .tv-bar {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
   }
 }
 
@@ -6345,7 +6394,7 @@ const I = {
 
 const NAV = [
   ['KHÁM PHÁ', [['market', 'Tổng quan thị trường', I.grid], ['screener', 'Bộ lọc cổ phiếu', I.filter], ['mnews', 'Tin tức thị trường', I.news]]],
-  ['NGHIÊN CỨU', [['c360', 'Biến động Mã chứng khoán', I.chart], ['compare', 'So sánh cổ phiếu', I.comp], ['reports', 'Báo cáo & Insights', I.rep], ['follow', 'Danh sách theo dõi', I.book]]],
+  ['NGHIÊN CỨU', [['c360', 'Biến động Cổ phiếu', I.chart], ['compare', 'So sánh cổ phiếu', I.comp], ['reports', 'Báo cáo & Insights', I.rep], ['follow', 'Danh sách theo dõi', I.book]]],
   ['ĐẦU TƯ TỰ ĐỘNG & BOT', [['quant', 'Radar AI Săn Tín Hiệu', I.quant]]]
 ];
 const C360_TABS = [['', 'TỔNG QUAN'], ['hoso', 'HỒ SƠ'], ['codong', 'CỔ ĐÔNG & GDNB'], ['taichinh', 'TÀI CHÍNH'], ['cungnganh', 'CÙNG NGÀNH'], ['tintuc', 'TIN TỨC & SỰ KIỆN'], ['dulieu', 'DỮ LIỆU']];
@@ -7276,56 +7325,59 @@ function renderMcpOrderBook() {
       </div>
     </div>
 
-    <!-- 3-Level Depth of Market (DOM) Table -->
+    <!-- Real-time Match Summary Strip -->
+    <div class="mcp-match-bar">
+      <span style="color:var(--ink3)">Khớp lệnh:</span>
+      <b style="font-family:var(--mono);font-size:12.5px" class="${getColorClass(curPrice)}">${fmtVN(curPrice, 0)}</b>
+      <span class="${getColorClass(curPrice)}" style="font-family:var(--mono);font-size:10.5px">${STOCK.chg > 0 ? '+' : ''}${fmtVN(STOCK.chg, 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)</span>
+      <span style="color:var(--ink3);font-size:10px">KL: <b style="color:var(--ink);font-family:var(--mono)">${fmtVN(b1Vol, 0)}</b></span>
+    </div>
+
+    <!-- 4-Column Professional Depth of Market (DOM) Table -->
     <table class="mcp-dom-table">
       <thead>
         <tr>
-          <th colspan="2" style="text-align:left;color:#22AB94">BÊN MUA (DƯ MUA)</th>
-          <th colspan="2" style="text-align:center;color:var(--brand)">KHỚP LỆNH</th>
-          <th colspan="2" style="text-align:right;color:#F23645">BÊN BÁN (DƯ BÁN)</th>
+          <th style="text-align:left;color:#22AB94;width:24%">KL Mua</th>
+          <th style="text-align:right;color:#22AB94;width:26%">Giá Mua</th>
+          <th style="text-align:left;color:#F23645;width:26%;padding-left:8px">Giá Bán</th>
+          <th style="text-align:right;color:#F23645;width:24%">KL Bán</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td style="color:${getColorClass(b3)}">${fmtVN(b3, 0)}</td>
-          <td>
-            <div class="mcp-dom-bar buy" style="width:${b3Bar}%"></div>
-            <span>${fmtVN(b3Vol, 0)}</span>
-          </td>
-          <td style="text-align:center;font-weight:700" class="${getColorClass(curPrice)}">${fmtVN(curPrice, 0)}</td>
-          <td style="text-align:center;font-weight:600">${fmtVN(b1Vol, 0)}</td>
-          <td style="color:${getColorClass(a1)}">${fmtVN(a1, 0)}</td>
-          <td>
-            <div class="mcp-dom-bar sell" style="width:${a1Bar}%"></div>
-            <span>${fmtVN(a1Vol, 0)}</span>
-          </td>
-        </tr>
-        <tr>
-          <td style="color:${getColorClass(b2)}">${fmtVN(b2, 0)}</td>
-          <td>
-            <div class="mcp-dom-bar buy" style="width:${b2Bar}%"></div>
-            <span>${fmtVN(b2Vol, 0)}</span>
-          </td>
-          <td style="text-align:center;color:var(--ink2);font-size:10px">Cao: <b class="up">${fmtVN(highVal, 0)}</b></td>
-          <td style="text-align:center;color:var(--ink2);font-size:10px">Thấp: <b class="down">${fmtVN(lowVal, 0)}</b></td>
-          <td style="color:${getColorClass(a2)}">${fmtVN(a2, 0)}</td>
-          <td>
-            <div class="mcp-dom-bar sell" style="width:${a2Bar}%"></div>
-            <span>${fmtVN(a2Vol, 0)}</span>
-          </td>
-        </tr>
-        <tr>
-          <td style="color:${getColorClass(b1)}">${fmtVN(b1, 0)}</td>
-          <td>
+          <td style="position:relative;overflow:hidden">
             <div class="mcp-dom-bar buy" style="width:${b1Bar}%"></div>
-            <span>${fmtVN(b1Vol, 0)}</span>
+            <span style="position:relative;z-index:1">${fmtVN(b1Vol, 0)}</span>
           </td>
-          <td style="text-align:center;color:var(--ink2);font-size:10px">Tổng KL:</td>
-          <td style="text-align:center;font-weight:600">${STOCK.vol ? fmtVN(STOCK.vol, 0) : '1.456.200'}</td>
-          <td style="color:${getColorClass(a3)}">${fmtVN(a3, 0)}</td>
-          <td>
+          <td style="color:${getColorClass(b1)};font-weight:700">${fmtVN(b1, 0)}</td>
+          <td style="color:${getColorClass(a1)};font-weight:700;padding-left:8px">${fmtVN(a1, 0)}</td>
+          <td style="position:relative;overflow:hidden">
+            <div class="mcp-dom-bar sell" style="width:${a1Bar}%"></div>
+            <span style="position:relative;z-index:1">${fmtVN(a1Vol, 0)}</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="position:relative;overflow:hidden">
+            <div class="mcp-dom-bar buy" style="width:${b2Bar}%"></div>
+            <span style="position:relative;z-index:1">${fmtVN(b2Vol, 0)}</span>
+          </td>
+          <td style="color:${getColorClass(b2)};font-weight:700">${fmtVN(b2, 0)}</td>
+          <td style="color:${getColorClass(a2)};font-weight:700;padding-left:8px">${fmtVN(a2, 0)}</td>
+          <td style="position:relative;overflow:hidden">
+            <div class="mcp-dom-bar sell" style="width:${a2Bar}%"></div>
+            <span style="position:relative;z-index:1">${fmtVN(a2Vol, 0)}</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="position:relative;overflow:hidden">
+            <div class="mcp-dom-bar buy" style="width:${b3Bar}%"></div>
+            <span style="position:relative;z-index:1">${fmtVN(b3Vol, 0)}</span>
+          </td>
+          <td style="color:${getColorClass(b3)};font-weight:700">${fmtVN(b3, 0)}</td>
+          <td style="color:${getColorClass(a3)};font-weight:700;padding-left:8px">${fmtVN(a3, 0)}</td>
+          <td style="position:relative;overflow:hidden">
             <div class="mcp-dom-bar sell" style="width:${a3Bar}%"></div>
-            <span>${fmtVN(a3Vol, 0)}</span>
+            <span style="position:relative;z-index:1">${fmtVN(a3Vol, 0)}</span>
           </td>
         </tr>
       </tbody>
@@ -7387,9 +7439,9 @@ function stockHeader(tab, body) {
   const vn30Info = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[STOCK.sym]) ? VN30_DATA_FEED[STOCK.sym] : null;
   const ex = STOCK.ex || 'HOSE';
   const exPct = (ex === 'UPCOM' ? 0.15 : ex === 'HNX' ? 0.10 : 0.07);
-  const ref = (STOCK.ref && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.ref : (vn30Info ? vn30Info.ref : curPrice);
-  const ceil = (STOCK.ceil && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.ceil : Math.floor(ref * (1 + exPct) / tickStep) * tickStep;
-  const floor = (STOCK.floor && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.floor : Math.ceil(ref * (1 - exPct) / tickStep) * tickStep;
+  const ref = (STOCK.ref && typeof STOCK.ref === 'number' && STOCK.ref > 0) ? STOCK.ref : (vn30Info && vn30Info.ref ? vn30Info.ref : curPrice);
+  const ceil = (STOCK.ceil && STOCK.ceil > ref) ? STOCK.ceil : Math.floor(ref * (1 + exPct) / tickStep) * tickStep;
+  const floor = (STOCK.floor && STOCK.floor < ref) ? STOCK.floor : Math.ceil(ref * (1 - exPct) / tickStep) * tickStep;
   const openPrice = (STOCK.open && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.open : ref;
   const highPrice = (STOCK.high && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.high : Math.min(ceil, Math.max(curPrice, openPrice));
   const lowPrice = (STOCK.low && STOCK.sym === (vn30Info ? vn30Info.sym : STOCK.sym)) ? STOCK.low : Math.max(floor, Math.min(curPrice, openPrice));
@@ -7579,8 +7631,10 @@ function stockHeader(tab, body) {
 
     <!-- CỘT GIỮA (CENTER MAIN COLUMN - FLEX 1): STICKY TABS, TRADINGVIEW CHART, SUB-TAB PANEL -->
     <main class="cmc-c360-mid">
-      <!-- Sticky Sub-Nav Tabs -->
-      <div class="cmc-tabs" role="tablist">
+      <!-- Sticky Sub-Nav Tabs with Horizontal Scroll Controls -->
+      <div class="cmc-tabs-wrapper" style="position:relative;display:flex;align-items:center;min-width:0">
+        <button class="cmc-tab-scroll-btn left" onclick="const t = document.querySelector('.cmc-tabs'); if (t) t.scrollBy({left:-180,behavior:'smooth'})" style="position:absolute;left:4px;z-index:90;width:24px;height:24px;border-radius:50%;background:rgba(27,30,40,0.9);border:1px solid var(--line);box-shadow:0 2px 6px rgba(0,0,0,0.3);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer">‹</button>
+        <div class="cmc-tabs" role="tablist" style="flex:1;scrollbar-width:none">
         ${C360_TABS.map(([k, l]) => {
           const rt = k ? 'c360-' + k : 'c360';
           const icon = k === '' ? '📊' : k === 'hoso' ? '🏢' : k === 'codong' ? '👥' : k === 'taichinh' ? '📑' : k === 'cungnganh' ? '⚖️' : k === 'tintuc' ? '📰' : '📈';
@@ -7588,6 +7642,8 @@ function stockHeader(tab, body) {
             <span>${icon}</span> <span>${l}</span>
           </button>`;
         }).join('')}
+        </div>
+        <button class="cmc-tab-scroll-btn right" onclick="const t = document.querySelector('.cmc-tabs'); if (t) t.scrollBy({left:180,behavior:'smooth'})" style="position:absolute;right:4px;z-index:90;width:24px;height:24px;border-radius:50%;background:rgba(27,30,40,0.9);border:1px solid var(--line);box-shadow:0 2px 6px rgba(0,0,0,0.3);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer">›</button>
       </div>
 
       <!-- TradingView Candlestick Chart Card -->
@@ -7704,16 +7760,18 @@ function stockHeader(tab, body) {
 
 // Global converter calculator functions (CoinMarketCap Benchmark)
 window.cmcCalcVal = function(shares, price) {
+  const p = (typeof price === 'number' && price > 0) ? price : ((typeof STOCK !== 'undefined' && STOCK && STOCK.price) ? STOCK.price : 15800);
   const sh = parseFloat(shares) || 0;
-  const money = Math.round(sh * price);
+  const money = Math.round(sh * p);
   const moneyEl = document.getElementById('cmc-conv-money');
   if (moneyEl) moneyEl.value = (typeof fmtVN === 'function') ? fmtVN(money, 0) : money.toLocaleString('vi-VN');
 };
 
 window.cmcCalcShares = function(moneyStr, price) {
+  const p = (typeof price === 'number' && price > 0) ? price : ((typeof STOCK !== 'undefined' && STOCK && STOCK.price) ? STOCK.price : 15800);
   const raw = String(moneyStr).replace(/[^0-9]/g, '');
   const m = parseFloat(raw) || 0;
-  const sh = price > 0 ? Math.round(m / price) : 0;
+  const sh = p > 0 ? Math.round(m / p) : 0;
   const sharesEl = document.getElementById('cmc-conv-shares');
   if (sharesEl) sharesEl.value = sh;
 };
@@ -8464,7 +8522,7 @@ function vHolders() {
 function vFinance() {
   const subs = [['bs', 'Cân đối kế toán'], ['is', 'Kết quả kinh doanh'], ['cf', 'Lưu chuyển tiền tệ'], ['rt', 'Chỉ số']];
   const k = FIN[S.finSub], yr = S.finPer === 'y', heads = yr ? FIN_Y : FIN_Q, rows = yr ? annualRows(S.finSub) : k.q;
-  const cell = c => { const [v, d, u] = c; const val = typeof v === 'string' ? v : fmtVN(v); const dd = d == null ? '—' : u === 'pp' ? sgn(d, 2, ' đ%').replace(',00', ',0').replace(/(,\d)0 đ%/, '$1 đ%') : sgn(d, 1); return `<td class="num g0">${val}</td><td class="num gr ${d == null ? 'muted' : cls(d)}">${dd}</td>`; };
+  const cell = c => { const [v, d, u] = c; const val = typeof v === 'string' ? v : fmtVN(v); const dd = d == null ? '—' : u === 'pp' ? sgn(d, 2, ' đpt').replace(',00', ',0').replace(/(,\d)0 đpt/, '$1 đpt') : sgn(d, 1); return `<td class="num g0">${val}</td><td class="num gr ${d == null ? 'muted' : cls(d)}">${dd}</td>`; };
   return `<div class="fin">
     <div class="fin-l">
       <div style="padding:8px 8px 0">${stabs(subs, S.finSub, 'finsub')}</div>
@@ -13097,7 +13155,18 @@ const toastC360 = t => { if (t !== 'MSB') toast(`Prototype chỉ có dữ liệu
 const A = {
   burger: () => {
     if (window.innerWidth <= 860) {
-      document.getElementById('sb').classList.toggle('open');
+      const sb = document.getElementById('sb');
+      if (!sb) return;
+      const isOpen = sb.classList.toggle('open');
+      let scrim = document.getElementById('sb-scrim');
+      if (!scrim) {
+        scrim = document.createElement('div');
+        scrim.id = 'sb-scrim';
+        scrim.className = 'drawer-scrim';
+        scrim.dataset.act = 'burger';
+        document.body.appendChild(scrim);
+      }
+      scrim.classList.toggle('active', isOpen);
     } else {
       A.sbtoggle();
     }
@@ -13710,6 +13779,12 @@ document.addEventListener('click', e => {
     const dest = t.dataset.go;
     const sb = document.getElementById('sb');
     const isCollapsed = sb && sb.classList.contains('collapsed');
+    if (window.innerWidth <= 860) {
+      const sbEl = document.getElementById('sb');
+      if (sbEl) sbEl.classList.remove('open');
+      const scEl = document.getElementById('sb-scrim');
+      if (scEl) scEl.classList.remove('active');
+    }
     go(dest);
     if (isCollapsed && !t.closest('#sb-flyout')) {
       if (dest.startsWith('c360')) {
@@ -16218,13 +16293,13 @@ const VN30_DATA_FEED = {
     "pct": 0.0,
     "vol": 12500000,
     "val_bil": 197.5,
-    "open": 14750,
-    "high": 14950,
-    "low": 14500,
-    "close": 14600,
-    "ceil": 15750,
-    "floor": 13750,
-    "avg": 14650,
+    "open": 15800,
+    "high": 15950,
+    "low": 15650,
+    "close": 15800,
+    "ceil": 16900,
+    "floor": 14700,
+    "avg": 15750,
     "metrics": {
       "liq": [
         [
@@ -16284,7 +16359,7 @@ const VN30_DATA_FEED = {
       "size": [
         [
           "Vốn hoá",
-          "54,66 nghìn tỷ"
+          "41,08 nghìn tỷ"
         ],
         [
           "Vốn điều lệ",
@@ -21495,7 +21570,7 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
       ['Cổ đông đại chúng trong nước', 'Đại chúng', 'Trong nước', '343,80 triệu', '52,60%', '30/06/2026']
     ];
     ownership = [['Cổ đông lớn & Chiến lược', 28.4, '#ef4444'], ['Khối ngoại & Quỹ đầu tư', 12.0, '#3b82f6'], ['Ban Lãnh đạo', 7.0, '#10b981'], ['Đại chúng trong nước', 52.6, '#f59e0b']];
-    foreign_own = [['Tỷ lệ sở hữu nước ngoài', isBank ? '18,50%' : '23,40%'], ['Room ngoại tối đa', isBank ? '30,00%' : '49,00%'], ['KL Room còn lại', '168.000.000 CP'], ['Khối ngoại mua ròng 10P', '+850.000 CP']];
+    foreign_own = [['Tỷ lệ sở hữu nước ngoài', isBank ? '18,50%' : '23,40%'], ['Room ngoại tối đa', isBank ? '30,00%' : '49,00%'], ['KL Room còn lại', isBank ? '495.210.000 CP' : '168.000.000 CP'], ['Khối ngoại mua ròng 10P', '+850.000 CP']];
     insiders = [
       ['Chủ tịch Hội đồng Quản trị', 'Chủ tịch HĐQT', 'Nắm giữ', '15/09/2026', '3,45% (22,5 tr CP)'],
       ['Tổng Giám đốc', 'Tổng Giám đốc', 'Nắm giữ', '02/09/2026', '1,86% (12,1 tr CP)']
@@ -21878,9 +21953,9 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
       basic: [['Mã chứng khoán', sym], ['Mã ngành ICB', ind], ['Sàn niêm yết', 'Sở GDCK TP.HCM (HOSE)'], ['Năm thành lập', '2005'], ['Vốn điều lệ', '8.500 tỷ đồng'], ['Số lượng nhân sự', '6.800'], ['Trụ sở chính', 'Hà Nội / TP. Hồ Chí Minh'], ['Đại diện pháp luật', 'Hội đồng Quản trị ' + sym]],
       listing: [['Ngày niêm yết', '15/06/2015'], ['Nơi niêm yết', 'HOSE'], ['Giá chào sàn', '25.000 đ/CP'], ['SLCP niêm yết', '850.000.000 CP']],
       leaders: [
-        ['Chủ tịch Hội đồng Quản trị', 'Chủ tịch HĐQT', '28.500.000', '3,35%'],
-        ['Tổng Giám đốc', 'Tổng Giám đốc', '14.200.000', '1,67%'],
-        ['Thành viên HĐQT độc lập', 'Thành viên HĐQT', '4.500.000', '0,53%']
+        [sym === 'MSB' ? 'Trần Anh Tuấn' : 'Nguyễn Văn Thành', 'Chủ tịch HĐQT', '28.500.000', '3,35%'],
+        [sym === 'MSB' ? 'Nguyễn Hoàng Linh' : 'Trần Đức Huy', 'Tổng Giám đốc', '14.200.000', '1,67%'],
+        [sym === 'MSB' ? 'Nguyễn Thị Thiên Trang' : 'Lê Thị Mai', 'Thành viên HĐQT', '4.500.000', '0,53%']
       ],
       subs: [
         ['Công ty Cổ phần Thương mại & Dịch vụ ' + sym, '100%', '1.500 tỷ'],

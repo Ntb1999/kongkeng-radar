@@ -8497,6 +8497,7 @@ async function fetchDnseOrderBookLive(sym) {
   if (!sym) return;
   sym = sym.toUpperCase().trim();
   try {
+    const todayStr = new Date().toISOString().split('T')[0];
     const query = `{
       GetTopPriceOfSymbols(symbolList: ["${sym}"]) {
         data { tp { symbol bidPrice1 bidQtty1 bidPrice2 bidQtty2 bidPrice3 bidQtty3 offerPrice1 offerQtty1 offerPrice2 offerQtty2 offerPrice3 offerQtty3 } }
@@ -8504,52 +8505,147 @@ async function fetchDnseOrderBookLive(sym) {
       GetKrxStockInfoBySymbols(symbols: ["${sym}"], board: 2) {
         si { symbol referencePrice highLimitPrice lowLimitPrice openPrice highestPrice lowestPrice matchPrice matchQuantity changedValue changedRatio totalVolumeTraded grossTradeAmount }
       }
+      GetKrxTicksBySymbols(symbols: ["${sym}"], date: "${todayStr}", board: 2, limit: 6) {
+        ticks { matchPrice matchQtty sendingTime side }
+      }
     }`;
     const res = await fetch('https://api.dnse.com.vn/price-api/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query })
     });
+    if (!res.ok) return;
     const d = await res.json();
     const tp = d?.data?.GetTopPriceOfSymbols?.data?.tp?.[0];
     const si = d?.data?.GetKrxStockInfoBySymbols?.si?.[0];
+    const ticks = d?.data?.GetKrxTicksBySymbols?.ticks || [];
+
     if (tp && si) {
       if (typeof DNSE_ORDERBOOK_FEED === 'undefined') window.DNSE_ORDERBOOK_FEED = {};
       DNSE_ORDERBOOK_FEED[sym] = DNSE_ORDERBOOK_FEED[sym] || {};
       DNSE_ORDERBOOK_FEED[sym].tp = {
-        b1: tp.bidPrice1 ? tp.bidPrice1 * 1000 : null,
+        b1: tp.bidPrice1 ? Math.round(tp.bidPrice1 * 1000) : null,
         b1Vol: tp.bidQtty1 || 0,
-        b2: tp.bidPrice2 ? tp.bidPrice2 * 1000 : null,
+        b2: tp.bidPrice2 ? Math.round(tp.bidPrice2 * 1000) : null,
         b2Vol: tp.bidQtty2 || 0,
-        b3: tp.bidPrice3 ? tp.bidPrice3 * 1000 : null,
+        b3: tp.bidPrice3 ? Math.round(tp.bidPrice3 * 1000) : null,
         b3Vol: tp.bidQtty3 || 0,
-        a1: tp.offerPrice1 ? tp.offerPrice1 * 1000 : null,
+        a1: tp.offerPrice1 ? Math.round(tp.offerPrice1 * 1000) : null,
         a1Vol: tp.offerQtty1 || 0,
-        a2: tp.offerPrice2 ? tp.offerPrice2 * 1000 : null,
+        a2: tp.offerPrice2 ? Math.round(tp.offerPrice2 * 1000) : null,
         a2Vol: tp.offerQtty2 || 0,
-        a3: tp.offerPrice3 ? tp.offerPrice3 * 1000 : null,
+        a3: tp.offerPrice3 ? Math.round(tp.offerPrice3 * 1000) : null,
         a3Vol: tp.offerQtty3 || 0
       };
       DNSE_ORDERBOOK_FEED[sym].si = {
-        ref: si.referencePrice ? si.referencePrice * 1000 : null,
-        ceil: si.highLimitPrice ? si.highLimitPrice * 1000 : null,
-        floor: si.lowLimitPrice ? si.lowLimitPrice * 1000 : null,
-        open: si.openPrice ? si.openPrice * 1000 : null,
-        high: si.highestPrice ? si.highestPrice * 1000 : null,
-        low: si.lowestPrice ? si.lowestPrice * 1000 : null,
-        match: si.matchPrice ? si.matchPrice * 1000 : null,
-        chg: si.changedValue ? si.changedValue * 1000 : 0,
-        pct: si.changedRatio || 0,
-        vol: si.totalVolumeTraded || 0
+        ref: si.referencePrice ? Math.round(si.referencePrice * 1000) : null,
+        ceil: si.highLimitPrice ? Math.round(si.highLimitPrice * 1000) : null,
+        floor: si.lowLimitPrice ? Math.round(si.lowLimitPrice * 1000) : null,
+        open: si.openPrice ? Math.round(si.openPrice * 1000) : null,
+        high: si.highestPrice ? Math.round(si.highestPrice * 1000) : null,
+        low: si.lowestPrice ? Math.round(si.lowestPrice * 1000) : null,
+        match: si.matchPrice ? Math.round(si.matchPrice * 1000) : null,
+        matchVol: si.matchQuantity || 0,
+        chg: si.changedValue != null ? Math.round(si.changedValue * 1000) : 0,
+        pct: si.changedRatio != null ? +si.changedRatio.toFixed(2) : 0,
+        vol: si.totalVolumeTraded || 0,
+        val: si.grossTradeAmount || 0
       };
-      const obEl = document.querySelector('.mcp-ob-wrap');
-      if (obEl && STOCK.sym === sym) {
-        obEl.outerHTML = renderMcpOrderBook();
+
+      if (ticks && ticks.length) {
+        DNSE_ORDERBOOK_FEED[sym].ticks = ticks.map(tr => {
+          let timeStr = '14:30:00';
+          if (tr.sendingTime) {
+            const parts = tr.sendingTime.split('T');
+            if (parts[1]) {
+              // Convert UTC sendingTime to local time HH:mm:ss
+              try {
+                const dt = new Date(tr.sendingTime);
+                timeStr = String(dt.getHours()).padStart(2, '0') + ':' + String(dt.getMinutes()).padStart(2, '0') + ':' + String(dt.getSeconds()).padStart(2, '0');
+              } catch(e) {
+                timeStr = parts[1].slice(0, 8);
+              }
+            }
+          }
+          return {
+            time: timeStr,
+            price: Math.round(tr.matchPrice * 1000),
+            vol: tr.matchQtty,
+            side: tr.side === 1 ? 'M' : 'B'
+          };
+        });
+      }
+
+      // Also synchronize into UNI array so search suggest is always updated
+      if (typeof UNI !== 'undefined' && Array.isArray(UNI)) {
+        const u = UNI.find(x => x[0] === sym);
+        if (u && DNSE_ORDERBOOK_FEED[sym].si.match) {
+          u[4] = +(DNSE_ORDERBOOK_FEED[sym].si.match / 1000).toFixed(2);
+          u[5] = DNSE_ORDERBOOK_FEED[sym].si.pct;
+          if (DNSE_ORDERBOOK_FEED[sym].si.vol) u[6] = +(DNSE_ORDERBOOK_FEED[sym].si.vol / 1000).toFixed(1);
+        }
+      }
+
+      // Synchronize active STOCK and trigger UI update
+      if (typeof STOCK !== 'undefined' && STOCK && STOCK.sym === sym) {
+        if (DNSE_ORDERBOOK_FEED[sym].si.match) STOCK.price = DNSE_ORDERBOOK_FEED[sym].si.match;
+        if (DNSE_ORDERBOOK_FEED[sym].si.chg != null) STOCK.chg = DNSE_ORDERBOOK_FEED[sym].si.chg;
+        if (DNSE_ORDERBOOK_FEED[sym].si.pct != null) STOCK.pct = DNSE_ORDERBOOK_FEED[sym].si.pct;
+        if (DNSE_ORDERBOOK_FEED[sym].si.open) STOCK.open = DNSE_ORDERBOOK_FEED[sym].si.open;
+        if (DNSE_ORDERBOOK_FEED[sym].si.high) STOCK.high = DNSE_ORDERBOOK_FEED[sym].si.high;
+        if (DNSE_ORDERBOOK_FEED[sym].si.low) STOCK.low = DNSE_ORDERBOOK_FEED[sym].si.low;
+        if (DNSE_ORDERBOOK_FEED[sym].si.ref) STOCK.ref = DNSE_ORDERBOOK_FEED[sym].si.ref;
+        if (DNSE_ORDERBOOK_FEED[sym].si.vol) STOCK.vol = DNSE_ORDERBOOK_FEED[sym].si.vol;
+
+        // 1. Update Hero Box Live Price & Change
+        const priceEl = document.getElementById('c360-live-price');
+        const chgEl = document.getElementById('c360-live-chg');
+        if (priceEl && chgEl) {
+          const isZero = Math.abs(STOCK.chg) < 0.001;
+          const chgClass = isZero ? 'ref' : (STOCK.chg > 0 ? 'up' : 'down');
+          const chgSign = STOCK.chg > 0 ? '▲ +' : (STOCK.chg < 0 ? '▼ ' : '');
+          priceEl.className = `p ${chgClass}`;
+          priceEl.innerHTML = `${fmtVN(STOCK.price, 0)} <span style="font-size:13px;font-weight:500;color:var(--ink3)">đ</span>`;
+          chgEl.className = `c ${chgClass}`;
+          chgEl.textContent = isZero ? '0 (0.00%)' : `${chgSign}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)`;
+        }
+
+        // 2. Re-render Order Book DOM (Sổ Lệnh & Time & Sales)
+        const obEl = document.querySelector('.mcp-ob-wrap');
+        if (obEl && typeof renderMcpOrderBook === 'function') {
+          obEl.outerHTML = renderMcpOrderBook();
+        }
+
+        // 3. Update TradingView live candle close if exists
+        if (typeof CANDLES !== 'undefined' && CANDLES && CANDLES.length > 0) {
+          const lastC = CANDLES[CANDLES.length - 1];
+          if (lastC) {
+            lastC.c = STOCK.price;
+            lastC.h = Math.max(lastC.h, STOCK.price);
+            lastC.l = Math.min(lastC.l, STOCK.price);
+          }
+        }
       }
     }
-  } catch(e) {}
+  } catch(e) {
+    console.warn('fetchDnseOrderBookLive error:', e.message);
+  }
 }
 
+// Global 10s Realtime Polling Timer for Order Book & Trades
+let _DNSE_LIVE_POLL_TIMER = null;
+
+function startDnseLiveOrderBookPolling() {
+  if (_DNSE_LIVE_POLL_TIMER) clearInterval(_DNSE_LIVE_POLL_TIMER);
+  // Auto-poll every 10 seconds for real-time market data
+  _DNSE_LIVE_POLL_TIMER = setInterval(() => {
+    if (document.hidden) return; // Save resources when tab is in background
+    const curSym = (typeof STOCK !== 'undefined' && STOCK && STOCK.sym) ? STOCK.sym : null;
+    if (curSym && typeof fetchDnseOrderBookLive === 'function') {
+      fetchDnseOrderBookLive(curSym);
+    }
+  }, 10000);
+}
 
 function stockHeader(tab, body) {
   if (typeof tab === 'undefined') tab = '';
@@ -15946,6 +16042,9 @@ function openStock(t) {
   t = t.toUpperCase().trim();
   if (typeof fetchAndApplyDnseMcpData === 'function') {
     fetchAndApplyDnseMcpData(t);
+  }
+  if (typeof fetchDnseOrderBookLive === 'function') {
+    fetchDnseOrderBookLive(t);
   }
   if (typeof syncStockQuoteRealtime === 'function') {
     syncStockQuoteRealtime(t);
@@ -34888,7 +34987,7 @@ function getMcpResolvedCompanyData(sym, curPrice, curInd, curName) {
         ['DXG', '14.850', '-1,0%', '22,40', '0,95', '5,8%', '10.820', '6.500.000'],
         ['DIG', '19.300', '+1,2%', '28,50', '1,35', '4,8%', '11.750', '7.200.000'],
         ['PDR', '21.500', '+0,5%', '19,80', '1,50', '7,2%', '17.200', '4.100.000'],
-        ['KOS', '4.520', '+0,4%', '40,35', '0,42', '1,3%', '978', '1.850.400'],
+        ['KOS', 'Công ty Cổ phần Kosy', 'Bất động sản', 'HOSE', 3.88, -4.43, 2073.9, [62, 58, 65, 52, 60], 3, 0],
         ['CEO', '15.200', '-0,7%', '25,40', '1,10', '5,2%', '7.850', '2.800.000']
       ],
       'Định giá': [
@@ -35759,6 +35858,8 @@ startRealtimeEngine();
       if (typeof syncMarketDataRealtime === 'function') syncMarketDataRealtime(false);
       if (typeof fetchBinanceLiveData === 'function') fetchBinanceLiveData();
       if (typeof syncStockQuoteRealtime === 'function' && typeof STOCK !== 'undefined') syncStockQuoteRealtime(STOCK.sym);
+      if (typeof fetchDnseOrderBookLive === 'function' && typeof STOCK !== 'undefined') fetchDnseOrderBookLive(STOCK.sym);
+      if (typeof startDnseLiveOrderBookPolling === 'function') startDnseLiveOrderBookPolling();
       if (typeof drawCandles === 'function') drawCandles();
       if (typeof tvChartInstance !== 'undefined' && tvChartInstance) {
         try { tvChartInstance.timeScale().fitContent(); } catch(e) {}

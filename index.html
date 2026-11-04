@@ -8897,6 +8897,10 @@ function stockHeader(tab, body) {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
               <span id="tvmodetxt">${typeof S_TV_VIEW_MODE !== 'undefined' && S_TV_VIEW_MODE === 'widget' ? 'Biểu đồ Canvas' : 'TV Pro Widget'}</span>
             </button>
+            <a href="https://vn.tradingview.com/chart/bUEHLGOp/?symbol=HOSE%3A${STOCK.sym}" target="_blank" rel="noopener noreferrer" class="pill" style="font-size:11px;padding:3px 8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:6px;background:var(--sub);color:var(--brand);text-decoration:none" title="Mở biểu đồ HOSE:${STOCK.sym} trực tiếp trên TradingView chính thức">
+              <span>vn.tradingview.com</span>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
           </div>
         </div>
 
@@ -9075,7 +9079,13 @@ function drawCandles() {
     }
     const isDark = typeof S !== 'undefined' && S.theme === 'dark';
     const symParam = encodeURIComponent((STOCK.ex || 'HOSE') + ':' + STOCK.sym);
-    el.innerHTML = `<iframe src="https://s.tradingview.com/widgetembed/?symbol=${symParam}&interval=D&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=${isDark ? '131722' : 'f1f3f6'}&theme=${isDark ? 'dark' : 'light'}&style=1&timezone=Asia%2FHo_Chi_Minh" style="width:100%;height:100%;border:none;border-radius:4px" frameborder="0" allowtransparency="true" scrolling="no"></iframe>`;
+    el.innerHTML = `
+      <div style="font-size:11px;padding:6px 12px;background:var(--sub2);color:var(--ink2);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:relative;z-index:3">
+        <span>💡 TradingView Widget Pro (HOSE:${STOCK.sym}). Nếu widget free yêu cầu xem trực tiếp:</span>
+        <a href="https://vn.tradingview.com/chart/bUEHLGOp/?symbol=HOSE%3A${STOCK.sym}" target="_blank" rel="noopener noreferrer" style="color:var(--brand);font-weight:700;display:inline-flex;align-items:center;gap:4px;text-decoration:none">Mở vn.tradingview.com ↗</a>
+      </div>
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=${symParam}&interval=D&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=${isDark ? '131722' : 'f1f3f6'}&theme=${isDark ? 'dark' : 'light'}&style=1&timezone=Asia%2FHo_Chi_Minh" style="width:100%;height:calc(100% - 29px);border:none;border-radius:0 0 4px 4px" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+    `;
     const btnTxt = document.getElementById('tvmodetxt');
     if (btnTxt) btnTxt.textContent = 'Biểu đồ Canvas';
     const leg = document.querySelector('.tv-leg');
@@ -9214,7 +9224,7 @@ function drawCandles() {
           borderColor: isDark ? '#2B2B43' : '#E0E3EB',
           scaleMargins: {
             top: 0.08,
-            bottom: 0.28,
+            bottom: 0.06,
           },
         },
         timeScale: {
@@ -9248,12 +9258,27 @@ function drawCandles() {
         tvVolumeSeries = null;
       }
 
+      const tvPriceAutoscaleProvider = original => {
+        const res = original ? original() : null;
+        if (res && res.priceRange) {
+          return {
+            priceRange: {
+              minValue: Math.max(0.1, res.priceRange.minValue * 0.96),
+              maxValue: res.priceRange.maxValue * 1.04,
+            },
+            margins: { above: 0.06, below: 0.04 },
+          };
+        }
+        return res;
+      };
+
       if (S_TV_STYLE === 'line') {
         tvCandleSeries = tvChartInstance.addLineSeries({
           color: '#2962FF',
           lineWidth: 2,
           crosshairMarkerVisible: true,
           priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
+          autoscaleInfoProvider: tvPriceAutoscaleProvider,
         });
       } else if (S_TV_STYLE === 'area') {
         tvCandleSeries = tvChartInstance.addAreaSeries({
@@ -9262,6 +9287,7 @@ function drawCandles() {
           lineColor: '#2962FF',
           lineWidth: 2,
           priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
+          autoscaleInfoProvider: tvPriceAutoscaleProvider,
         });
       } else {
         tvCandleSeries = tvChartInstance.addCandlestickSeries({
@@ -9271,6 +9297,7 @@ function drawCandles() {
           wickUpColor: '#22ab94',
           wickDownColor: '#f23645',
           priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
+          autoscaleInfoProvider: tvPriceAutoscaleProvider,
         });
       }
 

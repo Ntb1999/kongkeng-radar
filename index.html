@@ -100,6 +100,141 @@
   background: var(--sub2);
   box-shadow: inset 0 0 0 1px var(--line2);
 }
+/* ==========================================================================
+   DESIGN SYSTEM: SLEEK FINTECH SCROLLBAR TOKENS (TRADING WORKSTATION SPEC)
+   Standardized across Chrome, Edge, Safari, Firefox, Opera (Dark & Light)
+   ========================================================================== */
+/* 1. Global Modern Standard (Firefox 64+ & W3C Standard) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+[data-theme="light"] * {
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+}
+
+/* 2. WebKit / Blink Engine (Chrome, Edge, Brave, Safari) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 99px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+::-webkit-scrollbar-thumb:active {
+  background: var(--brand);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Light Mode Global Scrollbar */
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb:active {
+  background: var(--brand);
+}
+
+/* 3. Ultra-Slim Floating Overlay Scrollbars for Sidebars & High-Density Columns */
+.cmc-c360-left,
+.cmc-c360-right,
+.sb,
+.sb-flyout,
+.mcp-ts-section,
+.tscroll,
+.modal-body {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.10) transparent;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+.cmc-c360-left:hover,
+.cmc-c360-right:hover,
+.sb:hover,
+.mcp-ts-section:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.26) transparent;
+}
+
+.cmc-c360-left::-webkit-scrollbar,
+.cmc-c360-right::-webkit-scrollbar,
+.sb::-webkit-scrollbar,
+.sb-flyout::-webkit-scrollbar,
+.mcp-ts-section::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.cmc-c360-left::-webkit-scrollbar-track,
+.cmc-c360-right::-webkit-scrollbar-track,
+.sb::-webkit-scrollbar-track,
+.sb-flyout::-webkit-scrollbar-track,
+.mcp-ts-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cmc-c360-left::-webkit-scrollbar-thumb,
+.cmc-c360-right::-webkit-scrollbar-thumb,
+.sb::-webkit-scrollbar-thumb,
+.sb-flyout::-webkit-scrollbar-thumb,
+.mcp-ts-section::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.10);
+  border-radius: 99px;
+  transition: background 0.2s ease;
+}
+.cmc-c360-left:hover::-webkit-scrollbar-thumb,
+.cmc-c360-right:hover::-webkit-scrollbar-thumb,
+.sb:hover::-webkit-scrollbar-thumb,
+.sb-flyout:hover::-webkit-scrollbar-thumb,
+.mcp-ts-section:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.28);
+}
+.cmc-c360-left::-webkit-scrollbar-thumb:hover,
+.cmc-c360-right::-webkit-scrollbar-thumb:hover,
+.sb::-webkit-scrollbar-thumb:hover,
+.sb-flyout::-webkit-scrollbar-thumb:hover,
+.mcp-ts-section::-webkit-scrollbar-thumb:hover {
+  background: var(--brand);
+}
+
+/* Light Theme for Ultra-Slim */
+[data-theme="light"] .cmc-c360-left,
+[data-theme="light"] .cmc-c360-right,
+[data-theme="light"] .sb {
+  scrollbar-color: rgba(0, 0, 0, 0.12) transparent;
+}
+[data-theme="light"] .cmc-c360-left:hover,
+[data-theme="light"] .cmc-c360-right:hover,
+[data-theme="light"] .sb:hover {
+  scrollbar-color: rgba(0, 0, 0, 0.28) transparent;
+}
+[data-theme="light"] .cmc-c360-left::-webkit-scrollbar-thumb,
+[data-theme="light"] .cmc-c360-right::-webkit-scrollbar-thumb,
+[data-theme="light"] .sb::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+}
+[data-theme="light"] .cmc-c360-left:hover::-webkit-scrollbar-thumb,
+[data-theme="light"] .cmc-c360-right:hover::-webkit-scrollbar-thumb,
+[data-theme="light"] .sb:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.28);
+}
+
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 12px/16px var(--sans);-webkit-font-smoothing:antialiased}

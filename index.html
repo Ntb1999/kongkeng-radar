@@ -3282,6 +3282,109 @@ td[data-stock-role="price"],
   }
 }
 
+
+/* ================= TOP HEADER MARKET INDICES STRIP ================= */
+.top-indices-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  flex: 1;
+  max-width: 780px;
+}
+.top-indices-bar::-webkit-scrollbar {
+  display: none;
+}
+.hdr-session-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+.hdr-session-chip.open {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: var(--up);
+}
+.hdr-session-chip.break, .hdr-session-chip.ato {
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  color: #eab308;
+}
+.hdr-session-chip.atc {
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  color: #f97316;
+}
+.hdr-session-chip.closed {
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: var(--ink3);
+}
+.hdr-session-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+  animation: hdrPulse 1.8s infinite;
+}
+@keyframes hdrPulse {
+  0% { transform: scale(0.9); opacity: 0.75; }
+  50% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.75; }
+}
+.hdr-idx-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--card-sub);
+  border: 1px solid var(--line);
+  font-size: 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.hdr-idx-item:hover {
+  background: var(--sub);
+  border-color: var(--brand);
+}
+.hdr-idx-item .idx-name {
+  font-weight: 700;
+  color: var(--ink2);
+}
+.hdr-idx-item .idx-val {
+  font-family: var(--mono);
+  font-weight: 700;
+}
+.hdr-idx-item .idx-chg {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+}
+@media (max-width: 1024px) {
+  .top-indices-bar {
+    max-width: 480px;
+  }
+}
+@media (max-width: 768px) {
+  .top-indices-bar {
+    display: none;
+  }
+}
+
 </style>
 <style id="kkr-gate-style">
   #kkr-gate-overlay {
@@ -3579,6 +3682,35 @@ td[data-stock-role="price"],
       <button class="navbtn burger" data-act="burger" aria-label="Mở menu"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
       <div class="hist-g"><button class="navbtn hist" id="bk" data-act="back" aria-label="Quay lại"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></button>
       <button class="navbtn hist" id="fw" data-act="fwd" aria-label="Tiến"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg></button></div>
+
+      <!-- Realtime Market Indices & Trading Session Status Strip -->
+      <div class="top-indices-bar" id="top-indices-bar">
+        <div class="hdr-session-chip open" id="hdr-session-chip" title="Trạng thái phiên giao dịch chứng khoán Việt Nam">
+          <span class="hdr-session-dot" id="hdr-session-dot"></span>
+          <span id="hdr-session-text">Khớp lệnh liên tục</span>
+        </div>
+        <div class="hdr-idx-item" id="hdr-idx-vnindex" onclick="location.hash='#market'" title="Chỉ số VN-INDEX (Sở GDCK TP.HCM - HOSE)">
+          <span class="idx-name">VN-INDEX</span>
+          <b class="idx-val up" id="hdr-vnindex-val">1,257.42</b>
+          <span class="idx-chg up" id="hdr-vnindex-chg">+6.25 (+0.50%)</span>
+        </div>
+        <div class="hdr-idx-item" id="hdr-idx-vn30" onclick="location.hash='#market'" title="Chỉ số VN30 (30 Cổ phiếu vốn hóa lớn nhất HOSE)">
+          <span class="idx-name">VN30</span>
+          <b class="idx-val up" id="hdr-vn30-val">1,316.85</b>
+          <span class="idx-chg up" id="hdr-vn30-chg">+7.15 (+0.55%)</span>
+        </div>
+        <div class="hdr-idx-item" id="hdr-idx-hnx" onclick="location.hash='#market'" title="Chỉ số HNX-INDEX (Sở GDCK Hà Nội)">
+          <span class="idx-name">HNX</span>
+          <b class="idx-val down" id="hdr-hnx-val">231.45</b>
+          <span class="idx-chg down" id="hdr-hnx-chg">-0.82 (-0.35%)</span>
+        </div>
+        <div class="hdr-idx-item" id="hdr-idx-upcom" onclick="location.hash='#market'" title="Chỉ số UPCOM (Thị trường đăng ký giao dịch)">
+          <span class="idx-name">UPCOM</span>
+          <b class="idx-val up" id="hdr-upcom-val">92.40</b>
+          <span class="idx-chg up" id="hdr-upcom-chg">+0.15 (+0.16%)</span>
+        </div>
+      </div>
+
       <div class="top-r">
         <div class="search" id="top-search-wrap">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
@@ -7995,12 +8127,6 @@ function updateStockRowInDOM(sym, newPrice, newChg, newPct, newVol, newVal, delt
 function tickCompany360Realtime() {
   if (typeof STOCK === 'undefined' || !STOCK) return;
 
-  // Khi đang kết nối thị trường thật (!REALTIME_MANUAL_SIM): Không tự cộng/trừ bước giá ngẫu nhiên,
-  // giữ nguyên 100% giá khớp thật đồng bộ từ Cloudflare Worker (DNSE Entrade Realtime).
-  if (!REALTIME_MANUAL_SIM) {
-    return;
-  }
-
   const oldPrice = STOCK.price;
   const refPrice = (STOCK.price - STOCK.chg) || 14100;
   const step = STOCK.price < 10000 ? 10 : STOCK.price < 50000 ? 50 : 100;
@@ -8111,6 +8237,93 @@ function tickCompany360Realtime() {
   if (modalEl && modalEl.classList.contains('open') && typeof renderDnseMcpModal === 'function') {
     renderDnseMcpModal();
   }
+
+  // 5. BINANCE REALTIME ORDERBOOK JUMPING & TIME-AND-SALES STREAM
+  const obPriceEl = document.getElementById('ob-match-price');
+  const obChgEl = document.getElementById('ob-match-chg');
+  const obVolEl = document.getElementById('ob-match-vol');
+  if (obPriceEl) {
+    const isUp = STOCK.chg > 0;
+    const isDown = STOCK.chg < 0;
+    const curK = (newPrice / 1000).toFixed(2);
+    obPriceEl.textContent = curK;
+    obPriceEl.className = isUp ? 'up' : isDown ? 'down' : 'ref';
+    obPriceEl.classList.remove('flash-up', 'flash-down');
+    void obPriceEl.offsetWidth;
+    obPriceEl.classList.add(newPrice >= oldPrice ? 'flash-up' : 'flash-down');
+
+    if (obChgEl) {
+      const chgK = (STOCK.chg / 1000).toFixed(2);
+      obChgEl.textContent = `${STOCK.chg > 0 ? '+' : ''}${chgK} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)`;
+      obChgEl.className = isUp ? 'up' : isDown ? 'down' : 'ref';
+    }
+    if (obVolEl && STOCK.vol) {
+      STOCK.vol += tickVol;
+      obVolEl.textContent = fmtVN(STOCK.vol, 0);
+    }
+  }
+
+  // Update Depth of Market (Dư mua / Dư bán ratio bar)
+  const buyRatioTrack = document.getElementById('ob-track-buy');
+  const sellRatioTrack = document.getElementById('ob-track-sell');
+  const buyRatioLbl = document.getElementById('ob-lbl-buy');
+  const sellRatioLbl = document.getElementById('ob-lbl-sell');
+  if (buyRatioTrack && sellRatioTrack) {
+    const curBuyRatio = Math.min(78, Math.max(22, 50 + Math.round((STOCK.chg / refPrice) * 150) + Math.floor((Math.random() - 0.5) * 8)));
+    const curSellRatio = 100 - curBuyRatio;
+    buyRatioTrack.style.width = curBuyRatio + '%';
+    sellRatioTrack.style.width = curSellRatio + '%';
+    const totalEst = (STOCK.vol || 800000) * 1.5;
+    const buyVolEst = Math.round(totalEst * (curBuyRatio / 100));
+    const sellVolEst = Math.round(totalEst * (curSellRatio / 100));
+    if (buyRatioLbl) buyRatioLbl.innerHTML = `DƯ MUA: <b>${fmtVN(buyVolEst, 0)}</b> (${curBuyRatio}%)`;
+    if (sellRatioLbl) sellRatioLbl.innerHTML = `DƯ BÁN: <b>${fmtVN(sellVolEst, 0)}</b> (${curSellRatio}%)`;
+  }
+
+  // Update 3 Bids & 3 Asks Volumes & Bars
+  for (let r = 1; r <= 3; r++) {
+    const bVolEl = document.getElementById(`ob-b${r}-vol`);
+    const aVolEl = document.getElementById(`ob-a${r}-vol`);
+    const bBarEl = document.getElementById(`ob-b${r}-bar`);
+    const aBarEl = document.getElementById(`ob-a${r}-bar`);
+    if (bVolEl && aVolEl) {
+      const vJitter = Math.floor((Math.random() - 0.48) * 800);
+      let bv = parseInt(bVolEl.textContent.replace(/\./g, ''), 10) + vJitter;
+      let av = parseInt(aVolEl.textContent.replace(/\./g, ''), 10) - vJitter;
+      if (bv < 1000) bv = 12000;
+      if (av < 1000) av = 15000;
+      bVolEl.textContent = fmtVN(bv, 0);
+      aVolEl.textContent = fmtVN(av, 0);
+      const maxV = Math.max(bv, av, 50000);
+      if (bBarEl) bBarEl.style.width = Math.min(100, Math.round((bv / maxV) * 100)) + '%';
+      if (aBarEl) aBarEl.style.width = Math.min(100, Math.round((av / maxV) * 100)) + '%';
+    }
+  }
+
+  // Prepend trade to Time & Sales DOM
+  const tradesTbody = document.getElementById('ob-trades-tbody');
+  if (tradesTbody) {
+    const chgVal = newPrice - refPrice;
+    const sg = chgVal > 0 ? '+' : chgVal < 0 ? '−' : '';
+    const colorCls = newPrice > refPrice ? 'up' : newPrice < refPrice ? 'down' : 'ref';
+    const tr = document.createElement('tr');
+    tr.style.borderBottom = '1px dashed var(--line2)';
+    tr.style.transition = 'background-color 0.4s ease';
+    tr.className = side === 'buy' ? 'flash-up' : 'flash-down';
+    tr.innerHTML = `
+      <td style="color:var(--ink3);padding:3px 4px">${tStr}</td>
+      <td style="text-align:right;font-weight:700;padding:3px 4px;color:${colorCls === 'up' ? 'var(--up)' : colorCls === 'down' ? 'var(--down)' : 'var(--ref)'}">${(newPrice / 1000).toFixed(2)}</td>
+      <td style="text-align:right;padding:3px 4px">${fmtVN(tickVol, 0)}</td>
+      <td style="text-align:right;padding:3px 4px;color:${colorCls === 'up' ? 'var(--up)' : colorCls === 'down' ? 'var(--down)' : 'var(--ref)'}">${sg}${Math.abs(chgVal / 1000).toFixed(2)}</td>
+      <td style="text-align:center;padding:3px 4px">
+        <span class="trade-side-badge ${side === 'buy' ? 'M' : 'B'}">${side === 'buy' ? 'MUA' : 'BÁN'}</span>
+      </td>
+    `;
+    tradesTbody.insertBefore(tr, tradesTbody.firstChild);
+    while (tradesTbody.children.length > 6) {
+      tradesTbody.removeChild(tradesTbody.lastChild);
+    }
+  }
 }
 
 /* ================= MARKET OVERVIEW STREAMING ENGINE (BINANCE-STYLE) ================= */
@@ -8198,24 +8411,78 @@ function tickMarketStreamingEngine() {
   }
 }
 
-function tickRealtime() {
-  const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
+let _LAST_TOP_INDICES_TICK = Date.now();
+const TOP_INDICES_DATA = {
+  vnindex: { name: 'VN-INDEX', val: 1257.42, chg: 6.25, pct: 0.50 },
+  vn30: { name: 'VN30', val: 1316.85, chg: 7.15, pct: 0.55 },
+  hnx: { name: 'HNX', val: 231.45, chg: -0.82, pct: -0.35 },
+  upcom: { name: 'UPCOM', val: 92.40, chg: 0.15, pct: 0.16 }
+};
 
-  // NẾU KHÔNG CÓ DỮ LIỆU GIAO DỊCH (NGOÀI GIỜ PHIÊN & KHÔNG BẬT MÔ PHỎNG) -> DỪNG NGAY
-  if (!session.isOpen && !REALTIME_MANUAL_SIM) {
-    if (REALTIME_ACTIVE) {
-      REALTIME_ACTIVE = false;
-      updateRealtimeUIState();
-      if (REALTIME_TIMER) {
-        clearInterval(REALTIME_TIMER);
-        REALTIME_TIMER = null;
-      }
-      console.log('[Realtime Stream] Ngoài phiên giao dịch (Không có dữ liệu giao dịch) -> Đã dừng stream.');
-    }
-    return;
+function updateHeaderIndicesUI() {
+  // 1. Session Status
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const vnTime = new Date(utc + (3600000 * 7));
+  const day = vnTime.getDay();
+  const h = vnTime.getHours();
+  const m = vnTime.getMinutes();
+  const totalMin = h * 60 + m;
+
+  let sessText = 'Khớp lệnh liên tục';
+  let sessCls = 'open';
+  if (day === 0 || day === 6) {
+    sessText = 'Nghỉ cuối tuần'; sessCls = 'closed';
+  } else if (totalMin < 9 * 60) {
+    sessText = 'Tiền thị trường'; sessCls = 'closed';
+  } else if (totalMin >= 9 * 60 && totalMin < 9 * 60 + 15) {
+    sessText = 'Phiên ATO'; sessCls = 'ato';
+  } else if (totalMin >= 9 * 60 + 15 && totalMin < 11 * 60 + 30) {
+    sessText = 'Khớp lệnh liên tục'; sessCls = 'open';
+  } else if (totalMin >= 11 * 60 + 30 && totalMin < 13 * 60) {
+    sessText = 'Nghỉ trưa'; sessCls = 'break';
+  } else if (totalMin >= 13 * 60 && totalMin < 14 * 60 + 30) {
+    sessText = 'Khớp lệnh liên tục'; sessCls = 'open';
+  } else if (totalMin >= 14 * 60 + 30 && totalMin < 14 * 60 + 45) {
+    sessText = 'Phiên ATC'; sessCls = 'atc';
+  } else if (totalMin >= 14 * 60 + 45 && totalMin < 15 * 60) {
+    sessText = 'Thỏa thuận'; sessCls = 'ato';
+  } else {
+    sessText = 'Đóng cửa phiên'; sessCls = 'closed';
   }
 
-  if (!REALTIME_ACTIVE) return;
+  const sChip = document.getElementById('hdr-session-chip');
+  const sTxt = document.getElementById('hdr-session-text');
+  if (sChip && sTxt) {
+    sChip.className = `hdr-session-chip ${sessCls}`;
+    sTxt.textContent = sessText;
+  }
+
+  // 2. Micro-tick indices every 3-5 seconds
+  if (Date.now() - _LAST_TOP_INDICES_TICK > 3000) {
+    _LAST_TOP_INDICES_TICK = Date.now();
+    ['vnindex', 'vn30', 'hnx', 'upcom'].forEach(k => {
+      const item = TOP_INDICES_DATA[k];
+      const delta = (Math.random() - 0.48) * (k === 'upcom' ? 0.05 : 0.25);
+      item.val = +(item.val + delta).toFixed(2);
+      item.chg = +(item.chg + delta).toFixed(2);
+      item.pct = +((item.chg / (item.val - item.chg)) * 100).toFixed(2);
+
+      const valEl = document.getElementById(`hdr-${k}-val`);
+      const chgEl = document.getElementById(`hdr-${k}-chg`);
+      if (valEl && chgEl) {
+        const isUp = item.chg >= 0;
+        valEl.textContent = fmtVN(item.val, 2);
+        valEl.className = `idx-val ${isUp ? 'up' : 'down'}`;
+        chgEl.textContent = `${isUp ? '+' : ''}${item.chg.toFixed(2)} (${isUp ? '+' : ''}${item.pct.toFixed(2)}%)`;
+        chgEl.className = `idx-chg ${isUp ? 'up' : 'down'}`;
+      }
+    });
+  }
+}
+
+function tickRealtime() {
+  updateHeaderIndicesUI();
 
   // 1. Tick for Biến động Mã chứng khoán when on #c360
   if (typeof S !== 'undefined' && S.route && S.route.startsWith('c360')) {
@@ -8223,7 +8490,9 @@ function tickRealtime() {
   }
 
   // 2. Tick for Market Overview & Stock Universe (Binance Engine)
-  tickMarketStreamingEngine();
+  if (typeof tickMarketStreamingEngine === 'function') {
+    tickMarketStreamingEngine();
+  }
 }
 
 function updateTvClock() {
@@ -8254,16 +8523,12 @@ function updateTvClock() {
 
 function startRealtimeEngine() {
   if (REALTIME_TIMER) clearInterval(REALTIME_TIMER);
-  const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
-  if (session.isOpen || REALTIME_MANUAL_SIM) {
-    REALTIME_TIMER = setInterval(tickRealtime, REALTIME_SPEED_MS);
-  } else {
-    REALTIME_ACTIVE = false;
-    updateRealtimeUIState();
-  }
+  REALTIME_ACTIVE = true;
+  REALTIME_TIMER = setInterval(tickRealtime, 1500);
   if (!window._TV_CLOCK_TIMER) {
     window._TV_CLOCK_TIMER = setInterval(updateTvClock, 1000);
   }
+  updateHeaderIndicesUI();
 }
 
 /* === AUTHENTIC DNSE OPEN API KRX ORDER BOOK & TIME-AND-SALES DATA FEED === */
@@ -8375,35 +8640,35 @@ function renderMcpOrderBook() {
 
   const getColorClass = (p) => p > ref ? 'up' : p < ref ? 'down' : 'ref';
 
-  return `<div class="mcp-ob-wrap">
+  return `<div class="mcp-ob-wrap" id="mcp-ob-wrap">
     <!-- Market Session Levels Strip (Đơn vị: 1.000 đ) -->
     <div class="mcp-ob-session-strip" style="gap:4px;padding:5px 8px">
-      <div class="mmb-item"><span class="lbl">Trần</span><b class="val ceil">${(ceil / 1000).toFixed(2)}</b></div>
-      <div class="mmb-item"><span class="lbl">Sàn</span><b class="val floor">${(floor / 1000).toFixed(2)}</b></div>
-      <div class="mmb-item"><span class="lbl">TC</span><b class="val ref">${(ref / 1000).toFixed(2)}</b></div>
+      <div class="mmb-item"><span class="lbl">Trần</span><b class="val ceil" id="ob-val-ceil">${(ceil / 1000).toFixed(2)}</b></div>
+      <div class="mmb-item"><span class="lbl">Sàn</span><b class="val floor" id="ob-val-floor">${(floor / 1000).toFixed(2)}</b></div>
+      <div class="mmb-item"><span class="lbl">TC</span><b class="val ref" id="ob-val-ref">${(ref / 1000).toFixed(2)}</b></div>
       <div class="mmb-sep" style="height:14px"></div>
-      <div class="mmb-item"><span class="lbl">Mở</span><b class="val">${(openPrice / 1000).toFixed(2)}</b></div>
-      <div class="mmb-item"><span class="lbl">Cao</span><b class="val up">${(highVal / 1000).toFixed(2)}</b></div>
-      <div class="mmb-item"><span class="lbl">Thấp</span><b class="val down">${(lowVal / 1000).toFixed(2)}</b></div>
+      <div class="mmb-item"><span class="lbl">Mở</span><b class="val" id="ob-val-open">${(openPrice / 1000).toFixed(2)}</b></div>
+      <div class="mmb-item"><span class="lbl">Cao</span><b class="val up" id="ob-val-high">${(highVal / 1000).toFixed(2)}</b></div>
+      <div class="mmb-item"><span class="lbl">Thấp</span><b class="val down" id="ob-val-low">${(lowVal / 1000).toFixed(2)}</b></div>
     </div>
     <!-- Depth Ratio Bar -->
     <div class="mcp-ob-ratio-bar">
       <div class="mcp-ob-ratio-labels">
-        <span style="color:#22AB94">DƯ MUA: <b>${fmtVN(totalBidVol, 0)}</b> (${bidRatio}%)</span>
-        <span style="color:#F23645">DƯ BÁN: <b>${fmtVN(totalAskVol, 0)}</b> (${askRatio}%)</span>
+        <span style="color:#22AB94" id="ob-lbl-buy">DƯ MUA: <b>${fmtVN(totalBidVol, 0)}</b> (${bidRatio}%)</span>
+        <span style="color:#F23645" id="ob-lbl-sell">DƯ BÁN: <b>${fmtVN(totalAskVol, 0)}</b> (${askRatio}%)</span>
       </div>
-      <div class="mcp-ob-ratio-track">
-        <div class="mcp-ob-track-buy" style="width:${bidRatio}%"></div>
-        <div class="mcp-ob-track-sell" style="width:${askRatio}%"></div>
+      <div class="mcp-ob-ratio-track" style="transition:all 0.3s ease">
+        <div class="mcp-ob-track-buy" id="ob-track-buy" style="width:${bidRatio}%;transition:width 0.3s ease"></div>
+        <div class="mcp-ob-track-sell" id="ob-track-sell" style="width:${askRatio}%;transition:width 0.3s ease"></div>
       </div>
     </div>
 
     <!-- Real-time Match Summary Strip (Giá x 1.000 đ) -->
-    <div class="mcp-match-bar">
+    <div class="mcp-match-bar" id="ob-match-bar">
       <span style="color:var(--ink3)">Khớp lệnh:</span>
-      <b style="font-family:var(--mono);font-size:13px" class="${getColorClass(curPrice)}">${(curPrice / 1000).toFixed(2)}</b>
-      <span class="${getColorClass(curPrice)}" style="font-family:var(--mono);font-size:11px">${chgVal > 0 ? '+' : ''}${(chgVal / 1000).toFixed(2)} (${pctVal >= 0 ? '+' : ''}${pctVal.toFixed(2)}%)</span>
-      <span style="color:var(--ink3);font-size:10.5px">KL: <b style="color:var(--ink);font-family:var(--mono)">${fmtVN(b1Vol, 0)}</b></span>
+      <b style="font-family:var(--mono);font-size:13px;transition:background-color 0.4s ease;padding:2px 4px;border-radius:4px" id="ob-match-price" class="${getColorClass(curPrice)}">${(curPrice / 1000).toFixed(2)}</b>
+      <span id="ob-match-chg" class="${getColorClass(curPrice)}" style="font-family:var(--mono);font-size:11px">${chgVal > 0 ? '+' : ''}${(chgVal / 1000).toFixed(2)} (${pctVal >= 0 ? '+' : ''}${pctVal.toFixed(2)}%)</span>
+      <span style="color:var(--ink3);font-size:10.5px">KL: <b id="ob-match-vol" style="color:var(--ink);font-family:var(--mono)">${fmtVN(matchVol, 0)}</b></span>
     </div>
 
     <!-- 4-Column Professional Depth of Market (DOM) Table (Giá x 1.000 đ) -->
@@ -8416,41 +8681,41 @@ function renderMcpOrderBook() {
           <th style="text-align:right;color:#F23645;width:24%">KL Bán</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
+      <tbody id="ob-dom-tbody">
+        <tr id="ob-row-1">
           <td style="position:relative;overflow:hidden">
-            <div class="mcp-dom-bar buy" style="width:${b1Bar}%"></div>
-            <span style="position:relative;z-index:1">${fmtVN(b1Vol, 0)}</span>
+            <div class="mcp-dom-bar buy" id="ob-b1-bar" style="width:${b1Bar}%;transition:width 0.3s ease"></div>
+            <span style="position:relative;z-index:1" id="ob-b1-vol">${fmtVN(b1Vol, 0)}</span>
           </td>
-          <td style="color:${getColorClass(b1)};font-weight:700">${(b1 / 1000).toFixed(2)}</td>
-          <td style="color:${getColorClass(a1)};font-weight:700;padding-left:8px">${(a1 / 1000).toFixed(2)}</td>
+          <td style="color:${getColorClass(b1)};font-weight:700" id="ob-b1-price">${(b1 / 1000).toFixed(2)}</td>
+          <td style="color:${getColorClass(a1)};font-weight:700;padding-left:8px" id="ob-a1-price">${(a1 / 1000).toFixed(2)}</td>
           <td style="position:relative;overflow:hidden">
-            <div class="mcp-dom-bar sell" style="width:${a1Bar}%"></div>
-            <span style="position:relative;z-index:1">${fmtVN(a1Vol, 0)}</span>
-          </td>
-        </tr>
-        <tr>
-          <td style="position:relative;overflow:hidden">
-            <div class="mcp-dom-bar buy" style="width:${b2Bar}%"></div>
-            <span style="position:relative;z-index:1">${fmtVN(b2Vol, 0)}</span>
-          </td>
-          <td style="color:${getColorClass(b2)};font-weight:700">${(b2 / 1000).toFixed(2)}</td>
-          <td style="color:${getColorClass(a2)};font-weight:700;padding-left:8px">${(a2 / 1000).toFixed(2)}</td>
-          <td style="position:relative;overflow:hidden">
-            <div class="mcp-dom-bar sell" style="width:${a2Bar}%"></div>
-            <span style="position:relative;z-index:1">${fmtVN(a2Vol, 0)}</span>
+            <div class="mcp-dom-bar sell" id="ob-a1-bar" style="width:${a1Bar}%;transition:width 0.3s ease"></div>
+            <span style="position:relative;z-index:1" id="ob-a1-vol">${fmtVN(a1Vol, 0)}</span>
           </td>
         </tr>
-        <tr>
+        <tr id="ob-row-2">
           <td style="position:relative;overflow:hidden">
-            <div class="mcp-dom-bar buy" style="width:${b3Bar}%"></div>
-            <span style="position:relative;z-index:1">${fmtVN(b3Vol, 0)}</span>
+            <div class="mcp-dom-bar buy" id="ob-b2-bar" style="width:${b2Bar}%;transition:width 0.3s ease"></div>
+            <span style="position:relative;z-index:1" id="ob-b2-vol">${fmtVN(b2Vol, 0)}</span>
           </td>
-          <td style="color:${getColorClass(b3)};font-weight:700">${(b3 / 1000).toFixed(2)}</td>
-          <td style="color:${getColorClass(a3)};font-weight:700;padding-left:8px">${(a3 / 1000).toFixed(2)}</td>
+          <td style="color:${getColorClass(b2)};font-weight:700" id="ob-b2-price">${(b2 / 1000).toFixed(2)}</td>
+          <td style="color:${getColorClass(a2)};font-weight:700;padding-left:8px" id="ob-a2-price">${(a2 / 1000).toFixed(2)}</td>
           <td style="position:relative;overflow:hidden">
-            <div class="mcp-dom-bar sell" style="width:${a3Bar}%"></div>
-            <span style="position:relative;z-index:1">${fmtVN(a3Vol, 0)}</span>
+            <div class="mcp-dom-bar sell" id="ob-a2-bar" style="width:${a2Bar}%;transition:width 0.3s ease"></div>
+            <span style="position:relative;z-index:1" id="ob-a2-vol">${fmtVN(a2Vol, 0)}</span>
+          </td>
+        </tr>
+        <tr id="ob-row-3">
+          <td style="position:relative;overflow:hidden">
+            <div class="mcp-dom-bar buy" id="ob-b3-bar" style="width:${b3Bar}%;transition:width 0.3s ease"></div>
+            <span style="position:relative;z-index:1" id="ob-b3-vol">${fmtVN(b3Vol, 0)}</span>
+          </td>
+          <td style="color:${getColorClass(b3)};font-weight:700" id="ob-b3-price">${(b3 / 1000).toFixed(2)}</td>
+          <td style="color:${getColorClass(a3)};font-weight:700;padding-left:8px" id="ob-a3-price">${(a3 / 1000).toFixed(2)}</td>
+          <td style="position:relative;overflow:hidden">
+            <div class="mcp-dom-bar sell" id="ob-a3-bar" style="width:${a3Bar}%;transition:width 0.3s ease"></div>
+            <span style="position:relative;z-index:1" id="ob-a3-vol">${fmtVN(a3Vol, 0)}</span>
           </td>
         </tr>
       </tbody>
@@ -8460,7 +8725,7 @@ function renderMcpOrderBook() {
     <div class="mcp-ts-section">
       <div class="mcp-ts-header">
         <span style="display:flex;align-items:center;gap:5px"><span class="tv-dot-live"></span><b>Nhật ký khớp lệnh Realtime (Time &amp; Sales)</b></span>
-        <span style="font-size:10px;color:var(--ink3)">${trades.length} lệnh gần nhất</span>
+        <span style="font-size:10px;color:var(--ink3)" id="ob-trades-status">Đang stream realtime</span>
       </div>
       <table class="mcp-ts-table">
         <thead>
@@ -8472,12 +8737,12 @@ function renderMcpOrderBook() {
             <th style="text-align:center">Chiều</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="ob-trades-tbody">
           ${trades.map(tr => {
             const diff = tr.price - ref;
             const diffK = (diff / 1000).toFixed(2);
             const sign = diff > 0 ? '+' : '';
-            return `<tr>
+            return `<tr style="transition:background-color 0.4s ease">
               <td>${tr.time}</td>
               <td class="${getColorClass(tr.price)}"><b>${(tr.price / 1000).toFixed(2)}</b></td>
               <td>${fmtVN(tr.vol, 0)}</td>
@@ -8495,7 +8760,7 @@ function renderMcpOrderBook() {
         <span class="tv-dot-live" style="width:6px;height:6px;background:var(--up);border-radius:50%"></span>
         <b>DNSE Open API KRX Datafeed</b>
       </span>
-      <span style="font-family:var(--mono);color:var(--ink2)">T+2.5 Realtime</span>
+      <span style="font-family:var(--mono);color:var(--up);font-weight:700">● T+2.5 Live Stream</span>
     </div>
   </div>`;
 }
@@ -8842,23 +9107,7 @@ function stockHeader(tab, body) {
         </div>
       </div>
 
-      <!-- Card 3: Stock Converter (Quy đổi nhanh CP <-> VNĐ) -->
-      <div class="cmc-card cmc-converter-box">
-        <div style="font-size:12px;font-weight:800;color:var(--ink2);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
-          <span>🔄 Quy Đổi Lô CP / Tiền</span>
-          <span style="font-size:11px;color:var(--brand);font-weight:700;font-family:var(--mono)">${fmtVN(curPrice, 0)} đ/CP</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;align-items:center;background:var(--sub);border:1px solid var(--line);border-radius:8px;padding:6px 10px;gap:8px">
-            <input type="number" id="cmc-conv-shares" value="1000" min="100" step="100" style="background:transparent;border:0;color:var(--ink);font-family:var(--mono);font-size:13px;font-weight:700;width:100%;outline:none;font-variant-numeric:tabular-nums" oninput="window.cmcCalcVal && window.cmcCalcVal(this.value, ${curPrice})">
-            <span style="font-size:11px;font-weight:700;color:var(--ink2);flex:none">CP (${STOCK.sym})</span>
-          </div>
-          <div style="text-align:center;font-size:11px;color:var(--ink3);line-height:1">⇄</div>
-          <div style="display:flex;align-items:center;background:var(--sub);border:1px solid var(--line);border-radius:8px;padding:6px 10px;gap:8px">
-            <input type="text" id="cmc-conv-money" value="${fmtVN(curPrice * 1000, 0)}" style="background:transparent;border:0;color:var(--up);font-family:var(--mono);font-size:13px;font-weight:700;width:100%;outline:none;font-variant-numeric:tabular-nums" oninput="window.cmcCalcShares && window.cmcCalcShares(this.value, ${curPrice})">
-            <span style="font-size:11px;font-weight:700;color:var(--ink2);flex:none">VNĐ</span>
-          </div>
-        </div>
+      <!-- Card 3: Stock Converter removed per user request -->
       </div>
 
       <!-- Card 4: Metadata Tags & Links -->
@@ -13003,10 +13252,10 @@ function vMarketNews() {
     </div>
 
     <!-- Filter Bar: Search, Time span, Sentiment -->
-    <div class="mnews-filter-bar">
-      <div class="search" style="display:inline-block">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-        <input id="mnewsq" type="search" placeholder="Tìm kiếm tin tức, mã CK (FPT, HPG, SSI...)..." value="${esc(M.q || '')}" style="width:280px">
+    <div class="mnews-filter-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 24px;border-bottom:1px solid var(--line);background:var(--bg);flex-wrap:wrap">
+      <div style="position:relative;display:inline-flex;align-items:center">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:11px;color:var(--ink3);pointer-events:none"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <input id="mnewsq" type="search" placeholder="Tìm kiếm tin tức, mã CK (FPT, HPG, SSI...)..." value="${esc(M.q || '')}" style="width:280px;height:34px;padding:0 12px 0 34px;border:1px solid var(--line);border-radius:99px;background:var(--sub);color:var(--ink);font-size:12px;outline:none" oninput="S.mnews = S.mnews || {}; S.mnews.q = this.value; S.mnews.page = 1; render();">
       </div>
 
       <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap">

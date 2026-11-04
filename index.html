@@ -3685,9 +3685,9 @@ td[data-stock-role="price"],
 
       <!-- Realtime Market Indices & Trading Session Status Strip -->
       <div class="top-indices-bar" id="top-indices-bar">
-        <div class="hdr-session-chip open" id="hdr-session-chip" title="Trạng thái phiên giao dịch chứng khoán Việt Nam">
+        <div class="hdr-session-chip closed" id="hdr-session-chip" title="Trạng thái phiên giao dịch chứng khoán Việt Nam">
           <span class="hdr-session-dot" id="hdr-session-dot"></span>
-          <span id="hdr-session-text">Khớp lệnh liên tục</span>
+          <span id="hdr-session-text">Phiên Đóng cửa</span>
         </div>
         <div class="hdr-idx-item" id="hdr-idx-vnindex" onclick="location.hash='#market'" title="Chỉ số VN-INDEX (Sở GDCK TP.HCM - HOSE)">
           <span class="idx-name">VN-INDEX</span>
@@ -8429,26 +8429,24 @@ function updateHeaderIndicesUI() {
   const m = vnTime.getMinutes();
   const totalMin = h * 60 + m;
 
-  let sessText = 'Khớp lệnh liên tục';
+  let sessText = 'Phiên liên tục';
   let sessCls = 'open';
   if (day === 0 || day === 6) {
-    sessText = 'Nghỉ cuối tuần'; sessCls = 'closed';
+    sessText = 'Phiên Đóng cửa'; sessCls = 'closed';
   } else if (totalMin < 9 * 60) {
-    sessText = 'Tiền thị trường'; sessCls = 'closed';
+    sessText = 'Phiên Đóng cửa'; sessCls = 'closed';
   } else if (totalMin >= 9 * 60 && totalMin < 9 * 60 + 15) {
     sessText = 'Phiên ATO'; sessCls = 'ato';
   } else if (totalMin >= 9 * 60 + 15 && totalMin < 11 * 60 + 30) {
-    sessText = 'Khớp lệnh liên tục'; sessCls = 'open';
+    sessText = 'Phiên liên tục'; sessCls = 'open';
   } else if (totalMin >= 11 * 60 + 30 && totalMin < 13 * 60) {
-    sessText = 'Nghỉ trưa'; sessCls = 'break';
+    sessText = 'Phiên nghỉ trưa'; sessCls = 'break';
   } else if (totalMin >= 13 * 60 && totalMin < 14 * 60 + 30) {
-    sessText = 'Khớp lệnh liên tục'; sessCls = 'open';
+    sessText = 'Phiên liên tục'; sessCls = 'open';
   } else if (totalMin >= 14 * 60 + 30 && totalMin < 14 * 60 + 45) {
     sessText = 'Phiên ATC'; sessCls = 'atc';
-  } else if (totalMin >= 14 * 60 + 45 && totalMin < 15 * 60) {
-    sessText = 'Thỏa thuận'; sessCls = 'ato';
   } else {
-    sessText = 'Đóng cửa phiên'; sessCls = 'closed';
+    sessText = 'Phiên Đóng cửa'; sessCls = 'closed';
   }
 
   const sChip = document.getElementById('hdr-session-chip');
@@ -11328,26 +11326,26 @@ function getLiveTradingSessionInfo() {
   let isOpen = false;
 
   if (d === 0 || d === 6) {
-    statusText = `Đóng cửa cuối tuần · ${dateStr}`;
+    statusText = `Phiên Đóng cửa · ${dateStr}`;
   } else {
     if (timeNum < 9 * 60) {
-      statusText = `Trước giờ mở cửa · ${dateStr}`;
+      statusText = `Phiên Đóng cửa · ${dateStr}`;
     } else if (timeNum <= 9 * 60 + 15) {
-      statusText = `Phiên ATO (Mở cửa) · ${timeStr}`;
+      statusText = `Phiên ATO · ${timeStr}`;
       isOpen = true;
     } else if (timeNum <= 11 * 60 + 30) {
-      statusText = `Khớp lệnh liên tục (Sáng) · ${timeStr}`;
+      statusText = `Phiên liên tục · ${timeStr}`;
       isOpen = true;
     } else if (timeNum < 13 * 60) {
-      statusText = `Nghỉ giữa phiên trưa · ${dateStr}`;
+      statusText = `Phiên nghỉ trưa · ${dateStr}`;
     } else if (timeNum <= 14 * 60 + 30) {
-      statusText = `Khớp lệnh liên tục (Chiều) · ${timeStr}`;
+      statusText = `Phiên liên tục · ${timeStr}`;
       isOpen = true;
     } else if (timeNum <= 14 * 60 + 45) {
-      statusText = `Phiên ATC (Đóng cửa) · ${timeStr}`;
+      statusText = `Phiên ATC · ${timeStr}`;
       isOpen = true;
     } else {
-      statusText = `Đóng cửa phiên · ${dateStr} ${timeStr}`;
+      statusText = `Phiên Đóng cửa · ${dateStr} ${timeStr}`;
     }
   }
 

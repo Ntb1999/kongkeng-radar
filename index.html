@@ -12046,6 +12046,23 @@ async function syncStockQuoteRealtime(sym) {
         if (bidEl) bidEl.textContent = fmtVN(bestBid, 0);
         if (askEl) askEl.textContent = fmtVN(bestAsk, 0);
 
+        if (typeof DNSE_ORDERBOOK_FEED !== 'undefined' && DNSE_ORDERBOOK_FEED[sym]) {
+          if (!DNSE_ORDERBOOK_FEED[sym].si) DNSE_ORDERBOOK_FEED[sym].si = {};
+          DNSE_ORDERBOOK_FEED[sym].si.match = STOCK.price;
+          DNSE_ORDERBOOK_FEED[sym].si.chg = STOCK.chg;
+          DNSE_ORDERBOOK_FEED[sym].si.pct = STOCK.pct;
+          if (STOCK.open) DNSE_ORDERBOOK_FEED[sym].si.open = STOCK.open;
+          if (STOCK.high) DNSE_ORDERBOOK_FEED[sym].si.high = STOCK.high;
+          if (STOCK.low) DNSE_ORDERBOOK_FEED[sym].si.low = STOCK.low;
+          if (STOCK.ref) DNSE_ORDERBOOK_FEED[sym].si.ref = STOCK.ref;
+          if (STOCK.vol) DNSE_ORDERBOOK_FEED[sym].si.vol = STOCK.vol;
+        }
+
+        const obEl = document.querySelector('.mcp-ob-wrap');
+        if (obEl && typeof renderMcpOrderBook === 'function') {
+          obEl.outerHTML = renderMcpOrderBook();
+        }
+
         if (typeof CANDLES !== 'undefined' && CANDLES && CANDLES.length > 0) {
           const now = new Date();
           const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;

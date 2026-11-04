@@ -4582,7 +4582,7 @@ function bridgeCandlesToToday(bars, targetPriceVal, sym) {
 function getTradingViewUrl(sym, ex) {
   const cleanSym = (sym || (typeof STOCK !== 'undefined' && STOCK ? STOCK.sym : 'KOS')).toUpperCase().trim();
   const cleanEx = (ex || (typeof STOCK !== 'undefined' && STOCK ? STOCK.ex : 'HOSE') || 'HOSE').toUpperCase().trim();
-  return `https://vn.tradingview.com/chart/bUEHLGOp/?symbol=${cleanEx}:${cleanSym}`;
+  return `https://vn.tradingview.com/chart/?symbol=${cleanEx}:${cleanSym}`;
 }
 
 function makeCandles(targetPrice, seed, chgVal, sym) {
@@ -9165,12 +9165,18 @@ function stockHeader(tab, body) {
       <div class="cmc-card cmc-chart-card" style="padding:0;overflow:hidden;position:relative">
         <div class="tv-head-cmc" style="padding:10px 14px;border-bottom:1px solid var(--line);background:var(--sub);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:relative;z-index:2">
           <div class="tv-leg" style="display:flex;align-items:center;gap:8px;font-size:12.5px">
-            <div class="tv-logo" style="cursor:pointer" data-act="opentvmcpmodal" title="Biểu đồ kỹ thuật TradingView"></div>
+            <div class="tv-logo" style="cursor:pointer" data-act="opentvmcpmodal" title="Mở biểu đồ ${STOCK.ex || 'HOSE'}:${STOCK.sym} trên TradingView chính thức"></div>
             <b>${STOCK.name}</b> · <span id="tvint" style="cursor:pointer;font-weight:700;color:var(--brand)" title="Khung thời gian">${S_TV_TF || '1D'}</span> · <span>${STOCK.ex}</span>
+            <span class="pill" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(34,171,148,0.12);color:var(--up);border:1px solid rgba(34,171,148,0.3);font-family:var(--mono);font-weight:600" title="Biểu đồ kỹ thuật chuẩn quốc tế ADJ (đã điều chỉnh chia cổ tức & cổ phiếu thưởng)">ADJ</span>
             <span class="tv-dot"></span>
             <span id="ohlc" class="tv-ohlc" style="font-family:var(--mono);font-size:12px"></span>
           </div>
-          <div></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <a href="${getTradingViewUrl(STOCK.sym, STOCK.ex)}" target="_blank" rel="noopener noreferrer" class="pill" id="btn-tvlink-main" style="font-size:11.5px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(41,98,255,0.35);border-radius:6px;background:rgba(41,98,255,0.08);color:#2962FF;font-weight:600;text-decoration:none;transition:all 0.2s ease" title="Mở biểu đồ ${STOCK.ex || 'HOSE'}:${STOCK.sym} trực tiếp trên TradingView chính thức">
+              <span>Mở trên TradingView</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
         </div>
 
         <!-- TV Chart Container Canvas -->
@@ -15699,7 +15705,10 @@ const A = {
     </div>`);
   },
   mktmcpmodal: el => { openDnseMcpModal(el.dataset.server || 'dnse'); },
-  opentvmcpmodal: () => { openDnseMcpModal('tv'); },
+  opentvmcpmodal: () => {
+    const url = getTradingViewUrl(STOCK.sym, STOCK.ex);
+    window.open(url, '_blank');
+  },
   /* compare */
   cmprm: el => { S.cmp = S.cmp.filter(t => t !== el.dataset.v); rerender(); },
   cmpadd: el => {

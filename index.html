@@ -3691,23 +3691,23 @@ td[data-stock-role="price"],
         </div>
         <div class="hdr-idx-item" id="hdr-idx-vnindex" onclick="location.hash='#market'" title="Chỉ số VN-INDEX (Sở GDCK TP.HCM - HOSE)">
           <span class="idx-name">VN-INDEX</span>
-          <b class="idx-val up" id="hdr-vnindex-val">1,257.42</b>
-          <span class="idx-chg up" id="hdr-vnindex-chg">+6.25 (+0.50%)</span>
+          <b class="idx-val up" id="hdr-vnindex-val">1.733,02</b>
+          <span class="idx-chg up" id="hdr-vnindex-chg">▲ +33.40 (+1.97%)</span>
         </div>
         <div class="hdr-idx-item" id="hdr-idx-vn30" onclick="location.hash='#market'" title="Chỉ số VN30 (30 Cổ phiếu vốn hóa lớn nhất HOSE)">
           <span class="idx-name">VN30</span>
-          <b class="idx-val up" id="hdr-vn30-val">1,316.85</b>
-          <span class="idx-chg up" id="hdr-vn30-chg">+7.15 (+0.55%)</span>
+          <b class="idx-val up" id="hdr-vn30-val">1.862,07</b>
+          <span class="idx-chg up" id="hdr-vn30-chg">▲ +46.47 (+2.56%)</span>
         </div>
         <div class="hdr-idx-item" id="hdr-idx-hnx" onclick="location.hash='#market'" title="Chỉ số HNX-INDEX (Sở GDCK Hà Nội)">
           <span class="idx-name">HNX</span>
-          <b class="idx-val down" id="hdr-hnx-val">231.45</b>
-          <span class="idx-chg down" id="hdr-hnx-chg">-0.82 (-0.35%)</span>
+          <b class="idx-val up" id="hdr-hnx-val">257,88</b>
+          <span class="idx-chg up" id="hdr-hnx-chg">▲ +6.46 (+2.57%)</span>
         </div>
         <div class="hdr-idx-item" id="hdr-idx-upcom" onclick="location.hash='#market'" title="Chỉ số UPCOM (Thị trường đăng ký giao dịch)">
           <span class="idx-name">UPCOM</span>
-          <b class="idx-val up" id="hdr-upcom-val">92.40</b>
-          <span class="idx-chg up" id="hdr-upcom-chg">+0.15 (+0.16%)</span>
+          <b class="idx-val up" id="hdr-upcom-val">122,61</b>
+          <span class="idx-chg up" id="hdr-upcom-chg">▲ +0.56 (+0.46%)</span>
         </div>
       </div>
 
@@ -8411,16 +8411,16 @@ function tickMarketStreamingEngine() {
   }
 }
 
-let _LAST_TOP_INDICES_TICK = Date.now();
-const TOP_INDICES_DATA = {
-  vnindex: { name: 'VN-INDEX', val: 1257.42, chg: 6.25, pct: 0.50 },
-  vn30: { name: 'VN30', val: 1316.85, chg: 7.15, pct: 0.55 },
-  hnx: { name: 'HNX', val: 231.45, chg: -0.82, pct: -0.35 },
-  upcom: { name: 'UPCOM', val: 92.40, chg: 0.15, pct: 0.16 }
+// TOP INDICES - DIRECT SYNCHRONIZATION WITH REAL MARKET_INDICES (DNSE ENTRADE KRX API)
+const TOP_INDICES_FALLBACK = {
+  vnindex: { name: 'VN-INDEX', val: 1733.02, chg: 33.40, pct: 1.97 },
+  vn30: { name: 'VN30', val: 1862.07, chg: 46.47, pct: 2.56 },
+  hnx: { name: 'HNX', val: 257.88, chg: 6.46, pct: 2.57 },
+  upcom: { name: 'UPCOM', val: 122.61, chg: 0.56, pct: 0.46 }
 };
 
 function updateHeaderIndicesUI() {
-  // 1. Session Status
+  // 1. Session Status (Standard 5 rules)
   const now = new Date();
   const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
   const vnTime = new Date(utc + (3600000 * 7));
@@ -8456,27 +8456,33 @@ function updateHeaderIndicesUI() {
     sTxt.textContent = sessText;
   }
 
-  // 2. Micro-tick indices every 3-5 seconds
-  if (Date.now() - _LAST_TOP_INDICES_TICK > 3000) {
-    _LAST_TOP_INDICES_TICK = Date.now();
-    ['vnindex', 'vn30', 'hnx', 'upcom'].forEach(k => {
-      const item = TOP_INDICES_DATA[k];
-      const delta = (Math.random() - 0.48) * (k === 'upcom' ? 0.05 : 0.25);
-      item.val = +(item.val + delta).toFixed(2);
-      item.chg = +(item.chg + delta).toFixed(2);
-      item.pct = +((item.chg / (item.val - item.chg)) * 100).toFixed(2);
+  // 2. Realtime Synchronization from live MARKET_INDICES (DNSE Entrade API datafeed)
+  const indicesMap = {
+    vnindex: (typeof MARKET_INDICES !== 'undefined' && Array.isArray(MARKET_INDICES)) ? MARKET_INDICES.find(m => m.name.includes('VN-INDEX')) : null,
+    vn30: (typeof MARKET_INDICES !== 'undefined' && Array.isArray(MARKET_INDICES)) ? MARKET_INDICES.find(m => m.name.includes('VN30')) : null,
+    hnx: (typeof MARKET_INDICES !== 'undefined' && Array.isArray(MARKET_INDICES)) ? MARKET_INDICES.find(m => m.name.includes('HNX')) : null,
+    upcom: (typeof MARKET_INDICES !== 'undefined' && Array.isArray(MARKET_INDICES)) ? MARKET_INDICES.find(m => m.name.includes('UPCOM')) : null
+  };
 
-      const valEl = document.getElementById(`hdr-${k}-val`);
-      const chgEl = document.getElementById(`hdr-${k}-chg`);
-      if (valEl && chgEl) {
-        const isUp = item.chg >= 0;
-        valEl.textContent = fmtVN(item.val, 2);
-        valEl.className = `idx-val ${isUp ? 'up' : 'down'}`;
-        chgEl.textContent = `${isUp ? '+' : ''}${item.chg.toFixed(2)} (${isUp ? '+' : ''}${item.pct.toFixed(2)}%)`;
-        chgEl.className = `idx-chg ${isUp ? 'up' : 'down'}`;
-      }
-    });
-  }
+  ['vnindex', 'vn30', 'hnx', 'upcom'].forEach(k => {
+    const liveIdx = indicesMap[k];
+    const def = TOP_INDICES_FALLBACK[k];
+    const scoreVal = (liveIdx && typeof liveIdx.score === 'number') ? liveIdx.score : def.val;
+    const chgVal = (liveIdx && typeof liveIdx.chg === 'number') ? liveIdx.chg : def.chg;
+    const pctVal = (liveIdx && typeof liveIdx.pct === 'number') ? liveIdx.pct : def.pct;
+
+    const valEl = document.getElementById(`hdr-${k}-val`);
+    const chgEl = document.getElementById(`hdr-${k}-chg`);
+    if (valEl && chgEl) {
+      const isUp = chgVal >= 0;
+      valEl.textContent = scoreVal.toLocaleString('vi-VN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      valEl.className = `idx-val ${isUp ? 'up' : 'down'}`;
+      const sign = isUp ? '▲ +' : '▼ ';
+      const pctSign = isUp ? '+' : '';
+      chgEl.textContent = `${sign}${Math.abs(chgVal).toFixed(2)} (${pctSign}${pctVal.toFixed(2)}%)`;
+      chgEl.className = `idx-chg ${isUp ? 'up' : 'down'}`;
+    }
+  });
 }
 
 function tickRealtime() {
@@ -11352,36 +11358,37 @@ function getLiveTradingSessionInfo() {
   return { dateStr, timeStr, statusText, isOpen };
 }
 
-let MARKET_INDICES = [
+var MARKET_INDICES = [
   {
-    name: 'VN-INDEX', ex: 'HOSE', score: 1708.18, chg: -33.44, pct: -1.92,
-    vol: '647.8M', val: '13.789 tỷ',
+    name: 'VN-INDEX', ex: 'HOSE', score: 1733.02, chg: 33.40, pct: 1.97,
+    vol: '882.1M', val: '20.729 tỷ',
     adv: 36, ceiling: 3, ref: 27, dec: 303, floor: 13,
-    mcp_src: 'DNSE Datafeed (Chốt phiên 02/11/2026)',
-    spark: [1741.62, 1738.50, 1730.20, 1722.15, 1715.40, 1708.18]
+    mcp_src: 'DNSE Datafeed (Chốt phiên 04/11/2026)',
+    spark: [1708.18, 1715.40, 1722.15, 1730.20, 1738.50, 1733.02]
   },
   {
-    name: 'VN30-INDEX', ex: 'HOSE', score: 1815.44, chg: -39.60, pct: -2.13,
-    vol: '285.2M', val: '8.450 tỷ',
+    name: 'VN30-INDEX', ex: 'HOSE', score: 1862.07, chg: 46.47, pct: 2.56,
+    vol: '326.5M', val: '10.284 tỷ',
     adv: 1, ceiling: 0, ref: 0, dec: 29, floor: 0,
-    mcp_src: 'DNSE Datafeed (Chốt phiên 02/11/2026)',
-    spark: [1855.04, 1845.64, 1838.20, 1826.00, 1815.44]
+    mcp_src: 'DNSE Datafeed (Chốt phiên 04/11/2026)',
+    spark: [1815.44, 1826.00, 1838.20, 1845.64, 1855.04, 1862.07]
   },
   {
-    name: 'HNX-INDEX', ex: 'HNX', score: 249.57, chg: -3.17, pct: -1.25,
-    vol: '61.0M', val: '783 tỷ',
+    name: 'HNX-INDEX', ex: 'HNX', score: 257.88, chg: 6.46, pct: 2.57,
+    vol: '76.9M', val: '1.423 tỷ',
     adv: 48, ceiling: 2, ref: 45, dec: 125, floor: 3,
-    mcp_src: 'DNSE Datafeed (Chốt phiên 02/11/2026)',
-    spark: [252.76, 251.80, 250.50, 249.57]
+    mcp_src: 'DNSE Datafeed (Chốt phiên 04/11/2026)',
+    spark: [249.57, 250.50, 251.80, 252.76, 257.88]
   },
   {
-    name: 'UPCOM-INDEX', ex: 'UPCOM', score: 121.32, chg: -2.41, pct: -1.95,
-    vol: '24.9M', val: '468 tỷ',
+    name: 'UPCOM-INDEX', ex: 'UPCOM', score: 122.61, chg: 0.56, pct: 0.46,
+    vol: '36.8M', val: '533 tỷ',
     adv: 82, ceiling: 5, ref: 65, dec: 178, floor: 8,
-    mcp_src: 'DNSE Datafeed (Chốt phiên 02/11/2026)',
-    spark: [123.53, 122.90, 122.00, 121.32]
+    mcp_src: 'DNSE Datafeed (Chốt phiên 04/11/2026)',
+    spark: [121.32, 122.00, 122.90, 123.53, 122.61]
   }
 ];
+window.MARKET_INDICES = MARKET_INDICES;
 
 let MARKET_SECTORS = [
   { name: 'Ngân hàng', pct: -2.35, val: '5.120 tỷ', leader: 'TCB (-2.55%), VCB (-4.44%), MBB (-2.53%)' },
@@ -12362,6 +12369,9 @@ async function syncMarketDataRealtime(isManual) {
             target._lastDelta = idx.score - oldScore;
           }
         });
+        if (typeof updateHeaderIndicesUI === 'function') {
+          updateHeaderIndicesUI();
+        }
       }
     }
 

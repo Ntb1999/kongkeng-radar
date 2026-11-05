@@ -3385,6 +3385,32 @@ td[data-stock-role="price"],
   }
 }
 
+
+/* === DNSE AUTH BADGE & KRX WEBSOCKET STREAMING STYLES === */
+@keyframes dnsePulse {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+  70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+.dnse-status-dot.active {
+  background: #22c55e !important;
+  animation: dnsePulse 2s infinite;
+}
+.dnse-status-dot.inactive {
+  background: #94a3b8 !important;
+  animation: none;
+}
+.dnse-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 </style>
 <style id="kkr-gate-style">
   #kkr-gate-overlay {
@@ -3721,6 +3747,11 @@ td[data-stock-role="price"],
         <button class="pill" data-act="toast" data-msg="Bảng giá mở ở ứng dụng giao dịch SBSI (ngoài phạm vi prototype)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20h18M6 16v-5M10 16V7M14 16v-3M18 16V9"/><path d="M5 9l5-4 4 3 5-4"/></svg>Đi đến bảng giá</button>
         <button class="pill" id="theme-toggle" data-act="toggletheme" title="Chuyển chế độ Giao diện Sáng / Tối" style="cursor:pointer;gap:6px">
           <span id="theme-icon" style="font-size:13px">☀️</span><span id="theme-label" style="font-size:12px;font-weight:600">Sáng</span>
+        </button>
+                <button class="pill dnse-auth-badge" id="dnse-auth-btn" title="Tài khoản DNSE SpaceX (Giao dịch DEAL) - Nhấn để xem chi tiết & Quản lý Token" onclick="openDnseAccountModal()" style="cursor:pointer;gap:6px;background:rgba(34,171,148,0.12);border:1px solid rgba(34,171,148,0.35);color:var(--ink);padding:4px 10px;border-radius:20px;display:flex;align-items:center">
+          <span class="dnse-status-dot active" id="dnse-ws-dot" style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>
+          <span style="font-weight:700;color:#22c55e;font-size:11px">DNSE Live</span>
+          <span id="dnse-user-name" style="font-size:11.5px;font-weight:600">Nguyễn Tùng Bách (064C819829)</span>
         </button>
         <button class="user" data-act="usermenu" aria-haspopup="menu" title="Tài khoản Kong Keng"><i style="background:linear-gradient(135deg, #FF6B00 0%, #FF3B30 100%);color:#fff;border-radius:4px;font-weight:700">KK</i>Kong Keng <span>Pro Trader</span></button>
       </div>
@@ -16441,6 +16472,9 @@ function pickSug(i) {
 }
 
 function openStock(t) {
+  if (window.dnseSocketManager && typeof window.dnseSocketManager.setActiveSymbol === 'function') {
+    window.dnseSocketManager.setActiveSymbol(t);
+  }
   if (!t) return;
   t = t.toUpperCase().trim();
   if (typeof fetchAndApplyDnseMcpData === 'function') {
@@ -36595,4 +36629,464 @@ startRealtimeEngine();
   }
 })();
 </script>
+
+<!-- DNSE ACCOUNT & KRX WEBSOCKET MODAL -->
+<div id="modal-dnse-account" class="dnse-modal-backdrop" style="display:none" onclick="if(event.target===this)closeDnseAccountModal()">
+  <div class="dnse-modal-card" style="width:680px">
+    <div class="dnse-modal-head">
+      <h3>
+        <span style="color:#22c55e">●</span> Tài khoản Chứng khoán DNSE &amp; KRX Live Streaming
+      </h3>
+      <button onclick="closeDnseAccountModal()" style="background:transparent;border:0;color:var(--ink3);font-size:18px;cursor:pointer;line-height:1">✕</button>
+    </div>
+    <div class="dnse-modal-body" style="padding:16px 20px;display:flex;flex-direction:column;gap:14px">
+      <!-- Account details grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--card-sub);padding:14px;border-radius:8px;border:1px solid var(--line)">
+        <div>
+          <div style="font-size:11px;color:var(--ink3);margin-bottom:2px">Chủ tài khoản:</div>
+          <div style="font-weight:700;font-size:14px;color:var(--ink)">Nguyễn Tùng Bách</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--ink3);margin-bottom:2px">Số lưu ký (Custody Code):</div>
+          <div style="font-weight:700;font-size:14px;font-family:var(--mono);color:#22c55e">064C819829</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--ink3);margin-bottom:2px">Loại hình tài khoản:</div>
+          <div style="font-weight:600;font-size:12.5px;color:var(--ink)">SpaceX (Giao dịch theo DEAL - Không vay Margin)</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--ink3);margin-bottom:2px">Trạng thái giao dịch:</div>
+          <div style="font-weight:600;font-size:12.5px;color:#22c55e">✓ ACTIVE (Cơ sở &amp; Phái sinh)</div>
+        </div>
+      </div>
+
+      <!-- Connection telemetry -->
+      <div style="background:var(--card-sub);padding:12px 14px;border-radius:8px;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;font-weight:600;color:var(--ink)">Trạng thái KRX Feed:</span>
+          <span id="dnse-modal-conn-status" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(34,197,94,0.15);color:#22c55e;font-weight:700">ĐANG STREAM REALTIME</span>
+        </div>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--ink3)">
+          Endpoint: <span style="color:var(--ink)">wss://datafeed-krx.dnse.com.vn/wss</span> (MQTT 3.1.1 Protobuf)
+        </div>
+        <div style="display:flex;gap:16px;font-size:11px;color:var(--ink3);padding-top:4px;border-top:1px dashed var(--line)">
+          <span>Ticks nhận: <b id="dnse-stat-ticks" style="color:var(--ink);font-family:var(--mono)">0</b></span>
+          <span>Cập nhật Sổ lệnh: <b id="dnse-stat-ob" style="color:var(--ink);font-family:var(--mono)">0</b></span>
+          <span>Cập nhật Chỉ số: <b id="dnse-stat-idx" style="color:var(--ink);font-family:var(--mono)">0</b></span>
+        </div>
+      </div>
+
+      <!-- Token management -->
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <label style="font-size:11.5px;font-weight:600;color:var(--ink)">DNSE JWT Bearer Token:</label>
+        <div style="display:flex;gap:8px">
+          <input id="dnse-token-input" type="password" style="flex:1;background:var(--sub);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:var(--mono);font-size:11px;color:var(--ink)" placeholder="Dán Bearer token DNSE vào đây...">
+          <button onclick="toggleTokenVisibility()" class="pill" style="font-size:11px;padding:4px 10px">Hiện / Ẩn</button>
+          <button onclick="saveDnseToken()" class="pill" style="background:#0284c7;color:#fff;border-color:#0284c7;font-size:11px;padding:4px 12px;font-weight:600">Lưu Token</button>
+        </div>
+        <span style="font-size:10px;color:var(--ink3)">Token được lưu bảo mật trong trình duyệt của bạn (localStorage) và tự động xác thực các yêu cầu báo giá KRX.</span>
+      </div>
+    </div>
+    <div style="padding:12px 20px;background:var(--sub);border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px">
+      <button onclick="closeDnseAccountModal()" class="pill" style="padding:6px 16px">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   DNSE KRX OFFICIAL WEBSOCKET REAL-TIME CLIENT (MQTT OVER WSS)
+   Synchronizes live market indices, order book (dư mua, dư bán), & Time-and-Sales ticks
+   ========================================================================== */
+
+const DEFAULT_DNSE_BEARER_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpZGVudGlmaWNhdGlvbkNvZGUiOiIwMDEwOTkwMTgwMjkiLCJzdWIiOiIxMDAxNjM4MDA1IiwiYXV0aFNvdXJjZSI6bnVsbCwicm9sZXMiOlsiaW52ZXN0b3IiXSwiaXNzIjoiRE5TRSIsImludmVzdG9ySWQiOiIxMDAxNjM4MDA1IiwiZnVsbE5hbWUiOiJOZ3V54buFbiBUw7luZyBCw6FjaCIsInNlc3Npb25JZCI6Ijk1YTIyZDQwLWM4ZDktNGYyNS1iZDNmLTM4YTU5ODRmNzYyMSIsInVzZXJJZCI6IjM5NWE4Mjg2LTlhZDctNDkxZC04OWVhLTk4ZmNlOWE2OWMxZCIsImF1ZCI6WyJhdWRpZW5jZSJdLCJjdXN0b21lckVtYWlsIjoidHVuZ2JhY2hudGJAZ21haWwuY29tIiwiY3VzdG9keUNvZGUiOiIwNjRDODE5ODI5IiwiY3VzdG9tZXJJZCI6IjAwMDMwNTA4MjUiLCJleHAiOjE3OTM4NzcyMDAsImN1c3RvbWVyTW9iaWxlIjoiMDMzMzAxOTgyOSIsImlhdCI6MTc5Mzg0ODQwMCwidXNlcm5hbWUiOiIwNjRDODE5ODI5Iiwic3RhdHVzIjoiQUNUSVZFIn0.OwATPJjfJ6kVItmOZTXZroyO1f1WjxW10dTpjrWyYHYIuKQF4S_pQMLA_cNVXd9KvUSpw2gjDy6K-xK8QTv78J-zWXgXdMifo_FrT9O3QwxVMQq1Yfr4AqT92Yhap_D7KuIlcMHoTDi3vnyAHCVdhIMl5fgzY8WGv96deweBiGLa-rCaDTEdR9T7NmrJKeZMK7wt7mMIQsfJ1ldDZsnBRLtA7hucCo4Ie8iO-IeRd5mKwqld0zJULBCBweHzVMNS52-pcibfEFXghZYBcKcni83XjKcWayDtCCYh-35wfNOSCNm1ssPnRfMSYo7ua5t1_EDAWeAh60axNc1vjDGjxgelRFcT6084GW5cdKnWTE6cuGycXonrCrLCfIwY5lTKbCwA_3otFUmtWUrIKhjBCD2sGUCpeL9gjIHTodUy8uV-0XMHCCVpw5U0J5tfB1LxaPoCwH2ieP78_STdf8CPmQZHxq7RRV4rDIyiQiE80G2i-jYPhNI8fJLDlRGtMpR7ejdl0uKDEcqg8r7FvJ8P7Wvpav32AbQ6VesAHZsoznw-C7Ikc-U_cZ_qLL24IZPP3btW7PRTYSknuu5au8ysVza7d70FYnGO3g8LgPfDKh5dCqpLBGzKO7BGkWRT7fmFrRikP0oziA9gGiuXW9renppwjRYcdsZ3IL9dfqm3qyo";
+
+class DnseKrxSocketManager {
+  constructor() {
+    this.worker = null;
+    this.isConnected = false;
+    this.activeSymbol = null;
+    this.subscribedTopics = new Set();
+    this.token = localStorage.getItem('kkr_dnse_token') || DEFAULT_DNSE_BEARER_TOKEN;
+    this.userProfile = {
+      investorId: '1001638005',
+      custodyCode: '064C819829',
+      fullName: 'Nguyễn Tùng Bách',
+      accountType: 'SpaceX (Giao dịch DEAL)'
+    };
+    this.stats = { ticks: 0, orderBooks: 0, indices: 0 };
+  }
+
+  init() {
+    try {
+      // Initialize background Web Worker
+      this.worker = new Worker('assets/dnse_socket_worker.js');
+      this.worker.onmessage = (e) => this.handleWorkerMessage(e.data);
+      this.worker.onerror = (err) => {
+        console.warn('[DNSE KRX Worker Error]', err);
+        this.updateIndicator(false);
+      };
+
+      // Connect to official DNSE KRX WebSocket
+      this.worker.postMessage({
+        type: 'initSocket',
+        payload: {
+          uri: 'wss://datafeed-krx.dnse.com.vn/wss',
+          username: 'entrade',
+          password: 'entrade',
+          clientId: 'kkr_web_' + Math.random().toString(36).substring(2, 9)
+        }
+      });
+
+      // Auto-subscribe to all 4 major indices
+      const baseTopics = [
+        'quotes/krx/mdds/index/VNINDEX',
+        'quotes/krx/mdds/index/VN30',
+        'quotes/krx/mdds/index/HNX',
+        'quotes/krx/mdds/index/UPCOM'
+      ];
+      this.subscribe(baseTopics);
+
+      // Check current symbol from hash
+      const hash = location.hash.slice(1);
+      if (hash.startsWith('c360/') && hash.split('/')[1]) {
+        this.setActiveSymbol(hash.split('/')[1]);
+      } else if (typeof STOCK !== 'undefined' && STOCK && STOCK.sym) {
+        this.setActiveSymbol(STOCK.sym);
+      }
+
+      console.log('⚡ [DNSE KRX] Real-time WebSocket Client Engine initialized successfully!');
+    } catch (e) {
+      console.warn('[DNSE Worker init exception]', e);
+    }
+  }
+
+  subscribe(topics) {
+    if (!this.worker) return;
+    const newTopics = topics.filter(t => !this.subscribedTopics.has(t));
+    if (newTopics.length > 0) {
+      newTopics.forEach(t => this.subscribedTopics.add(t));
+      this.worker.postMessage({
+        type: 'subscribeTopic',
+        payload: { topics: newTopics }
+      });
+    }
+  }
+
+  unsubscribe(topics) {
+    if (!this.worker) return;
+    const toUnsub = topics.filter(t => this.subscribedTopics.has(t));
+    if (toUnsub.length > 0) {
+      toUnsub.forEach(t => this.subscribedTopics.delete(t));
+      this.worker.postMessage({
+        type: 'unsubscribeTopic',
+        payload: { topics: toUnsub }
+      });
+    }
+  }
+
+  setActiveSymbol(sym) {
+    if (!sym) return;
+    sym = sym.toUpperCase().trim();
+    if (this.activeSymbol && this.activeSymbol !== sym) {
+      const oldSym = this.activeSymbol;
+      this.unsubscribe([
+        `quotes/krx/mdds/stockinfo/v1/roundlot/symbol/${oldSym}`,
+        `quotes/krx/mdds/topprice/v1/roundlot/symbol/${oldSym}`,
+        `quotes/krx/mdds/tick/v1/roundlot/symbol/${oldSym}`
+      ]);
+    }
+    this.activeSymbol = sym;
+    this.subscribe([
+      `quotes/krx/mdds/stockinfo/v1/roundlot/symbol/${sym}`,
+      `quotes/krx/mdds/topprice/v1/roundlot/symbol/${sym}`,
+      `quotes/krx/mdds/tick/v1/roundlot/symbol/${sym}`
+    ]);
+  }
+
+  updateIndicator(connected) {
+    this.isConnected = connected;
+    const dot = document.getElementById('dnse-ws-dot');
+    const modalStatus = document.getElementById('dnse-modal-conn-status');
+    if (dot) {
+      dot.className = `dnse-status-dot ${connected ? 'active' : 'inactive'}`;
+    }
+    if (modalStatus) {
+      modalStatus.textContent = connected ? 'ĐANG STREAM REALTIME' : 'ĐANG KẾT NỐI LẠI...';
+      modalStatus.style.color = connected ? '#22c55e' : '#f59e0b';
+      modalStatus.style.background = connected ? 'rgba(34,197,94,0.15)' : 'rgba(245,158,11,0.15)';
+    }
+  }
+
+  handleWorkerMessage(msg) {
+    if (!msg) return;
+    if (msg.type === 'CONNECTION_STATUS') {
+      this.updateIndicator(msg.payload === 'connect');
+      return;
+    }
+    if (msg.type !== 'ENCAP') return;
+    const { topic, payload } = msg.payload || {};
+    if (!topic || !payload) return;
+
+    if (topic.includes('/index/')) {
+      this.handleIndexUpdate(topic, payload);
+    } else if (topic.includes('/topprice/')) {
+      this.handleTopPriceUpdate(payload);
+    } else if (topic.includes('/tick/')) {
+      this.handleTickUpdate(payload);
+    } else if (topic.includes('/stockinfo/')) {
+      this.handleStockInfoUpdate(payload);
+    }
+  }
+
+  handleIndexUpdate(topic, p) {
+    this.stats.indices++;
+    const statEl = document.getElementById('dnse-stat-idx');
+    if (statEl) statEl.textContent = this.stats.indices;
+
+    // Identify index
+    let idxKey = null;
+    let idxName = null;
+    if (topic.endsWith('VNINDEX')) {
+      idxKey = 'vnindex'; idxName = 'VN-INDEX';
+    } else if (topic.endsWith('VN30')) {
+      idxKey = 'vn30'; idxName = 'VN30-INDEX';
+    } else if (topic.endsWith('HNX')) {
+      idxKey = 'hnx'; idxName = 'HNX-INDEX';
+    } else if (topic.endsWith('UPCOM')) {
+      idxKey = 'upcom'; idxName = 'UPCOM-INDEX';
+    }
+    if (!idxKey) return;
+
+    const val = typeof p.valueIndexes === 'number' ? p.valueIndexes : p.indexValue;
+    const chg = typeof p.changedValue === 'number' ? p.changedValue : p.changed;
+    const pct = typeof p.changedRatio === 'number' ? p.changedRatio : p.ratio;
+    if (typeof val !== 'number') return;
+
+    // Update global MARKET_INDICES array
+    if (typeof MARKET_INDICES !== 'undefined' && Array.isArray(MARKET_INDICES)) {
+      const found = MARKET_INDICES.find(m => m.name.includes(idxName) || (idxKey === 'vnindex' && m.name.includes('VN-INDEX')) || (idxKey === 'vn30' && m.name.includes('VN30')));
+      if (found) {
+        found.score = val;
+        found.chg = chg || 0;
+        found.pct = pct || 0;
+        if (p.totalVolumeTraded) found.vol = (p.totalVolumeTraded / 1e6).toFixed(1) + 'M';
+        if (p.grossTradeAmount) found.val = Math.round(p.grossTradeAmount).toLocaleString('vi-VN') + ' tỷ';
+        if (typeof p.fluctuationUpIssueCount === 'number') found.adv = p.fluctuationUpIssueCount;
+        if (typeof p.fluctuationSteadinessIssueCount === 'number') found.ref = p.fluctuationSteadinessIssueCount;
+        if (typeof p.fluctuationDownIssueCount === 'number') found.dec = p.fluctuationDownIssueCount;
+      }
+    }
+
+    // Update DOM on #market overview cards
+    if (typeof updateMarketIndexInDOM === 'function') {
+      updateMarketIndexInDOM(idxName, val, chg, pct);
+    }
+
+    // Update DOM in Top Header strip
+    if (typeof updateHeaderIndicesUI === 'function') {
+      updateHeaderIndicesUI();
+    }
+  }
+
+  handleTopPriceUpdate(p) {
+    if (!p || !p.symbol) return;
+    this.stats.orderBooks++;
+    const statEl = document.getElementById('dnse-stat-ob');
+    if (statEl) statEl.textContent = this.stats.orderBooks;
+
+    if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
+
+    const bids = p.bidList || [];
+    const asks = p.offerList || [];
+
+    // Calculate total bid & ask volumes
+    const totalBidVol = bids.reduce((acc, b) => acc + (b.qtty || 0), 0);
+    const totalAskVol = asks.reduce((acc, a) => acc + (a.qtty || 0), 0);
+    const totalDepth = totalBidVol + totalAskVol;
+    const buyRatio = totalDepth > 0 ? Math.min(95, Math.max(5, Math.round((totalBidVol / totalDepth) * 100))) : 50;
+    const sellRatio = 100 - buyRatio;
+
+    // Update Depth Bar
+    const buyTrack = document.getElementById('ob-track-buy');
+    const sellTrack = document.getElementById('ob-track-sell');
+    const buyLbl = document.getElementById('ob-lbl-buy');
+    const sellLbl = document.getElementById('ob-lbl-sell');
+
+    if (buyTrack) buyTrack.style.width = buyRatio + '%';
+    if (sellTrack) sellTrack.style.width = sellRatio + '%';
+    if (buyLbl && typeof fmtVN === 'function') buyLbl.innerHTML = `DƯ MUA: <b>${fmtVN(totalBidVol, 0)}</b> (${buyRatio}%)`;
+    if (sellLbl && typeof fmtVN === 'function') sellLbl.innerHTML = `DƯ BÁN: <b>${fmtVN(totalAskVol, 0)}</b> (${sellRatio}%)`;
+
+    // Max volume for row background bars
+    const maxRowVol = Math.max(
+      ...bids.map(b => b.qtty || 0),
+      ...asks.map(a => a.qtty || 0),
+      10000
+    );
+
+    // Update 3 Bid & 3 Ask levels
+    for (let i = 1; i <= 3; i++) {
+      const bItem = bids[i - 1];
+      const aItem = asks[i - 1];
+
+      const bPriceEl = document.getElementById(`ob-b${i}-price`);
+      const bVolEl = document.getElementById(`ob-b${i}-vol`);
+      const bBarEl = document.getElementById(`ob-b${i}-bar`);
+
+      const aPriceEl = document.getElementById(`ob-a${i}-price`);
+      const aVolEl = document.getElementById(`ob-a${i}-vol`);
+      const aBarEl = document.getElementById(`ob-a${i}-bar`);
+
+      if (bItem && bPriceEl && bVolEl) {
+        bPriceEl.textContent = (bItem.price).toFixed(2);
+        bVolEl.textContent = typeof fmtVN === 'function' ? fmtVN(bItem.qtty, 0) : bItem.qtty;
+        if (bBarEl) bBarEl.style.width = Math.min(100, Math.round(((bItem.qtty || 0) / maxRowVol) * 100)) + '%';
+        bPriceEl.classList.remove('flash-up');
+        void bPriceEl.offsetWidth;
+        bPriceEl.classList.add('flash-up');
+      }
+
+      if (aItem && aPriceEl && aVolEl) {
+        aPriceEl.textContent = (aItem.price).toFixed(2);
+        aVolEl.textContent = typeof fmtVN === 'function' ? fmtVN(aItem.qtty, 0) : aItem.qtty;
+        if (aBarEl) aBarEl.style.width = Math.min(100, Math.round(((aItem.qtty || 0) / maxRowVol) * 100)) + '%';
+        aPriceEl.classList.remove('flash-down');
+        void aPriceEl.offsetWidth;
+        aPriceEl.classList.add('flash-down');
+      }
+    }
+  }
+
+  handleTickUpdate(p) {
+    if (!p || !p.symbol) return;
+    this.stats.ticks++;
+    const statEl = document.getElementById('dnse-stat-ticks');
+    if (statEl) statEl.textContent = this.stats.ticks;
+
+    if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
+
+    const matchPx = p.matchPrice;
+    const matchQty = p.matchQtty || p.matchQuantity || 10;
+    const side = p.side === 1 ? 'MUA' : 'BÁN';
+    const sideCls = p.side === 1 ? 'M' : 'B';
+
+    // Format time
+    let tStr = '';
+    if (p.sendingTime && p.sendingTime.seconds) {
+      const d = new Date(p.sendingTime.seconds * 1000);
+      tStr = d.toTimeString().split(' ')[0];
+    } else {
+      tStr = new Date().toTimeString().split(' ')[0];
+    }
+
+    // Central match price in Order Book
+    const obPriceEl = document.getElementById('ob-match-price');
+    const obChgEl = document.getElementById('ob-match-chg');
+    const obVolEl = document.getElementById('ob-match-vol');
+    const refPx = (STOCK.ref || STOCK.tc || (STOCK.price > 200 ? STOCK.price / 1000 : STOCK.price));
+    const chgVal = matchPx - refPx;
+    const pctVal = refPx > 0 ? (chgVal / refPx) * 100 : 0;
+    const isUp = chgVal > 0;
+    const isDown = chgVal < 0;
+
+    if (obPriceEl) {
+      const oldVal = parseFloat(obPriceEl.textContent) || matchPx;
+      obPriceEl.textContent = matchPx.toFixed(2);
+      obPriceEl.className = isUp ? 'up' : isDown ? 'down' : 'ref';
+      obPriceEl.classList.remove('flash-up', 'flash-down');
+      void obPriceEl.offsetWidth;
+      obPriceEl.classList.add(matchPx >= oldVal ? 'flash-up' : 'flash-down');
+    }
+
+    if (obChgEl) {
+      obChgEl.textContent = `${chgVal > 0 ? '+' : ''}${chgVal.toFixed(2)} (${pctVal >= 0 ? '+' : ''}${pctVal.toFixed(2)}%)`;
+      obChgEl.className = isUp ? 'up' : isDown ? 'down' : 'ref';
+    }
+
+    if (obVolEl && p.totalVolumeTraded) {
+      obVolEl.textContent = typeof fmtVN === 'function' ? fmtVN(p.totalVolumeTraded, 0) : p.totalVolumeTraded;
+    }
+
+    // Prepend to Time & Sales table
+    const tradesTbody = document.getElementById('ob-trades-tbody');
+    if (tradesTbody) {
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '1px dashed var(--line2)';
+      tr.style.transition = 'background-color 0.4s ease';
+      tr.className = p.side === 1 ? 'flash-up' : 'flash-down';
+      tr.innerHTML = `
+        <td style="color:var(--ink3);padding:3px 4px">${tStr}</td>
+        <td style="text-align:right;font-weight:700;padding:3px 4px;color:${isUp ? 'var(--up)' : isDown ? 'var(--down)' : 'var(--ref)'}">${matchPx.toFixed(2)}</td>
+        <td style="text-align:right;padding:3px 4px">${typeof fmtVN === 'function' ? fmtVN(matchQty, 0) : matchQty}</td>
+        <td style="text-align:right;padding:3px 4px;color:${isUp ? 'var(--up)' : isDown ? 'var(--down)' : 'var(--ref)'}">${chgVal > 0 ? '+' : ''}${chgVal.toFixed(2)}</td>
+        <td style="text-align:center;padding:3px 4px">
+          <span class="trade-side-badge ${sideCls}">${side}</span>
+        </td>
+      `;
+      tradesTbody.insertBefore(tr, tradesTbody.firstChild);
+      while (tradesTbody.children.length > 8) {
+        tradesTbody.removeChild(tradesTbody.lastChild);
+      }
+    }
+
+    const statusEl = document.getElementById('ob-trades-status');
+    if (statusEl) statusEl.textContent = 'Live KRX Stream (Đang stream realtime)';
+  }
+
+  handleStockInfoUpdate(p) {
+    if (!p || !p.symbol) return;
+    if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
+
+    if (p.referencePrice) STOCK.ref = p.referencePrice;
+    if (p.highLimitPrice) STOCK.tran = p.highLimitPrice;
+    if (p.lowLimitPrice) STOCK.san = p.lowLimitPrice;
+    if (p.matchPrice) STOCK.price = p.matchPrice * 1000;
+  }
+}
+
+// Initialize global manager instance
+window.dnseSocketManager = new DnseKrxSocketManager();
+
+function openDnseAccountModal() {
+  const modal = document.getElementById('modal-dnse-account');
+  const tokenInput = document.getElementById('dnse-token-input');
+  if (modal) modal.style.display = 'flex';
+  if (tokenInput && window.dnseSocketManager) {
+    tokenInput.value = window.dnseSocketManager.token;
+  }
+}
+
+function closeDnseAccountModal() {
+  const modal = document.getElementById('modal-dnse-account');
+  if (modal) modal.style.display = 'none';
+}
+
+function toggleTokenVisibility() {
+  const inp = document.getElementById('dnse-token-input');
+  if (inp) {
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+}
+
+function saveDnseToken() {
+  const inp = document.getElementById('dnse-token-input');
+  if (inp && inp.value.trim()) {
+    const newToken = inp.value.trim();
+    localStorage.setItem('kkr_dnse_token', newToken);
+    if (window.dnseSocketManager) {
+      window.dnseSocketManager.token = newToken;
+    }
+    alert('Đã lưu DNSE Token thành công! Hệ thống sẽ sử dụng token này cho toàn bộ kết nối KRX.');
+  }
+}
+
+// Auto start socket on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => window.dnseSocketManager.init());
+} else {
+  window.dnseSocketManager.init();
+}
+</script>
+
 </body></html>

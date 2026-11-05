@@ -1485,7 +1485,7 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .tv-sub-left{display:flex;align-items:center;gap:8px;white-space:nowrap}
 .tv-stat-sym{color:var(--ink2);font-weight:500}
 
-/* Hero Side Tabs & MCP Order Book */
+/* Hero Side Tabs & MCP Order Book - Zero-CLS Financial Layout */
 .hero-side{width:591px;flex:none;display:flex;flex-direction:column;min-width:0}
 .hero-side-tabs{height:34px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;background:var(--sub);padding:0 6px;gap:4px}
 .hero-side-tab{height:26px;padding:0 10px;border-radius:4px;border:none;background:transparent;font-size:11px;font-weight:500;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;transition:all .12s ease}
@@ -1494,31 +1494,59 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .hero-side-content{flex:1;min-height:0;display:flex;flex-direction:column;position:relative;overflow:hidden}
 
 .mcp-ob-wrap{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 12px;gap:8px;overflow-y:auto}
-.mcp-ob-ratio-bar{display:flex;flex-direction:column;gap:3px;background:var(--sub);padding:6px 10px;border-radius:4px;border:1px solid var(--line)}
-.mcp-ob-ratio-labels{display:flex;justify-content:space-between;font-size:10.5px;font-weight:600}
-.mcp-ob-ratio-track{height:6px;width:100%;border-radius:3px;overflow:hidden;display:flex;background:var(--line)}
-.mcp-ob-track-buy{background:#22AB94;height:100%}
-.mcp-ob-track-sell{background:#F23645;height:100%}
+.cmc-card .mcp-ob-wrap{padding:2px 0 !important;overflow:visible !important}
+.mcp-ob-session-strip{height:38px !important;min-height:38px !important;max-height:38px !important;box-sizing:border-box !important;display:flex !important;align-items:center !important;justify-content:space-between !important;gap:4px !important;padding:5px 8px !important;background:var(--sub);border:1px solid var(--line);border-radius:4px;font-size:10.5px;overflow:hidden !important;white-space:nowrap !important;contain:layout size}
+.mcp-ob-session-strip .mmb-item{display:flex;flex-direction:column;align-items:center;gap:1px;flex:1 1 0;min-width:0}
+.mcp-ob-session-strip .lbl{font-size:9px;color:var(--ink3);font-weight:600;text-transform:uppercase;line-height:1}
+.mcp-ob-session-strip .val{font-family:var(--mono);font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.2;white-space:nowrap}
 
-.mcp-dom-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
-.mcp-dom-table th{font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;padding:4px 6px;border-bottom:1px solid var(--line);background:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mcp-dom-table td{padding:5px 6px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line);position:relative;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Zero-CLS Depth Ratio Bar: Fixed 38px Height & Strict 50/50 Grid */
+.mcp-ob-ratio-bar{height:38px !important;min-height:38px !important;max-height:38px !important;box-sizing:border-box !important;display:flex !important;flex-direction:column !important;justify-content:center !important;gap:4px !important;background:var(--sub);padding:5px 8px !important;border-radius:4px;border:1px solid var(--line);overflow:hidden !important;contain:layout size}
+.mcp-ob-ratio-labels{display:grid !important;grid-template-columns:1fr 1fr !important;width:100% !important;height:16px !important;line-height:16px !important;font-size:10px !important;font-weight:600;letter-spacing:-0.2px;white-space:nowrap !important;overflow:hidden !important}
+.mcp-ob-ratio-labels span{white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;font-family:var(--mono) !important;font-variant-numeric:tabular-nums !important;display:block !important}
+#ob-lbl-buy{text-align:left !important;color:#22AB94 !important}
+#ob-lbl-sell{text-align:right !important;color:#F23645 !important}
+.mcp-ob-ratio-track{height:6px !important;min-height:6px !important;max-height:6px !important;width:100% !important;border-radius:3px !important;overflow:hidden !important;display:flex !important;background:var(--line) !important;flex-shrink:0 !important;position:relative}
+.mcp-ob-track-buy{background:#22AB94 !important;height:100% !important;min-width:2px;flex-shrink:0 !important;transition:width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important}
+.mcp-ob-track-sell{background:#F23645 !important;height:100% !important;min-width:2px;flex-shrink:0 !important;transition:width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important}
+
+/* Zero-CLS Match Bar: Fixed 28px Height & Monospace Tabular Alignment */
+.mcp-match-bar{display:grid !important;grid-template-columns:auto auto auto 1fr !important;align-items:center !important;gap:4px !important;background:var(--sub) !important;padding:0 8px !important;border-radius:6px !important;border:1px solid var(--line) !important;margin-bottom:6px !important;font-size:10.5px !important;height:28px !important;min-height:28px !important;max-height:28px !important;box-sizing:border-box !important;line-height:26px !important;white-space:nowrap !important;overflow:hidden !important;contain:layout size}
+#ob-match-price{font-family:var(--mono) !important;font-size:12.5px !important;font-variant-numeric:tabular-nums !important;font-weight:700 !important;display:inline-block;white-space:nowrap}
+#ob-match-chg{font-family:var(--mono) !important;font-size:10px !important;font-variant-numeric:tabular-nums !important;display:inline-block;white-space:nowrap}
+#ob-match-vol{font-family:var(--mono) !important;font-variant-numeric:tabular-nums !important;font-weight:700 !important}
+
+/* Zero-CLS 4-Column DOM Table: Fixed 25% Columns & Fixed 26px Row Heights */
+.mcp-dom-table{width:100% !important;table-layout:fixed !important;border-collapse:collapse !important;font-size:11px !important;margin:0 !important}
+.mcp-dom-table colgroup col{width:25% !important}
+.mcp-dom-table tr{height:26px !important;min-height:26px !important;max-height:26px !important;box-sizing:border-box !important}
+.mcp-dom-table th{height:24px !important;line-height:24px !important;font-size:9px !important;font-weight:700 !important;color:var(--ink3) !important;text-transform:uppercase !important;padding:0 6px !important;border-bottom:1px solid var(--line) !important;background:var(--sub) !important;white-space:nowrap !important;overflow:hidden !important;box-sizing:border-box !important;width:25% !important}
+.mcp-dom-table td{height:26px !important;line-height:26px !important;padding:0 6px !important;font-family:var(--mono) !important;font-variant-numeric:tabular-nums !important;border-bottom:1px solid var(--line) !important;position:relative !important;font-size:11px !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;box-sizing:border-box !important;vertical-align:middle !important;width:25% !important}
 .mcp-dom-table tr:hover td{background:var(--hover)}
-.mcp-match-bar{display:flex;align-items:center;justify-content:space-between;background:var(--sub);padding:5px 8px;border-radius:6px;border:1px solid var(--line);margin-bottom:6px;font-size:11px}
-.mcp-dom-bar{position:absolute;top:0;bottom:0;opacity:0.18;pointer-events:none}
-.mcp-dom-bar.buy{left:0;background:#22AB94}
-.mcp-dom-bar.sell{right:0;background:#F23645}
+.mcp-dom-table td:nth-child(1){text-align:left !important}
+.mcp-dom-table td:nth-child(2){text-align:right !important;font-weight:700 !important}
+.mcp-dom-table td:nth-child(3){text-align:left !important;padding-left:8px !important;font-weight:700 !important}
+.mcp-dom-table td:nth-child(4){text-align:right !important}
+.mcp-dom-bar{position:absolute !important;top:0 !important;bottom:0 !important;height:100% !important;opacity:0.18 !important;pointer-events:none !important;transition:width 0.25s ease !important}
+.mcp-dom-bar.buy{left:0 !important;background:#22AB94 !important}
+.mcp-dom-bar.sell{right:0 !important;background:#F23645 !important}
 
-.mcp-ts-section{flex:1;min-height:0;display:flex;flex-direction:column;gap:4px;margin-top:2px}
-.mcp-ts-header{display:flex;align-items:center;justify-content:space-between;font-size:10.5px;font-weight:600;color:var(--ink2);padding:2px 0}
-.mcp-ts-table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--mono)}
-.mcp-ts-table th{font-size:9.5px;font-weight:600;color:var(--ink3);text-align:right;padding:3px 6px;border-bottom:1px solid var(--line);font-family:var(--sans)}
-.mcp-ts-table th:first-child{text-align:left}
-.mcp-ts-table td{padding:4px 6px;text-align:right;border-bottom:1px solid var(--line);font-size:11px}
-.mcp-ts-table td:first-child{text-align:left;color:var(--ink3)}
-.trade-side-badge{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9.5px;font-weight:700;line-height:12px;font-family:var(--sans)}
-.trade-side-badge.M{background:rgba(34,171,148,0.15);color:#0E8A75}
-.trade-side-badge.B{background:rgba(242,54,69,0.15);color:#D02735}
+/* Zero-CLS Time & Sales Table: Fixed Columns & Fixed 24px Row Heights */
+.mcp-ts-section{flex:1 !important;min-height:0 !important;display:flex !important;flex-direction:column !important;gap:4px !important;margin-top:2px !important}
+.mcp-ts-header{height:22px !important;min-height:22px !important;max-height:22px !important;display:flex !important;align-items:center !important;justify-content:space-between !important;font-size:10.5px !important;font-weight:600 !important;color:var(--ink2) !important;padding:0 !important;white-space:nowrap !important;overflow:hidden !important;box-sizing:border-box !important}
+.mcp-ts-table{width:100% !important;table-layout:fixed !important;border-collapse:collapse !important;font-size:11px !important;font-family:var(--mono) !important;margin:0 !important}
+.mcp-ts-table tr{height:24px !important;min-height:24px !important;max-height:24px !important;box-sizing:border-box !important}
+.mcp-ts-table th{height:22px !important;line-height:22px !important;font-size:9.5px !important;font-weight:600 !important;color:var(--ink3) !important;text-align:right !important;padding:0 4px !important;border-bottom:1px solid var(--line) !important;font-family:var(--sans) !important;white-space:nowrap !important;overflow:hidden !important;box-sizing:border-box !important}
+.mcp-ts-table th:first-child{text-align:left !important}
+.mcp-ts-table td{height:24px !important;line-height:24px !important;padding:0 4px !important;text-align:right !important;border-bottom:1px solid var(--line) !important;font-size:11px !important;font-variant-numeric:tabular-nums !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;box-sizing:border-box !important;vertical-align:middle !important}
+.mcp-ts-table td:nth-child(1){width:22% !important;text-align:left !important;color:var(--ink3) !important;letter-spacing:-0.4px !important}
+.mcp-ts-table td:nth-child(2){width:20% !important;text-align:right !important}
+.mcp-ts-table td:nth-child(3){width:24% !important;text-align:right !important}
+.mcp-ts-table td:nth-child(4){width:18% !important;text-align:right !important}
+.mcp-ts-table td:nth-child(5){width:16% !important;text-align:center !important}
+.trade-side-badge{display:inline-block !important;padding:1px 5px !important;border-radius:3px !important;font-size:9.5px !important;font-weight:700 !important;line-height:12px !important;font-family:var(--sans) !important;white-space:nowrap !important}
+.trade-side-badge.M{background:rgba(34,171,148,0.15) !important;color:#0E8A75 !important}
+.trade-side-badge.B{background:rgba(242,54,69,0.15) !important;color:#D02735 !important}
 .mcp-feed-footer{display:flex;align-items:center;justify-content:space-between;padding:6px 0 2px;font-size:10px;color:var(--ink3);border-top:1px solid var(--line);margin-top:auto}
 
 .m4{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
@@ -8705,34 +8733,40 @@ function renderMcpOrderBook() {
       <div class="mmb-item"><span class="lbl">Cao</span><b class="val up" id="ob-val-high">${(highVal / 1000).toFixed(2)}</b></div>
       <div class="mmb-item"><span class="lbl">Thấp</span><b class="val down" id="ob-val-low">${(lowVal / 1000).toFixed(2)}</b></div>
     </div>
-    <!-- Depth Ratio Bar -->
+    <!-- Depth Ratio Bar (Zero-CLS Fixed Grid) -->
     <div class="mcp-ob-ratio-bar">
       <div class="mcp-ob-ratio-labels">
-        <span style="color:#22AB94" id="ob-lbl-buy">DƯ MUA: <b>${fmtVN(totalBidVol, 0)}</b> (${bidRatio}%)</span>
-        <span style="color:#F23645" id="ob-lbl-sell">DƯ BÁN: <b>${fmtVN(totalAskVol, 0)}</b> (${askRatio}%)</span>
+        <span id="ob-lbl-buy">DƯ MUA: <b>${fmtVN(totalBidVol, 0)}</b> (${bidRatio}%)</span>
+        <span id="ob-lbl-sell">DƯ BÁN: <b>${fmtVN(totalAskVol, 0)}</b> (${askRatio}%)</span>
       </div>
-      <div class="mcp-ob-ratio-track" style="transition:all 0.3s ease">
-        <div class="mcp-ob-track-buy" id="ob-track-buy" style="width:${bidRatio}%;transition:width 0.3s ease"></div>
-        <div class="mcp-ob-track-sell" id="ob-track-sell" style="width:${askRatio}%;transition:width 0.3s ease"></div>
+      <div class="mcp-ob-ratio-track">
+        <div class="mcp-ob-track-buy" id="ob-track-buy" style="width:${bidRatio}%"></div>
+        <div class="mcp-ob-track-sell" id="ob-track-sell" style="width:${askRatio}%"></div>
       </div>
     </div>
 
-    <!-- Real-time Match Summary Strip (Giá x 1.000 đ) -->
+    <!-- Real-time Match Summary Strip (Zero-CLS Fixed Dimensions) -->
     <div class="mcp-match-bar" id="ob-match-bar">
       <span style="color:var(--ink3)">Khớp lệnh:</span>
-      <b style="font-family:var(--mono);font-size:13px;transition:background-color 0.4s ease;padding:2px 4px;border-radius:4px" id="ob-match-price" class="${getColorClass(curPrice)}">${(curPrice / 1000).toFixed(2)}</b>
-      <span id="ob-match-chg" class="${getColorClass(curPrice)}" style="font-family:var(--mono);font-size:11px">${chgVal > 0 ? '+' : ''}${(chgVal / 1000).toFixed(2)} (${pctVal >= 0 ? '+' : ''}${pctVal.toFixed(2)}%)</span>
-      <span style="color:var(--ink3);font-size:10.5px">KL: <b id="ob-match-vol" style="color:var(--ink);font-family:var(--mono)">${fmtVN(matchVol, 0)}</b></span>
+      <b id="ob-match-price" class="${getColorClass(curPrice)}">${(curPrice / 1000).toFixed(2)}</b>
+      <span id="ob-match-chg" class="${getColorClass(curPrice)}">${chgVal > 0 ? '+' : ''}${(chgVal / 1000).toFixed(2)} (${pctVal >= 0 ? '+' : ''}${pctVal.toFixed(2)}%)</span>
+      <span style="color:var(--ink3);text-align:right">KL: <b id="ob-match-vol" style="color:var(--ink)">${fmtVN(matchVol, 0)}</b></span>
     </div>
 
-    <!-- 4-Column Professional Depth of Market (DOM) Table (Giá x 1.000 đ) -->
+    <!-- 4-Column Professional Depth of Market (DOM) Table (Zero-CLS Fixed 25% Columns) -->
     <table class="mcp-dom-table">
+      <colgroup>
+        <col style="width:25%">
+        <col style="width:25%">
+        <col style="width:25%">
+        <col style="width:25%">
+      </colgroup>
       <thead>
         <tr>
-          <th style="text-align:left;color:#22AB94;width:24%">KL Mua</th>
-          <th style="text-align:right;color:#22AB94;width:26%">Giá Mua</th>
-          <th style="text-align:left;color:#F23645;width:26%;padding-left:8px">Giá Bán</th>
-          <th style="text-align:right;color:#F23645;width:24%">KL Bán</th>
+          <th style="text-align:left;color:#22AB94">KL Mua</th>
+          <th style="text-align:right;color:#22AB94">Giá Mua</th>
+          <th style="text-align:left;color:#F23645;padding-left:8px">Giá Bán</th>
+          <th style="text-align:right;color:#F23645">KL Bán</th>
         </tr>
       </thead>
       <tbody id="ob-dom-tbody">
@@ -8778,10 +8812,17 @@ function renderMcpOrderBook() {
     <!-- Real-time Time & Sales (Nhật ký khớp lệnh từng giây - Giá x 1.000 đ) -->
     <div class="mcp-ts-section">
       <div class="mcp-ts-header">
-        <span style="display:flex;align-items:center;gap:5px"><span class="tv-dot-live"></span><b>Nhật ký khớp lệnh Realtime (Time &amp; Sales)</b></span>
-        <span style="font-size:10px;color:var(--ink3)" id="ob-trades-status">Đang stream realtime</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:10.5px"><span class="tv-dot-live"></span><b>Khớp lệnh Realtime (Time &amp; Sales)</b></span>
+        <span style="font-size:9.5px;color:var(--ink3)" id="ob-trades-status">Live stream</span>
       </div>
       <table class="mcp-ts-table">
+        <colgroup>
+          <col style="width:22%">
+          <col style="width:20%">
+          <col style="width:24%">
+          <col style="width:18%">
+          <col style="width:16%">
+        </colgroup>
         <thead>
           <tr>
             <th>Giờ</th>

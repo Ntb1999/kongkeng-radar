@@ -13082,40 +13082,40 @@ let MARKET_FOREIGN_TOP_SELL = MARKET_INSTITUTIONAL_FLOW.foreign.top_sell;
 
 const GLOBAL_INDICES = [
   // 1. Vàng, Bạc & Kim loại Quý (Precious Metals)
-  { name: 'Vàng Thế Giới (Spot)', region: 'Thế giới', cat: 'metal', icon: '🪙', val: '2,748.50 $/oz', chg: '+12.80', pct: '+0.47%', up: true, sub: 'XAU/USD · Giao ngay' },
+  { name: 'Vàng Thế Giới (Spot)', region: 'Thế giới', cat: 'metal', icon: '🪙', yfsym: 'GC=F', val: '2,748.50 $/oz', chg: '+12.80', pct: '+0.47%', up: true, live: true, sub: 'XAU/USD · Giao ngay COMEX' },
   { name: 'Vàng Miếng SJC', region: 'Trong nước', cat: 'metal', icon: '🪙', val: '144.80 tr/lượng', chg: '0.00', pct: '0.00%', up: true, buy: '141.80 tr', sell: '144.80 tr', spread: '3.00 tr', sub: 'Vàng miếng SJC niêm yết' },
   { name: 'Vàng Nhẫn 9999', region: 'DOJI / PNJ', cat: 'metal', icon: '💍', val: '143.50 tr/lượng', chg: '+0.40', pct: '+0.28%', up: true, buy: '141.00 tr', sell: '143.50 tr', spread: '2.50 tr', sub: 'Nhẫn tròn trơn 24K' },
-  { name: 'Bạc TG (Spot)', region: 'Thế giới (XAG)', cat: 'metal', icon: '🥈', val: '32.65 $/oz', chg: '+0.45', pct: '+1.40%', up: true, sub: 'Quy đổi: ~1.020.000 đ/lượng' },
-  { name: 'Bạch Kim (Spot)', region: 'Thế giới (XPT)', cat: 'metal', icon: '⚪', val: '992.40 $/oz', chg: '+7.80', pct: '+0.79%', up: true, sub: 'Platinum quốc tế' },
+  { name: 'Bạc TG (Spot)', region: 'Thế giới (XAG)', cat: 'metal', icon: '🥈', yfsym: 'SI=F', val: '32.65 $/oz', chg: '+0.45', pct: '+1.40%', up: true, live: true, sub: 'Quy đổi: ~1.020.000 đ/lượng' },
+  { name: 'Bạch Kim (Spot)', region: 'Thế giới (XPT)', cat: 'metal', icon: '⚪', yfsym: 'PL=F', val: '992.40 $/oz', chg: '+7.80', pct: '+0.79%', up: true, live: true, sub: 'Platinum quốc tế NYMEX' },
 
   // 2. Kim loại Công nghiệp & Vật liệu (Industrial Metals)
-  { name: 'Đồng (Copper COMEX)', region: 'COMEX', cat: 'metal', icon: '🧱', val: '4.38 $/lb', chg: '+0.04', pct: '+0.92%', up: true, sub: 'Chỉ báo sức khỏe kinh tế (Dr. Copper)' },
+  { name: 'Đồng (Copper COMEX)', region: 'COMEX', cat: 'metal', icon: '🧱', yfsym: 'HG=F', val: '4.38 $/lb', chg: '+0.04', pct: '+0.92%', up: true, live: true, sub: 'Chỉ báo sức khỏe kinh tế (Dr. Copper)' },
   { name: 'Quặng Sắt 62% Fe', region: 'Singapore SGX', cat: 'metal', icon: '🏗️', val: '104.50 $/tấn', chg: '+1.80', pct: '+1.75%', up: true, sub: 'Đầu vào ngành Thép (HPG, HSG)' },
   { name: 'Thép HRC Thế Giới', region: 'Thượng Hải', cat: 'metal', icon: '🔩', val: '542.00 $/tấn', chg: '+6.50', pct: '+1.21%', up: true, sub: 'Thép cuộn cán nóng' },
 
   // 3. Cà phê & Nông sản Chiến lược (Agricultural Commodities)
   { name: 'Cà phê Robusta', region: 'London (ICE)', cat: 'agri', icon: '☕', val: '4,685 $/tấn', chg: '+48.00', pct: '+1.04%', up: true, sub: 'Kỳ hạn T01/2027 · Sàn ICE Europe' },
-  { name: 'Cà phê Arabica', region: 'New York (ICE)', cat: 'agri', icon: '☕', val: '248.50 ¢/lb', chg: '+3.20', pct: '+1.30%', up: true, sub: 'Kỳ hạn T12/2026 · ICE US' },
+  { name: 'Cà phê Arabica', region: 'New York (ICE)', cat: 'agri', icon: '☕', yfsym: 'KC=F', val: '248.50 ¢/lb', chg: '+3.20', pct: '+1.30%', up: true, live: true, sub: 'Kỳ hạn T12/2026 · ICE US' },
   { name: 'Cà phê Nhân xô VN', region: 'Tây Nguyên', cat: 'agri', icon: '🌱', val: '108.500 đ/kg', chg: '+1.500', pct: '+1.40%', up: true, sub: 'Đắk Lắk · Lâm Đồng · Gia Lai' },
   { name: 'Cao su Tự Nhiên RSS3', region: 'Osaka / SGX', cat: 'agri', icon: '🌳', val: '198.50 ¢/kg', chg: '+2.40', pct: '+1.22%', up: true, sub: 'Tác động nhóm GVR, PHR, DPR' },
   { name: 'Gạo XK 5% Tấm', region: 'Việt Nam (VFA)', cat: 'agri', icon: '🌾', val: '535.00 $/tấn', chg: '-3.00', pct: '-0.56%', up: false, sub: 'Gạo tiêu chuẩn xuất khẩu' },
-  { name: 'Đường Thô (#11)', region: 'New York (ICE)', cat: 'agri', icon: '🍬', val: '22.15 ¢/lb', chg: '-0.20', pct: '-0.90%', up: false, sub: 'Tác động nhóm SBT, QNS, LSS' },
+  { name: 'Đường Thô (#11)', region: 'New York (ICE)', cat: 'agri', icon: '🍬', yfsym: 'SB=F', val: '22.15 ¢/lb', chg: '-0.20', pct: '-0.90%', up: false, live: true, sub: 'Tác động nhóm SBT, QNS, LSS' },
 
   // 4. Dầu khí & Năng lượng (Energy)
-  { name: 'Dầu Brent', region: 'London (ICE)', cat: 'energy', icon: '🛢️', val: '78.50 $/thùng', chg: '+1.25', pct: '+1.62%', up: true, sub: 'Dầu thô tiêu chuẩn biển Bắc' },
-  { name: 'Dầu WTI', region: 'Mỹ (NYMEX)', cat: 'energy', icon: '🛢️', val: '74.20 $/thùng', chg: '+1.10', pct: '+1.50%', up: true, sub: 'Dầu ngọt nhẹ Texas' },
-  { name: 'Khí Tự Nhiên', region: 'Henry Hub', cat: 'energy', icon: '🔥', val: '2.78 $/MMBtu', chg: '+0.06', pct: '+2.21%', up: true, sub: 'Natural Gas (GAS, PVG)' },
+  { name: 'Dầu Brent', region: 'London (ICE)', cat: 'energy', icon: '🛢️', yfsym: 'BZ=F', val: '78.50 $/thùng', chg: '+1.25', pct: '+1.62%', up: true, live: true, sub: 'Dầu thô tiêu chuẩn biển Bắc' },
+  { name: 'Dầu WTI', region: 'Mỹ (NYMEX)', cat: 'energy', icon: '🛢️', yfsym: 'CL=F', val: '74.20 $/thùng', chg: '+1.10', pct: '+1.50%', up: true, live: true, sub: 'Dầu ngọt nhẹ Texas' },
+  { name: 'Khí Tự Nhiên', region: 'Henry Hub', cat: 'energy', icon: '🔥', yfsym: 'NG=F', val: '2.78 $/MMBtu', chg: '+0.06', pct: '+2.21%', up: true, live: true, sub: 'Natural Gas (GAS, PVG)' },
 
   // 5. Chỉ số Chứng khoán Quốc tế (Major Indices)
-  { name: 'S&P 500', region: 'Mỹ', cat: 'index', icon: '📊', val: '5,785.40', chg: '+24.80', pct: '+0.43%', up: true, sub: '500 doanh nghiệp vốn hóa lớn Mỹ' },
-  { name: 'Dow Jones', region: 'Mỹ', cat: 'index', icon: '📊', val: '42,512.00', chg: '+145.20', pct: '+0.34%', up: true, sub: 'Dow Jones Industrial Average' },
-  { name: 'Nasdaq 100', region: 'Mỹ', cat: 'index', icon: '📊', val: '18,295.60', chg: '+112.50', pct: '+0.62%', up: true, sub: 'Chỉ số công nghệ Mỹ' },
-  { name: 'Nikkei 225', region: 'Nhật Bản', cat: 'index', icon: '📊', val: '39,380.00', chg: '+220.00', pct: '+0.56%', up: true, sub: 'Sở giao dịch Tokyo (TSE)' },
-  { name: 'Hang Seng', region: 'Hồng Kông', cat: 'index', icon: '📊', val: '21,250.00', chg: '+380.00', pct: '+1.82%', up: true, sub: 'Sở giao dịch Hồng Kông (HKEX)' },
+  { name: 'S&P 500', region: 'Mỹ', cat: 'index', icon: '📊', yfsym: '^GSPC', val: '5,785.40', chg: '+24.80', pct: '+0.43%', up: true, live: true, sub: '500 doanh nghiệp vốn hóa lớn Mỹ' },
+  { name: 'Dow Jones', region: 'Mỹ', cat: 'index', icon: '📊', yfsym: '^DJI', val: '42,512.00', chg: '+145.20', pct: '+0.34%', up: true, live: true, sub: 'Dow Jones Industrial Average' },
+  { name: 'Nasdaq 100', region: 'Mỹ', cat: 'index', icon: '📊', yfsym: '^IXIC', val: '18,295.60', chg: '+112.50', pct: '+0.62%', up: true, live: true, sub: 'Chỉ số công nghệ Mỹ' },
+  { name: 'Nikkei 225', region: 'Nhật Bản', cat: 'index', icon: '📊', yfsym: '^N225', val: '39,380.00', chg: '+220.00', pct: '+0.56%', up: true, live: true, sub: 'Sở giao dịch Tokyo (TSE)' },
+  { name: 'Hang Seng', region: 'Hồng Kông', cat: 'index', icon: '📊', yfsym: '^HSI', val: '21,250.00', chg: '+380.00', pct: '+1.82%', up: true, live: true, sub: 'Sở giao dịch Hồng Kông (HKEX)' },
 
   // 6. Ngoại tệ, Lợi suất & Vĩ mô (Macro & FX)
-  { name: 'Chỉ số DXY', region: 'Mỹ', cat: 'fx', icon: '💵', val: '104.25', chg: '-0.18', pct: '-0.17%', up: false, sub: 'Thước đo sức mạnh đồng USD' },
-  { name: 'Lợi suất US10Y', region: 'Mỹ', cat: 'fx', icon: '📈', val: '4.28%', chg: '+0.03', pct: '+0.71%', up: true, sub: 'Lợi suất trái phiếu CP Mỹ 10Y' },
+  { name: 'Chỉ số DXY', region: 'Mỹ', cat: 'fx', icon: '💵', yfsym: 'DX-Y.NYB', val: '104.25', chg: '-0.18', pct: '-0.17%', up: false, live: true, sub: 'Thước đo sức mạnh đồng USD' },
+  { name: 'Lợi suất US10Y', region: 'Mỹ', cat: 'fx', icon: '📈', yfsym: '^TNX', val: '4.28%', chg: '+0.03', pct: '+0.71%', up: true, live: true, sub: 'Lợi suất trái phiếu CP Mỹ 10Y' },
   { name: 'Tỷ giá USD/VND', region: 'VCB FX', cat: 'fx', icon: '🏦', val: '25,460 đ', chg: '+15.00', pct: '+0.06%', up: true, buy: '25,120 đ', sell: '25,490 đ', spread: '370 đ', sub: 'Tỷ giá niêm yết Vietcombank' },
 
   // 7. Tiền mã hóa Quốc tế (Realtime Binance Stream)
@@ -13446,8 +13446,12 @@ function vMarket() {
     tabContent = `<div style="margin-top:16px">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px">
         <div>
-          <div style="font-size:13.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px">
+          <div style="font-size:13.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <span>🌐</span> Thị Trường Quốc Tế, Hàng Hóa Chiến Lược &amp; Ngoại Tệ
+            <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;background:rgba(34,197,94,0.12);color:var(--up);border:1px solid rgba(34,197,94,0.25);margin-left:4px">
+              <span class="live-pulse-dot" style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block"></span>
+              <span id="yfinance-status-text">Yahoo Finance &amp; Binance Live Stream</span>
+            </span>
           </div>
           <div style="font-size:12px;color:var(--ink3);margin-top:2px">
             Dữ liệu giá Vàng (SJC, Nhẫn 9999, TG), Bạc, Cà phê (Robusta, Arabica, Tây Nguyên), Dầu khí, Nông sản, Kim loại quý &amp; Ngoại tệ
@@ -13471,8 +13475,9 @@ function vMarket() {
           const isCrypto = g.region === 'Tiền số' || g.region === 'Binance' || g.cat === 'crypto';
           const hasSpread = g.buy && g.sell;
           const symCode = g.sym || (g.name.includes('BTC') ? 'BTCUSDT' : g.name.includes('ETH') ? 'ETHUSDT' : g.name.includes('BNB') ? 'BNBUSDT' : g.name.includes('SOL') ? 'SOLUSDT' : '');
+          const yfCode = g.yfsym || '';
 
-          return `<div class="mkt-global-card" ${symCode ? `data-global-sym="${symCode}"` : ''} data-cat="${g.cat || 'other'}" style="position:relative;overflow:hidden">
+          return `<div class="mkt-global-card" ${symCode ? `data-global-sym="${symCode}"` : ''} ${yfCode ? `data-yf-sym="${yfCode}"` : ''} data-cat="${g.cat || 'other'}" style="position:relative;overflow:hidden">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
               <div style="display:flex;align-items:center;gap:6px">
                 ${isCrypto ? `<svg viewBox="0 0 32 32" width="16" height="16" style="flex-shrink:0"><circle cx="16" cy="16" r="16" fill="#F0B90B"/><path fill="#1E2026" d="M16 6.5l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm13.4 0l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm-3.2-3.2l3.2-3.2 3.2 3.2-3.2 3.2z"/></svg>` : `<span style="font-size:14px;line-height:1">${g.icon || '📌'}</span>`}
@@ -15727,6 +15732,10 @@ function render(keepScroll) {
   view.innerHTML = html;
   document.title = 'KongKeng Radar';
   drawCandles(); drawForeign(); bindPB(); if (r === 'quant') drawQuant();
+  if (r === 'market' && S.mktTab === 'global') {
+    if (typeof initYahooFinanceWebSocket === 'function') initYahooFinanceWebSocket();
+    if (typeof updateYFinanceCardsInDOM === 'function') updateYFinanceCardsInDOM();
+  }
   const routeChanged = lastRoute !== r; lastRoute = r;
   if (keepScroll) window.scrollTo(0, y);
   else if (routeChanged) { const tabsEl = view.querySelector('.tabs'); const sameStock = r.startsWith('c360') && (lastRouteGroup === 'c360'); if (sameStock && tabsEl && y > tabsEl.offsetTop) window.scrollTo(0, tabsEl.offsetTop - 0); else window.scrollTo(0, 0); }
@@ -16777,6 +16786,8 @@ const A = {
     mktglobalcat: el => {
     S.mktGlobalCat = el.dataset.cat;
     rerender();
+    if (typeof updateYFinanceCardsInDOM === 'function') updateYFinanceCardsInDOM();
+    if (typeof updateBinanceCardsInDOM === 'function') updateBinanceCardsInDOM();
   },
   mkttab: el => {
       S.mktTab = el.dataset.v;
@@ -16784,6 +16795,8 @@ const A = {
       if (S.mktTab === 'global') {
         fetchBinanceLiveData();
         if (typeof initBinanceWebSocket === 'function') initBinanceWebSocket();
+        if (typeof initYahooFinanceWebSocket === 'function') initYahooFinanceWebSocket();
+        if (typeof updateYFinanceCardsInDOM === 'function') updateYFinanceCardsInDOM();
       } else if (S.mktTab === 'leaders' || S.mktTab === 'pulse' || S.mktTab === 'foreign' || S.mktTab === 'flow') {
         syncMarketDataRealtime(false);
       }
@@ -44683,10 +44696,289 @@ function initBinanceWebSocket() {
   }
 }
 
-// Auto-trigger Binance fetch and WS on init (Crypto 24/7 luôn chạy độc lập)
+
+/* ================= YAHOO FINANCE WEBSOCKET STREAMING ENGINE (US & COMMODITIES) ================= */
+// Lightweight zero-dependency Protobuf decoder for Yahoo Finance 'yaticker' schema
+function decodeYFinanceProtobuf(base64Str) {
+  try {
+    const binaryString = atob(base64Str);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    let offset = 0;
+    const result = {};
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+
+    while (offset < bytes.length) {
+      const key = bytes[offset++];
+      const fieldNumber = key >> 3;
+      const wireType = key & 0x07;
+
+      if (wireType === 0) {
+        // Varint (int32, int64, sint32, sint64, bool, enum)
+        let value = 0;
+        let shift = 0;
+        while (true) {
+          if (offset >= bytes.length) break;
+          const b = bytes[offset++];
+          value |= (b & 0x7f) << shift;
+          if ((b & 0x80) === 0) break;
+          shift += 7;
+        }
+        if (fieldNumber === 3) result.time = value;
+        else if (fieldNumber === 9) result.dayVolume = value;
+      } else if (wireType === 5) {
+        // 32-bit fixed / float
+        if (offset + 4 <= bytes.length) {
+          const val = view.getFloat32(offset, true); // little-endian
+          offset += 4;
+          if (fieldNumber === 2) result.price = val;
+          else if (fieldNumber === 8) result.changePercent = val;
+          else if (fieldNumber === 10) result.dayHigh = val;
+          else if (fieldNumber === 11) result.dayLow = val;
+          else if (fieldNumber === 12) result.change = val;
+          else if (fieldNumber === 15) result.openPrice = val;
+          else if (fieldNumber === 16) result.previousClose = val;
+        } else {
+          break;
+        }
+      } else if (wireType === 2) {
+        // Length-delimited string / bytes
+        let length = 0;
+        let shift = 0;
+        while (true) {
+          if (offset >= bytes.length) break;
+          const b = bytes[offset++];
+          length |= (b & 0x7f) << shift;
+          if ((b & 0x80) === 0) break;
+          shift += 7;
+        }
+        if (offset + length <= bytes.length) {
+          const str = new TextDecoder('utf-8').decode(bytes.subarray(offset, offset + length));
+          offset += length;
+          if (fieldNumber === 1) result.id = str;
+          else if (fieldNumber === 4) result.currency = str;
+          else if (fieldNumber === 5) result.exchange = str;
+        } else {
+          break;
+        }
+      } else if (wireType === 1) {
+        // 64-bit double
+        offset += 8;
+      } else {
+        break;
+      }
+    }
+    return result;
+  } catch (e) {
+    return null;
+  }
+}
+
+let yFinanceWs = null;
+let yFinanceWsStarted = false;
+let yFinanceRetryCount = 0;
+const MAX_YFINANCE_RETRIES = 12;
+let lastYFinanceDataTime = Date.now();
+let yFinanceWatchdogTimer = null;
+
+const YFINANCE_TICKERS = [
+  '^GSPC', '^DJI', '^IXIC',
+  'GC=F', 'SI=F', 'PL=F', 'HG=F',
+  'CL=F', 'BZ=F', 'NG=F',
+  'KC=F', 'SB=F',
+  'DX-Y.NYB', '^TNX',
+  '^N225', '^HSI'
+];
+
+function updateYFinanceStatusUI(status, isLive = true) {
+  const el = document.getElementById('yfinance-status-text');
+  if (el) {
+    el.textContent = status;
+    const parent = el.closest('span');
+    if (parent) {
+      const dot = parent.querySelector('.live-pulse-dot');
+      if (dot) dot.style.background = isLive ? '#22c55e' : '#eab308';
+    }
+  }
+}
+
+function stopYahooFinanceWebSocket() {
+  if (yFinanceWatchdogTimer) {
+    clearInterval(yFinanceWatchdogTimer);
+    yFinanceWatchdogTimer = null;
+  }
+  if (yFinanceWs) {
+    try {
+      yFinanceWs.onclose = null;
+      yFinanceWs.onerror = null;
+      yFinanceWs.close();
+    } catch (_) {}
+    yFinanceWs = null;
+  }
+  yFinanceWsStarted = false;
+  updateYFinanceStatusUI('Paused', false);
+}
+
+function startYFinanceWatchdog() {
+  if (yFinanceWatchdogTimer) clearInterval(yFinanceWatchdogTimer);
+  yFinanceWatchdogTimer = setInterval(() => {
+    if (yFinanceWs && yFinanceWs.readyState === WebSocket.OPEN) {
+      const idleTime = Date.now() - lastYFinanceDataTime;
+      // Nếu quá 60 giây không có gói tin mới và tab bị ẩn -> tự động ngắt kết nối để tiết kiệm tài nguyên
+      if (idleTime > 60000 && document.hidden) {
+        stopYahooFinanceWebSocket();
+      }
+    }
+  }, 15000);
+}
+
+function formatYFinancePrice(sym, price) {
+  if (sym === 'GC=F' || sym === 'SI=F' || sym === 'PL=F') {
+    return (price >= 100 ? price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : price.toFixed(2)) + ' $/oz';
+  } else if (sym === 'CL=F' || sym === 'BZ=F') {
+    return price.toFixed(2) + ' $/thùng';
+  } else if (sym === 'HG=F') {
+    return price.toFixed(2) + ' $/lb';
+  } else if (sym === 'NG=F') {
+    return price.toFixed(2) + ' $/MMBtu';
+  } else if (sym === 'KC=F' || sym === 'SB=F') {
+    return price.toFixed(2) + ' ¢/lb';
+  } else if (sym === '^TNX') {
+    return price.toFixed(2) + '%';
+  } else if (sym === 'DX-Y.NYB') {
+    return price.toFixed(2);
+  } else {
+    // Chỉ số chứng khoán (^GSPC, ^DJI, ^IXIC, ^N225, ^HSI)
+    return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+}
+
+function handleYFinanceTick(tick) {
+  if (!tick || !tick.id || typeof tick.price !== 'number' || isNaN(tick.price) || tick.price <= 0) return;
+  const sym = tick.id;
+  const target = GLOBAL_INDICES.find(g => g.yfsym === sym);
+  if (!target) return;
+
+  const price = tick.price;
+  const oldNum = parseFloat(String(target.val).replace(/[^0-9.-]/g, '')) || 0;
+  const chg = tick.change !== undefined ? tick.change : (price - (tick.previousClose || oldNum));
+  const pct = tick.changePercent !== undefined ? tick.changePercent : (oldNum > 0 ? ((price - oldNum) / oldNum * 100) : 0);
+  const isUp = pct >= 0;
+
+  const valStr = formatYFinancePrice(sym, price);
+  const chgSign = chg >= 0 ? '+' : '';
+  const pctSign = pct >= 0 ? '+' : '';
+  const chgStr = `${chgSign}${Math.abs(chg) >= 100 ? chg.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : chg.toFixed(2)}`;
+  const pctStr = `${pctSign}${pct.toFixed(2)}%`;
+
+  target.val = valStr;
+  target.chg = chgStr;
+  target.pct = pctStr;
+  target.up = isUp;
+  target.live = true;
+
+  // Cập nhật trực tiếp lên card DOM nếu đang hiển thị tab Thị trường quốc tế
+  const cardEl = document.querySelector(`[data-yf-sym="${sym}"]`);
+  if (cardEl) {
+    const valEl = cardEl.querySelector('.mkt-global-val');
+    const chgEl = cardEl.querySelector('.mkt-global-chg');
+    if (valEl) {
+      valEl.textContent = valStr;
+      valEl.classList.remove('flash-up', 'flash-down');
+      void valEl.offsetWidth; // Trigger reflow for CSS keyframe animation
+      valEl.classList.add(price >= oldNum ? 'flash-up' : 'flash-down');
+    }
+    if (chgEl) {
+      chgEl.textContent = `${chgStr} (${pctStr})`;
+      chgEl.style.color = isUp ? 'var(--up)' : 'var(--down)';
+    }
+  }
+}
+
+function updateYFinanceCardsInDOM() {
+  GLOBAL_INDICES.filter(g => g.yfsym).forEach(g => {
+    const cardEl = document.querySelector(`[data-yf-sym="${g.yfsym}"]`);
+    if (cardEl) {
+      const valEl = cardEl.querySelector('.mkt-global-val');
+      const chgEl = cardEl.querySelector('.mkt-global-chg');
+      if (valEl) valEl.textContent = g.val;
+      if (chgEl) {
+        chgEl.textContent = `${g.chg} (${g.pct})`;
+        chgEl.style.color = g.up ? 'var(--up)' : 'var(--down)';
+      }
+    }
+  });
+}
+
+function initYahooFinanceWebSocket() {
+  if (yFinanceWs && yFinanceWs.readyState === WebSocket.OPEN) return;
+  if (document.hidden) return;
+
+  if (yFinanceWs) {
+    try { yFinanceWs.close(); } catch (_) {}
+    yFinanceWs = null;
+  }
+
+  yFinanceWsStarted = true;
+  lastYFinanceDataTime = Date.now();
+  startYFinanceWatchdog();
+
+  try {
+    yFinanceWs = new WebSocket('wss://streamer.finance.yahoo.com');
+
+    yFinanceWs.onopen = () => {
+      yFinanceRetryCount = 0;
+      lastYFinanceDataTime = Date.now();
+      updateYFinanceStatusUI('Live', true);
+      // Gửi payload đăng ký realtime stream
+      yFinanceWs.send(JSON.stringify({ subscribe: YFINANCE_TICKERS }));
+    };
+
+    yFinanceWs.onmessage = e => {
+      try {
+        lastYFinanceDataTime = Date.now();
+        if (typeof e.data === 'string') {
+          const tick = decodeYFinanceProtobuf(e.data);
+          if (tick) handleYFinanceTick(tick);
+        }
+      } catch (_) {}
+    };
+
+    yFinanceWs.onclose = () => {
+      yFinanceWsStarted = false;
+      yFinanceWs = null;
+      if (yFinanceWatchdogTimer) {
+        clearInterval(yFinanceWatchdogTimer);
+        yFinanceWatchdogTimer = null;
+      }
+      updateYFinanceStatusUI('Fallback', false);
+      if (!document.hidden && yFinanceRetryCount < MAX_YFINANCE_RETRIES) {
+        yFinanceRetryCount++;
+        const delay = Math.min(2500 * yFinanceRetryCount, 12000);
+        setTimeout(() => {
+          if (!document.hidden) {
+            initYahooFinanceWebSocket();
+          }
+        }, delay);
+      }
+    };
+
+    yFinanceWs.onerror = () => {
+      // WS error handler
+    };
+  } catch (_) {
+    yFinanceWsStarted = false;
+  }
+}
+
+// Auto-trigger Binance & Yahoo Finance fetch and WS on init
 setTimeout(() => {
   fetchBinanceLiveData();
   initBinanceWebSocket();
+  initYahooFinanceWebSocket();
 }, 400);
 
 // Fallback đồng bộ giá Binance qua REST định kỳ 10s khi không có tick hoặc WS mất kết nối
@@ -44732,13 +45024,15 @@ scheduleMarketPoll();
 // Quản lý dừng/bật socket và stream theo trạng thái tab trình duyệt (Page Visibility API)
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
-    // Ẩn tab: Dừng socket Binance để tiết kiệm tài nguyên mạng
+    // Ẩn tab: Dừng socket Binance & Yahoo Finance để tiết kiệm tài nguyên mạng
     stopBinanceWebSocket();
+    stopYahooFinanceWebSocket();
   } else {
     // Hiện tab trở lại:
-    // 1. Crypto 24/7: Khôi phục ngay lập tức kết nối Binance
+    // 1. Crypto & US Markets / Commodities 24/7: Khôi phục ngay lập tức kết nối
     fetchBinanceLiveData();
     initBinanceWebSocket();
+    initYahooFinanceWebSocket();
 
     // 2. Thị trường Việt Nam: Kiểm tra điều kiện phiên giao dịch trước khi kích hoạt
     const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };

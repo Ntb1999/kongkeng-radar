@@ -7541,7 +7541,7 @@ const S = {
   scr: { preset: 0, chips: null, sort: ['total', -1], sel: new Set(['FPT', 'VCB']), mode: 'goi-y' },
   all: { chips: [['Sàn', 'HOSE · HNX', 'ex'], ['Ngành', '', 'ind', 5], ['Biến động giá', '', 'bd', '< 3%'], ['KLGD', '', 'kl', '> 1,000']], sort: ['mc', -1], sel: new Set(['HPG', 'GAS', 'VNM']), ex: new Set(['HOSE', 'HNX']), cols: 'Tổng quan' },
   dr: { open: { 1: true }, crit: new Set(), ex: new Set(['HOSE', 'HNX']), q: '' },
-  cmp: ['MSB', 'FPT', 'HPG'], cmpClosed: new Set(), cmpTab: 'all', cmpPeriod: '3M', mktTab: 'pulse', mktLeaderTab: 'val', mktFlowMode: 'foreign', mktEx: 'ALL',
+  cmp: ['MSB', 'FPT', 'HPG'], cmpClosed: new Set(), cmpTab: 'all', cmpPeriod: '3M', mktTab: 'pulse', mktLeaderTab: 'val', mktFlowMode: 'foreign', mktEx: 'ALL', mktGlobalCat: 'all',
   rep: { tab: 0, q: '', page: 1, span: '30 ngày', span2: '30 ngày', lastSync: '' },
   watch: new Set(['FPT', 'VCB', 'HPG']),
   mnews: { tab: 0, q: '', span: 'Tất cả', sentiment: 'Tất cả', page: 1 }
@@ -12498,7 +12498,16 @@ async function syncMarketDataRealtime(isManual) {
             sjcIdx.pct = goldData.domestic.sjc.change_percent;
             sjcIdx.mcp_src = 'Finhay MCP Live Feed';
           }
-          const spotIdx = GLOBAL_INDICES.find(g => g.name === 'Vàng TG (Spot)');
+          const nhanIdx = GLOBAL_INDICES.find(g => g.name.includes('Nhẫn'));
+          if (nhanIdx && goldData.domestic && goldData.domestic.nhan_9999) {
+            nhanIdx.val = goldData.domestic.nhan_9999.display || '143.50 tr/lượng';
+            nhanIdx.buy = goldData.domestic.nhan_9999.buy;
+            nhanIdx.sell = goldData.domestic.nhan_9999.sell;
+            nhanIdx.spread = goldData.domestic.nhan_9999.spread;
+            nhanIdx.chg = goldData.domestic.nhan_9999.change || '+0.40';
+            nhanIdx.pct = goldData.domestic.nhan_9999.change_percent || '+0.28%';
+          }
+          const spotIdx = GLOBAL_INDICES.find(g => g.name === 'Vàng TG (Spot)' || g.name.includes('Vàng Thế Giới'));
           if (spotIdx && goldData.world_spot) {
             spotIdx.val = goldData.world_spot.display;
             spotIdx.chg = goldData.world_spot.change;
@@ -12719,26 +12728,48 @@ let MARKET_FOREIGN_TOP_BUY = MARKET_INSTITUTIONAL_FLOW.foreign.top_buy;
 let MARKET_FOREIGN_TOP_SELL = MARKET_INSTITUTIONAL_FLOW.foreign.top_sell;
 
 const GLOBAL_INDICES = [
-  // Chứng khoán Quốc tế
-  { name: 'S&P 500', region: 'Mỹ', val: '5,785.40', chg: '+24.80', pct: '+0.43%', up: true },
-  { name: 'Dow Jones', region: 'Mỹ', val: '42,512.00', chg: '+145.20', pct: '+0.34%', up: true },
-  { name: 'Nasdaq 100', region: 'Mỹ', val: '18,295.60', chg: '+112.50', pct: '+0.62%', up: true },
-  { name: 'Nikkei 225', region: 'Nhật Bản', val: '39,380.00', chg: '+220.00', pct: '+0.56%', up: true },
-  { name: 'Hang Seng', region: 'Hồng Kông', val: '21,250.00', chg: '+380.00', pct: '+1.82%', up: true },
-  
-  // Hàng hóa, Lợi suất & Ngoại tệ
-  { name: 'Chỉ số DXY', region: 'Mỹ', val: '104.25', chg: '-0.18', pct: '-0.17%', up: false },
-  { name: 'Lợi suất US10Y', region: 'Mỹ', val: '4.28%', chg: '+0.03', pct: '+0.71%', up: true },
-  { name: 'Dầu Brent', region: 'Hàng hóa', val: '78.50 $/thùng', chg: '+1.25', pct: '+1.62%', up: true },
-  { name: 'Vàng TG (Spot)', region: 'Thế giới', val: '4,206.50 $/oz', chg: '+12.80', pct: '+0.31%', up: true },
-  { name: 'Vàng SJC', region: 'Trong nước', val: '144.80 tr/lượng', chg: '0.00', pct: '0.00%', up: true, buy: '141.80 tr', sell: '144.80 tr', spread: '3.00 tr' },
-  { name: 'Tỷ giá USD/VND', region: 'VCB FX', val: '25,460 đ', chg: '+15.00', pct: '+0.06%', up: true },
+  // 1. Vàng, Bạc & Kim loại Quý (Precious Metals)
+  { name: 'Vàng Thế Giới (Spot)', region: 'Thế giới', cat: 'metal', icon: '🪙', val: '2,748.50 $/oz', chg: '+12.80', pct: '+0.47%', up: true, sub: 'XAU/USD · Giao ngay' },
+  { name: 'Vàng Miếng SJC', region: 'Trong nước', cat: 'metal', icon: '🪙', val: '144.80 tr/lượng', chg: '0.00', pct: '0.00%', up: true, buy: '141.80 tr', sell: '144.80 tr', spread: '3.00 tr', sub: 'Vàng miếng SJC niêm yết' },
+  { name: 'Vàng Nhẫn 9999', region: 'DOJI / PNJ', cat: 'metal', icon: '💍', val: '143.50 tr/lượng', chg: '+0.40', pct: '+0.28%', up: true, buy: '141.00 tr', sell: '143.50 tr', spread: '2.50 tr', sub: 'Nhẫn tròn trơn 24K' },
+  { name: 'Bạc TG (Spot)', region: 'Thế giới (XAG)', cat: 'metal', icon: '🥈', val: '32.65 $/oz', chg: '+0.45', pct: '+1.40%', up: true, sub: 'Quy đổi: ~1.020.000 đ/lượng' },
+  { name: 'Bạch Kim (Spot)', region: 'Thế giới (XPT)', cat: 'metal', icon: '⚪', val: '992.40 $/oz', chg: '+7.80', pct: '+0.79%', up: true, sub: 'Platinum quốc tế' },
 
-  // Tiền mã hóa Quốc tế
-  { name: 'Bitcoin (BTC/USDT)', region: 'Tiền số', sym: 'BTCUSDT', val: '82,676.10 $', chg: '+683.50', pct: '+0.83%', up: true, live: true },
-  { name: 'Ethereum (ETH/USDT)', region: 'Tiền số', sym: 'ETHUSDT', val: '2,494.90 $', chg: '+13.70', pct: '+0.55%', up: true, live: true },
-  { name: 'BNB (BNB/USDT)', region: 'Tiền số', sym: 'BNBUSDT', val: '745.80 $', chg: '+8.80', pct: '+1.21%', up: true, live: true },
-  { name: 'Solana (SOL/USDT)', region: 'Tiền số', sym: 'SOLUSDT', val: '109.85 $', chg: '+0.09', pct: '+0.08%', up: true, live: true }
+  // 2. Kim loại Công nghiệp & Vật liệu (Industrial Metals)
+  { name: 'Đồng (Copper COMEX)', region: 'COMEX', cat: 'metal', icon: '🧱', val: '4.38 $/lb', chg: '+0.04', pct: '+0.92%', up: true, sub: 'Chỉ báo sức khỏe kinh tế (Dr. Copper)' },
+  { name: 'Quặng Sắt 62% Fe', region: 'Singapore SGX', cat: 'metal', icon: '🏗️', val: '104.50 $/tấn', chg: '+1.80', pct: '+1.75%', up: true, sub: 'Đầu vào ngành Thép (HPG, HSG)' },
+  { name: 'Thép HRC Thế Giới', region: 'Thượng Hải', cat: 'metal', icon: '🔩', val: '542.00 $/tấn', chg: '+6.50', pct: '+1.21%', up: true, sub: 'Thép cuộn cán nóng' },
+
+  // 3. Cà phê & Nông sản Chiến lược (Agricultural Commodities)
+  { name: 'Cà phê Robusta', region: 'London (ICE)', cat: 'agri', icon: '☕', val: '4,685 $/tấn', chg: '+48.00', pct: '+1.04%', up: true, sub: 'Kỳ hạn T01/2027 · Sàn ICE Europe' },
+  { name: 'Cà phê Arabica', region: 'New York (ICE)', cat: 'agri', icon: '☕', val: '248.50 ¢/lb', chg: '+3.20', pct: '+1.30%', up: true, sub: 'Kỳ hạn T12/2026 · ICE US' },
+  { name: 'Cà phê Nhân xô VN', region: 'Tây Nguyên', cat: 'agri', icon: '🌱', val: '108.500 đ/kg', chg: '+1.500', pct: '+1.40%', up: true, sub: 'Đắk Lắk · Lâm Đồng · Gia Lai' },
+  { name: 'Cao su Tự Nhiên RSS3', region: 'Osaka / SGX', cat: 'agri', icon: '🌳', val: '198.50 ¢/kg', chg: '+2.40', pct: '+1.22%', up: true, sub: 'Tác động nhóm GVR, PHR, DPR' },
+  { name: 'Gạo XK 5% Tấm', region: 'Việt Nam (VFA)', cat: 'agri', icon: '🌾', val: '535.00 $/tấn', chg: '-3.00', pct: '-0.56%', up: false, sub: 'Gạo tiêu chuẩn xuất khẩu' },
+  { name: 'Đường Thô (#11)', region: 'New York (ICE)', cat: 'agri', icon: '🍬', val: '22.15 ¢/lb', chg: '-0.20', pct: '-0.90%', up: false, sub: 'Tác động nhóm SBT, QNS, LSS' },
+
+  // 4. Dầu khí & Năng lượng (Energy)
+  { name: 'Dầu Brent', region: 'London (ICE)', cat: 'energy', icon: '🛢️', val: '78.50 $/thùng', chg: '+1.25', pct: '+1.62%', up: true, sub: 'Dầu thô tiêu chuẩn biển Bắc' },
+  { name: 'Dầu WTI', region: 'Mỹ (NYMEX)', cat: 'energy', icon: '🛢️', val: '74.20 $/thùng', chg: '+1.10', pct: '+1.50%', up: true, sub: 'Dầu ngọt nhẹ Texas' },
+  { name: 'Khí Tự Nhiên', region: 'Henry Hub', cat: 'energy', icon: '🔥', val: '2.78 $/MMBtu', chg: '+0.06', pct: '+2.21%', up: true, sub: 'Natural Gas (GAS, PVG)' },
+
+  // 5. Chỉ số Chứng khoán Quốc tế (Major Indices)
+  { name: 'S&P 500', region: 'Mỹ', cat: 'index', icon: '📊', val: '5,785.40', chg: '+24.80', pct: '+0.43%', up: true, sub: '500 doanh nghiệp vốn hóa lớn Mỹ' },
+  { name: 'Dow Jones', region: 'Mỹ', cat: 'index', icon: '📊', val: '42,512.00', chg: '+145.20', pct: '+0.34%', up: true, sub: 'Dow Jones Industrial Average' },
+  { name: 'Nasdaq 100', region: 'Mỹ', cat: 'index', icon: '📊', val: '18,295.60', chg: '+112.50', pct: '+0.62%', up: true, sub: 'Chỉ số công nghệ Mỹ' },
+  { name: 'Nikkei 225', region: 'Nhật Bản', cat: 'index', icon: '📊', val: '39,380.00', chg: '+220.00', pct: '+0.56%', up: true, sub: 'Sở giao dịch Tokyo (TSE)' },
+  { name: 'Hang Seng', region: 'Hồng Kông', cat: 'index', icon: '📊', val: '21,250.00', chg: '+380.00', pct: '+1.82%', up: true, sub: 'Sở giao dịch Hồng Kông (HKEX)' },
+
+  // 6. Ngoại tệ, Lợi suất & Vĩ mô (Macro & FX)
+  { name: 'Chỉ số DXY', region: 'Mỹ', cat: 'fx', icon: '💵', val: '104.25', chg: '-0.18', pct: '-0.17%', up: false, sub: 'Thước đo sức mạnh đồng USD' },
+  { name: 'Lợi suất US10Y', region: 'Mỹ', cat: 'fx', icon: '📈', val: '4.28%', chg: '+0.03', pct: '+0.71%', up: true, sub: 'Lợi suất trái phiếu CP Mỹ 10Y' },
+  { name: 'Tỷ giá USD/VND', region: 'VCB FX', cat: 'fx', icon: '🏦', val: '25,460 đ', chg: '+15.00', pct: '+0.06%', up: true, buy: '25,120 đ', sell: '25,490 đ', spread: '370 đ', sub: 'Tỷ giá niêm yết Vietcombank' },
+
+  // 7. Tiền mã hóa Quốc tế (Realtime Binance Stream)
+  { name: 'Bitcoin (BTC/USDT)', region: 'Tiền số', cat: 'crypto', sym: 'BTCUSDT', val: '82,676.10 $', chg: '+683.50', pct: '+0.83%', up: true, live: true },
+  { name: 'Ethereum (ETH/USDT)', region: 'Tiền số', cat: 'crypto', sym: 'ETHUSDT', val: '2,494.90 $', chg: '+13.70', pct: '+0.55%', up: true, live: true },
+  { name: 'BNB (BNB/USDT)', region: 'Tiền số', cat: 'crypto', sym: 'BNBUSDT', val: '745.80 $', chg: '+8.80', pct: '+1.21%', up: true, live: true },
+  { name: 'Solana (SOL/USDT)', region: 'Tiền số', cat: 'crypto', sym: 'SOLUSDT', val: '109.85 $', chg: '+0.09', pct: '+0.08%', up: true, live: true }
 ];
 
 function renderSparklineSVG(pts, isUp) {
@@ -13042,31 +13073,72 @@ function vMarket() {
       </div>
     </div>`;
   } else if (tab === 'global') {
+    const curCat = S.mktGlobalCat || 'all';
+    const isCommodity = cat => cat === 'metal' || cat === 'agri' || cat === 'energy';
+
+    const countMetal = GLOBAL_INDICES.filter(g => g.cat === 'metal').length;
+    const countAgri = GLOBAL_INDICES.filter(g => g.cat === 'agri').length;
+    const countEnergy = GLOBAL_INDICES.filter(g => g.cat === 'energy').length;
+    const countCommodities = countMetal + countAgri + countEnergy;
+    const countIndex = GLOBAL_INDICES.filter(g => g.cat === 'index').length;
+    const countFx = GLOBAL_INDICES.filter(g => g.cat === 'fx').length;
+    const countCrypto = GLOBAL_INDICES.filter(g => g.cat === 'crypto').length;
+
+    const filteredIndices = GLOBAL_INDICES.filter(g => {
+      if (curCat === 'all') return true;
+      if (curCat === 'commodity') return isCommodity(g.cat);
+      return g.cat === curCat;
+    });
+
     tabContent = `<div style="margin-top:16px">
-      <div style="font-size:13px;color:var(--ink2);margin-bottom:12px">
-        Chỉ số chứng khoán quốc tế, hàng hóa chiến lược và ngoại tệ.
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+        <div>
+          <div style="font-size:13.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px">
+            <span>🌐</span> Thị Trường Quốc Tế, Hàng Hóa Chiến Lược &amp; Ngoại Tệ
+          </div>
+          <div style="font-size:12px;color:var(--ink3);margin-top:2px">
+            Dữ liệu giá Vàng (SJC, Nhẫn 9999, TG), Bạc, Cà phê (Robusta, Arabica, Tây Nguyên), Dầu khí, Nông sản, Kim loại quý &amp; Ngoại tệ
+          </div>
+        </div>
+
+        <div class="mkt-global-filter-bar" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <button class="pill ${curCat === 'all' ? 'on' : ''}" data-act="mktglobalcat" data-cat="all" style="font-size:11.5px;padding:3px 9px;cursor:pointer">Tất cả (${GLOBAL_INDICES.length})</button>
+          <button class="pill ${curCat === 'commodity' ? 'on' : ''}" data-act="mktglobalcat" data-cat="commodity" style="font-size:11.5px;padding:3px 9px;cursor:pointer">⚡ Tất cả Hàng hóa (${countCommodities})</button>
+          <button class="pill ${curCat === 'metal' ? 'on' : ''}" data-act="mktglobalcat" data-cat="metal" style="font-size:11.5px;padding:3px 9px;cursor:pointer">🪙 Vàng &amp; Kim loại (${countMetal})</button>
+          <button class="pill ${curCat === 'agri' ? 'on' : ''}" data-act="mktglobalcat" data-cat="agri" style="font-size:11.5px;padding:3px 9px;cursor:pointer">☕ Cà phê &amp; Nông sản (${countAgri})</button>
+          <button class="pill ${curCat === 'energy' ? 'on' : ''}" data-act="mktglobalcat" data-cat="energy" style="font-size:11.5px;padding:3px 9px;cursor:pointer">🛢️ Dầu khí &amp; Năng lượng (${countEnergy})</button>
+          <button class="pill ${curCat === 'index' ? 'on' : ''}" data-act="mktglobalcat" data-cat="index" style="font-size:11.5px;padding:3px 9px;cursor:pointer">📊 Chứng khoán QT (${countIndex})</button>
+          <button class="pill ${curCat === 'fx' ? 'on' : ''}" data-act="mktglobalcat" data-cat="fx" style="font-size:11.5px;padding:3px 9px;cursor:pointer">💵 Ngoại hối &amp; Vĩ mô (${countFx})</button>
+          <button class="pill ${curCat === 'crypto' ? 'on' : ''}" data-act="mktglobalcat" data-cat="crypto" style="font-size:11.5px;padding:3px 9px;cursor:pointer">🪙 Tiền số Live (${countCrypto})</button>
+        </div>
       </div>
+
       <div class="mkt-global-grid">
-        ${GLOBAL_INDICES.map(g => {
-          const isCrypto = g.region === 'Tiền số' || g.region === 'Binance';
-          const isGoldSjc = g.name === 'Vàng SJC';
+        ${filteredIndices.map(g => {
+          const isCrypto = g.region === 'Tiền số' || g.region === 'Binance' || g.cat === 'crypto';
+          const hasSpread = g.buy && g.sell;
           const symCode = g.sym || (g.name.includes('BTC') ? 'BTCUSDT' : g.name.includes('ETH') ? 'ETHUSDT' : g.name.includes('BNB') ? 'BNBUSDT' : g.name.includes('SOL') ? 'SOLUSDT' : '');
-          return `<div class="mkt-global-card" ${symCode ? `data-global-sym="${symCode}"` : ''}>
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div style="display:flex;align-items:center;gap:6px">
-              ${isCrypto ? `<svg viewBox="0 0 32 32" width="16" height="16" style="flex-shrink:0"><circle cx="16" cy="16" r="16" fill="#F0B90B"/><path fill="#1E2026" d="M16 6.5l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm13.4 0l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm-3.2-3.2l3.2-3.2 3.2 3.2-3.2 3.2z"/></svg>` : isGoldSjc ? `<span style="font-size:14px">🪙</span>` : ''}
-              <b>${g.name}</b>
+
+          return `<div class="mkt-global-card" ${symCode ? `data-global-sym="${symCode}"` : ''} data-cat="${g.cat || 'other'}" style="position:relative;overflow:hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <div style="display:flex;align-items:center;gap:6px">
+                ${isCrypto ? `<svg viewBox="0 0 32 32" width="16" height="16" style="flex-shrink:0"><circle cx="16" cy="16" r="16" fill="#F0B90B"/><path fill="#1E2026" d="M16 6.5l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm13.4 0l3.2 3.2-3.2 3.2-3.2-3.2zm-6.7 6.7l3.2 3.2-3.2 3.2-3.2-3.2zm-3.2-3.2l3.2-3.2 3.2 3.2-3.2 3.2z"/></svg>` : `<span style="font-size:14px;line-height:1">${g.icon || '📌'}</span>`}
+                <b style="font-size:13px;color:var(--ink)">${g.name}</b>
+              </div>
+              <span class="pill" style="font-size:10.5px;padding:2px 7px;border-radius:4px;background:var(--sub2);color:${isCrypto ? '#ca8a04' : 'var(--ink2)'};border:1px solid var(--line);font-weight:${isCrypto ? '700' : '500'}">${g.region}</span>
             </div>
-            <span style="font-size:11px;color:${isCrypto ? '#ca8a04' : 'var(--ink3)'};font-weight:${isCrypto ? '700' : '400'}">${g.region}</span>
-          </div>
-          <div class="mkt-global-val" style="font-size:20px;font-weight:700;font-family:var(--mono);margin:2px 0;transition:background 0.3s, color 0.2s">${g.val}</div>
-          ${isGoldSjc ? `<div style="font-size:11px;color:var(--ink2);margin-bottom:3px;font-family:var(--mono)">Mua: <b style="color:var(--ink)">${g.buy || '141.80 tr'}</b> · Bán: <b style="color:var(--ink)">${g.sell || '144.80 tr'}</b> <span style="color:#059669">(Spread: ${g.spread || '3.00 tr'})</span></div>` : ''}
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div class="mkt-global-chg" style="font-size:12px;font-family:var(--mono);color:${g.up ? 'var(--up)' : 'var(--down)'}">
-              ${g.chg} (${g.pct})
+
+            <div class="mkt-global-val" style="font-size:20px;font-weight:700;font-family:var(--mono);margin:4px 0 2px;transition:background 0.3s, color 0.2s;color:var(--ink)">${g.val}</div>
+
+            ${hasSpread ? `<div style="font-size:11px;color:var(--ink2);margin-bottom:4px;font-family:var(--mono)">Mua: <b style="color:var(--ink)">${g.buy}</b> · Bán: <b style="color:var(--ink)">${g.sell}</b> <span style="color:var(--brand);font-weight:600">(Spread: ${g.spread})</span></div>` : g.sub ? `<div style="font-size:11px;color:var(--ink3);margin-bottom:4px">${g.sub}</div>` : ''}
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto">
+              <div class="mkt-global-chg" style="font-size:12px;font-family:var(--mono);font-weight:600;color:${g.up ? 'var(--up)' : 'var(--down)'}">
+                ${g.chg} (${g.pct})
+              </div>
+              ${g.live ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--up);font-weight:700"><span class="tv-dot-live" style="width:6px;height:6px;border-radius:50%;background:var(--up);display:inline-block"></span>LIVE</span>` : ''}
             </div>
-          </div>
-        </div>`;
+          </div>`;
         }).join('')}
       </div>
     </div>`;
@@ -15635,7 +15707,11 @@ const A = {
     S.dr.crit.forEach(c => S.all.chips.push([c, '', 'crit']));
     closeLayer(); rerender(); toast(`Đã áp dụng ${S.all.chips.length} điều kiện · ${allRows().length} mã phù hợp`);
   },
-    mkttab: el => {
+    mktglobalcat: el => {
+    S.mktGlobalCat = el.dataset.cat;
+    rerender();
+  },
+  mkttab: el => {
       S.mktTab = el.dataset.v;
       rerender();
       if (S.mktTab === 'global') {
@@ -34039,7 +34115,16 @@ const FINHAY_MCP_PAYLOADS = {
     timestamp: new Date().toISOString(),
     commodities: [
       { code: 'BRENT', name: 'Dầu Brent', price: '78.50 $/thùng', change_pct: '+1.62%' },
-      { code: 'XAU_SPOT', name: 'Vàng Thế Giới Spot', price: '4,206.50 $/oz', change_pct: '+0.31%' },
+      { code: 'WTI', name: 'Dầu WTI', price: '74.20 $/thùng', change_pct: '+1.50%' },
+      { code: 'XAU_SPOT', name: 'Vàng Thế Giới Spot', price: '2,748.50 $/oz', change_pct: '+0.47%' },
+      { code: 'XAG_SPOT', name: 'Bạc Thế Giới Spot', price: '32.65 $/oz', change_pct: '+1.40%' },
+      { code: 'COFFEE_ROBUSTA', name: 'Cà phê Robusta London', price: '4,685 $/tấn', change_pct: '+1.04%' },
+      { code: 'COFFEE_ARABICA', name: 'Cà phê Arabica New York', price: '248.50 ¢/lb', change_pct: '+1.30%' },
+      { code: 'COFFEE_VN', name: 'Cà phê Nhân xô Tây Nguyên', price: '108.500 đ/kg', change_pct: '+1.40%' },
+      { code: 'IRON_ORE', name: 'Quặng Sắt 62% Fe', price: '104.50 $/tấn', change_pct: '+1.75%' },
+      { code: 'HRC_STEEL', name: 'Thép HRC Thế Giới', price: '542.00 $/tấn', change_pct: '+1.21%' },
+      { code: 'RUBBER', name: 'Cao su Tự nhiên RSS3', price: '198.50 ¢/kg', change_pct: '+1.22%' },
+      { code: 'RICE_5PCT', name: 'Gạo XK 5% Tấm VN', price: '535.00 $/tấn', change_pct: '-0.56%' },
       { code: 'SP500', name: 'S&P 500 (US)', value: '5,785.40', change_pct: '+0.43%' },
       { code: 'NDX', name: 'Nasdaq 100', value: '18,295.60', change_pct: '+0.62%' }
     ],
@@ -36081,7 +36166,7 @@ async function fetchBinanceLiveData() {
 }
 
 function updateBinanceCardsInDOM() {
-  GLOBAL_INDICES.filter(g => g.region === 'Binance').forEach(g => {
+  GLOBAL_INDICES.filter(g => g.region === 'Binance' || g.region === 'Tiền số' || g.cat === 'crypto').forEach(g => {
     const sym = g.sym || (g.name.includes('BTC') ? 'BTCUSDT' : g.name.includes('ETH') ? 'ETHUSDT' : g.name.includes('BNB') ? 'BNBUSDT' : 'SOLUSDT');
     const cardEl = document.querySelector(`[data-global-sym="${sym}"]`);
     if (cardEl) {

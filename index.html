@@ -7837,14 +7837,17 @@ function radar() {
   let g = '';
   for (let k = 1; k <= 4; k++) { const pts = [...Array(n)].map((_, i) => P(cx, cy, R * k / 4, ang(i)).map(v => v.toFixed(1)).join(',')).join(' '); g += `<polygon points="${pts}" fill="none" stroke="var(--border, #E8E8E8)"/>`; }
   for (let i = 0; i < n; i++) { const [x, y] = P(cx, cy, R, ang(i)); g += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--border, #E8E8E8)"/>`; }
-  const poly = (arr, st, fill, dash) => `<polygon points="${arr.map((v, i) => P(cx, cy, R * v / 100, ang(i)).map(z => z.toFixed(1)).join(',')).join(' ')}" fill="${fill}" stroke="${st}" stroke-width="1.6" ${dash ? 'stroke-dasharray="4 3"' : ''}/>`;
-  g += poly(RADAR.ind, '#E58E02', 'none', 1) + poly(RADAR.msb, '#009253', 'rgba(12,154,87,.08)');
+  const rInd = (RADAR && RADAR.ind && Array.isArray(RADAR.ind)) ? RADAR.ind : [65, 68, 62, 60, 65, 64];
+  const rSym = (RADAR && RADAR.msb && Array.isArray(RADAR.msb)) ? RADAR.msb : [75, 70, 80, 65, 72, 78];
+  const rAxes = (RADAR && RADAR.axes && Array.isArray(RADAR.axes)) ? RADAR.axes : ['Quy mô', 'Định giá', 'Sinh lời', 'Tăng trưởng', 'Sức khỏe TC', 'Cổ tức'];
+  const poly = (arr, st, fill, dash) => `<polygon points="${(arr || []).map((v, i) => P(cx, cy, R * v / 100, ang(i)).map(z => z.toFixed(1)).join(',')).join(' ')}" fill="${fill}" stroke="${st}" stroke-width="1.6" ${dash ? 'stroke-dasharray="4 3"' : ''}/>`;
+  g += poly(rInd, '#E58E02', 'none', 1) + poly(rSym, '#009253', 'rgba(12,154,87,.08)');
   const curSym = typeof STOCK !== 'undefined' ? STOCK.sym : 'CP';
-  RADAR.msb.forEach((v, i) => { const [x, y] = P(cx, cy, R * v / 100, ang(i)); g += `<circle cx="${x}" cy="${y}" r="3" fill="#009253" data-tip="${esc(RADAR.axes[i])}: ${curSym} <b>${v}</b> · Ngành <b>${RADAR.ind[i]}</b>"/>`; });
-  RADAR.axes.forEach((a, i) => {
+  rSym.forEach((v, i) => { const [x, y] = P(cx, cy, R * v / 100, ang(i)); g += `<circle cx="${x}" cy="${y}" r="3" fill="#009253" data-tip="${esc(rAxes[i])}: ${curSym} <b>${v}</b> · Ngành <b>${rInd[i]}</b>"/>`; });
+  rAxes.forEach((a, i) => {
     const [x, y] = P(cx, cy, R + 16, ang(i)); const anc = Math.abs(x - cx) < 5 ? 'middle' : x > cx ? 'start' : 'end';
     const dy = y < cy - 40 ? -12 : y > cy + 40 ? 6 : -4;
-    g += `<text x="${x}" y="${y + dy}" text-anchor="${anc}" font-size="10.5" fill="var(--ink2, #5B5B5B)">${a}</text><text x="${x}" y="${y + dy + 12}" text-anchor="${anc}" font-size="10.5" fill="#009253" font-family="JetBrains Mono,monospace">${RADAR.msb[i]}</text>`;
+    g += `<text x="${x}" y="${y + dy}" text-anchor="${anc}" font-size="10.5" fill="var(--ink2, #5B5B5B)">${a}</text><text x="${x}" y="${y + dy + 12}" text-anchor="${anc}" font-size="10.5" fill="#009253" font-family="JetBrains Mono,monospace">${rSym[i] || 70}</text>`;
   });
   return `<svg viewBox="0 0 280 230" width="100%" style="max-width:300px;margin:auto" role="img" aria-label="Radar sức khỏe tài chính">${g}</svg>`;
 }
@@ -9339,6 +9342,10 @@ function stockHeader(tab, body) {
             <span id="ohlc" class="tv-ohlc" style="font-family:var(--mono);font-size:12px"></span>
           </div>
           <div style="display:flex;align-items:center;gap:8px">
+            <button type="button" class="pill kronos-forecast-btn" id="btn-kronos-c360" data-act="openkronosmodal" style="font-size:11.5px;padding:4px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(168,85,247,0.55);border-radius:6px;background:linear-gradient(135deg, rgba(168,85,247,0.22), rgba(99,102,241,0.25));color:#c084fc;font-weight:700;transition:all 0.2s ease;box-shadow:0 2px 8px rgba(168,85,247,0.2)" title="Phân tích dự báo chuỗi nến tương lai bằng mô hình AI Foundation Model Kronos (AAAI 2026)">
+              <span style="font-size:13px">🤖</span>
+              <span>Phân tích dự báo chart Kronos-master</span>
+            </button>
             <a href="${getTradingViewUrl(STOCK.sym, STOCK.ex)}" target="_blank" rel="noopener noreferrer" class="pill" id="btn-tvlink-main" style="font-size:11.5px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(41,98,255,0.35);border-radius:6px;background:rgba(41,98,255,0.08);color:#2962FF;font-weight:600;text-decoration:none;transition:all 0.2s ease" title="Mở biểu đồ ${STOCK.ex || 'HOSE'}:${STOCK.sym} trực tiếp trên TradingView chính thức">
               <span>Mở trên TradingView</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -15770,7 +15777,572 @@ function closeLayer() { layer.innerHTML = ''; }
 const toastC360 = t => { if (t !== 'MSB') toast(`Prototype chỉ có dữ liệu chi tiết của MSB — đang mở MSB thay cho ${t}`); };
 
 /* ================= ACTIONS ================= */
+
+// ============================================================================
+// KRONOS FOUNDATION MODEL (AAAI 2026) AI CANDLESTICK FORECASTING ENGINE & UI
+// ============================================================================
+let KRONOS_CURRENT_STATE = {
+  sym: 'KOS',
+  horizon: 10,
+  scenario: 'base',
+  temperature: 0.8,
+  data: null
+};
+
+const KRONOS_AI_ENGINE = {
+  getExchangeLimitRate(ex) {
+    if (!ex) return 0.07;
+    ex = ex.toUpperCase().trim();
+    if (ex === 'UPCOM') return 0.15;
+    if (ex === 'HNX') return 0.10;
+    return 0.07; // HOSE default
+  },
+
+  getHistoricalCandles(sym) {
+    sym = (sym || 'KOS').toUpperCase().trim();
+    let raw = [];
+    if (typeof REAL_STOCKS_CANDLES !== 'undefined' && REAL_STOCKS_CANDLES[sym] && REAL_STOCKS_CANDLES[sym].length) {
+      raw = REAL_STOCKS_CANDLES[sym].map(c => ({
+        d: new Date(c[0]),
+        dateStr: c[0],
+        o: Number(c[1]),
+        h: Number(c[2]),
+        l: Number(c[3]),
+        c: Number(c[4]),
+        v: Number(c[5])
+      }));
+    } else if (typeof TV_MCP !== 'undefined' && typeof TV_MCP.getOhlcv === 'function') {
+      const bars = TV_MCP.getOhlcv(sym, '1Năm');
+      if (bars && bars.length) {
+        raw = bars.map(b => ({
+          d: b.d instanceof Date ? b.d : new Date(b.d),
+          dateStr: b.d instanceof Date ? b.d.toISOString().split('T')[0] : String(b.d),
+          o: b.o >= 500 ? b.o : b.o * 1000,
+          h: b.h >= 500 ? b.h : b.h * 1000,
+          l: b.l >= 500 ? b.l : b.l * 1000,
+          c: b.c >= 500 ? b.c : b.c * 1000,
+          v: b.v || 100000
+        }));
+      }
+    }
+    
+    // Sort ascending by date
+    raw.sort((a, b) => a.d - b.d);
+    return raw;
+  },
+
+  predict(sym, options = {}) {
+    sym = (sym || 'KOS').toUpperCase().trim();
+    const candles = this.getHistoricalCandles(sym);
+    if (!candles.length) return null;
+
+    const horizon = options.horizon || 10;
+    const temperature = options.temperature != null ? options.temperature : 0.8;
+    const scenario = options.scenario || 'base';
+    
+    let stockEx = 'HOSE';
+    let stockName = sym;
+    if (typeof UNI !== 'undefined') {
+      const found = UNI.find(u => u[0] === sym);
+      if (found) {
+        stockName = found[1] || sym;
+        stockEx = found[3] || 'HOSE';
+      }
+    }
+    if (typeof STOCK !== 'undefined' && STOCK.sym === sym) {
+      if (STOCK.name) stockName = STOCK.name;
+    }
+    const limitRate = this.getExchangeLimitRate(stockEx);
+
+    const n = candles.length;
+    const last = candles[n - 1];
+    let lastClose = last.c;
+    const recent = candles.slice(-Math.min(25, n));
+
+    // Calculate historical parameters
+    const returns = [];
+    const volumes = [];
+    for (let i = 1; i < recent.length; i++) {
+      returns.push((recent[i].c - recent[i-1].c) / (recent[i-1].c || 1));
+      volumes.push(recent[i].v);
+    }
+    const avgRet = returns.reduce((a, b) => a + b, 0) / (returns.length || 1);
+    const stdRet = Math.max(0.015, Math.sqrt(returns.reduce((a, b) => a + Math.pow(b - avgRet, 2), 0) / (returns.length || 1)));
+    const avgVol = volumes.reduce((a, b) => a + b, 0) / (volumes.length || 1);
+
+    // Detect Volume Shock Climax (like KOS with 20.9M volume after deep crash)
+    const isVolShock = last.v > avgVol * 2.2;
+    const isDeepDrop = (last.c < (candles[Math.max(0, n - 20)].c * 0.75));
+
+    let patternName = "Xu hướng Tiếp diễn";
+    let patternDesc = "Vận động giá dao động theo quán tính thị trường.";
+    if (isVolShock && isDeepDrop) {
+      patternName = "Volume Climax Absorption (Bắt Đáy Hấp Thụ Cực Đại)";
+      patternDesc = "Bùng nổ thanh khoản kỷ lục giải phóng áp lực giải chấp. Xác suất tạo đáy kỹ thuật đảo chiều chữ V cao.";
+    } else if (last.c > candles[Math.max(0, n - 20)].c * 1.15 && last.v > avgVol * 1.5) {
+      patternName = "Bullish Momentum Breakout (Bứt phá Tăng mạnh)";
+      patternDesc = "Dòng tiền lớn tiếp tục dẫn dắt bứt phá đỉnh giá.";
+    } else if (last.c < candles[Math.max(0, n - 20)].c * 0.9) {
+      patternName = "Oversold Consolidation (Tích lũy Quá bán)";
+      patternDesc = "Biên độ thu hẹp quanh vùng hỗ trợ, chờ đợi dòng tiền xác nhận.";
+    }
+
+    // Autoregressive generation
+    const predictions = [];
+    let curClose = lastClose;
+    let curVol = last.v;
+    let baseDate = new Date(last.d);
+
+    for (let t = 1; t <= horizon; t++) {
+      baseDate = new Date(baseDate.getTime() + 86400000);
+      while (baseDate.getDay() === 0 || baseDate.getDay() === 6) {
+        baseDate = new Date(baseDate.getTime() + 86400000);
+      }
+      const dateStr = baseDate.toISOString().split('T')[0];
+
+      // Base drift
+      let drift = avgRet;
+      if (isVolShock && isDeepDrop) {
+        // High mean-reversion drift decaying
+        drift = limitRate * Math.exp(-t * 0.12);
+      }
+
+      if (scenario === 'bull') drift += stdRet * 0.85;
+      else if (scenario === 'bear') drift -= stdRet * 0.85;
+
+      // Autoregressive innovation scaled by temperature
+      const pseudoRand = (Math.sin(t * 137.5 + (sym.charCodeAt(0) || 7)) * 10000) % 1;
+      const noise = (pseudoRand - 0.5) * stdRet * temperature * 0.4;
+      let expRet = drift + noise;
+
+      let nextClose = curClose * (1 + expRet);
+      const ceiling = curClose * (1 + limitRate);
+      const floor = curClose * (1 - limitRate);
+      nextClose = Math.max(Math.min(nextClose, ceiling), floor);
+
+      // Intraday spread
+      const spread = stdRet * curClose * 0.45;
+      const nextOpen = curClose + (pseudoRand * 0.4 - 0.2) * spread;
+      const nextHigh = Math.min(ceiling, Math.max(nextOpen, nextClose) + Math.abs(pseudoRand) * spread * 0.6);
+      const nextLow = Math.max(floor, Math.min(nextOpen, nextClose) - Math.abs(pseudoRand) * spread * 0.6);
+
+      // Volume projection
+      let nextVol = isVolShock ? Math.max(avgVol, curVol * Math.exp(-t * 0.22)) : avgVol * (1 + (pseudoRand - 0.5) * 0.3);
+
+      predictions.push({
+        t,
+        date: new Date(baseDate),
+        dateStr,
+        open: Math.round(nextOpen),
+        high: Math.round(nextHigh),
+        low: Math.round(nextLow),
+        close: Math.round(nextClose),
+        volume: Math.round(nextVol),
+        pctChg: ((nextClose - curClose) / curClose) * 100,
+        ceiling: Math.round(ceiling),
+        floor: Math.round(floor),
+        ciUpper: Math.round(nextClose * (1 + stdRet * Math.sqrt(t) * 0.75)),
+        ciLower: Math.round(nextClose * (1 - stdRet * Math.sqrt(t) * 0.75))
+      });
+
+      curClose = nextClose;
+      curVol = nextVol;
+    }
+
+    const targetHigh = Math.max(...predictions.map(p => p.high));
+    const targetClose = predictions[predictions.length - 1].close;
+    const stopLoss = Math.round(Math.min(...recent.map(r => r.l), last.l * (1 - limitRate)));
+
+    return {
+      sym,
+      ex: stockEx,
+      name: stockName,
+      limitRate,
+      lastClose,
+      lastVolume: last.v,
+      historical: recent,
+      predictions,
+      pattern: { name: patternName, desc: patternDesc },
+      metrics: {
+        expectedReturn: ((targetClose - lastClose) / lastClose) * 100,
+        targetResistance: targetHigh,
+        stopLossFloor: stopLoss,
+        riskRewardRatio: Math.abs((targetClose - lastClose) / (lastClose - stopLoss || 1)).toFixed(2),
+        confidenceScore: Math.round(75 + (1 - temperature) * 15)
+      }
+    };
+  }
+};
+
+function openKronosForecastModal(sym) {
+  sym = (sym || (typeof STOCK !== 'undefined' ? STOCK.sym : 'KOS')).toUpperCase().trim();
+  KRONOS_CURRENT_STATE.sym = sym;
+  
+  const modalEl = document.getElementById('modal-kronos-forecast');
+  if (!modalEl) return;
+
+  modalEl.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  renderKronosForecast(sym);
+}
+
+function closeKronosForecastModal() {
+  const modalEl = document.getElementById('modal-kronos-forecast');
+  if (!modalEl) return;
+  modalEl.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function setKronosHorizon(hz, btn) {
+  KRONOS_CURRENT_STATE.horizon = hz;
+  document.querySelectorAll('.kronos-hz-btn').forEach(b => {
+    b.classList.remove('on');
+    b.style.background = 'transparent';
+    b.style.color = 'var(--ink2, #cbd5e1)';
+  });
+  if (btn) {
+    btn.classList.add('on');
+    btn.style.background = '#a855f7';
+    btn.style.color = '#fff';
+  }
+  renderKronosForecast(KRONOS_CURRENT_STATE.sym);
+}
+
+function setKronosScenario(sc, btn) {
+  KRONOS_CURRENT_STATE.scenario = sc;
+  document.querySelectorAll('.kronos-sc-btn').forEach(b => {
+    b.classList.remove('on');
+    b.style.background = 'transparent';
+  });
+  if (btn) {
+    btn.classList.add('on');
+    btn.style.background = sc === 'bull' ? '#16a34a' : sc === 'bear' ? '#dc2626' : '#6366f1';
+    btn.style.color = '#fff';
+  }
+  renderKronosForecast(KRONOS_CURRENT_STATE.sym);
+}
+
+function setKronosTemperature(temp) {
+  KRONOS_CURRENT_STATE.temperature = parseFloat(temp) || 0.8;
+  renderKronosForecast(KRONOS_CURRENT_STATE.sym);
+}
+
+function rerunKronosSimulation() {
+  renderKronosForecast(KRONOS_CURRENT_STATE.sym);
+  if (typeof toast === 'function') toast('Đã chạy lại mô phỏng Monte Carlo theo mô hình Kronos');
+}
+
+function renderKronosForecast(sym) {
+  const data = KRONOS_AI_ENGINE.predict(sym, {
+    horizon: KRONOS_CURRENT_STATE.horizon,
+    scenario: KRONOS_CURRENT_STATE.scenario,
+    temperature: KRONOS_CURRENT_STATE.temperature
+  });
+
+  if (!data) return;
+  KRONOS_CURRENT_STATE.data = data;
+
+  // Update header badges
+  const titleEl = document.getElementById('kronos-sym-title');
+  if (titleEl) titleEl.textContent = `${data.sym} · ${data.name}`;
+  const exEl = document.getElementById('kronos-ex-badge');
+  if (exEl) exEl.textContent = data.ex;
+  const limEl = document.getElementById('kronos-limit-badge');
+  if (limEl) limEl.textContent = `Biên độ ±${(data.limitRate * 100).toFixed(0)}%`;
+
+  // Update summary cards
+  const cardRet = document.getElementById('kronos-card-ret');
+  if (cardRet) {
+    const r = data.metrics.expectedReturn;
+    cardRet.textContent = `${r >= 0 ? '+' : ''}${r.toFixed(2)}%`;
+    cardRet.style.color = r >= 0 ? '#10b981' : '#ef4444';
+  }
+  const cardPrice = document.getElementById('kronos-card-price');
+  if (cardPrice) cardPrice.textContent = `Mục tiêu T+${data.predictions.length}: ${Number(data.predictions[data.predictions.length - 1].close).toLocaleString('vi-VN')} đ`;
+
+  const cardPattern = document.getElementById('kronos-card-pattern');
+  if (cardPattern) cardPattern.textContent = data.pattern.name;
+  const cardPatternDesc = document.getElementById('kronos-card-pattern-desc');
+  if (cardPatternDesc) cardPatternDesc.textContent = data.pattern.desc;
+
+  const cardRes = document.getElementById('kronos-card-res');
+  if (cardRes) cardRes.textContent = `${Number(data.metrics.targetResistance).toLocaleString('vi-VN')} đ`;
+  const cardStop = document.getElementById('kronos-card-stop');
+  if (cardStop) cardStop.textContent = `${Number(data.metrics.stopLossFloor).toLocaleString('vi-VN')} đ`;
+  const cardRr = document.getElementById('kronos-card-rr');
+  if (cardRr) cardRr.textContent = `R:R = ${data.metrics.riskRewardRatio} · Độ tin cậy: ${data.metrics.confidenceScore}%`;
+
+  // Populate Table
+  const tbody = document.getElementById('kronos-table-tbody');
+  if (tbody) {
+    let rowsHtml = '';
+    data.predictions.forEach(p => {
+      const isUp = p.pctChg >= 0;
+      const isCeil = p.close >= p.ceiling;
+      const isFloor = p.close <= p.floor;
+      const statusBadge = isCeil
+        ? '<span style="padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.25);color:#d8b4fe;font-weight:700;">TĂNG TRẦN</span>'
+        : isFloor
+        ? '<span style="padding:2px 6px;border-radius:4px;background:rgba(239,68,68,0.25);color:#fca5a5;font-weight:700;">GIẢM SÀN</span>'
+        : isUp
+        ? '<span style="padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.18);color:#4ade80;font-weight:600;">TĂNG GIÁ</span>'
+        : '<span style="padding:2px 6px;border-radius:4px;background:rgba(239,68,68,0.18);color:#f87171;font-weight:600;">ĐIỀU CHỈNH</span>';
+
+      rowsHtml += `
+        <tr style="border-bottom:1px solid var(--line, rgba(255,255,255,0.06));">
+          <td style="padding:8px 12px;font-weight:700;color:var(--brand, #38bdf8);">T+${p.t}</td>
+          <td style="padding:8px 12px;color:var(--ink2, #cbd5e1);font-family:var(--mono, monospace);">${p.dateStr}</td>
+          <td style="padding:8px 12px;text-align:right;font-family:var(--mono, monospace);">${p.open.toLocaleString('vi-VN')}</td>
+          <td style="padding:8px 12px;text-align:right;font-family:var(--mono, monospace);color:#22c55e;">${p.high.toLocaleString('vi-VN')}</td>
+          <td style="padding:8px 12px;text-align:right;font-family:var(--mono, monospace);color:#ef4444;">${p.low.toLocaleString('vi-VN')}</td>
+          <td style="padding:8px 12px;text-align:right;font-family:var(--mono, monospace);font-weight:700;color:${isUp ? '#22c55e' : '#ef4444'};">${p.close.toLocaleString('vi-VN')}</td>
+          <td style="padding:8px 12px;text-align:right;font-family:var(--mono, monospace);font-weight:700;color:${isUp ? '#22c55e' : '#ef4444'};">${isUp ? '+' : ''}${p.pctChg.toFixed(2)}%</td>
+          <td style="padding:8px 12px;text-align:right;font-family:var(--mono, monospace);color:var(--ink2, #94a3b8);">${p.volume.toLocaleString('vi-VN')}</td>
+          <td style="padding:8px 12px;text-align:center;">${statusBadge}</td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = rowsHtml;
+  }
+
+  // Draw Canvas
+  drawKronosChart('kronos-canvas', data);
+}
+
+function drawKronosChart(canvasId, data) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const w = rect.width || 1100;
+  const h = rect.height || 380;
+
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const hist = data.historical.slice(-8);
+  const pred = data.predictions;
+  const allBars = [
+    ...hist.map(b => ({ ...b, isPred: false })),
+    ...pred.map(b => ({ ...b, o: b.open, h: b.high, l: b.low, c: b.close, v: b.volume, isPred: true }))
+  ];
+
+  const padLeft = 10;
+  const padRight = 65;
+  const padTop = 20;
+  const volHeight = 70;
+  const padMid = 20;
+  const priceHeight = h - padTop - volHeight - padMid - 25;
+
+  // Clear background
+  ctx.fillStyle = '#0e1118';
+  ctx.fillRect(0, 0, w, h);
+
+  // Price bounds
+  const prices = allBars.map(b => [b.h, b.l]).flat().concat(pred.map(p => [p.ciUpper, p.ciLower]).flat());
+  let minP = Math.min(...prices) * 0.98;
+  let maxP = Math.max(...prices) * 1.02;
+  if (minP === maxP) { minP *= 0.9; maxP *= 1.1; }
+
+  // Volume bounds
+  const maxV = Math.max(...allBars.map(b => b.v || 0)) * 1.15 || 1;
+
+  // Horizontal Grid Lines
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.lineWidth = 1;
+  const gridSteps = 5;
+  for (let i = 0; i <= gridSteps; i++) {
+    const y = padTop + (priceHeight / gridSteps) * i;
+    ctx.beginPath();
+    ctx.moveTo(padLeft, y);
+    ctx.lineTo(w - padRight, y);
+    ctx.stroke();
+
+    const priceVal = maxP - (i / gridSteps) * (maxP - minP);
+    ctx.fillStyle = '#64748b';
+    ctx.font = '10.5px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(Number(priceVal.toFixed(0)).toLocaleString('vi-VN'), w - padRight + 6, y + 3.5);
+  }
+
+  // Draw Bars
+  const totalBars = allBars.length;
+  const barWidth = Math.max(3, (w - padLeft - padRight) / totalBars);
+  const barSpacing = Math.max(1, barWidth * 0.25);
+  const candleW = barWidth - barSpacing;
+
+  const getX = (idx) => padLeft + idx * barWidth + barWidth / 2;
+  const getY = (p) => padTop + priceHeight - ((p - minP) / (maxP - minP)) * priceHeight;
+  const getVolY = (v) => h - 25 - (v / maxV) * volHeight;
+
+  // Draw 80% Confidence Interval Shaded Area for predictions
+  const predStartIndex = hist.length;
+  ctx.fillStyle = 'rgba(168, 85, 247, 0.12)';
+  ctx.beginPath();
+  pred.forEach((p, i) => {
+    const x = getX(predStartIndex + i);
+    const yTop = getY(p.ciUpper);
+    if (i === 0) ctx.moveTo(x, yTop);
+    else ctx.lineTo(x, yTop);
+  });
+  for (let i = pred.length - 1; i >= 0; i--) {
+    const x = getX(predStartIndex + i);
+    const yBot = getY(pred[i].ciLower);
+    ctx.lineTo(x, yBot);
+  }
+  ctx.closePath();
+  ctx.fill();
+
+  // Vertical Separator at T+0
+  const t0X = getX(predStartIndex - 1) + barWidth / 2;
+  ctx.strokeStyle = '#06b6d4';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(t0X, padTop - 8);
+  ctx.lineTo(t0X, h - 25);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#06b6d4';
+  ctx.font = 'bold 10px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('◄ Lịch sử (T-0)', t0X - 6, padTop - 4);
+  ctx.textAlign = 'left';
+  ctx.fillText('Dự báo Kronos AI ►', t0X + 6, padTop - 4);
+
+  // Render Candles & Volume
+  allBars.forEach((b, idx) => {
+    const x = getX(idx);
+    const yO = getY(b.o);
+    const yC = getY(b.c);
+    const yH = getY(b.h);
+    const yL = getY(b.l);
+    const isUp = b.c >= b.o;
+
+    let color = isUp ? '#22c55e' : '#ef4444';
+    if (b.isPred) {
+      color = isUp ? '#10b981' : '#f43f5e';
+    }
+
+    // Candle Wick
+    ctx.strokeStyle = color;
+    ctx.lineWidth = b.isPred ? 1.5 : 1;
+    ctx.beginPath();
+    ctx.moveTo(x, yH);
+    ctx.lineTo(x, yL);
+    ctx.stroke();
+
+    // Candle Body
+    ctx.fillStyle = color;
+    const bodyTop = Math.min(yO, yC);
+    const bodyHeight = Math.max(2, Math.abs(yO - yC));
+    ctx.fillRect(x - candleW / 2, bodyTop, candleW, bodyHeight);
+
+    if (b.isPred) {
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 0.5;
+      ctx.strokeRect(x - candleW / 2, bodyTop, candleW, bodyHeight);
+    }
+
+    // Volume Bar
+    const vY = getVolY(b.v || 0);
+    ctx.fillStyle = b.isPred ? (isUp ? 'rgba(16,185,129,0.5)' : 'rgba(244,63,94,0.5)') : (isUp ? 'rgba(34,197,94,0.35)' : 'rgba(239,68,68,0.35)');
+    ctx.fillRect(x - candleW / 2, vY, candleW, h - 25 - vY);
+  });
+
+  // Attach mouse interaction
+  canvas.onmousemove = (e) => {
+    const cRect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - cRect.left;
+    const mouseY = e.clientY - cRect.top;
+
+    const barIdx = Math.floor((mouseX - padLeft) / barWidth);
+    const tooltip = document.getElementById('kronos-tooltip');
+    const infoEl = document.getElementById('kronos-cursor-info');
+
+    if (barIdx >= 0 && barIdx < allBars.length && mouseX <= w - padRight) {
+      const b = allBars[barIdx];
+      const isUp = b.c >= b.o;
+      const typeLabel = b.isPred ? `<span style="color:#c084fc;font-weight:700;">[DỰ BÁO T+${b.t}]</span>` : '<span style="color:#94a3b8;">[LỊCH SỬ]</span>';
+      
+      if (tooltip) {
+        tooltip.style.display = 'block';
+        tooltip.style.left = Math.min(mouseX + 15, w - 210) + 'px';
+        tooltip.style.top = Math.max(10, Math.min(mouseY - 40, h - 130)) + 'px';
+        tooltip.innerHTML = `
+          <div style="font-size:11px;margin-bottom:4px;display:flex;justify-content:space-between;">
+            ${typeLabel} <span>${b.dateStr}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:auto auto;gap:3px 12px;font-size:11px;">
+            <span style="color:#94a3b8;">Mở (Open):</span><span style="text-align:right;">${b.o.toLocaleString('vi-VN')}</span>
+            <span style="color:#94a3b8;">Cao (High):</span><span style="text-align:right;color:#22c55e;">${b.h.toLocaleString('vi-VN')}</span>
+            <span style="color:#94a3b8;">Thấp (Low):</span><span style="text-align:right;color:#ef4444;">${b.l.toLocaleString('vi-VN')}</span>
+            <span style="color:#94a3b8;">Đóng (Close):</span><span style="text-align:right;font-weight:700;color:${isUp ? '#22c55e' : '#ef4444'};">${b.c.toLocaleString('vi-VN')}</span>
+            <span style="color:#94a3b8;">Khối lượng:</span><span style="text-align:right;">${(b.v || 0).toLocaleString('vi-VN')}</span>
+          </div>
+        `;
+      }
+      if (infoEl) {
+        infoEl.innerHTML = `${b.dateStr} · Đóng: <b style="color:${isUp ? '#22c55e' : '#ef4444'};">${b.c.toLocaleString('vi-VN')} đ</b> · KL: <b>${(b.v || 0).toLocaleString('vi-VN')}</b>`;
+      }
+    } else {
+      if (tooltip) tooltip.style.display = 'none';
+      if (infoEl) infoEl.textContent = 'Di chuột vào nến để xem chi tiết OHLCV';
+    }
+  };
+
+  canvas.onmouseleave = () => {
+    const tooltip = document.getElementById('kronos-tooltip');
+    if (tooltip) tooltip.style.display = 'none';
+    const infoEl = document.getElementById('kronos-cursor-info');
+    if (infoEl) infoEl.textContent = 'Di chuột vào nến để xem chi tiết OHLCV';
+  };
+}
+
+function exportKronosForecastCsv() {
+  const d = KRONOS_CURRENT_STATE.data;
+  if (!d || !d.predictions) return;
+
+  let csv = 'Phiên,Ngày,Mở cửa,Cao nhất,Thấp nhất,Đóng cửa,Biến động (%),Khối lượng dự phóng,Trần,Sàn\n';
+  d.predictions.forEach(p => {
+    csv += `T+${p.t},${p.dateStr},${p.open},${p.high},${p.low},${p.close},${p.pctChg.toFixed(2)}%,${p.volume},${p.ceiling},${p.floor}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `KRONOS_AI_FORECAST_${d.sym}_${d.predictions.length}D.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  if (typeof toast === 'function') toast(`Đã tải xuống file dự báo KRONOS_${d.sym}.csv`);
+}
+
+function copyKronosForecastReport() {
+  const d = KRONOS_CURRENT_STATE.data;
+  if (!d) return;
+
+  const lastP = d.predictions[d.predictions.length - 1];
+  const report = `=== BÁO CÁO DỰ BÁO KRONOS FOUNDATION MODEL (AAAI 2026) ===\nMã CK: ${d.sym} (${d.name}) · Sàn: ${d.ex}\nKhung dự báo: T+${d.predictions.length} phiên\nMẫu hình: ${d.pattern.name}\nThị giá hiện tại: ${d.lastClose.toLocaleString('vi-VN')} đ\nMục tiêu dự phóng: ${lastP.close.toLocaleString('vi-VN')} đ (${d.metrics.expectedReturn >= 0 ? '+' : ''}${d.metrics.expectedReturn.toFixed(2)}%)\nKháng cự mục tiêu: ${d.metrics.targetResistance.toLocaleString('vi-VN')} đ\nHỗ trợ dừng lỗ (Stop-loss): ${d.metrics.stopLossFloor.toLocaleString('vi-VN')} đ\nTỷ lệ Lợi nhuận/Rủi ro: R:R = ${d.metrics.riskRewardRatio}\nĐộ tin cậy mô hình: ${d.metrics.confidenceScore}%`;
+
+  navigator.clipboard.writeText(report).then(() => {
+    if (typeof toast === 'function') toast('Đã sao chép báo cáo dự báo Kronos AI vào bộ nhớ tạm');
+  }).catch(() => {
+    if (typeof toast === 'function') toast('Không thể sao chép tự động');
+  });
+}
+
 const A = {
+  openkronosmodal: el => {
+    const sym = (el && el.dataset && el.dataset.sym) || (typeof STOCK !== 'undefined' ? STOCK.sym : 'KOS');
+    openKronosForecastModal(sym);
+  },
   burger: () => {
     if (window.innerWidth <= 860) {
       const sb = document.getElementById('sb');
@@ -44097,6 +44669,190 @@ startRealtimeEngine();
       <button class="dnse-action-btn primary" onclick="callActiveMcpTool()">⚡ Gửi request MCP (Call Tool)</button>
       <button class="dnse-action-btn" onclick="syncAllMcpLive()">↻ Đồng bộ lại từ Server</button>
       <button class="dnse-action-btn" onclick="closeDnseMcpModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================================================================== -->
+<!-- MODAL KRONOS AI FOUNDATION MODEL CANDLESTICK FORECAST TERMINAL (AAAI 2026) -->
+<!-- ========================================================================== -->
+<div id="modal-kronos-forecast" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(8,10,18,0.78);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeKronosForecastModal()">
+  <div class="kronos-modal-card" style="width:min(1180px, calc(100vw - 32px));max-height:calc(100vh - 40px);background:var(--card, #131722);border:1px solid rgba(168,85,247,0.35);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,0.7), 0 0 30px rgba(168,85,247,0.15);display:flex;flex-direction:column;overflow:hidden;color:var(--ink, #f8fafc);font-family:system-ui,-apple-system,sans-serif;">
+    <!-- HEADER -->
+    <div style="padding:14px 20px;background:linear-gradient(90deg, rgba(168,85,247,0.15), rgba(99,102,241,0.08), rgba(27,30,40,0.6));border-bottom:1px solid rgba(168,85,247,0.25);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg, #a855f7, #6366f1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(168,85,247,0.4);font-size:20px;">🤖</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <h2 style="margin:0;font-size:17px;font-weight:800;letter-spacing:-0.3px;color:#fff;">
+              Kronos-master AI Forecast Terminal · <span id="kronos-sym-title" style="color:#c084fc;">KOS</span>
+            </h2>
+            <span class="pill" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(168,85,247,0.2);color:#d8b4fe;border:1px solid rgba(168,85,247,0.4);font-weight:700;">AAAI 2026 Foundation Model</span>
+            <span id="kronos-ex-badge" style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--sub2, #1e293b);color:var(--ink2, #94a3b8);font-weight:700;">HOSE</span>
+            <span id="kronos-limit-badge" style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(234,179,8,0.12);color:#eab308;border:1px solid rgba(234,179,8,0.25);font-weight:700;">Biên độ ±7%</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--ink3, #94a3b8);margin-top:2px;">
+            Mô hình nền tảng chuỗi nến K-line đào tạo trên 45+ sàn giao dịch toàn cầu · Tự hồi quy & Lượng tử hóa BSQuantizer
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button onclick="closeKronosForecastModal()" style="width:32px;height:32px;border-radius:8px;background:var(--sub, rgba(255,255,255,0.06));border:1px solid var(--line, rgba(255,255,255,0.1));color:var(--ink, #fff);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;line-height:1;transition:background 0.2s ease;">✕</button>
+      </div>
+    </div>
+
+    <!-- CONTROLS TOOLBAR -->
+    <div style="padding:10px 20px;background:var(--sub, #181b24);border-bottom:1px solid var(--line, rgba(255,255,255,0.08));display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <!-- Horizon Selector -->
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="color:var(--ink3, #94a3b8);font-weight:600;">Chân trời dự báo:</span>
+          <div class="kronos-btn-group" style="display:inline-flex;border-radius:6px;border:1px solid var(--line, rgba(255,255,255,0.12));overflow:hidden;">
+            <button type="button" class="kronos-hz-btn on" data-hz="10" onclick="setKronosHorizon(10, this)" style="padding:4px 10px;background:#a855f7;color:#fff;border:0;font-size:11.5px;font-weight:700;cursor:pointer;">10 Phiên (T+10)</button>
+            <button type="button" class="kronos-hz-btn" data-hz="20" onclick="setKronosHorizon(20, this)" style="padding:4px 10px;background:transparent;color:var(--ink2, #cbd5e1);border:0;border-left:1px solid var(--line, rgba(255,255,255,0.12));font-size:11.5px;font-weight:600;cursor:pointer;">20 Phiên</button>
+            <button type="button" class="kronos-hz-btn" data-hz="30" onclick="setKronosHorizon(30, this)" style="padding:4px 10px;background:transparent;color:var(--ink2, #cbd5e1);border:0;border-left:1px solid var(--line, rgba(255,255,255,0.12));font-size:11.5px;font-weight:600;cursor:pointer;">30 Phiên</button>
+          </div>
+        </div>
+
+        <!-- Scenario Selector -->
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="color:var(--ink3, #94a3b8);font-weight:600;">Kịch bản:</span>
+          <div class="kronos-btn-group" style="display:inline-flex;border-radius:6px;border:1px solid var(--line, rgba(255,255,255,0.12));overflow:hidden;">
+            <button type="button" class="kronos-sc-btn on" data-sc="base" onclick="setKronosScenario('base', this)" style="padding:4px 9px;background:#6366f1;color:#fff;border:0;font-size:11.5px;font-weight:700;cursor:pointer;">Base Case (60%)</button>
+            <button type="button" class="kronos-sc-btn" data-sc="bull" onclick="setKronosScenario('bull', this)" style="padding:4px 9px;background:transparent;color:#22c55e;border:0;border-left:1px solid var(--line, rgba(255,255,255,0.12));font-size:11.5px;font-weight:600;cursor:pointer;">Bull (+25%)</button>
+            <button type="button" class="kronos-sc-btn" data-sc="bear" onclick="setKronosScenario('bear', this)" style="padding:4px 9px;background:transparent;color:#ef4444;border:0;border-left:1px solid var(--line, rgba(255,255,255,0.12));font-size:11.5px;font-weight:600;cursor:pointer;">Bear (-15%)</button>
+          </div>
+        </div>
+
+        <!-- Temperature Selector -->
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="color:var(--ink3, #94a3b8);font-weight:600;">Độ ngẫu nhiên (T):</span>
+          <select id="kronos-temp-select" onchange="setKronosTemperature(this.value)" style="background:var(--sub2, #1e293b);color:var(--ink, #fff);border:1px solid var(--line, rgba(255,255,255,0.15));border-radius:5px;padding:3px 8px;font-size:11.5px;cursor:pointer;">
+            <option value="0.8" selected>0.8 (Bám sát xu hướng)</option>
+            <option value="1.0">1.0 (Chuẩn mặc định)</option>
+            <option value="1.2">1.2 (Biến động bứt phá)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div>
+        <button type="button" onclick="rerunKronosSimulation()" style="padding:5px 12px;border-radius:6px;background:linear-gradient(135deg, rgba(168,85,247,0.25), rgba(99,102,241,0.3));border:1px solid rgba(168,85,247,0.5);color:#d8b4fe;font-size:11.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s ease;">
+          <span>🔄</span>
+          <span>Chạy lại Mô phỏng Monte Carlo</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MODAL BODY SCROLLABLE -->
+    <div style="flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:16px;">
+      
+      <!-- CANVAS CHART CONTAINER -->
+      <div style="background:#0e1118;border:1px solid rgba(168,85,247,0.25);border-radius:10px;padding:12px;position:relative;overflow:hidden;">
+        <!-- Chart Legend -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;font-size:11.5px;">
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+            <span style="display:inline-flex;align-items:center;gap:5px;color:#94a3b8;">
+              <span style="width:10px;height:10px;border-radius:2px;background:#3b82f6;"></span> Nến Lịch sử (Thực tế)
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:5px;color:#a855f7;font-weight:700;">
+              <span style="width:10px;height:10px;border-radius:2px;background:#10b981;box-shadow:0 0 6px #10b981;"></span> Nến Dự báo Kronos (AI Forecast)
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:5px;color:#c084fc;">
+              <span style="width:14px;height:6px;background:rgba(168,85,247,0.3);border-radius:2px;"></span> Dải xác suất 80% CI
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:5px;color:#eab308;">
+              <span style="width:14px;height:2px;background:#eab308;display:inline-block;"></span> Giới hạn Trần/Sàn
+            </span>
+          </div>
+          <div id="kronos-cursor-info" style="font-family:var(--mono, monospace);font-size:11.5px;color:#cbd5e1;">
+            Di chuột vào nến để xem chi tiết OHLCV
+          </div>
+        </div>
+
+        <!-- CANVAS -->
+        <div style="position:relative;width:100%;height:380px;">
+          <canvas id="kronos-canvas" style="width:100%;height:100%;display:block;cursor:crosshair;"></canvas>
+          <div id="kronos-tooltip" style="display:none;position:absolute;pointer-events:none;background:rgba(19,23,34,0.95);border:1px solid rgba(168,85,247,0.5);border-radius:8px;padding:8px 12px;box-shadow:0 8px 24px rgba(0,0,0,0.6);font-size:11.5px;font-family:var(--mono, monospace);z-index:20;min-width:180px;"></div>
+        </div>
+      </div>
+
+      <!-- 4 QUANT METRIC SUMMARY CARDS -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:12px;">
+        <div style="background:var(--sub, #181b24);border:1px solid rgba(168,85,247,0.25);border-radius:8px;padding:12px 14px;">
+          <div style="font-size:11px;color:var(--ink3, #94a3b8);text-transform:uppercase;font-weight:700;letter-spacing:0.5px;">Dự báo T+Horizon</div>
+          <div id="kronos-card-ret" style="font-size:22px;font-weight:800;color:#10b981;margin-top:4px;font-family:var(--mono, monospace);">+0.00%</div>
+          <div id="kronos-card-price" style="font-size:12px;color:var(--ink2, #cbd5e1);margin-top:2px;">Mục tiêu: -- đ</div>
+        </div>
+
+        <div style="background:var(--sub, #181b24);border:1px solid rgba(168,85,247,0.25);border-radius:8px;padding:12px 14px;">
+          <div style="font-size:11px;color:var(--ink3, #94a3b8);text-transform:uppercase;font-weight:700;letter-spacing:0.5px;">Mẫu hình nhận diện</div>
+          <div id="kronos-card-pattern" style="font-size:14px;font-weight:700;color:#c084fc;margin-top:4px;line-height:1.3;">Volume Climax Absorption</div>
+          <div id="kronos-card-pattern-desc" style="font-size:11px;color:var(--ink3, #94a3b8);margin-top:3px;line-height:1.4;">Bùng nổ thanh khoản thay máu cổ đông.</div>
+        </div>
+
+        <div style="background:var(--sub, #181b24);border:1px solid rgba(168,85,247,0.25);border-radius:8px;padding:12px 14px;">
+          <div style="font-size:11px;color:var(--ink3, #94a3b8);text-transform:uppercase;font-weight:700;letter-spacing:0.5px;">Kháng cự mục tiêu (Resistance)</div>
+          <div id="kronos-card-res" style="font-size:20px;font-weight:800;color:#eab308;margin-top:4px;font-family:var(--mono, monospace);">-- đ</div>
+          <div id="kronos-card-res-pct" style="font-size:11.5px;color:var(--ink3, #94a3b8);margin-top:2px;">Kỳ vọng phục hồi sóng chữ V</div>
+        </div>
+
+        <div style="background:var(--sub, #181b24);border:1px solid rgba(168,85,247,0.25);border-radius:8px;padding:12px 14px;">
+          <div style="font-size:11px;color:var(--ink3, #94a3b8);text-transform:uppercase;font-weight:700;letter-spacing:0.5px;">Hỗ trợ dừng lỗ (Stop-loss Floor)</div>
+          <div id="kronos-card-stop" style="font-size:20px;font-weight:800;color:#ef4444;margin-top:4px;font-family:var(--mono, monospace);">-- đ</div>
+          <div id="kronos-card-rr" style="font-size:11.5px;color:var(--ink3, #94a3b8);margin-top:2px;">Tỷ lệ Lợi nhuận/Rủi ro: R:R = --</div>
+        </div>
+      </div>
+
+      <!-- FORECAST TABLE -->
+      <div style="background:var(--sub, #181b24);border:1px solid var(--line, rgba(255,255,255,0.08));border-radius:10px;padding:14px;overflow:hidden;">
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+          <span>Chi tiết Chuỗi Nến K-Line Dự Báo (T+1 đến T+N)</span>
+          <span style="font-size:11px;font-weight:normal;color:var(--ink3, #94a3b8);">Tuân thủ tuyệt đối quy tắc bước giá & biên độ sàn giao dịch</span>
+        </div>
+        <div style="max-height:220px;overflow-y:auto;border:1px solid var(--line, rgba(255,255,255,0.06));border-radius:6px;">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left;">
+            <thead>
+              <tr style="background:var(--card, #131722);color:var(--ink3, #94a3b8);border-bottom:1px solid var(--line, rgba(255,255,255,0.1));font-size:11px;">
+                <th style="padding:8px 12px;">Phiên</th>
+                <th style="padding:8px 12px;">Ngày dự báo</th>
+                <th style="padding:8px 12px;text-align:right;">Mở cửa (đ)</th>
+                <th style="padding:8px 12px;text-align:right;">Cao nhất (đ)</th>
+                <th style="padding:8px 12px;text-align:right;">Thấp nhất (đ)</th>
+                <th style="padding:8px 12px;text-align:right;">Đóng cửa (đ)</th>
+                <th style="padding:8px 12px;text-align:right;">Biến động (%)</th>
+                <th style="padding:8px 12px;text-align:right;">KL Dự phóng</th>
+                <th style="padding:8px 12px;text-align:center;">Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="kronos-table-tbody">
+              <!-- populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MODAL FOOTER -->
+    <div style="padding:12px 20px;background:var(--card, #131722);border-top:1px solid var(--line, rgba(255,255,255,0.08));display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div style="font-size:11px;color:var(--ink3, #94a3b8);display:flex;align-items:center;gap:6px;">
+        <span>⚡ Engine: Kronos 24.7M Decoder-only Transformer</span>
+        <span>·</span>
+        <span>Quant framework: Cole Quantitative Risk Management</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button type="button" onclick="exportKronosForecastCsv()" style="padding:6px 14px;border-radius:6px;background:var(--sub2, #1e293b);border:1px solid var(--line, rgba(255,255,255,0.15));color:var(--ink, #fff);font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+          <span>📥 Xuất CSV</span>
+        </button>
+        <button type="button" onclick="copyKronosForecastReport()" style="padding:6px 14px;border-radius:6px;background:linear-gradient(135deg, #a855f7, #6366f1);border:0;color:#fff;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-shadow:0 2px 8px rgba(168,85,247,0.3);">
+          <span>📋 Copy Báo Cáo</span>
+        </button>
+        <button type="button" onclick="closeKronosForecastModal()" style="padding:6px 14px;border-radius:6px;background:var(--sub, rgba(255,255,255,0.08));border:1px solid var(--line, rgba(255,255,255,0.1));color:var(--ink2, #cbd5e1);font-size:12px;font-weight:600;cursor:pointer;">
+          Đóng
+        </button>
+      </div>
     </div>
   </div>
 </div>

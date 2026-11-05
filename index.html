@@ -36351,17 +36351,25 @@ setTimeout(() => {
   }
 }, 150);
 
-// Polling Cloudflare Worker Proxy every 6s for live index ticks (CHỈ polling khi trong phiên giao dịch có dữ liệu mới)
-setInterval(() => {
+// Polling Cloudflare Worker Proxy adaptive sync: 3.5s in session for near-realtime experience, 30s outside session
+let _MKT_POLL_TIMER = null;
+function scheduleMarketPoll() {
+  if (_MKT_POLL_TIMER) clearTimeout(_MKT_POLL_TIMER);
   const session = typeof getLiveTradingSessionInfo === 'function' ? getLiveTradingSessionInfo() : { isOpen: false };
-  // Luôn đồng bộ dữ liệu thị trường mới nhất (cả trong và ngoài phiên)
-  syncMarketDataRealtime(false);
-  if (session.isOpen) {
-    if (S.route === 'c360' && typeof STOCK !== 'undefined' && STOCK.sym) {
-      syncStockQuoteRealtime(STOCK.sym);
+  const intervalMs = session.isOpen ? 3500 : 30000;
+  _MKT_POLL_TIMER = setTimeout(async () => {
+    if (!document.hidden) {
+      try {
+        await syncMarketDataRealtime(false);
+        if (session.isOpen && S.route === 'c360' && typeof STOCK !== 'undefined' && STOCK.sym) {
+          syncStockQuoteRealtime(STOCK.sym);
+        }
+      } catch (_) {}
     }
-  }
-}, 15000);
+    scheduleMarketPoll();
+  }, intervalMs);
+}
+scheduleMarketPoll();
 
 // Quản lý dừng/bật socket và stream theo trạng thái tab trình duyệt (Page Visibility API)
 document.addEventListener('visibilitychange', () => {

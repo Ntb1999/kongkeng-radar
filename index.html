@@ -3902,17 +3902,8 @@ const MSB_LOGO = 'data:image/webp;base64,UklGRhoGAABXRUJQVlA4WAoAAAAgAAAAUwAAUwA
 
 /* ================= TRADINGVIEW OFFICIAL SYMBOL LOGOS (INSTITUTIONAL CDN) ================= */
 const TRADINGVIEW_LOGOS = {
-  "FRT": "fpt-digital-retail",
   "VHC": "vinh-hoan",
-  "DPM": "dam-phu-my",
-  "DBC": "dabaco",
   "ANV": "nam-viet",
-  "EIB": "eximbank",
-  "OCB": "ocb",
-  "PC1": "pc1-group",
-  "GEX": "gelex",
-  "PDR": "phat-dat",
-  "KOS": "kosy-joint-stock-company",
   "VCB": "joint-stock-commercial-bank-for-foreign-trade-of-vietnam",
   "HPG": "hoa-phat-group",
   "FPT": "fpt-corporation",
@@ -4235,6 +4226,20 @@ function getCompanyLogo(sym, size = 32, extraStyle = '') {
       <rect width="100" height="100" rx="${r}" fill="#C8102E"/>
       <path d="M33 28 L50 52 L67 28 L59 28 L50 43 L41 28 Z" fill="#FFFFFF"/>
       <text x="50" y="78" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">VIX</text>
+    </svg>`,
+
+    CEO: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#EA580C"/>
+      <circle cx="50" cy="38" r="21" fill="#FFFFFF"/>
+      <text x="50" y="45" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="16" fill="#EA580C" text-anchor="middle" letter-spacing="1">CEO</text>
+      <text x="50" y="80" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle" letter-spacing="1.5">GROUP</text>
+    </svg>`,
+
+    DXG: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${r}px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);${extraStyle}">
+      <rect width="100" height="100" rx="${r}" fill="#082A54"/>
+      <polygon points="32,54 48,26 62,44 48,64" fill="#00A859"/>
+      <polygon points="48,64 62,44 72,56 58,74" fill="#0080FF"/>
+      <text x="50" y="85" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="900" font-size="14" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">ĐẤT XANH</text>
     </svg>`
   };
 
@@ -12020,7 +12025,8 @@ function renderMarketStockFlowHtml() {
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
         ${topInflows.map(s => `
-          <button class="btn xs" onclick="openStock('${s.sym}')" style="background:var(--hover);border:1px solid var(--line2);display:inline-flex;align-items:center;gap:4px">
+          <button class="btn xs" onclick="openStock('${s.sym}')" style="background:var(--hover);border:1px solid var(--line2);display:inline-flex;align-items:center;gap:5px;padding:3px 7px">
+            ${getCompanyLogo(s.sym, 18)}
             <b>${s.sym}</b>
             <span style="color:var(--up);font-weight:700">+${s.shark_net}T</span>
           </button>
@@ -12036,7 +12042,8 @@ function renderMarketStockFlowHtml() {
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
         ${topOutflows.map(s => `
-          <button class="btn xs" onclick="openStock('${s.sym}')" style="background:var(--hover);border:1px solid var(--line2);display:inline-flex;align-items:center;gap:4px">
+          <button class="btn xs" onclick="openStock('${s.sym}')" style="background:var(--hover);border:1px solid var(--line2);display:inline-flex;align-items:center;gap:5px;padding:3px 7px">
+            ${getCompanyLogo(s.sym, 18)}
             <b>${s.sym}</b>
             <span style="color:var(--down);font-weight:700">${s.shark_net}T</span>
           </button>
@@ -12107,9 +12114,7 @@ function renderMarketStockFlowHtml() {
       <td style="text-align:center;color:var(--ink3);font-size:12px;font-family:var(--mono)">${idx + 1}</td>
       <td>
         <div style="display:flex;align-items:center;gap:8px">
-          <div style="width:28px;height:28px;border-radius:6px;background:var(--hover);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:var(--brand)">
-            ${s.sym.substring(0, 2)}
-          </div>
+          ${getCompanyLogo(s.sym, 28)}
           <div>
             <div style="font-weight:700;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:5px">
               ${s.sym}

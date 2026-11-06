@@ -9573,23 +9573,19 @@ function stockHeader(tab, body) {
 
       <!-- TradingView Candlestick Chart Card -->
       <div class="cmc-card cmc-chart-card" style="padding:0;overflow:hidden;position:relative">
-        <div class="tv-head-cmc" style="padding:10px 14px;border-bottom:1px solid var(--line);background:var(--sub);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:relative;z-index:2">
-          <div class="tv-leg" style="display:flex;align-items:center;gap:8px;font-size:12.5px">
-            <div class="tv-logo" style="cursor:pointer" data-act="opentvmcpmodal" title="Mở biểu đồ ${STOCK.ex || 'HOSE'}:${STOCK.sym} trên TradingView chính thức"></div>
-            <b>${STOCK.name}</b> · <span id="tvint" style="cursor:pointer;font-weight:700;color:var(--brand)" title="Khung thời gian">${S_TV_TF || '1D'}</span> · <span>${STOCK.ex}</span>
-            <span class="pill" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(34,171,148,0.12);color:var(--up);border:1px solid rgba(34,171,148,0.3);font-family:var(--mono);font-weight:600" title="Biểu đồ kỹ thuật chuẩn quốc tế ADJ (đã điều chỉnh chia cổ tức & cổ phiếu thưởng)">ADJ</span>
-            <span class="tv-dot"></span>
-            <span id="ohlc" class="tv-ohlc" style="font-family:var(--mono);font-size:12px"></span>
+        <div class="tv-head-cmc" style="padding:8px 14px;border-bottom:1px solid var(--line);background:var(--sub);display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:2;flex-wrap:nowrap">
+          <div class="tv-leg" style="display:flex;align-items:center;gap:8px;font-size:12.5px;min-width:0;flex:1;overflow:hidden;white-space:nowrap">
+            <div class="tv-logo" style="cursor:pointer;flex-shrink:0" data-act="opentvmcpmodal" title="Mở biểu đồ ${STOCK.ex || 'HOSE'}:${STOCK.sym} trên TradingView chính thức"></div>
+            <b style="flex-shrink:0">${STOCK.name}</b> · <span id="tvint" style="cursor:pointer;font-weight:700;color:var(--brand);flex-shrink:0" title="Khung thời gian">${S_TV_TF || '1D'}</span> · <span style="flex-shrink:0">${STOCK.ex}</span>
+            <span class="pill" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(34,171,148,0.12);color:var(--up);border:1px solid rgba(34,171,148,0.3);font-family:var(--mono);font-weight:600;flex-shrink:0" title="Biểu đồ kỹ thuật chuẩn quốc tế ADJ (đã điều chỉnh chia cổ tức & cổ phiếu thưởng)">ADJ</span>
+            <span class="tv-dot" style="flex-shrink:0"></span>
+            <span id="ohlc" class="tv-ohlc" style="font-family:var(--mono);font-size:12px;overflow:hidden;text-overflow:ellipsis"></span>
           </div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <button type="button" class="pill kronos-forecast-btn" id="btn-kronos-c360" data-act="openkronosmodal" style="font-size:11.5px;padding:4px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(168,85,247,0.55);border-radius:6px;background:linear-gradient(135deg, rgba(168,85,247,0.22), rgba(99,102,241,0.25));color:#c084fc;font-weight:700;transition:all 0.2s ease;box-shadow:0 2px 8px rgba(168,85,247,0.2)" title="Phân tích dự báo chuỗi nến tương lai bằng mô hình AI Foundation Model Kronos (AAAI 2026)">
+          <div style="flex-shrink:0;margin-left:auto">
+            <button type="button" class="pill kronos-forecast-btn" id="btn-kronos-c360" data-act="openkronosmodal" style="font-size:12px;padding:5px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(168,85,247,0.55);border-radius:6px;background:linear-gradient(135deg, rgba(168,85,247,0.22), rgba(99,102,241,0.25));color:#c084fc;font-weight:700;transition:all 0.2s ease;box-shadow:0 2px 8px rgba(168,85,247,0.2);white-space:nowrap" title="Phân tích dự báo chuỗi nến tương lai bằng mô hình AI Foundation Model Kronos (AAAI 2026)">
               <span style="font-size:13px">🤖</span>
-              <span>Phân tích dự báo chart Kronos-master</span>
+              <span>Dự báo Chart</span>
             </button>
-            <a href="${getTradingViewUrl(STOCK.sym, STOCK.ex)}" target="_blank" rel="noopener noreferrer" class="pill" id="btn-tvlink-main" style="font-size:11.5px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(41,98,255,0.35);border-radius:6px;background:rgba(41,98,255,0.08);color:#2962FF;font-weight:600;text-decoration:none;transition:all 0.2s ease" title="Mở biểu đồ ${STOCK.ex || 'HOSE'}:${STOCK.sym} trực tiếp trên TradingView chính thức">
-              <span>Mở trên TradingView</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            </a>
           </div>
         </div>
 

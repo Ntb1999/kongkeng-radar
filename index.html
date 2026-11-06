@@ -8932,7 +8932,7 @@ function renderMcpOrderBook() {
     <div class="mcp-ts-section">
       <div class="mcp-ts-header">
         <span style="display:flex;align-items:center;gap:5px;font-size:10.5px"><span class="tv-dot-live"></span><b>Khớp lệnh Realtime (Time &amp; Sales)</b></span>
-        <span style="font-size:9.5px;color:var(--ink3)" id="ob-trades-status">Live stream</span>
+        <span style="font-size:9.5px;color:var(--ink3)" id="ob-trades-status">Live KRX</span>
       </div>
       <table class="mcp-ts-table">
         <colgroup>
@@ -45923,8 +45923,8 @@ class DnseKrxSocketManager {
       vol: p.matchQtty || p.matchQuantity || 10,
       side: p.side === 1 ? 'M' : 'B'
     });
-    if (DNSE_ORDERBOOK_FEED[p.symbol].ticks.length > 20) {
-      DNSE_ORDERBOOK_FEED[p.symbol].ticks.length = 20;
+    if (DNSE_ORDERBOOK_FEED[p.symbol].ticks.length > 6) {
+      DNSE_ORDERBOOK_FEED[p.symbol].ticks.length = 6;
     }
 
     if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
@@ -45979,7 +45979,7 @@ class DnseKrxSocketManager {
         </td>
       `;
       tradesTbody.insertBefore(tr, tradesTbody.firstChild);
-      while (tradesTbody.children.length > 8) {
+      while (tradesTbody.children.length > 6) {
         tradesTbody.removeChild(tradesTbody.lastChild);
       }
     }

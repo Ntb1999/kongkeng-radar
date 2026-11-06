@@ -3880,7 +3880,7 @@ td[data-stock-role="price"],
       <div class="top-r">
         <div class="search" id="top-search-wrap">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-          <input id="q" type="text" placeholder="Tìm mã CK tiếng Anh (VD: KOS, MBB, FPT, HPG...)" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="latin" lang="en" aria-label="Tìm kiếm mã chứng khoán">
+          <input id="q" type="text" placeholder="Tìm mã CK (VD: VIX, KOS, FPT, HPG...)" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="latin" lang="en" aria-label="Tìm kiếm mã chứng khoán" style="text-transform: uppercase;">
           <button id="q-clear" class="search-clear-btn" style="display:none" aria-label="Xóa tìm kiếm" title="Xóa">✕</button>
           <div id="suggest" class="suggest" hidden></div>
         </div>
@@ -8755,17 +8755,58 @@ if (typeof UNI !== 'undefined' && Array.isArray(UNI) && typeof DNSE_ORDERBOOK_FE
 
 function sanitizeToEnglishTicker(val) {
   if (!val) return '';
-  let s = String(val).toLowerCase();
-  // Reverse Vietnamese Telex keystrokes to English letters for stock tickers
-  s = s.replace(/á/g, 'as').replace(/é/g, 'es').replace(/í/g, 'is').replace(/ó/g, 'os').replace(/ú/g, 'us').replace(/ý/g, 'ys');
-  s = s.replace(/à/g, 'af').replace(/è/g, 'ef').replace(/ì/g, 'if').replace(/ò/g, 'of').replace(/ù/g, 'uf').replace(/ỳ/g, 'yf');
-  s = s.replace(/ả/g, 'ar').replace(/ẻ/g, 'er').replace(/ỉ/g, 'ir').replace(/ỏ/g, 'or').replace(/ủ/g, 'ur').replace(/ỷ/g, 'yr');
+  let s = String(val).trim();
+
+  // 1. Decomposed combining diacritical marks (NFD)
+  // \u0303: tilde (Telex x) -> e.g. vĩ -> vix
+  s = s.replace(/([aeiouyAEIOUY])[\u0303]/g, '$1x');
+  // \u0301: acute (Telex s) -> e.g. vó -> vos
+  s = s.replace(/([aeiouyAEIOUY])[\u0301]/g, '$1s');
+  // \u0300: grave (Telex f)
+  s = s.replace(/([aeiouyAEIOUY])[\u0300]/g, '$1f');
+  // \u0309: hook (Telex r) -> e.g. ỏ -> or
+  s = s.replace(/([aeiouyAEIOUY])[\u0309]/g, '$1r');
+  // \u0323: dot below (Telex j)
+  s = s.replace(/([aeiouyAEIOUY])[\u0323]/g, '$1j');
+  // Strip combining hats/horns (circumflex, breve, horn)
+  s = s.replace(/[\u0302\u0306\u031b]/g, '');
+
+  // 2. Precomposed NFC
+  s = s.normalize('NFC').toLowerCase();
+
+  // Dấu ngã (tilde -> x)
   s = s.replace(/ã/g, 'ax').replace(/ẽ/g, 'ex').replace(/ĩ/g, 'ix').replace(/õ/g, 'ox').replace(/ũ/g, 'ux').replace(/ỹ/g, 'yx');
+  s = s.replace(/ẫ/g, 'aax').replace(/ẵ/g, 'awx').replace(/ễ/g, 'eex').replace(/ỗ/g, 'oox').replace(/ỡ/g, 'owx').replace(/ữ/g, 'uwx');
+
+  // Dấu sắc (acute -> s)
+  s = s.replace(/á/g, 'as').replace(/é/g, 'es').replace(/í/g, 'is').replace(/ó/g, 'os').replace(/ú/g, 'us').replace(/ý/g, 'ys');
+  s = s.replace(/ấ/g, 'aas').replace(/ắ/g, 'aws').replace(/ế/g, 'ees').replace(/ố/g, 'oos').replace(/ớ/g, 'ows').replace(/ứ/g, 'uws');
+
+  // Dấu huyền (grave -> f)
+  s = s.replace(/à/g, 'af').replace(/è/g, 'ef').replace(/ì/g, 'if').replace(/ò/g, 'of').replace(/ù/g, 'uf').replace(/ỳ/g, 'yf');
+  s = s.replace(/ầ/g, 'aaf').replace(/ằ/g, 'awf').replace(/ề/g, 'eef').replace(/ồ/g, 'oof').replace(/ờ/g, 'owf').replace(/ừ/g, 'uwf');
+
+  // Dấu hỏi (hook -> r)
+  s = s.replace(/ả/g, 'ar').replace(/ẻ/g, 'er').replace(/ỉ/g, 'ir').replace(/ỏ/g, 'or').replace(/ủ/g, 'ur').replace(/ỷ/g, 'yr');
+  s = s.replace(/ẩ/g, 'aar').replace(/ẳ/g, 'awr').replace(/ể/g, 'eer').replace(/ổ/g, 'oor').replace(/ở/g, 'owr').replace(/ử/g, 'uwr');
+
+  // Dấu nặng (dot below -> j)
   s = s.replace(/ạ/g, 'aj').replace(/ẹ/g, 'ej').replace(/ị/g, 'ij').replace(/ọ/g, 'oj').replace(/ụ/g, 'uj').replace(/ỵ/g, 'yj');
-  s = s.replace(/â/g, 'aa').replace(/ê/g, 'ee').replace(/ô/g, 'oo').replace(/ơ/g, 'ow').replace(/ư/g, 'uw').replace(/ă/g, 'aw');
-  s = s.replace(/đ/g, 'd');
+  s = s.replace(/ậ/g, 'aaj').replace(/ặ/g, 'awj').replace(/ệ/g, 'eej').replace(/ộ/g, 'ooj').replace(/ợ/g, 'owj').replace(/ự/g, 'uwj');
+
+  // Vowels with modifiers (â, ă, ê, ô, ơ, ư) -> plain vowels
+  s = s.replace(/[âă]/g, 'a').replace(/ê/g, 'e').replace(/[ôơ]/g, 'o').replace(/ư/g, 'u');
+  s = s.replace(/[đĐ]/g, 'd');
+
+  // 3. Strip any remaining Unicode combining marks
+  s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  // 4. In Telex, typing x twice or s twice resets tone; in tickers:
+  s = s.replace(/([a-z])xx\b/g, '$1x');
   s = s.replace(/([a-z])ss\b/g, '$1s');
-  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '').toUpperCase();
+
+  // 5. Keep ONLY English alphanumeric characters (A-Z, 0-9)
+  return s.replace(/[^a-z0-9]/g, '').toUpperCase();
 }
 
 function renderMcpOrderBook() {
@@ -18039,13 +18080,37 @@ function openStock(t) {
 }
 
 if (qIn) {
-  qIn.addEventListener('input', () => {
+  let isComposing = false;
+  qIn.addEventListener('compositionstart', () => { isComposing = true; });
+  qIn.addEventListener('compositionend', () => {
+    isComposing = false;
+    syncCleanSearchInput();
+  });
+
+  function syncCleanSearchInput() {
     const oldVal = qIn.value;
     const cleanVal = (typeof sanitizeToEnglishTicker === 'function') ? sanitizeToEnglishTicker(oldVal) : oldVal.toUpperCase();
     if (oldVal !== cleanVal) {
+      const start = qIn.selectionStart;
+      const end = qIn.selectionEnd;
+      const diff = cleanVal.length - oldVal.length;
       qIn.value = cleanVal;
+      try {
+        qIn.setSelectionRange(Math.max(0, (start || 0) + diff), Math.max(0, (end || 0) + diff));
+      } catch(err) {}
     }
     renderSuggest();
+  }
+
+  qIn.addEventListener('input', () => {
+    if (isComposing) return;
+    syncCleanSearchInput();
+  });
+  qIn.addEventListener('paste', () => {
+    setTimeout(syncCleanSearchInput, 0);
+  });
+  qIn.addEventListener('blur', () => {
+    syncCleanSearchInput();
   });
   qIn.addEventListener('focus', renderSuggest);
   qIn.addEventListener('click', e => {

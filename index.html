@@ -3880,7 +3880,7 @@ td[data-stock-role="price"],
       <div class="top-r">
         <div class="search" id="top-search-wrap">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-          <input id="q" type="text" placeholder="Tìm mã CK (VD: VIX, KOS, FPT, HPG...)" autocomplete="off" spellcheck="false" aria-label="Tìm kiếm mã chứng khoán">
+          <input id="q" type="text" placeholder="Tìm mã CK (VD: VIX, KOS, FPT, HPG...)" autocomplete="off" spellcheck="false" aria-label="Tìm kiếm mã chứng khoán" style="text-transform: uppercase;">
           <button id="q-clear" class="search-clear-btn" style="display:none" aria-label="Xóa tìm kiếm" title="Xóa">✕</button>
           <div id="suggest" class="suggest" hidden></div>
         </div>
@@ -18108,22 +18108,57 @@ function openStock(t) {
 }
 
 if (qIn) {
-  let sugRaf = null;
-  // Pure native input with decoupled RAF rendering (0ms typing latency)
+  let cleanTimer = null;
+
+  function syncCleanAndSuggest() {
+    const curVal = qIn.value;
+    const cleanVal = (typeof sanitizeToEnglishTicker === 'function') ? sanitizeToEnglishTicker(curVal) : curVal.toUpperCase().trim();
+    if (curVal !== cleanVal) {
+      const start = qIn.selectionStart;
+      const end = qIn.selectionEnd;
+      const diff = cleanVal.length - curVal.length;
+      qIn.value = cleanVal;
+      try {
+        qIn.setSelectionRange(Math.max(0, (start || 0) + diff), Math.max(0, (end || 0) + diff));
+      } catch(err) {}
+    }
+    renderSuggest();
+  }
+
+  // 20ms deferred debounce: lets Unikey/EVKey complete their multi-keystroke backspace macro
+  // undisturbed, then cleanly converts any Vietnamese diacritics back to pure English tickers!
   qIn.addEventListener('input', () => {
     const hasVal = !!qIn.value.trim();
     if (qClear) qClear.style.display = hasVal ? 'inline-grid' : 'none';
-    if (sugRaf) cancelAnimationFrame(sugRaf);
-    sugRaf = requestAnimationFrame(() => {
-      renderSuggest();
-    });
+    if (cleanTimer) clearTimeout(cleanTimer);
+    cleanTimer = setTimeout(syncCleanAndSuggest, 20);
   });
+
+  qIn.addEventListener('blur', () => {
+    if (cleanTimer) {
+      clearTimeout(cleanTimer);
+      cleanTimer = null;
+    }
+    syncCleanAndSuggest();
+  });
+
+  qIn.addEventListener('paste', () => {
+    setTimeout(syncCleanAndSuggest, 0);
+  });
+
   qIn.addEventListener('focus', renderSuggest);
   qIn.addEventListener('click', e => {
     e.stopPropagation();
     renderSuggest();
   });
   qIn.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (cleanTimer) {
+        clearTimeout(cleanTimer);
+        cleanTimer = null;
+        syncCleanAndSuggest();
+      }
+    }
     if (sug && sug.hidden) {
       if (e.key === 'ArrowDown' || e.key === 'Enter') {
         renderSuggest();

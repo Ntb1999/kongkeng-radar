@@ -8824,12 +8824,16 @@ function renderMcpOrderBook() {
 
   let trades = [];
   if (dnseBook && dnseBook.ticks && dnseBook.ticks.length > 0) {
-    trades = dnseBook.ticks.slice(0, 6).map(t => ({
-      time: t.time || formatTimeFallback(10),
-      price: t.price || curPrice,
-      vol: t.vol || 10,
-      side: t.side || 'M'
-    }));
+    trades = dnseBook.ticks.slice(0, 6).map(t => {
+      let v = t.vol || 100;
+      if (v < 1000) v = v * 10;
+      return {
+        time: t.time || formatTimeFallback(10),
+        price: t.price || curPrice,
+        vol: v,
+        side: t.side || 'M'
+      };
+    });
   } else {
     trades = [
       { time: formatTimeFallback(3), price: curPrice, vol: 25000, side: 'M' },
@@ -8933,8 +8937,8 @@ function renderMcpOrderBook() {
     <!-- Real-time Time & Sales (Nhật ký khớp lệnh từng giây - Giá x 1.000 đ) -->
     <div class="mcp-ts-section">
       <div class="mcp-ts-header">
-        <span style="display:flex;align-items:center;gap:5px;font-size:10.5px"><span class="tv-dot-live"></span><b>Khớp lệnh Realtime (Time &amp; Sales)</b></span>
-        <span style="font-size:9.5px;color:var(--ink3)" id="ob-trades-status">Live KRX</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:11px"><span class="tv-dot-live"></span><b>Khớp lệnh</b></span>
+        <span style="display:none" id="ob-trades-status"></span>
       </div>
       <table class="mcp-ts-table">
         <colgroup>
@@ -45913,7 +45917,7 @@ class DnseKrxSocketManager {
     const statEl = document.getElementById('dnse-stat-ticks');
     if (statEl) statEl.textContent = this.stats.ticks;
 
-    // Cache tick into global feed
+    // Cache tick into global feed (Khối lượng khớp số đầy đủ không chia)
     let tStr = '';
     if (p.sendingTime && p.sendingTime.seconds) {
       const d = new Date(p.sendingTime.seconds * 1000);
@@ -45922,13 +45926,16 @@ class DnseKrxSocketManager {
       tStr = new Date().toTimeString().split(' ')[0];
     }
 
+    const rawQty = p.matchQtty || p.matchQuantity || 10;
+    const matchQty = (rawQty < 1000) ? rawQty * 10 : rawQty;
+
     if (typeof DNSE_ORDERBOOK_FEED === 'undefined') window.DNSE_ORDERBOOK_FEED = {};
     if (!DNSE_ORDERBOOK_FEED[p.symbol]) DNSE_ORDERBOOK_FEED[p.symbol] = {};
     if (!DNSE_ORDERBOOK_FEED[p.symbol].ticks) DNSE_ORDERBOOK_FEED[p.symbol].ticks = [];
     DNSE_ORDERBOOK_FEED[p.symbol].ticks.unshift({
       time: tStr,
       price: Math.round(p.matchPrice * 1000),
-      vol: p.matchQtty || p.matchQuantity || 10,
+      vol: matchQty,
       side: p.side === 1 ? 'M' : 'B'
     });
     if (DNSE_ORDERBOOK_FEED[p.symbol].ticks.length > 6) {
@@ -45938,7 +45945,6 @@ class DnseKrxSocketManager {
     if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
 
     const matchPx = p.matchPrice;
-    const matchQty = (p.matchQtty || p.matchQuantity || 10) * 10;
     const side = p.side === 1 ? 'MUA' : 'BÁN';
     const sideCls = p.side === 1 ? 'M' : 'B';
 

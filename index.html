@@ -2075,6 +2075,35 @@ tr:hover .bmh,.bmh:focus-visible{opacity:1}
 .mlogo{width:16px;height:16px;border-radius:50%;background:var(--ink);flex:none;position:relative}
 .mlogo::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--brand)}
 .scr-menu .star{color:var(--brand);font-size:13px}
+/* Screener Presets Showcase Bar (SSI & TradingView) */
+.scr2-presets-container{display:flex;flex-direction:column;gap:12px;background:var(--card-bg,#111827);border:1px solid var(--card-border,#1F293D);border-radius:12px;padding:14px 16px;margin-bottom:4px}
+.scr2-preset-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.scr2-preset-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink);letter-spacing:0.3px;text-transform:uppercase}
+.scr2-preset-title svg{color:var(--brand)}
+.pr-cat-tabs{display:flex;align-items:center;gap:6px;background:var(--sub);padding:3px;border-radius:8px;flex-wrap:wrap}
+.pr-cat-btn{border:0;background:transparent;color:var(--ink3);font-size:12px;font-weight:600;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .15s ease}
+.pr-cat-btn:hover{color:var(--ink);background:var(--hover)}
+.pr-cat-btn.on{background:var(--bg);color:var(--brand);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.pr-cards-track{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;max-height:240px;overflow-y:auto;padding-right:4px}
+.pr-card{position:relative;background:var(--card-sub,#0B0F19);border:1px solid var(--card-border,#1E293B);border-radius:9px;padding:10px 12px;text-align:left;display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:all .15s ease}
+.pr-card:hover{background:var(--hover);border-color:var(--brand);transform:translateY(-1px)}
+.pr-card.on{background:var(--brand-soft);border-color:var(--brand);box-shadow:0 0 0 1px var(--brand)}
+.pr-card-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.pr-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:0.3px}
+.pr-badge.ssi{background:rgba(14,165,233,0.18);color:#38BDF8;border:1px solid rgba(14,165,233,0.3)}
+.pr-badge.tradingview{background:rgba(168,85,247,0.18);color:#C084FC;border:1px solid rgba(168,85,247,0.3)}
+.pr-badge.saved{background:rgba(234,179,8,0.18);color:#FACC15;border:1px solid rgba(234,179,8,0.3)}
+.pr-count{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink2)}
+.pr-card.on .pr-count{color:var(--brand)}
+.pr-card b{font-size:13px;font-weight:600;color:var(--ink);line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-card.on b{color:var(--brand)}
+.pr-card p{margin:0;font-size:11px;line-height:15px;color:var(--ink3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tag-rank{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(14,165,233,0.15);color:#38BDF8}
+.score-badge{display:inline-block;font-weight:800;font-size:12px;padding:1px 6px;border-radius:4px}
+.score-badge.s-a{background:rgba(0,192,118,0.2);color:#00C076}
+.score-badge.s-b{background:rgba(229,142,2,0.2);color:#E58E02}
+.score-badge.s-c{background:rgba(255,68,71,0.2);color:#FF4447}
+
 /* drawer FS-01 */
 .drawer.dr2{width:440px;animation:none}
 .drawer.dr2.anim{animation:slin .2s ease-out}
@@ -6848,7 +6877,7 @@ const ALL = [
     "21.38 M",
     312.15,
     38.47,
-    6.80,
+    6.8,
     2096,
     1.08,
     "Ngân hàng"
@@ -6900,7 +6929,7 @@ const ALL = [
     "Tổng Công ty Điện lực Dầu khí Việt Nam - CTCP (PV Power)",
     "HOSE",
     12450,
-    -0.40,
+    -0.4,
     "9.42 M",
     117.28,
     29.16,
@@ -7001,7 +7030,7 @@ const ALL = [
     -1.29,
     "18.54 M",
     212.28,
-    25.20,
+    25.2,
     5.33,
     2150,
     0.98,
@@ -7118,6 +7147,832 @@ const ALL = [
     1867,
     1.35,
     "Bất động sản bán lẻ"
+  ],
+  [
+    "FRT",
+    "Công ty Cổ phần Bán lẻ Kỹ thuật số FPT (FPT Retail)",
+    "HOSE",
+    139600,
+    0.94,
+    "4.12 M",
+    575.15,
+    34.9,
+    13.0,
+    10738,
+    4.0,
+    "Bán lẻ & Dược phẩm"
+  ],
+  [
+    "KOS",
+    "Công ty Cổ phần Kosy",
+    "HOSE",
+    3680,
+    -6.84,
+    "15.26 M",
+    57.2,
+    0.92,
+    15.0,
+    245,
+    24.0,
+    "Bất động sản"
+  ],
+  [
+    "VND",
+    "Công ty Cổ phần Chứng khoán VNDIRECT",
+    "HOSE",
+    13450,
+    3.07,
+    "630.1 K",
+    20.0,
+    10.76,
+    13.2,
+    1019,
+    16.0,
+    "Dịch vụ tài chính / Chứng khoán"
+  ],
+  [
+    "DGC",
+    "CTCP Tập đoàn Hóa chất Đức Giang",
+    "HOSE",
+    33300,
+    1.52,
+    "7.3 K",
+    0.24,
+    8.32,
+    14.7,
+    2265,
+    16.0,
+    "Hóa chất"
+  ],
+  [
+    "PNJ",
+    "CTCP Vàng bạc Đá quý Phú Nhuận",
+    "HOSE",
+    14950,
+    1.36,
+    "350.0 K",
+    5.23,
+    3.74,
+    12.5,
+    1196,
+    29.0,
+    "Hàng cá nhân"
+  ],
+  [
+    "REE",
+    "CTCP Cơ Điện Lạnh",
+    "HOSE",
+    45700,
+    1.9,
+    "12.5 K",
+    0.57,
+    11.43,
+    10.2,
+    4480,
+    26.0,
+    "Điện, nước & xăng dầu"
+  ],
+  [
+    "DCM",
+    "CTCP Phân bón Dầu khí Cà Mau",
+    "HOSE",
+    32650,
+    0,
+    "20.4 K",
+    0.67,
+    8.16,
+    12.7,
+    2571,
+    16.0,
+    "Hóa chất"
+  ],
+  [
+    "NT2",
+    "CTCP Điện lực Dầu khí Nhơn Trạch 2",
+    "HOSE",
+    22050,
+    1.15,
+    "23.1 K",
+    0.51,
+    5.51,
+    13.8,
+    1598,
+    17.0,
+    "Điện"
+  ],
+  [
+    "PVS",
+    "TCT CP Dịch vụ Kỹ thuật Dầu khí",
+    "HNX",
+    30100,
+    1.01,
+    "30.5 K",
+    0.92,
+    7.53,
+    11.7,
+    2573,
+    21.0,
+    "Dầu khí"
+  ],
+  [
+    "IDC",
+    "TCT IDICO",
+    "HNX",
+    34100,
+    2.71,
+    "23.3 K",
+    0.79,
+    8.53,
+    13.7,
+    2489,
+    11.0,
+    "KCN"
+  ],
+  [
+    "BMP",
+    "CTCP Nhựa Bình Minh",
+    "HOSE",
+    136400,
+    -1.09,
+    "76.2 K",
+    10.42,
+    109.12,
+    15.7,
+    8688,
+    6.0,
+    "Vật liệu xây dựng"
+  ],
+  [
+    "QNS",
+    "CTCP Đường Quảng Ngãi",
+    "UPCOM",
+    49000,
+    0.0,
+    "119.0 K",
+    5.83,
+    12.25,
+    14.3,
+    3427,
+    12.0,
+    "Thực phẩm & đồ uống"
+  ],
+  [
+    "CMG",
+    "CTCP Tập đoàn Công nghệ CMC",
+    "HOSE",
+    18000,
+    2.86,
+    "12.1 K",
+    0.22,
+    4.5,
+    12.7,
+    1417,
+    21.0,
+    "Công nghệ thông tin"
+  ],
+  [
+    "KDH",
+    "CTCP Đầu tư & KD Nhà Khang Điền",
+    "HOSE",
+    15100,
+    5.23,
+    "28.48 M",
+    429.98,
+    12.08,
+    11.3,
+    1336,
+    12.0,
+    "Bất động sản"
+  ],
+  [
+    "SHS",
+    "Chứng khoán Sài Gòn - Hà Nội",
+    "HNX",
+    13500,
+    1.5,
+    "20.10 M",
+    271.37,
+    10.8,
+    12.0,
+    1125,
+    19.0,
+    "Chứng khoán"
+  ],
+  [
+    "MBS",
+    "CTCP Chứng khoán MB",
+    "HNX",
+    16200,
+    1.25,
+    "7.61 M",
+    123.21,
+    12.96,
+    14.6,
+    1110,
+    15.0,
+    "Chứng khoán"
+  ],
+  [
+    "CEO",
+    "CTCP Tập đoàn C.E.O",
+    "HNX",
+    12300,
+    1.65,
+    "16.56 M",
+    203.69,
+    9.84,
+    11.2,
+    1098,
+    21.0,
+    "Bất động sản"
+  ],
+  [
+    "HUT",
+    "CTCP Tasco",
+    "HNX",
+    12300,
+    -0.81,
+    "5.5 K",
+    0.07,
+    3.08,
+    11.3,
+    1088,
+    7.0,
+    "Hạ tầng & Ô tô"
+  ],
+  [
+    "VCS",
+    "CTCP VICOSTONE",
+    "HNX",
+    29500,
+    0.34,
+    "0.7 K",
+    0.02,
+    7.38,
+    15.1,
+    1954,
+    10.0,
+    "Vật liệu xây dựng"
+  ],
+  [
+    "BVS",
+    "CTCP Chứng khoán Bảo Việt",
+    "HNX",
+    26600,
+    2.31,
+    "31.7 K",
+    0.84,
+    6.65,
+    11.2,
+    2375,
+    11.0,
+    "Chứng khoán"
+  ],
+  [
+    "NTP",
+    "CTCP Nhựa Thiếu niên Tiền Phong",
+    "HNX",
+    55300,
+    0.55,
+    "5.4 K",
+    0.3,
+    13.82,
+    13.2,
+    4189,
+    36.0,
+    "Nhựa & Xây dựng"
+  ],
+  [
+    "TNG",
+    "CTCP Đầu tư và Thương mại TNG",
+    "HNX",
+    18300,
+    1.1,
+    "9.4 K",
+    0.17,
+    4.58,
+    10.4,
+    1760,
+    8.0,
+    "Dệt may"
+  ],
+  [
+    "LAS",
+    "CTCP Supe Phốt phát & Hóa chất Lâm Thao",
+    "HNX",
+    11200,
+    0.9,
+    "5.9 K",
+    0.07,
+    2.8,
+    16.4,
+    683,
+    8.0,
+    "Hóa chất & Phân bón"
+  ],
+  [
+    "DTD",
+    "CTCP Đầu tư Phát triển Thành Đạt",
+    "HNX",
+    9700,
+    0,
+    "7.3 K",
+    0.07,
+    2.42,
+    14.4,
+    674,
+    13.0,
+    "Bất động sản KCN"
+  ],
+  [
+    "L14",
+    "CTCP Licogi 14",
+    "HNX",
+    17500,
+    2.94,
+    "2.5 K",
+    0.04,
+    4.38,
+    10.5,
+    1667,
+    14.0,
+    "Bất động sản"
+  ],
+  [
+    "CAP",
+    "CTCP Lâm Nông sản Thực phẩm Yên Bái",
+    "HNX",
+    39500,
+    -0.25,
+    "2.2 K",
+    0.09,
+    9.88,
+    10.6,
+    3726,
+    10.0,
+    "Nông sản & Giấy"
+  ],
+  [
+    "TVD",
+    "CTCP Than Vàng Danh - Vinacomin",
+    "HNX",
+    8800,
+    -1.12,
+    "0.2 K",
+    0.0,
+    2.2,
+    16.3,
+    540,
+    7.0,
+    "Khai khoáng & Than"
+  ],
+  [
+    "PLC",
+    "CTCP Hóa dầu Petrolimex",
+    "HNX",
+    19400,
+    1.57,
+    "3.9 K",
+    0.08,
+    4.85,
+    15.0,
+    1293,
+    9.0,
+    "Dầu khí & Hóa dầu"
+  ],
+  [
+    "TIG",
+    "CTCP Tập đoàn Đầu tư Thăng Long",
+    "HNX",
+    5200,
+    1.96,
+    "21.6 K",
+    0.11,
+    1.3,
+    12.5,
+    416,
+    29.0,
+    "Bất động sản"
+  ],
+  [
+    "PVC",
+    "Tổng CTCP Hóa chất và Dịch vụ Dầu khí",
+    "HNX",
+    10600,
+    -0.93,
+    "18.5 K",
+    0.2,
+    2.65,
+    14.7,
+    721,
+    6.0,
+    "Dầu khí & Hóa chất"
+  ],
+  [
+    "VGS",
+    "CTCP Ống thép Việt Đức VG PIPE",
+    "HNX",
+    19200,
+    1.05,
+    "3.3 K",
+    0.06,
+    4.8,
+    11.4,
+    1684,
+    23.0,
+    "Thép & Kim loại"
+  ],
+  [
+    "PVB",
+    "CTCP Bọc ống Dầu khí Việt Nam",
+    "HNX",
+    19100,
+    1.6,
+    "1.0 K",
+    0.02,
+    4.78,
+    14.7,
+    1299,
+    21.0,
+    "Dầu khí & Xây lắp"
+  ],
+  [
+    "VC3",
+    "CTCP Tập đoàn Nam Mê Kông",
+    "HNX",
+    23300,
+    -0.43,
+    "48.1 K",
+    1.12,
+    5.83,
+    16.4,
+    1421,
+    38.0,
+    "Bất động sản & Xây dựng"
+  ],
+  [
+    "NRC",
+    "CTCP Tập đoàn Danh Khôi",
+    "HNX",
+    4600,
+    2.22,
+    "4.0 K",
+    0.02,
+    1.15,
+    16.2,
+    284,
+    11.0,
+    "Bất động sản"
+  ],
+  [
+    "DDG",
+    "CTCP Đầu tư Công nghiệp XNK Đông Dương",
+    "HNX",
+    3200,
+    0,
+    "8.6 K",
+    0.03,
+    0.8,
+    16.3,
+    196,
+    7.0,
+    "Năng lượng biomass"
+  ],
+  [
+    "IDJ",
+    "CTCP Đầu tư IDJ Việt Nam",
+    "HNX",
+    2800,
+    -3.45,
+    "24.0 K",
+    0.07,
+    0.7,
+    16.1,
+    174,
+    5.0,
+    "Bất động sản"
+  ],
+  [
+    "MBG",
+    "CTCP Tập đoàn MBG",
+    "HNX",
+    2400,
+    0,
+    "1.9 K",
+    0.0,
+    0.6,
+    15.3,
+    157,
+    32.0,
+    "Xây dựng & Thương mại"
+  ],
+  [
+    "MST",
+    "CTCP Đầu tư Phan Vũ / MST",
+    "HNX",
+    8700,
+    -2.25,
+    "45.1 K",
+    0.39,
+    2.17,
+    10.0,
+    870,
+    4.0,
+    "Xây dựng hạ tầng"
+  ],
+  [
+    "NDN",
+    "CTCP Đầu tư Phát triển Nhà Đà Nẵng",
+    "HNX",
+    7600,
+    0,
+    "1.7 K",
+    0.01,
+    1.9,
+    14.2,
+    535,
+    11.0,
+    "Bất động sản"
+  ],
+  [
+    "TAR",
+    "CTCP Nông nghiệp Công nghệ cao Trung An",
+    "HNX",
+    6500,
+    0,
+    "11.2 K",
+    0.07,
+    1.62,
+    10.9,
+    596,
+    33.0,
+    "Nông nghiệp & Gạo"
+  ],
+  [
+    "SLS",
+    "CTCP Mía đường Sơn La",
+    "HNX",
+    129000,
+    -0.31,
+    "0.0 K",
+    0.0,
+    32.25,
+    14.8,
+    8716,
+    22.0,
+    "Thực phẩm & Đường"
+  ],
+  [
+    "DXP",
+    "CTCP Cảng Đoạn Xá",
+    "HNX",
+    14800,
+    0.68,
+    "4.2 K",
+    0.06,
+    3.7,
+    15.7,
+    943,
+    21.0,
+    "Cảng biển & Logistics"
+  ],
+  [
+    "VIX",
+    "CTCP Chứng khoán VIX",
+    "HOSE",
+    12150,
+    2.97,
+    "1.53 M",
+    18.6,
+    9.72,
+    12.6,
+    964,
+    15.0,
+    "Chứng khoán"
+  ],
+  [
+    "HCM",
+    "CTCP Chứng khoán TP.HCM (HSC)",
+    "HOSE",
+    23700,
+    0.42,
+    "93.4 K",
+    2.21,
+    5.92,
+    14.7,
+    1612,
+    31.0,
+    "Chứng khoán"
+  ],
+  [
+    "DIG",
+    "Tổng CTCP Đầu tư Phát triển Xây dựng (DIC Corp)",
+    "HOSE",
+    9710,
+    2.21,
+    "295.4 K",
+    2.87,
+    7.77,
+    15.8,
+    615,
+    17.0,
+    "Bất động sản"
+  ],
+  [
+    "PDR",
+    "CTCP Phát triển Bất động sản Phát Đạt",
+    "HOSE",
+    11250,
+    1.81,
+    "284.8 K",
+    3.2,
+    9.0,
+    15.0,
+    750,
+    34.0,
+    "Bất động sản"
+  ],
+  [
+    "DXG",
+    "CTCP Tập đoàn Đất Xanh",
+    "HOSE",
+    10250,
+    3.54,
+    "685.8 K",
+    7.03,
+    8.2,
+    10.8,
+    949,
+    22.0,
+    "Bất động sản"
+  ],
+  [
+    "GEX",
+    "CTCP Tập đoàn GELEX",
+    "HOSE",
+    21850,
+    1.63,
+    "295.6 K",
+    6.46,
+    17.48,
+    12.6,
+    1734,
+    15.0,
+    "Thiết bị điện & Hạ tầng"
+  ],
+  [
+    "KBC",
+    "Tổng Công ty Phát triển Đô thị Kinh Bắc",
+    "HOSE",
+    26450,
+    0.76,
+    "39.0 K",
+    1.03,
+    21.16,
+    14.1,
+    1876,
+    20.0,
+    "Bất động sản KCN"
+  ],
+  [
+    "HSG",
+    "CTCP Tập đoàn Hoa Sen",
+    "HOSE",
+    10700,
+    0,
+    "51.5 K",
+    0.55,
+    2.67,
+    13.3,
+    805,
+    27.0,
+    "Thép & Tôn mạ"
+  ],
+  [
+    "NKG",
+    "CTCP Thép Nam Kim",
+    "HOSE",
+    12100,
+    0,
+    "97.8 K",
+    1.18,
+    3.02,
+    11.6,
+    1043,
+    15.0,
+    "Thép & Tôn mạ"
+  ],
+  [
+    "DPM",
+    "Tổng CTCP Phân bón và Hóa chất Dầu khí (Phú Mỹ)",
+    "HOSE",
+    19450,
+    1.04,
+    "55.3 K",
+    1.08,
+    4.86,
+    12.3,
+    1581,
+    12.0,
+    "Hóa chất & Phân bón"
+  ],
+  [
+    "NLG",
+    "CTCP Đầu tư Nam Long",
+    "HOSE",
+    21400,
+    2.39,
+    "65.7 K",
+    1.41,
+    5.35,
+    11.8,
+    1814,
+    22.0,
+    "Bất động sản"
+  ],
+  [
+    "VHC",
+    "CTCP Vĩnh Hoàn",
+    "HOSE",
+    48200,
+    0.31,
+    "3.3 K",
+    0.16,
+    12.05,
+    12.1,
+    3983,
+    35.0,
+    "Thủy sản & Xuất khẩu"
+  ],
+  [
+    "ANV",
+    "CTCP Nam Việt",
+    "HOSE",
+    16900,
+    0,
+    "11.2 K",
+    0.19,
+    4.22,
+    11.7,
+    1444,
+    26.0,
+    "Thủy sản"
+  ],
+  [
+    "DBC",
+    "CTCP Tập đoàn DABACO Việt Nam",
+    "HOSE",
+    15450,
+    1.64,
+    "48.0 K",
+    0.74,
+    3.86,
+    12.8,
+    1207,
+    22.0,
+    "Nông nghiệp & Chăn nuôi"
+  ],
+  [
+    "EIB",
+    "Ngân hàng TMCP Xuất Nhập khẩu Việt Nam",
+    "HOSE",
+    16250,
+    1.25,
+    "45.9 K",
+    0.75,
+    4.06,
+    14.0,
+    1161,
+    29.0,
+    "Ngân hàng"
+  ],
+  [
+    "OCB",
+    "Ngân hàng TMCP Phương Đông",
+    "HOSE",
+    10600,
+    0,
+    "23.8 K",
+    0.25,
+    2.65,
+    16.2,
+    654,
+    11.0,
+    "Ngân hàng"
+  ],
+  [
+    "PC1",
+    "CTCP Tập đoàn PC1",
+    "HOSE",
+    16000,
+    0.31,
+    "29.4 K",
+    0.47,
+    4.0,
+    10.8,
+    1481,
+    7.0,
+    "Xây lắp điện & Năng lượng"
   ]
 ];
 
@@ -10876,6 +11731,18 @@ function der(r) {
 const nfA = (v, dd = 2, suf = '') => v == null ? '<span class="muted">—</span>' : fmtVN(v, dd) + suf;
 const sgA = v => v == null ? '<span class="muted">—</span>' : sgn(v, 2);
 const COLSETS = {
+  'FiinTrade & Quant': [
+    ['price', 'Giá', r => r[3], (v, r) => fmtVN(v), r => r[4] > 0 ? 'up' : r[4] < 0 ? 'down' : 'warn'],
+    ['chg', '+/− %', r => r[4], v => v ? sgn(v, 2) : '0,00%', r => r[4] > 0 ? 'up' : r[4] < 0 ? 'down' : 'warn'],
+    ['fiin_rank', 'FiinTrade Rank', r => derX(r).fiinRank, v => `<span class="tag-rank">${v}/55</span>`, () => 'sans'],
+    ['fiin_growth', 'Growth Score', r => derX(r).growthScore, v => `<span class="score-badge ${v === 'A' ? 's-a' : 's-b'}">${v}</span>`, () => 'sans'],
+    ['fiin_val', 'Value Score', r => derX(r).valueScore, v => `<span class="score-badge ${v === 'A' ? 's-a' : 's-b'}">${v}</span>`, () => 'sans'],
+    ['fiin_mom', 'Momentum', r => derX(r).momentumScore, v => `<span class="score-badge ${v === 'A' ? 's-a' : 's-b'}">${v}</span>`, () => 'sans'],
+    ['fiin_vgm', 'VGM Tổng hợp', r => derX(r).vgmScore, v => `<span class="score-badge ${v === 'A' ? 's-a' : 's-b'}">${v}</span>`, () => 'sans'],
+    ['score', 'Điểm Tổng hợp', r => derX(r).score, v => fmtVN(v, 0)],
+    ['pe', 'P/E', r => r[8], v => nfA(v)],
+    ['roe', 'ROE', r => derX(r).roe, v => nfA(v, 2, '%')]
+  ],
   'Tổng quan': [['price', 'Giá', r => r[3], (v, r) => fmtVN(v), r => r[4] > 0 ? 'up' : r[4] < 0 ? 'down' : 'warn'], ['chg', '+/− %', r => r[4], v => v ? sgn(v, 2) : '0,00%', r => r[4] > 0 ? 'up' : r[4] < 0 ? 'down' : 'warn'], ['kl', 'KL', r => parseFloat(r[5].replace(',', '.')) * (/M/.test(r[5]) ? 1e6 : 1e3), (v, r) => r[5]], ['gt', 'GT (tỷ)', r => r[6], v => fmtVN(v, 1)], ['mc', 'Vốn hóa', r => r[7], v => fmtVN(v, 2) + ' T'], ['pe', 'P/E', r => r[8], v => nfA(v)], ['eps', 'EPS (TTM)', r => r[9], v => nfA(v)], ['teps', 'TT EPS', r => r[10], sgA, r => r[10] == null ? '' : cls(r[10])]],
   'Hiệu suất': [['price', 'Giá', r => r[3], v => fmtVN(v)], ['w1', '1 tuần', r => der(r).w1, sgA, r => cls(der(r).w1)], ['m1', '1 tháng', r => der(r).m1, sgA, r => cls(der(r).m1)], ['m3', '3 tháng', r => der(r).m3, sgA, r => cls(der(r).m3)], ['m6', '6 tháng', r => der(r).m6, sgA, r => cls(der(r).m6)], ['ytd', 'YTD', r => der(r).ytd, sgA, r => cls(der(r).ytd)], ['y1', '1 năm', r => der(r).y1, sgA, r => cls(der(r).y1)], ['vol', 'Biến động 1T', r => der(r).vol, v => nfA(v, 2, '%')], ['beta', 'Beta 1 năm', r => der(r).beta, v => nfA(v)]],
   'Kỹ thuật': [['price', 'Giá', r => r[3], v => fmtVN(v)], ['rsi', 'RSI (14)', r => der(r).rsi, v => nfA(v, 1), r => der(r).rsi >= 70 ? 'down' : der(r).rsi <= 30 ? 'up' : ''], ['ma20', 'Giá so MA20', r => der(r).ma20, sgA, r => cls(der(r).ma20)], ['ma50', 'Giá so MA50', r => der(r).ma50, sgA, r => cls(der(r).ma50)], ['hi52', 'Cách đỉnh 52T', r => der(r).hi52, sgA, r => cls(der(r).hi52)], ['sig', 'Tín hiệu', r => der(r).ma20 + der(r).ma50, (v, r) => { const x = der(r).ma20 + der(r).ma50; return x > 6 ? '<span class="rec rec-MUA">⌃⌃ Mua mạnh</span>' : x > 0 ? '<span class="rec rec-MUA">⌃ Mua</span>' : x > -6 ? '<span class="rec rec-TRU">— Trung lập</span>' : '<span class="rec rec-BAN">⌄ Bán</span>'; }, () => 'sans']],
@@ -18774,7 +19641,34 @@ let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTime
 window.addEventListener('hashchange', () => { readHash(); closeMenu(); closeLayer(); render(); if (S.route === 'market' && typeof syncMarketDataRealtime === 'function') syncMarketDataRealtime(false); });
 
 /* ================= BỘ LỌC CỔ PHIẾU v2 (SCR-01 · FS-01) ================= */
-const derX = r => { const d = der(r); if (d.score == null) { const q = rng(r[0].charCodeAt(0) * 53 + r[0].charCodeAt(1) * 7 + 11), u = (a, b) => a + (b - a) * q(); Object.assign(d, { score: Math.round(u(38, 88)), sq: Math.round(u(40, 90)), sv: Math.round(u(35, 85)), nn5: u(-3, 3) * 1e6, td5: u(-1, 1) * 1e6, fo: u(2, 49), room: u(0, 25), up: u(-10, 35), nrep: Math.round(u(0, 4)), rec: q() > .45 ? 'Mua' : 'Trung lập' }); } return d; };
+const derX = r => {
+  const d = der(r);
+  if (d.score == null) {
+    const q = rng(r[0].charCodeAt(0) * 53 + r[0].charCodeAt(1) * 7 + 11), u = (a, b) => a + (b - a) * q();
+    const isTopTier = ['HPG', 'FPT', 'VNM', 'MWG', 'CTG', 'ACB', 'TCB', 'KDH', 'SHS', 'MBS', 'BMP', 'VIX', 'SSI', 'VCB'].includes(r[0]);
+    Object.assign(d, {
+      score: isTopTier ? Math.round(u(75, 95)) : Math.round(u(38, 85)),
+      sq: isTopTier ? Math.round(u(75, 92)) : Math.round(u(40, 85)),
+      sv: isTopTier ? Math.round(u(70, 90)) : Math.round(u(35, 80)),
+      nn5: isTopTier ? u(0.5, 5) * 1e6 : u(-3, 3) * 1e6,
+      td5: u(-1, 1) * 1e6,
+      fo: isTopTier ? u(15, 49) : u(2, 45),
+      room: u(5, 25),
+      up: isTopTier ? u(10, 35) : u(-10, 30),
+      nrep: isTopTier ? Math.round(u(2, 5)) : Math.round(u(0, 3)),
+      rec: isTopTier ? 'Mua' : (q() > .55 ? 'Mua' : 'Trung lập'),
+      fiinRank: r[0] === 'HPG' ? 1 : (r[0] === 'FPT' ? 2 : (r[0] === 'VNM' ? 3 : (isTopTier ? Math.floor(u(1, 4)) : Math.floor(u(4, 55))))),
+      growthScore: isTopTier || u(0, 100) > 45 ? 'A' : (u(0, 100) > 25 ? 'B' : 'C'),
+      valueScore: ['HPG', 'MBB', 'TCB', 'ACB', 'VNM', 'BMP', 'CEO', 'KDH'].includes(r[0]) || u(0, 100) > 50 ? 'A' : (u(0, 100) > 25 ? 'B' : 'C'),
+      momentumScore: ['KDH', 'VIX', 'SHS', 'MBS', 'FPT', 'MWG', 'HPG', 'SSI'].includes(r[0]) || d.ma20 > 0 ? 'A' : 'B',
+      vgmScore: 'B',
+      relVol: ['KDH', 'VIX', 'SHS', 'MBS', 'CEO', 'HPG', 'FPT', 'SSI', 'DIG', 'DXG', 'VND'].includes(r[0]) ? +(u(1.5, 3.2)).toFixed(2) : +(u(0.6, 1.4)).toFixed(2),
+      canslim: isTopTier ? Math.round(u(85, 96)) : Math.round(u(40, 82))
+    });
+    d.vgmScore = (d.growthScore === 'A' && (d.valueScore === 'A' || d.momentumScore === 'A')) ? 'A' : 'B';
+  }
+  return d;
+};
 const klNumS = s => { const m = String(s).replace(/\./g, '').replace(',', '.'); return parseFloat(m) * (/M/.test(s) ? 1e6 : /K/.test(s) ? 1e3 : 1); };
 /* chip kinds: k → [label, predicate(row, chip), column key for "Tùy chọn lọc"] */
 const CHIPK = {
@@ -18815,7 +19709,17 @@ const CHIPK = {
   rec: ['Khuyến nghị SBSI', r => derX(r).rec === 'Mua', null],
   up: ['Tiềm năng tăng giá', (r, c) => derX(r).up > c.v, null],
   nrep: ['Số báo cáo 30 ngày', (r, c) => derX(r).nrep >= c.v, null],
-  vspike: ['Khối lượng đột biến', r => klNumS(r[5]) > 2e6, 'kl']
+  vspike: ['Khối lượng đột biến', r => klNumS(r[5]) > 1e6 && derX(r).relVol >= 1.4, 'kl'],
+  f_rank: ['FiinTrade Rank', (r, c) => derX(r).fiinRank <= (c.v || 3), 'fiin_rank'],
+  f_growth: ['Điểm Tăng trưởng (Growth)', (r, c) => derX(r).growthScore === (c.grade || 'A'), 'fiin_growth'],
+  f_val: ['Điểm Định giá (Value)', (r, c) => derX(r).valueScore === (c.grade || 'A'), 'fiin_val'],
+  f_mom: ['Điểm Đà giá (Momentum)', (r, c) => derX(r).momentumScore === (c.grade || 'A'), 'fiin_mom'],
+  f_vgm: ['Chiến thuật VGM Score', (r, c) => derX(r).vgmScore === (c.grade || 'A'), 'fiin_vgm'],
+  beta_low: ['Beta ổn định', (r, c) => derX(r).beta <= (c.max || 1.0), 'beta'],
+  beta_hi: ['Beta nhạy sóng', (r, c) => derX(r).beta >= (c.min || 1.0), 'beta'],
+  rsi_low: ['RSI Quá bán', (r, c) => derX(r).rsi <= (c.max || 42), 'rsi'],
+  rsi_os: ['RSI Quá bán', (r, c) => derX(r).rsi <= (c.max || 36), 'rsi'],
+  eps_pos: ['EPS dương', r => r[9] > 0, 'eps']
 };
 const ch = (k, val, extra = {}) => Object.assign({ k, val }, extra);
 /* drawer criteria → default chip */
@@ -18834,6 +19738,177 @@ const CRIT2CHIP = {
 const IND5 = ['Ngân hàng', 'Bất động sản', 'Thực phẩm và đồ uống', 'Tài nguyên cơ bản', 'Điện, nước & xăng dầu khí đốt'];
 const exChip = set => ch('ex', set.join(' · '), { set });
 const SCR_DEF = [exChip(['HOSE', 'HNX']), ch('ind', '', { set: IND5, badge: 5 }), ch('bd', '< 3%', { v: 3 }), ch('kl', '> 1,000', { v: 1000 })];
+const SCREENER_PRESETS = [
+  // --- SSI iBoard Presets ---
+  {
+    id: 'ssi_growth',
+    name: 'Hạng cao với chiến lược Growth',
+    group: 'ssi',
+    origin: 'SSI iBoard',
+    badge: 'SSI FiinTrade',
+    desc: 'Top 3 ngành về Tăng trưởng LN & Doanh thu, Growth Score hạng A chuẩn FiinTrade',
+    chips: [ch('f_rank', 'Top 1–3', { v: 3 }), ch('f_growth', 'Grade A', { grade: 'A' })],
+    cols: 'FiinTrade & Quant',
+    sort: ['fiin_rank', 1]
+  },
+  {
+    id: 'ssi_value',
+    name: 'Hạng cao với chiến lược Value',
+    group: 'ssi',
+    origin: 'SSI iBoard',
+    badge: 'SSI FiinTrade',
+    desc: 'Cổ phiếu định giá rẻ nhất ngành sở hữu nền tảng cơ bản vững mạnh, Value Score hạng A',
+    chips: [ch('f_rank', 'Top 1–3', { v: 3 }), ch('f_val', 'Grade A', { grade: 'A' })],
+    cols: 'FiinTrade & Quant',
+    sort: ['pe', 1]
+  },
+  {
+    id: 'ssi_momentum',
+    name: 'Hạng cao với chiến lược Momentum',
+    group: 'ssi',
+    origin: 'SSI iBoard',
+    badge: 'SSI FiinTrade',
+    desc: 'Đà giá và quán tính dòng tiền vượt trội thị trường, Momentum Score hạng A',
+    chips: [ch('f_rank', 'Top 1–3', { v: 3 }), ch('f_mom', 'Grade A', { grade: 'A' })],
+    cols: 'FiinTrade & Quant',
+    sort: ['chg', -1]
+  },
+  {
+    id: 'ssi_vgm',
+    name: 'Chiến thuật VGM Toàn diện',
+    group: 'ssi',
+    origin: 'SSI iBoard',
+    badge: 'SSI FiinTrade',
+    desc: 'Bộ ba cân bằng hoàn hảo: Value (Định giá) + Growth (Tăng trưởng) + Momentum (Đà giá)',
+    chips: [ch('f_rank', 'Top 1–3', { v: 3 }), ch('f_vgm', 'Grade A', { grade: 'A' })],
+    cols: 'FiinTrade & Quant',
+    sort: ['score', -1]
+  },
+  {
+    id: 'ssi_yield',
+    name: 'Năng suất đảm bảo',
+    group: 'ssi',
+    origin: 'SSI iBoard',
+    badge: 'SSI FiinTrade',
+    desc: 'Cổ phiếu phòng thủ ít biến động (Beta ≤ 1.0), cổ tức tiền mặt cao ≥ 4%, thanh khoản tốt',
+    chips: [ch('beta_low', '≤ 1.0', { max: 1.0 }), ch('dy', '≥ 4%', { v: 4.0 })],
+    cols: 'Cổ tức',
+    sort: ['dy', -1]
+  },
+  {
+    id: 'ssi_cheap_high_div',
+    name: 'Giá rẻ, Cổ tức cao',
+    group: 'ssi',
+    origin: 'SSI iBoard',
+    badge: 'SSI FiinTrade',
+    desc: 'Thị giá ≥ 10.000đ, P/E < 12 lần, Tỷ suất cổ tức tiền mặt cao ≥ 4%',
+    chips: [ch('price', '≥ 10.000', { lo: 10000 }), ch('pe', '< 12', { v: 12 }), ch('dy', '≥ 4%', { v: 4.0 })],
+    cols: 'Cổ tức',
+    sort: ['dy', -1]
+  },
+  {
+    id: 'ssi_oversold',
+    name: 'Bắt đáy RSI Quá bán',
+    group: 'ssi',
+    origin: 'SSI iBoard',
+    badge: 'SSI FiinTrade',
+    desc: 'Cổ phiếu Beta cao lùi sâu về vùng quá bán RSI ≤ 42, doanh nghiệp kinh doanh có lãi',
+    chips: [ch('beta_hi', '≥ 1.0', { min: 1.0 }), ch('rsi_low', '≤ 42', { max: 42 }), ch('eps_pos', '> 0')],
+    cols: 'Kỹ thuật',
+    sort: ['rsi', 1]
+  },
+  {
+    id: 'ssi_canslim',
+    name: 'Siêu cổ phiếu CANSLIM',
+    group: 'ssi',
+    origin: 'SSI iBoard',
+    badge: 'SSI FiinTrade',
+    desc: 'Vốn hóa > 1.000 tỷ, Tăng trưởng EPS > 10%, ROE > 15%, sức mạnh định lượng vượt trội',
+    chips: [ch('mc', '> 1.000 tỷ', { lo: 1 }), ch('teps', '> 10%', { v: 10 }), ch('roe', '> 15%', { v: 15 })],
+    cols: 'Khả năng sinh lời',
+    sort: ['roe', -1]
+  },
+
+  // --- TradingView Presets ---
+  {
+    id: 'tv_most_cap',
+    name: 'Vốn hóa nhiều nhất (Most Capitalized)',
+    group: 'tradingview',
+    origin: 'TradingView',
+    badge: 'TradingView',
+    desc: 'Các tập đoàn Blue-chip dẫn dắt VN30/VN-Index, vốn hóa trên 30.000 tỷ VND',
+    chips: [ch('mc', '> 30.000 tỷ', { lo: 30 })],
+    cols: 'Tổng quan',
+    sort: ['mc', -1]
+  },
+  {
+    id: 'tv_vol_shock',
+    name: 'Đột biến Khối lượng (Volume Leaders)',
+    group: 'tradingview',
+    origin: 'TradingView',
+    badge: 'TradingView',
+    desc: 'Khối lượng giao dịch bùng nổ ≥ 1.5x so với bình quân 20 phiên, dòng tiền tạo lập gom hàng',
+    chips: [ch('kl', '> 1 triệu cp', { v: 1e6 }), ch('vspike', '≥ 1.5x TB20P')],
+    cols: 'Kỹ thuật',
+    sort: ['kl', -1]
+  },
+  {
+    id: 'tv_52w_high',
+    name: 'Vượt đỉnh 52 tuần (52-Week High Breakout)',
+    group: 'tradingview',
+    origin: 'TradingView',
+    badge: 'TradingView',
+    desc: 'Cổ phiếu tiệm cận hoặc vượt đỉnh 1 năm qua (cách đỉnh ≤ 5%), mở sóng tăng mới',
+    chips: [ch('hi52', 'Cách đỉnh ≤ 5%', { v: -5 }), ch('kl', '> 300.000', { v: 300000 })],
+    cols: 'Kỹ thuật',
+    sort: ['hi52', -1]
+  },
+  {
+    id: 'tv_rsi_oversold',
+    name: 'RSI Quá bán (RSI Oversold Bounce)',
+    group: 'tradingview',
+    origin: 'TradingView',
+    badge: 'TradingView',
+    desc: 'RSI (14) lùi sâu về vùng quá bán ≤ 36, tín hiệu phân kỳ dương bắt đáy ngắn hạn',
+    chips: [ch('rsi_os', '≤ 36', { max: 36 }), ch('kl', '> 100.000', { v: 100000 })],
+    cols: 'Kỹ thuật',
+    sort: ['rsi', 1]
+  },
+  {
+    id: 'tv_golden_cross',
+    name: 'Giao cắt vàng (Golden Cross MA20/MA50)',
+    group: 'tradingview',
+    origin: 'TradingView',
+    badge: 'TradingView',
+    desc: 'Xu hướng ngắn hạn bứt phá xu hướng trung hạn: Giá trên MA20 và MA50',
+    chips: [ch('ma20', 'Có'), ch('ma50', 'Có')],
+    cols: 'Kỹ thuật',
+    sort: ['chg', -1]
+  },
+  {
+    id: 'tv_dividend_kings',
+    name: 'Ông hoàng Cổ tức (Dividend Kings)',
+    group: 'tradingview',
+    origin: 'TradingView',
+    badge: 'TradingView',
+    desc: 'Tỷ suất cổ tức tiền mặt vượt trội ≥ 5.5%, dòng tiền kinh doanh vững, ROE > 12%',
+    chips: [ch('dy', '≥ 5.5%', { v: 5.5 }), ch('roe', '> 12%', { v: 12 })],
+    cols: 'Cổ tức',
+    sort: ['dy', -1]
+  },
+  {
+    id: 'tv_undervalued_momentum',
+    name: 'Tăng giá & Định giá thấp (Undervalued Bullish)',
+    group: 'tradingview',
+    origin: 'TradingView',
+    badge: 'TradingView',
+    desc: 'Cổ phiếu lấy lại đà tăng kỹ thuật (trên MA20) nhưng định giá P/E vẫn ở vùng trũng < 12',
+    chips: [ch('pe', '< 12', { v: 12 }), ch('ma20', 'Có'), ch('teps', '> 5%', { v: 5 })],
+    cols: 'Định giá',
+    sort: ['pe', 1]
+  }
+];
+
 const SCR_SAVED = [
   { name: 'Tất cả cổ phiếu', chips: SCR_DEF, sort: ['mc', -1] },
   { name: 'Tăng trưởng doanh thu mạnh', chips: [exChip(['HOSE', 'HNX']), ch('teps', '> 20%', { v: 20 }), ch('roe', '> 12%', { v: 12 })], sort: ['teps', -1], cols: 'Tổng quan' },
@@ -18849,7 +19924,17 @@ const SCR_SUGG = [
   { name: 'Công ty có giá trị vốn hóa thấp nhưng có hiệu quả tốt', chips: [ch('mc', '< 200 nghìn tỷ', { hi: 200 }), ch('roe', '> 15%', { v: 15 })], sort: ['mc', 1], cols: 'Khả năng sinh lời' }
 ];
 const cloneChips = cs => cs.map(c => Object.assign({}, c, c.set ? { set: c.set.slice() } : {}));
-Object.assign(S.all, { name: 'Tất cả cổ phiếu', savedIdx: 0, chips: cloneChips(SCR_DEF), cols: 'Tùy chọn lọc', sort: ['mc', -1], sel: new Set(['HPG', 'GAS', 'VNM']), clock: getLiveTimeHMS() });
+Object.assign(S.all, {
+  name: 'Hạng cao với chiến lược Growth',
+  presetId: 'ssi_growth',
+  prCat: 'all',
+  savedIdx: -1,
+  chips: cloneChips(SCREENER_PRESETS[0].chips),
+  cols: 'FiinTrade & Quant',
+  sort: ['fiin_rank', 1],
+  sel: new Set(['HPG', 'FPT', 'VNM']),
+  clock: getLiveTimeHMS()
+});
 const chipLbl = c => c.lbl || CHIPK[c.k][0];
 function scrCols() {
   if (S.all.cols !== 'Tùy chọn lọc') return COLSETS[S.all.cols];
@@ -18873,9 +19958,58 @@ function vAll() {
   const allSel = rows.length && rows.every(r => A.sel.has(r[0]));
   const chips = A.chips.map((c, i) => `<span class="fc3"><span><em>${chipLbl(c)}</em>${c.val ? ` <b>${esc(c.val)}</b>` : ''}${c.badge ? ` <i class="bdg">${c.badge}</i>` : ''}</span><button data-act="rmchip" data-v="${i}" aria-label="Bỏ điều kiện ${esc(chipLbl(c))}">${I_X16}</button></span>`).join('');
   const sel = [...A.sel];
+  const curPrCat = A.prCat || 'all';
+  const filteredPresets = SCREENER_PRESETS.filter(p => curPrCat === 'all' || p.group === curPrCat);
+  const prCounts = {};
+  SCREENER_PRESETS.forEach(p => {
+    prCounts[p.id] = ALL.filter(r => p.chips.every(c => CHIPK[c.k] ? CHIPK[c.k][1](r, c) : true)).length;
+  });
+
+  const presetBarHtml = `<div class="scr2-presets-container">
+    <div class="scr2-preset-header">
+      <div class="scr2-preset-title">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <span>Bộ lọc mẫu tiêu biểu (SSI iBoard &amp; TradingView)</span>
+      </div>
+      <div class="pr-cat-tabs">
+        <button class="pr-cat-btn ${curPrCat === 'all' ? 'on' : ''}" data-act="prcat" data-v="all">⭐ Tất cả (15)</button>
+        <button class="pr-cat-btn ${curPrCat === 'ssi' ? 'on' : ''}" data-act="prcat" data-v="ssi">🏛️ SSI iBoard (8)</button>
+        <button class="pr-cat-btn ${curPrCat === 'tradingview' ? 'on' : ''}" data-act="prcat" data-v="tradingview">📈 TradingView (7)</button>
+        <button class="pr-cat-btn ${curPrCat === 'saved' ? 'on' : ''}" data-act="prcat" data-v="saved">💾 Đã lưu (${SCR_SAVED.length})</button>
+      </div>
+    </div>
+    <div class="pr-cards-track">
+      ${curPrCat === 'saved' ? (
+        SCR_SAVED.map((sv, idx) => {
+          const cnt = ALL.filter(r => sv.chips.every(c => CHIPK[c.k] ? CHIPK[c.k][1](r, c) : true)).length;
+          const isSel = A.savedIdx === idx;
+          return `<div class="pr-card ${isSel ? 'on' : ''}" data-act="applysaved" data-v="${idx}">
+            <div class="pr-card-top"><span class="pr-badge saved">ĐÃ LƯU</span><span class="pr-count">${cnt} mã</span></div>
+            <b>${esc(sv.name)}</b>
+            <p>${sv.chips.map(c => chipLbl(c)).join(' · ')}</p>
+          </div>`;
+        }).join('') || '<div class="muted" style="padding:16px;grid-column:1/-1">Chưa có bộ lọc cá nhân nào được lưu. Bấm "Lưu" ở thanh công cụ để lưu bộ lọc hiện tại.</div>'
+      ) : (
+        filteredPresets.map(p => {
+          const isSel = A.presetId === p.id;
+          const cnt = prCounts[p.id];
+          return `<div class="pr-card ${isSel ? 'on' : ''}" data-act="applypreset" data-v="${p.id}">
+            <div class="pr-card-top">
+              <span class="pr-badge ${p.group}">${p.badge}</span>
+              <span class="pr-count">${cnt} mã</span>
+            </div>
+            <b>${esc(p.name)}</b>
+            <p>${esc(p.desc)}</p>
+          </div>`;
+        }).join('')
+      )}
+    </div>
+  </div>`;
+
   return `<div class="page scr2">
     <div class="scr2-h"><div class="scr2-t"><button class="wl-title" data-act="savedmenu">${esc(A.name)} ${I.chev}</button><button class="btn ghost" data-act="savefilter">${I_CLOUD}Lưu</button></div>
       <div class="live"><i></i>Cập nhật <span class="mono">${A.clock || getLiveTimeHMS()}</span> <span class="mono">${getLiveDateString()}</span><button data-act="refresh" aria-label="Làm mới">${I.ref}</button></div></div>
+    ${presetBarHtml}
     <div class="fchips scr2-chips">${chips}<span class="scr2-acts"><button class="btn" style="padding:0 12px 0 8px" data-act="drawer">${I_PLUS20}Thêm điều kiện</button>${A.chips.length ? '<button class="btn plain" data-act="clearchips">Xóa tất cả</button>' : ''}</span></div>
     <div class="stabs scr2-tabs" role="tablist">${['Tùy chọn lọc', ...Object.keys(COLSETS)].map(k => `<button role="tab" aria-selected="${A.cols === k}" class="${A.cols === k ? 'on' : ''}" data-act="colset" data-v="${k}">${k}</button>`).join('')}</div>
     <div class="scr2-res"><b>Kết quả</b><span>(${rows.length} mã CK)</span></div>
@@ -18896,13 +20030,32 @@ function scrMenu(anchor) {
   closeMenu();
   const r = anchor.getBoundingClientRect(), m = document.createElement('div'); m.className = 'menu wl-menu scr-menu';
   m.style.position = 'fixed'; m.style.left = r.left + 'px'; m.style.top = (r.bottom + 6) + 'px';
-  m.innerHTML = `<div class="wl-mh">Bộ lọc đã lưu</div>${SCR_SAVED.map((f, i) => `<div class="wl-mi ${i === S.all.savedIdx ? 'on' : ''}"><button class="nm" data-sv="${i}">${esc(f.name)}</button><button class="ic" data-sren="${i}" aria-label="Đổi tên">${I_EDIT}</button><button class="ic" data-sdel="${i}" aria-label="Xoá">${I_TRASH}</button></div>`).join('')}
-    <div class="wl-msep" style="margin:8px 0 8px"></div><div class="wl-mh">Bộ lọc gợi ý</div>${SCR_SUGG.map((f, i) => `<div class="wl-mi"><button class="nm sg" data-sg="${i}">${f.star ? '<span class="mlogo"></span>' : ''}<span>${esc(f.name)}</span>${f.star ? '<span class="star">★</span>' : ''}</button></div>`).join('')}
+  m.innerHTML = `<div class="wl-mh">🏛️ Bộ lọc Tiêu biểu SSI iBoard</div>
+    ${SCREENER_PRESETS.filter(p => p.group === 'ssi').map(p => `<div class="wl-mi ${S.all.presetId === p.id ? 'on' : ''}"><button class="nm sg" data-preset="${p.id}"><span class="pr-badge ssi" style="font-size:9px">SSI</span><span>${esc(p.name)}</span></button></div>`).join('')}
+    <div class="wl-msep" style="margin:8px 0"></div>
+    <div class="wl-mh">📈 Bộ lọc Xu hướng TradingView</div>
+    ${SCREENER_PRESETS.filter(p => p.group === 'tradingview').map(p => `<div class="wl-mi ${S.all.presetId === p.id ? 'on' : ''}"><button class="nm sg" data-preset="${p.id}"><span class="pr-badge tradingview" style="font-size:9px">TV</span><span>${esc(p.name)}</span></button></div>`).join('')}
+    <div class="wl-msep" style="margin:8px 0"></div>
+    <div class="wl-mh">💾 Bộ lọc đã lưu</div>
+    ${SCR_SAVED.map((f, i) => `<div class="wl-mi ${i === S.all.savedIdx ? 'on' : ''}"><button class="nm" data-sv="${i}">${esc(f.name)}</button><button class="ic" data-sren="${i}" aria-label="Đổi tên">${I_EDIT}</button><button class="ic" data-sdel="${i}" aria-label="Xoá">${I_TRASH}</button></div>`).join('')}
     <div class="wl-msep"></div><button class="wl-mnew" data-snew="1">${I_PLUS20}Tạo bộ lọc mới</button>`;
   m.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return; e.stopPropagation(); closeMenu();
-    if (b.dataset.sv) scrApply(SCR_SAVED[+b.dataset.sv], +b.dataset.sv);
-    else if (b.dataset.sg) { scrApply(SCR_SUGG[+b.dataset.sg]); toast(`Đã áp dụng bộ lọc gợi ý “${SCR_SUGG[+b.dataset.sg].name}”`); }
+    if (b.dataset.preset) {
+      const p = SCREENER_PRESETS.find(x => x.id === b.dataset.preset);
+      if (p) {
+        S.all.presetId = p.id;
+        S.all.savedIdx = -1;
+        S.all.name = p.name;
+        S.all.chips = cloneChips(p.chips);
+        if (p.cols) S.all.cols = p.cols;
+        if (p.sort) S.all.sort = p.sort.slice();
+        S.all.sel.clear();
+        rerender();
+        toast(`Đã áp dụng “${p.name}”`);
+      }
+    }
+    else if (b.dataset.sv) scrApply(SCR_SAVED[+b.dataset.sv], +b.dataset.sv);
     else if (b.dataset.sren) scrRename(+b.dataset.sren);
     else if (b.dataset.sdel) scrDelete(+b.dataset.sdel);
     else if (b.dataset.snew) { scrApply({ name: 'Bộ lọc chưa đặt tên', chips: [], cols: 'Tổng quan' }); setTimeout(() => A.drawer(), 60); }
@@ -18951,6 +20104,32 @@ function drawerHTML(anim) {
 function readDrawerInputs() { const g = id => document.getElementById(id); if (g('drind')) S.dr.ind = g('drind').value; if (g('drmc')) S.dr.mc = g('drmc').value; if (g('drp1')) S.dr.p1 = g('drp1').value; if (g('drp2')) S.dr.p2 = g('drp2').value; }
 redrawDrawer = function () { readDrawerInputs(); const b = layer.querySelector('.dr-b'), st = b ? b.scrollTop : 0; layer.innerHTML = drawerHTML(false); bindDrawer(); const nb = layer.querySelector('.dr-b'); if (nb) nb.scrollTop = st; };
 Object.assign(A, {
+  applypreset: el => {
+    const id = el.dataset.v;
+    const p = SCREENER_PRESETS.find(x => x.id === id);
+    if (!p) return;
+    S.all.presetId = id;
+    S.all.savedIdx = -1;
+    S.all.name = p.name;
+    S.all.chips = cloneChips(p.chips);
+    if (p.cols) S.all.cols = p.cols;
+    if (p.sort) S.all.sort = p.sort.slice();
+    S.all.sel.clear();
+    rerender();
+    toast(`Đã áp dụng “${p.name}”`);
+  },
+  applysaved: el => {
+    const idx = +el.dataset.v;
+    const sv = SCR_SAVED[idx];
+    if (!sv) return;
+    S.all.presetId = null;
+    scrApply(sv, idx);
+    toast(`Đã áp dụng “${sv.name}”`);
+  },
+  prcat: el => {
+    S.all.prCat = el.dataset.v;
+    rerender();
+  },
   savedmenu: el => scrMenu(el),
   savefilter: () => { if (S.all.savedIdx >= 0) { Object.assign(SCR_SAVED[S.all.savedIdx], { chips: cloneChips(S.all.chips), sort: S.all.sort.slice(), cols: S.all.cols }); toast(`Đã lưu bộ lọc “${S.all.name}”`); } else scrRename(-1, true); },
   scrnamesave: el => { const v = (document.getElementById('scrname').value || '').trim(); if (!v) { toast('Tên bộ lọc không được để trống'); return; } const i = +el.dataset.v; if (i >= 0) { SCR_SAVED[i].name = v; if (S.all.savedIdx === i) S.all.name = v; } else { SCR_SAVED.push({ name: v, chips: cloneChips(S.all.chips), sort: S.all.sort.slice(), cols: S.all.cols }); S.all.savedIdx = SCR_SAVED.length - 1; S.all.name = v; toast(`Đã lưu bộ lọc “${v}”`); } closeLayer(); rerender(); },

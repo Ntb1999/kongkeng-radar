@@ -8317,6 +8317,8 @@ function updateStockRowInDOM(sym, newPrice, newChg, newPct, newVol, newVal, delt
 /* ================= COMPANY 360 REALTIME STREAMING ================= */
 function tickCompany360Realtime() {
   if (typeof STOCK === 'undefined' || !STOCK) return;
+  // Khi ở chế độ thị trường thật hoặc có kết nối DNSE Socket, không chạy mô phỏng ngẫu nhiên làm sai lệch số liệu
+  if (!REALTIME_MANUAL_SIM) return;
 
   const oldPrice = STOCK.price;
   const refPrice = (STOCK.price - STOCK.chg) || 14100;
@@ -45812,9 +45814,13 @@ class DnseKrxSocketManager {
     const bids = p.bidList || [];
     const asks = p.offerList || [];
 
-    // Calculate total bid & ask volumes
-    const totalBidVol = bids.reduce((acc, b) => acc + (b.qtty || 0), 0);
-    const totalAskVol = asks.reduce((acc, a) => acc + (a.qtty || 0), 0);
+    // Calculate total bid & ask volumes (Ưu tiên totalBidQtty / totalOfferQtty chuẩn KRX toàn sở nếu có)
+    const totalBidVol = (typeof p.totalBidQtty === 'number' && p.totalBidQtty > 0)
+      ? p.totalBidQtty
+      : bids.reduce((acc, b) => acc + (b.qtty || 0), 0);
+    const totalAskVol = (typeof p.totalOfferQtty === 'number' && p.totalOfferQtty > 0)
+      ? p.totalOfferQtty
+      : asks.reduce((acc, a) => acc + (a.qtty || 0), 0);
     const totalDepth = totalBidVol + totalAskVol;
     const buyRatio = totalDepth > 0 ? Math.min(95, Math.max(5, Math.round((totalBidVol / totalDepth) * 100))) : 50;
     const sellRatio = 100 - buyRatio;

@@ -1621,7 +1621,7 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .mcp-ob-track-sell{background:#F23645 !important;height:100% !important;min-width:2px;flex-shrink:0 !important;transition:width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important}
 
 /* Zero-CLS Match Bar: Fixed 28px Height & Monospace Tabular Alignment */
-.mcp-match-bar{display:grid !important;grid-template-columns:auto auto auto 1fr !important;align-items:center !important;gap:4px !important;background:var(--sub) !important;padding:0 8px !important;border-radius:6px !important;border:1px solid var(--line) !important;margin-bottom:6px !important;font-size:10.5px !important;height:28px !important;min-height:28px !important;max-height:28px !important;box-sizing:border-box !important;line-height:26px !important;white-space:nowrap !important;overflow:hidden !important;contain:layout size}
+.mcp-match-bar{display:grid !important;grid-template-columns:auto auto auto 1fr !important;align-items:center !important;gap:3px !important;background:var(--sub) !important;padding:0 6px !important;border-radius:6px !important;border:1px solid var(--line) !important;margin-bottom:6px !important;font-size:10px !important;height:28px !important;min-height:28px !important;max-height:28px !important;box-sizing:border-box !important;line-height:26px !important;white-space:nowrap !important;overflow:hidden !important;contain:layout size}
 #ob-match-price{font-family:var(--mono) !important;font-size:12.5px !important;font-variant-numeric:tabular-nums !important;font-weight:700 !important;display:inline-block;white-space:nowrap}
 #ob-match-chg{font-family:var(--mono) !important;font-size:10px !important;font-variant-numeric:tabular-nums !important;display:inline-block;white-space:nowrap}
 #ob-match-vol{font-family:var(--mono) !important;font-variant-numeric:tabular-nums !important;font-weight:700 !important}
@@ -8868,7 +8868,7 @@ function renderMcpOrderBook() {
 
     <!-- Real-time Match Summary Strip (Zero-CLS Fixed Dimensions) -->
     <div class="mcp-match-bar" id="ob-match-bar">
-      <span style="color:var(--ink3)">Khớp lệnh:</span>
+      <span style="color:var(--ink3)">Khớp:</span>
       <b id="ob-match-price" class="${getColorClass(curPrice)}">${(curPrice / 1000).toFixed(2)}</b>
       <span id="ob-match-chg" class="${getColorClass(curPrice)}">${chgVal > 0 ? '+' : ''}${(chgVal / 1000).toFixed(2)} (${pctVal >= 0 ? '+' : ''}${pctVal.toFixed(2)}%)</span>
       <span style="color:var(--ink3);text-align:right">KL: <b id="ob-match-vol" style="color:var(--ink)">${fmtVN(matchVol, 0)}</b></span>
@@ -9007,15 +9007,15 @@ async function fetchDnseOrderBookLive(sym) {
       DNSE_ORDERBOOK_FEED[sym] = DNSE_ORDERBOOK_FEED[sym] || {};
       DNSE_ORDERBOOK_FEED[sym].tp = {
         b1: tp.bidPrice1 ? Math.round(tp.bidPrice1 * 1000) : null,
-        b1Vol: tp.bidQtty1 || 0,
+        b1Vol: (tp.bidQtty1 || 0) * 10,
         b2: tp.bidPrice2 ? Math.round(tp.bidPrice2 * 1000) : null,
-        b2Vol: tp.bidQtty2 || 0,
+        b2Vol: (tp.bidQtty2 || 0) * 10,
         b3: tp.bidPrice3 ? Math.round(tp.bidPrice3 * 1000) : null,
-        b3Vol: tp.bidQtty3 || 0,
+        b3Vol: (tp.bidQtty3 || 0) * 10,
         a1: tp.offerPrice1 ? Math.round(tp.offerPrice1 * 1000) : null,
-        a1Vol: tp.offerQtty1 || 0,
+        a1Vol: (tp.offerQtty1 || 0) * 10,
         a2: tp.offerPrice2 ? Math.round(tp.offerPrice2 * 1000) : null,
-        a2Vol: tp.offerQtty2 || 0,
+        a2Vol: (tp.offerQtty2 || 0) * 10,
         a3: tp.offerPrice3 ? Math.round(tp.offerPrice3 * 1000) : null,
         a3Vol: tp.offerQtty3 || 0
       };
@@ -9052,7 +9052,7 @@ async function fetchDnseOrderBookLive(sym) {
           return {
             time: timeStr,
             price: Math.round(tr.matchPrice * 1000),
-            vol: tr.matchQtty,
+            vol: (tr.matchQtty || 10) * 10,
             side: tr.side === 1 ? 'M' : 'B'
           };
         });
@@ -9242,7 +9242,7 @@ function stockHeader(tab, body) {
         <!-- CMC 24h Range Slider -->
         <div class="cmc-range-box" style="padding-top:6px">
           <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--ink2);margin-bottom:6px">
-            <span style="font-weight:700">⚡ Biên độ phiên (24h Range)</span>
+            <span style="font-weight:700">⚡ Biên độ phiên</span>
             <span style="font-size:11px;color:var(--ink3)">Vị thế: <b style="color:var(--ink);font-family:var(--mono)">${rangePct}%</b></span>
           </div>
           <div class="cmc-slider-track" style="height:6px;background:var(--sub2);border-radius:4px;position:relative;margin:12px 0 8px">
@@ -9283,7 +9283,7 @@ function stockHeader(tab, body) {
             <b style="font-family:var(--mono);font-variant-numeric:tabular-nums">${mcapDisplay}</b>
           </div>
           <div class="kl" style="display:flex;justify-content:space-between;border-bottom:1px solid var(--sub);padding-bottom:6px">
-            <span style="color:var(--ink2)">Khối lượng GD (24h)</span>
+            <span style="color:var(--ink2)">Khối lượng GD</span>
             <b style="font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)">${volStr} CP <span style="font-size:11px;color:var(--ink3)">(${valStr})</span></b>
           </div>
           <div class="kl" style="display:flex;justify-content:space-between;border-bottom:1px solid var(--sub);padding-bottom:6px">
@@ -45825,22 +45825,22 @@ class DnseKrxSocketManager {
     const buyRatio = totalDepth > 0 ? Math.min(95, Math.max(5, Math.round((totalBidVol / totalDepth) * 100))) : 50;
     const sellRatio = 100 - buyRatio;
 
-    // Cache to global feed so any subsequent render has exact live data
+    // Cache to global feed so any subsequent render has exact live data (Khối lượng để số nguyên bản x10 CP đầy đủ)
     if (typeof DNSE_ORDERBOOK_FEED === 'undefined') window.DNSE_ORDERBOOK_FEED = {};
     if (!DNSE_ORDERBOOK_FEED[p.symbol]) DNSE_ORDERBOOK_FEED[p.symbol] = {};
     DNSE_ORDERBOOK_FEED[p.symbol].tp = {
       b1: bids[0] ? Math.round(bids[0].price * 1000) : null,
-      b1Vol: bids[0] ? bids[0].qtty : 0,
+      b1Vol: bids[0] ? (bids[0].qtty * 10) : 0,
       b2: bids[1] ? Math.round(bids[1].price * 1000) : null,
-      b2Vol: bids[1] ? bids[1].qtty : 0,
+      b2Vol: bids[1] ? (bids[1].qtty * 10) : 0,
       b3: bids[2] ? Math.round(bids[2].price * 1000) : null,
-      b3Vol: bids[2] ? bids[2].qtty : 0,
+      b3Vol: bids[2] ? (bids[2].qtty * 10) : 0,
       a1: asks[0] ? Math.round(asks[0].price * 1000) : null,
-      a1Vol: asks[0] ? asks[0].qtty : 0,
+      a1Vol: asks[0] ? (asks[0].qtty * 10) : 0,
       a2: asks[1] ? Math.round(asks[1].price * 1000) : null,
-      a2Vol: asks[1] ? asks[1].qtty : 0,
+      a2Vol: asks[1] ? (asks[1].qtty * 10) : 0,
       a3: asks[2] ? Math.round(asks[2].price * 1000) : null,
-      a3Vol: asks[2] ? asks[2].qtty : 0,
+      a3Vol: asks[2] ? (asks[2].qtty * 10) : 0,
       totalBidVol,
       totalAskVol,
       buyRatio,
@@ -45863,14 +45863,14 @@ class DnseKrxSocketManager {
     // Reference price for color classification
     const refPx = (STOCK.ref && STOCK.ref > 200 ? STOCK.ref / 1000 : STOCK.ref) || 20.0;
 
-    // Max volume for row background bars
+    // Max volume for row background bars (Nguyên bản số lượng cổ phiếu đầy đủ)
     const maxRowVol = Math.max(
-      ...bids.map(b => b.qtty || 0),
-      ...asks.map(a => a.qtty || 0),
-      10000
+      ...bids.map(b => (b.qtty || 0) * 10),
+      ...asks.map(a => (a.qtty || 0) * 10),
+      100000
     );
 
-    // Update 3 Bid & 3 Ask levels
+    // Update 3 Bid & 3 Ask levels (Số bình thường không chia, chỉ giá x 1.000 đ)
     for (let i = 1; i <= 3; i++) {
       const bItem = bids[i - 1];
       const aItem = asks[i - 1];
@@ -45884,20 +45884,22 @@ class DnseKrxSocketManager {
       const aBarEl = document.getElementById(`ob-a${i}-bar`);
 
       if (bItem && bPriceEl && bVolEl) {
+        const fullBVol = (bItem.qtty || 0) * 10;
         bPriceEl.textContent = (bItem.price).toFixed(2);
-        bVolEl.textContent = typeof fmtVN === 'function' ? fmtVN(bItem.qtty, 0) : bItem.qtty;
+        bVolEl.textContent = typeof fmtVN === 'function' ? fmtVN(fullBVol, 0) : fullBVol;
         bPriceEl.className = bItem.price > refPx ? 'up' : bItem.price < refPx ? 'down' : 'ref';
-        if (bBarEl) bBarEl.style.width = Math.min(100, Math.round(((bItem.qtty || 0) / maxRowVol) * 100)) + '%';
+        if (bBarEl) bBarEl.style.width = Math.min(100, Math.round((fullBVol / maxRowVol) * 100)) + '%';
         bPriceEl.classList.remove('flash-up');
         void bPriceEl.offsetWidth;
         bPriceEl.classList.add('flash-up');
       }
 
       if (aItem && aPriceEl && aVolEl) {
+        const fullAVol = (aItem.qtty || 0) * 10;
         aPriceEl.textContent = (aItem.price).toFixed(2);
-        aVolEl.textContent = typeof fmtVN === 'function' ? fmtVN(aItem.qtty, 0) : aItem.qtty;
+        aVolEl.textContent = typeof fmtVN === 'function' ? fmtVN(fullAVol, 0) : fullAVol;
         aPriceEl.className = aItem.price > refPx ? 'up' : aItem.price < refPx ? 'down' : 'ref';
-        if (aBarEl) aBarEl.style.width = Math.min(100, Math.round(((aItem.qtty || 0) / maxRowVol) * 100)) + '%';
+        if (aBarEl) aBarEl.style.width = Math.min(100, Math.round((fullAVol / maxRowVol) * 100)) + '%';
         aPriceEl.classList.remove('flash-down');
         void aPriceEl.offsetWidth;
         aPriceEl.classList.add('flash-down');
@@ -45936,7 +45938,7 @@ class DnseKrxSocketManager {
     if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
 
     const matchPx = p.matchPrice;
-    const matchQty = p.matchQtty || p.matchQuantity || 10;
+    const matchQty = (p.matchQtty || p.matchQuantity || 10) * 10;
     const side = p.side === 1 ? 'MUA' : 'BÁN';
     const sideCls = p.side === 1 ? 'M' : 'B';
 

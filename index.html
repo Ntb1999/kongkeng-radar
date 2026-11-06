@@ -3880,7 +3880,7 @@ td[data-stock-role="price"],
       <div class="top-r">
         <div class="search" id="top-search-wrap">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-          <input id="q" type="text" placeholder="Tìm mã CK (VD: VIX, KOS, FPT, HPG...)" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="latin" lang="en" aria-label="Tìm kiếm mã chứng khoán" style="text-transform: uppercase;">
+          <input id="q" type="text" placeholder="Tìm mã CK (VD: VIX, KOS, FPT, HPG...)" autocomplete="off" spellcheck="false" aria-label="Tìm kiếm mã chứng khoán">
           <button id="q-clear" class="search-clear-btn" style="display:none" aria-label="Xóa tìm kiếm" title="Xóa">✕</button>
           <div id="suggest" class="suggest" hidden></div>
         </div>
@@ -18080,37 +18080,9 @@ function openStock(t) {
 }
 
 if (qIn) {
-  let isComposing = false;
-  qIn.addEventListener('compositionstart', () => { isComposing = true; });
-  qIn.addEventListener('compositionend', () => {
-    isComposing = false;
-    syncCleanSearchInput();
-  });
-
-  function syncCleanSearchInput() {
-    const oldVal = qIn.value;
-    const cleanVal = (typeof sanitizeToEnglishTicker === 'function') ? sanitizeToEnglishTicker(oldVal) : oldVal.toUpperCase();
-    if (oldVal !== cleanVal) {
-      const start = qIn.selectionStart;
-      const end = qIn.selectionEnd;
-      const diff = cleanVal.length - oldVal.length;
-      qIn.value = cleanVal;
-      try {
-        qIn.setSelectionRange(Math.max(0, (start || 0) + diff), Math.max(0, (end || 0) + diff));
-      } catch(err) {}
-    }
-    renderSuggest();
-  }
-
+  // Pure native input: Whatever character the user types is displayed naturally without JavaScript modification
   qIn.addEventListener('input', () => {
-    if (isComposing) return;
-    syncCleanSearchInput();
-  });
-  qIn.addEventListener('paste', () => {
-    setTimeout(syncCleanSearchInput, 0);
-  });
-  qIn.addEventListener('blur', () => {
-    syncCleanSearchInput();
+    renderSuggest();
   });
   qIn.addEventListener('focus', renderSuggest);
   qIn.addEventListener('click', e => {

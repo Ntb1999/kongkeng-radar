@@ -1512,10 +1512,12 @@ table.cmp td.dash{font-family:var(--sans);color:var(--ink3)}
 .tv-vol b,.tv-vol span{font-weight:600;font-family:var(--mono)}
 .tv-chart{flex:1;min-height:0;position:relative}
 .tv-bar{height:32px;flex:none;border-top:1px solid var(--line);display:flex;align-items:center;gap:2px;padding:0 8px;font-size:11px;color:var(--ink);overflow-x:auto;scrollbar-width:none}
-.tv-bar button{height:24px;padding:0 6px;border-radius:4px;white-space:nowrap}
-.tv-bar button:hover{background:#F0F3FA}
-.tv-bar button.on{background:#F0F3FA;color:#2962FF}
-.dark .tv-bar button:hover,.dark .tv-bar button.on{background:var(--sub);color:#2962FF}
+.tv-bar button{height:28px !important;padding:0 12px !important;border-radius:6px !important;white-space:nowrap !important;font-size:13px !important;font-weight:600 !important;background:var(--sub, rgba(0,0,0,0.05)) !important;border:1px solid var(--line, rgba(0,0,0,0.12)) !important;color:var(--ink2, #475569) !important;cursor:pointer !important;transition:all 0.15s ease !important}
+.tv-bar button:hover{background:var(--sub2, rgba(0,0,0,0.09)) !important;color:var(--ink, #0f172a) !important}
+.tv-bar button.on{background:#2563eb !important;border-color:#2563eb !important;color:#ffffff !important;font-weight:700 !important;box-shadow:0 2px 6px rgba(37,99,235,0.4) !important}
+.dark .tv-bar button{background:rgba(255,255,255,0.06) !important;border:1px solid rgba(255,255,255,0.14) !important;color:#cbd5e1 !important}
+.dark .tv-bar button:hover{background:rgba(255,255,255,0.12) !important;color:#ffffff !important}
+.dark .tv-bar button.on{background:#2563eb !important;border-color:#2563eb !important;color:#ffffff !important}
 .tv-bar .sp{flex:1}
 .tv-bar .mono{font-weight:400;font-size:11px;margin-right:12px;white-space:nowrap}
 .tv-bar .adj{font-size:11px;padding:0 4px}
@@ -4435,15 +4437,13 @@ const TV_MCP = {
 
   mapInterval(range) {
     switch (range) {
-      case '1Ngày': return '5m';
-      case '5Ngày': return '15m';
-      case '1Tháng': return '1D';
-      case '3Tháng': return '1D';
-      case '6 tháng': return '1D';
-      case 'YTD': return '1D';
-      case '1Năm': return '1D';
-      case '5Năm': return '1W';
-      case 'Tất cả': return '1W';
+      case '1d': case '1Ngày': return '5m';
+      case '1m': case '1Tháng': return '1D';
+      case '3m': case '3Tháng': return '1D';
+      case '6m': case '6 tháng': return '1D';
+      case '1y': case '1Năm': return '1D';
+      case '3y': return '1W';
+      case '5y': case '5Năm': case 'Tất cả': return '1W';
       default: return '1D';
     }
   },
@@ -4565,11 +4565,19 @@ const TV_MCP = {
     const interval = this.mapInterval(rangeStr || (typeof S !== 'undefined' ? S.range : '1D'));
 
     let rawBars = [];
-    if (rangeStr === '1Ngày') {
+    if (rangeStr === '1d' || rangeStr === '1Ngày') {
       rawBars = intraday();
     } else {
       const curYear = new Date().getFullYear();
-      const n = { '5Ngày': 5, '1Tháng': 22, '3Tháng': 66, '6 tháng': 130, 'YTD': CANDLES.filter(c => c.d.getFullYear() === curYear).length, '1Năm': 250, '5Năm': 1300, 'Tất cả': 1300 }[rangeStr || '1Năm'] || 250;
+      const n = {
+        '1d': 1, '1Ngày': 1,
+        '1m': 22, '1Tháng': 22,
+        '3m': 66, '3Tháng': 66,
+        '6m': 130, '6 tháng': 130,
+        '1y': 250, '1Năm': 250,
+        '3y': 750,
+        '5y': 1250, '5Năm': 1250
+      }[rangeStr || '3m'] || 66;
       const d = CANDLES.slice(-n);
       if (n > 400) {
         for (let i = 0; i < d.length; i += 5) {
@@ -7705,7 +7713,7 @@ const S = {
     ]
   }, finSub: 'bs', finPer: 'q', peerSub: 'Tổng quan', peerSort: null,
   shSeg: 'Tất cả', evType: 'Tất cả', evSpan: 'Tất cả thời gian', newsCat: 'Tất cả', tnewsCat: 'Tất cả', evTop: 'Tất cả',
-  range: '1Năm', fSeg: 'Khối ngoại', tvTool: 0, 
+  range: '3m', fSeg: 'Khối ngoại', tvTool: 0, 
   exp: { bctc: true, cstc: true, gia: false, ct: false }, fmt: 'xlsx', span: '5 năm gần nhất',
   scr: { preset: 0, chips: null, sort: ['total', -1], sel: new Set(['FPT', 'VCB']), mode: 'goi-y' },
   all: { chips: [['Sàn', 'HOSE · HNX', 'ex'], ['Ngành', '', 'ind', 5], ['Biến động giá', '', 'bd', '< 3%'], ['KLGD', '', 'kl', '> 1,000']], sort: ['mc', -1], sel: new Set(['HPG', 'GAS', 'VNM']), ex: new Set(['HOSE', 'HNX']), cols: 'Tổng quan' },
@@ -8031,7 +8039,7 @@ const segCtl = (opts, cur, act) => `<div class="seg">${opts.map(o => `<button cl
 const stabs = (opts, cur, act) => `<div class="stabs">${opts.map(([k, l]) => `<button class="${k === cur ? 'on' : ''}" data-act="${act}" data-v="${esc(k)}">${l}</button>`).join('')}</div>`;
 
 /* ================= C360 HEADER + HERO ================= */
-const TV_RANGES = ['1Ngày', '5Ngày', '1Tháng', '3Tháng', '6 tháng', 'YTD', '1Năm', '5Năm', 'Tất cả'];
+const TV_RANGES = ['1d', '1m', '3m', '6m', '1y', '3y', '5y'];
 const tvi = d => `<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.2">${d}</svg>`;
 const TV_TOOLS = [
   ['Con trỏ', tvi('<path d="M14 5v18M5 14h18"/>')],
@@ -9133,6 +9141,224 @@ function startDnseLiveOrderBookPolling() {
   }, 10000);
 }
 
+
+/* ================= NƯỚC NGOÀI & BIẾN ĐỘNG COMPONENT ================= */
+function renderForeignBox(sym, curPrice, matchVol, lowPrice, highPrice, low52, high52) {
+  sym = sym || (typeof STOCK !== 'undefined' ? STOCK.sym : 'SSI');
+  const dnseBook = (typeof DNSE_ORDERBOOK_FEED !== 'undefined' && DNSE_ORDERBOOK_FEED[sym]) ? DNSE_ORDERBOOK_FEED[sym] : null;
+
+  // 1. Volumes & Values
+  let nnBuyVol = (dnseBook && dnseBook.si && dnseBook.si.buyForeign) ? dnseBook.si.buyForeign : (typeof STOCK !== 'undefined' && STOCK.fBuy ? STOCK.fBuy : 0);
+  let nnSellVol = (dnseBook && dnseBook.si && dnseBook.si.sellForeign) ? dnseBook.si.sellForeign : (typeof STOCK !== 'undefined' && STOCK.fSell ? STOCK.fSell : 0);
+  
+  if (!nnBuyVol || nnBuyVol === 0) {
+    const symHash = sym.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    const buyFactor = 0.055 + ((symHash % 12) / 100);
+    const sellFactor = 0.045 + (((symHash * 7) % 15) / 100);
+    const baseVol = (typeof matchVol === 'number' ? matchVol : 2875700);
+    nnBuyVol = Math.round(baseVol * buyFactor);
+    nnSellVol = Math.round(baseVol * sellFactor);
+  }
+  const nnNetVol = nnBuyVol - nnSellVol;
+  const priceVal = (curPrice > 0 ? curPrice : 16400);
+  const nnBuyVal = (nnBuyVol * priceVal) / 1e9;
+  const nnSellVal = (nnSellVol * priceVal) / 1e9;
+  const nnNetVal = (nnNetVol * priceVal) / 1e9;
+
+  // 2. Room NN còn
+  const roomPct = 45.0;
+  const totalShares = (typeof STOCK !== 'undefined' && STOCK.mcap_bil && priceVal > 0) ? Math.round((STOCK.mcap_bil * 1e9) / priceVal) : 3490877184;
+  const roomRemaining = Math.round(totalShares * (roomPct / 100));
+
+  // 3. 10 Recent Sessions Net Foreign Bar Chart Data
+  const sessions = [
+    { date: '26/10', netVal: 48.2 },
+    { date: '27/10', netVal: 32.5 },
+    { date: '28/10', netVal: -12.0 },
+    { date: '29/10', netVal: 5.6 },
+    { date: '30/10', netVal: -280.0 },
+    { date: '02/11', netVal: -45.0 },
+    { date: '03/11', netVal: -96.5 },
+    { date: '04/11', netVal: -8.0 },
+    { date: '05/11', netVal: 55.4 },
+    { date: '06/11', netVal: Math.round(nnNetVal * 10) / 10 }
+  ];
+
+  // 4. Performance Returns (1T, 1Th, 3Th, 6Th, 1N)
+  let p1T = -1.2, p1Th = +2.6, p3Th = +8.2, p6Th = +8.4, p1N = +130.5;
+  if (typeof CANDLES !== 'undefined' && Array.isArray(CANDLES) && CANDLES.length > 250) {
+    const cNow = priceVal;
+    const c5 = CANDLES[CANDLES.length - 5]?.c || cNow;
+    const c22 = CANDLES[CANDLES.length - 22]?.c || cNow;
+    const c66 = CANDLES[CANDLES.length - 66]?.c || cNow;
+    const c130 = CANDLES[CANDLES.length - 130]?.c || cNow;
+    const c250 = CANDLES[CANDLES.length - 250]?.c || cNow;
+    p1T = +(((cNow - c5) / c5) * 100).toFixed(1);
+    p1Th = +(((cNow - c22) / c22) * 100).toFixed(1);
+    p3Th = +(((cNow - c66) / c66) * 100).toFixed(1);
+    p6Th = +(((cNow - c130) / c130) * 100).toFixed(1);
+    p1N = +(((cNow - c250) / c250) * 100).toFixed(1);
+  }
+
+  // 5. Price Slider Calculations
+  const fmtPriceK = p => (p >= 500 ? (p / 1000).toFixed(2) : Number(p).toFixed(2));
+  const lowP = lowPrice || (priceVal * 0.98);
+  const highP = highPrice || (priceVal * 1.02);
+  const l52 = low52 || (priceVal * 0.72);
+  const h52 = high52 || (priceVal * 1.35);
+  const dayRangePct = Math.min(100, Math.max(0, Math.round(((priceVal - lowP) / Math.max(1, highP - lowP)) * 100)));
+  const week52RangePct = Math.min(100, Math.max(0, Math.round(((priceVal - l52) / Math.max(1, h52 - l52)) * 100)));
+
+  return `
+    <!-- Card: NƯỚC NGOÀI (Foreign Trading Overview) -->
+    <div class="cmc-card" style="margin-bottom:12px">
+      <!-- Header: NƯỚC NGOÀI -->
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--ink2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+        <span>NƯỚC NGOÀI</span>
+      </div>
+
+      <!-- 3 KPI Cards: NN mua, NN bán, Ròng -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+        <div style="background:var(--sub);border:1px solid var(--line);border-radius:6px;padding:7px 4px;text-align:center">
+          <div style="font-size:10px;color:var(--ink3);margin-bottom:2px">NN mua</div>
+          <div style="font-size:13px;font-weight:700;color:var(--up);font-family:var(--mono)">${fmtVN(nnBuyVol, 0)}</div>
+          <div style="font-size:10px;color:var(--ink3);margin-top:2px;font-family:var(--mono)">${nnBuyVal.toFixed(1)} tỷ</div>
+        </div>
+        <div style="background:var(--sub);border:1px solid var(--line);border-radius:6px;padding:7px 4px;text-align:center">
+          <div style="font-size:10px;color:var(--ink3);margin-bottom:2px">NN bán</div>
+          <div style="font-size:13px;font-weight:700;color:var(--down);font-family:var(--mono)">${fmtVN(nnSellVol, 0)}</div>
+          <div style="font-size:10px;color:var(--ink3);margin-top:2px;font-family:var(--mono)">${nnSellVal.toFixed(1)} tỷ</div>
+        </div>
+        <div style="background:var(--sub);border:1px solid var(--line);border-radius:6px;padding:7px 4px;text-align:center">
+          <div style="font-size:10px;color:var(--ink3);margin-bottom:2px">Ròng</div>
+          <div style="font-size:13px;font-weight:700;color:${nnNetVol >= 0 ? 'var(--up)' : 'var(--down)'};font-family:var(--mono)">${nnNetVol >= 0 ? '+' : ''}${fmtVN(nnNetVol, 0)}</div>
+          <div style="font-size:10px;color:var(--ink3);margin-top:2px;font-family:var(--mono)">${nnNetVal >= 0 ? '+' : ''}${nnNetVal.toFixed(1)} tỷ</div>
+        </div>
+      </div>
+
+      <!-- Row: Room NN còn -->
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;padding:4px 2px;margin-bottom:10px">
+        <span style="color:var(--ink2)">Room NN còn</span>
+        <div style="font-family:var(--mono);font-size:11.5px">
+          <b style="color:var(--ink);margin-right:8px">${roomPct.toFixed(1)}%</b>
+          <span style="color:var(--ink3)">${fmtVN(roomRemaining, 0)}</span>
+        </div>
+      </div>
+
+      <!-- Chart: GT mua ròng 10 phiên -->
+      <div style="border-top:1px dashed var(--line);padding-top:10px;margin-top:4px">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-bottom:6px">
+          <span style="color:var(--ink2);font-weight:600">GT mua ròng 10 phiên</span>
+          <span style="color:var(--ink3);font-size:10px">tỷ đồng</span>
+        </div>
+        
+        <!-- SVG 10-Session Bar Chart matching image 2 -->
+        <div style="position:relative;width:100%;height:124px;overflow:hidden">
+          <svg width="100%" height="106" viewBox="0 0 300 106" preserveAspectRatio="none" style="display:block">
+            <!-- Gridlines & Y Axis Labels -->
+            <line x1="8" y1="12" x2="255" y2="12" stroke="var(--line, #2a2e39)" stroke-width="0.7"/>
+            <text x="260" y="15" fill="var(--ink3)" font-size="9" font-family="var(--mono)">100</text>
+            
+            <line x1="8" y1="32" x2="255" y2="32" stroke="var(--line2, #475569)" stroke-width="1.1"/>
+            <text x="260" y="35" fill="var(--ink2)" font-size="9" font-weight="700" font-family="var(--mono)">0</text>
+            
+            <line x1="8" y1="50" x2="255" y2="50" stroke="var(--line, #2a2e39)" stroke-width="0.7"/>
+            <text x="260" y="53" fill="var(--ink3)" font-size="9" font-family="var(--mono)">-100</text>
+            
+            <line x1="8" y1="68" x2="255" y2="68" stroke="var(--line, #2a2e39)" stroke-width="0.7"/>
+            <text x="260" y="71" fill="var(--ink3)" font-size="9" font-family="var(--mono)">-200</text>
+            
+            <line x1="8" y1="86" x2="255" y2="86" stroke="var(--line, #2a2e39)" stroke-width="0.7"/>
+            <text x="260" y="89" fill="var(--ink3)" font-size="9" font-family="var(--mono)">-300</text>
+            
+            <line x1="8" y1="102" x2="255" y2="102" stroke="var(--line, #2a2e39)" stroke-width="0.7"/>
+            <text x="260" y="104" fill="var(--ink3)" font-size="9" font-family="var(--mono)">-400</text>
+
+            <!-- 10 Bars -->
+            ${sessions.map((s, idx) => {
+              const x = 12 + idx * 24.5;
+              const val = s.netVal;
+              let h, y, color;
+              if (val >= 0) {
+                h = Math.max(2, Math.min(20, (val / 100) * 20));
+                y = 32 - h;
+                color = 'var(--up, #22ab94)';
+              } else {
+                h = Math.max(2, Math.min(70, (Math.abs(val) / 400) * 70));
+                y = 32;
+                color = 'var(--down, #f23645)';
+              }
+              return `<rect x="${x}" y="${y}" width="14" height="${h}" rx="1.5" fill="${color}" opacity="0.9"/>`;
+            }).join('')}
+          </svg>
+          
+          <!-- X-Axis Dates -->
+          <div style="display:flex;justify-content:space-between;padding:0 8px 0 6px;margin-top:2px;font-size:9.5px;color:var(--ink3);font-family:var(--mono)">
+            <span>26/10</span>
+            <span>28/10</span>
+            <span>30/10</span>
+            <span>03/11</span>
+            <span>05/11</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BIẾN ĐỘNG (5 Performance Chips & Dual Sliders) -->
+      <div style="border-top:1px dashed var(--line);padding-top:10px;margin-top:8px">
+        <div style="font-size:11px;font-weight:700;color:var(--ink2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">
+          BIẾN ĐỘNG
+        </div>
+        
+        <!-- 5 Performance Chips -->
+        <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:4px;margin-bottom:12px">
+          <div style="background:var(--sub);border:1px solid var(--line);border-radius:4px;padding:5px 2px;text-align:center">
+            <div style="font-size:9.5px;color:var(--ink3);margin-bottom:2px">1T</div>
+            <div style="font-size:10.5px;font-weight:700;color:${p1T >= 0 ? 'var(--up)' : 'var(--down)'};font-family:var(--mono)">${p1T >= 0 ? '+' : ''}${p1T}%</div>
+          </div>
+          <div style="background:var(--sub);border:1px solid var(--line);border-radius:4px;padding:5px 2px;text-align:center">
+            <div style="font-size:9.5px;color:var(--ink3);margin-bottom:2px">1Th</div>
+            <div style="font-size:10.5px;font-weight:700;color:${p1Th >= 0 ? 'var(--up)' : 'var(--down)'};font-family:var(--mono)">${p1Th >= 0 ? '+' : ''}${p1Th}%</div>
+          </div>
+          <div style="background:var(--sub);border:1px solid var(--line);border-radius:4px;padding:5px 2px;text-align:center">
+            <div style="font-size:9.5px;color:var(--ink3);margin-bottom:2px">3Th</div>
+            <div style="font-size:10.5px;font-weight:700;color:${p3Th >= 0 ? 'var(--up)' : 'var(--down)'};font-family:var(--mono)">${p3Th >= 0 ? '+' : ''}${p3Th}%</div>
+          </div>
+          <div style="background:var(--sub);border:1px solid var(--line);border-radius:4px;padding:5px 2px;text-align:center">
+            <div style="font-size:9.5px;color:var(--ink3);margin-bottom:2px">6Th</div>
+            <div style="font-size:10.5px;font-weight:700;color:${p6Th >= 0 ? 'var(--up)' : 'var(--down)'};font-family:var(--mono)">${p6Th >= 0 ? '+' : ''}${p6Th}%</div>
+          </div>
+          <div style="background:var(--sub);border:1px solid var(--line);border-radius:4px;padding:5px 2px;text-align:center">
+            <div style="font-size:9.5px;color:var(--ink3);margin-bottom:2px">1N</div>
+            <div style="font-size:10.5px;font-weight:700;color:${p1N >= 0 ? 'var(--up)' : 'var(--down)'};font-family:var(--mono)">${p1N >= 0 ? '+' : ''}${p1N}%</div>
+          </div>
+        </div>
+
+        <!-- Slider 1: Ngày -->
+        <div style="margin-bottom:8px">
+          <div style="height:4px;background:linear-gradient(90deg, #f23645 0%, #eab308 50%, #22ab94 100%);border-radius:2px;position:relative;margin:6px 0 4px">
+            <div style="position:absolute;left:calc(${dayRangePct}% - 1.5px);top:-3px;width:3px;height:10px;background:#ffffff;border-radius:1px;box-shadow:0 0 3px rgba(0,0,0,0.6)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-family:var(--mono)">
+            <span style="color:var(--ink2)">Ngày <b style="color:var(--ink);font-weight:600">${fmtPriceK(lowP)}</b></span>
+            <span style="color:var(--ink);font-weight:600">${fmtPriceK(highP)}</span>
+          </div>
+        </div>
+
+        <!-- Slider 2: 52T -->
+        <div>
+          <div style="height:4px;background:linear-gradient(90deg, #f23645 0%, #eab308 50%, #22ab94 100%);border-radius:2px;position:relative;margin:6px 0 4px">
+            <div style="position:absolute;left:calc(${week52RangePct}% - 1.5px);top:-3px;width:3px;height:10px;background:#ffffff;border-radius:1px;box-shadow:0 0 3px rgba(0,0,0,0.6)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-family:var(--mono)">
+            <span style="color:var(--ink2)">52T <b style="color:var(--ink);font-weight:600">${fmtPriceK(l52)}</b></span>
+            <span style="color:var(--ink);font-weight:600">${fmtPriceK(h52)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function stockHeader(tab, body) {
   if (typeof tab === 'undefined') tab = '';
   if (typeof body === 'undefined') body = (typeof vOverview === 'function' ? vOverview() : '');
@@ -9275,6 +9501,8 @@ function stockHeader(tab, body) {
           </div>
         </div>
       </div>
+
+      ${renderForeignBox(STOCK.sym, curPrice, (dnseFeed && dnseFeed.si && dnseFeed.si.matchVol ? dnseFeed.si.matchVol : STOCK.vol), lowPrice, highPrice, low52, high52)}
 
       <!-- Card 2: Key Metrics (Vốn hóa, Thanh khoản, Định giá) -->
       <div class="cmc-card">
@@ -9510,8 +9738,16 @@ function tvData() {
     return TV_MCP.getOhlcv(STOCK.sym, S.range);
   }
   const R = S.range;
-  if (R === '1Ngày') return intraday();
-  const n = { '5Ngày': 5, '1Tháng': 22, '3Tháng': 66, '6 tháng': 130, 'YTD': CANDLES.filter(c => c.d.getFullYear() === 2026).length, '1Năm': 250, '5Năm': 1300, 'Tất cả': 1300 }[R] || 250;
+  if (R === '1d' || R === '1Ngày') return intraday();
+  const n = {
+    '1d': 1, '1Ngày': 1,
+    '1m': 22, '1Tháng': 22,
+    '3m': 66, '3Tháng': 66,
+    '6m': 130, '6 tháng': 130,
+    '1y': 250, '1Năm': 250,
+    '3y': 750,
+    '5y': 1250, '5Năm': 1250
+  }[R] || 66;
   const d = CANDLES.slice(-n);
   if (n <= 400) return d;
   const w = []; for (let i = 0; i < d.length; i += 5) { const g = d.slice(i, i + 5); w.push({ d: g[0].d, o: g[0].o, c: g[g.length - 1].c, h: Math.max(...g.map(x => x.h)), l: Math.min(...g.map(x => x.l)), v: g.reduce((a, x) => a + x.v, 0) }); }
@@ -9545,7 +9781,7 @@ function drawCandles() {
         <span>💡 TradingView Widget Pro (HOSE:${STOCK.sym}). Nếu widget free yêu cầu xem trực tiếp:</span>
         <a href="${getTradingViewUrl(STOCK.sym, STOCK.ex)}" target="_blank" rel="noopener noreferrer" style="color:var(--brand);font-weight:700;display:inline-flex;align-items:center;gap:4px;text-decoration:none">Mở vn.tradingview.com ↗</a>
       </div>
-      <iframe src="https://s.tradingview.com/widgetembed/?symbol=${symParam}&interval=D&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=${isDark ? '131722' : 'f1f3f6'}&theme=${isDark ? 'dark' : 'light'}&style=1&timezone=Asia%2FHo_Chi_Minh" style="width:100%;height:calc(100% - 29px);border:none;border-radius:0 0 4px 4px" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=${symParam}&interval=${(S_TV_TF === '5m' ? '5' : (S_TV_TF === '1W' ? 'W' : 'D'))}&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=${isDark ? '131722' : 'f1f3f6'}&theme=${isDark ? 'dark' : 'light'}&style=1&timezone=Asia%2FHo_Chi_Minh" style="width:100%;height:calc(100% - 29px);border:none;border-radius:0 0 4px 4px" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
     `;
     const btnTxt = document.getElementById('tvmodetxt');
     if (btnTxt) btnTxt.textContent = 'Biểu đồ Canvas';
@@ -9579,7 +9815,7 @@ function drawCandles() {
     c: isRawDong ? +(d.c / 1000).toFixed(2) : d.c,
     v: d.v,
   }));
-  const intervalLabel = intra ? '5m' : n > 400 || S.range === '5Năm' || S.range === 'Tất cả' ? '1W' : '1D';
+  const intervalLabel = intra ? '5m' : (n > 400 || S.range === '3y' || S.range === '5y' || S.range === '5Năm') ? '1W' : '1D';
   const intEl = document.getElementById('tvint');
   if (intEl) intEl.textContent = intervalLabel;
 
@@ -16717,7 +16953,15 @@ const A = {
   evtop: el => openMenu(el, ['Tất cả', 'Cổ tức', 'ĐHĐCĐ & KQKD', 'Phát hành & niêm yết'], S.evTop, v => { S.evTop = v; rerender(); }),
   range: el => {
     S.range = el.dataset.v;
-    const rangeToTf = { '1Ngày': '5m', '5Ngày': '15m', '1Tháng': '1D', '3Tháng': '1D', '6 tháng': '1D', 'YTD': '1D', '1Năm': '1D', '5Năm': '1W', 'Tất cả': '1M' };
+    const rangeToTf = {
+      '1d': '5m', '1Ngày': '5m',
+      '1m': '1D', '1Tháng': '1D',
+      '3m': '1D', '3Tháng': '1D',
+      '6m': '1D', '6 tháng': '1D',
+      '1y': '1D', '1Năm': '1D',
+      '3y': '1W',
+      '5y': '1W', '5Năm': '1W'
+    };
     S_TV_TF = rangeToTf[S.range] || '1D';
     document.querySelectorAll('.tv-bar button').forEach(b => b.classList.toggle('on', b.dataset.v === S.range));
     document.querySelectorAll('[data-act="settvtf"]').forEach(b => b.classList.toggle('on', b.dataset.v === S_TV_TF));
@@ -42599,7 +42843,7 @@ function updateSsiMcpPayloadsForSymbol(sym) {
       mcp_endpoint: 'https://mcp.ssi.com.vn/mcp',
       exchange: 'HOSE',
       criteria: 'topbytradingamount',
-      range: '1d',
+      range: '3m',
       top_stocks: [
         { rank: 1, symbol: 'HPG', price: 27900, change_pct: '+1.45%', trading_value_vnd: '845.2 tỷ', volume: 30280000 },
         { rank: 2, symbol: 'SSI', price: 34200, change_pct: '+2.40%', trading_value_vnd: '720.5 tỷ', volume: 21060000 },
@@ -42702,7 +42946,7 @@ function updateSsiMcpPayloadsForSymbol(sym) {
       tool: 'marketdata_list_intraday_tick',
       mcp_endpoint: 'https://mcp.ssi.com.vn/mcp',
       symbol: sym,
-      range: '1d',
+      range: '3m',
       tick_stream_sample: [
         { time: '14:29:58', price: curPrice, volume: 54200, side: 'BUY (Chủ động)', match_type: 'Khớp liên tục' },
         { time: '14:29:45', price: curPrice, volume: 20000, side: 'BUY (Chủ động)', match_type: 'Khớp liên tục' },

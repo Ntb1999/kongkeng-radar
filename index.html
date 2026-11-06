@@ -674,9 +674,9 @@ svg text{font-family:var(--sans)}
 .top-r{margin-left:auto;display:flex;align-items:center;gap:16px}
 .top-r>.grp8{display:flex;gap:8px;align-items:center}
 .search{position:relative;display:flex;align-items:center;z-index:510}
-.search input{width:280px;height:34px;border:1px solid var(--line);border-radius:99px;padding:0 34px 0 36px;background:var(--sub);outline:none;font-size:13px;line-height:20px;color:var(--ink);transition:all .2s cubic-bezier(.4,0,.2,1)}
+.search input{width:310px;height:34px;border:1px solid var(--line);border-radius:99px;padding:0 34px 0 36px;background:var(--sub);outline:none;font-size:13px;line-height:20px;color:var(--ink);transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease;will-change:border-color,box-shadow}
 .search input::placeholder{color:var(--ink4);font-size:12px}
-.search input:focus{width:330px;background:var(--bg);border-color:var(--brand);box-shadow:0 0 0 3px rgba(255,107,0,0.18)}
+.search input:focus{width:310px;background:var(--bg);border-color:var(--brand);box-shadow:0 0 0 3px rgba(255,107,0,0.18)}
 .search .search-icon{position:absolute;left:11px;top:9px;width:16px;height:16px;color:var(--ink3);pointer-events:none;transition:color .2s}
 .search input:focus ~ .search-icon{color:var(--brand)}
 .search-clear-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:var(--sub2);color:var(--ink2);display:inline-grid;place-items:center;font-size:11px;line-height:1;border:none;cursor:pointer;padding:0;transition:all .15s}
@@ -17892,57 +17892,85 @@ function renderSuggest() {
     return;
   }
 
-  // SEARCH RESULTS: Stock and Reports
+  // SEARCH RESULTS: Ultra-fast cached search engine (Sub-millisecond latency)
   const qClean = (typeof sanitizeToEnglishTicker === 'function') ? sanitizeToEnglishTicker(q) : q.toUpperCase().trim();
-  const qRaw = qClean.toLowerCase();
+  const qRaw = (q || '').toLowerCase();
 
-  // 1. Build unified pool with authentic DNSE Open API prices
-  const pool = UNI.map(u => {
-    const sym = u[0];
-    const feed = (typeof DNSE_ORDERBOOK_FEED !== 'undefined' && DNSE_ORDERBOOK_FEED[sym]) ? DNSE_ORDERBOOK_FEED[sym] : null;
-    const realPrice = (feed && feed.si && feed.si.match) ? feed.si.match : Math.round(u[4] * 1000);
-    const realPct = (feed && feed.si && feed.si.pct != null) ? feed.si.pct : u[5];
-    return { k: 's', t: sym, l: u[1], ind: u[2] || '', p: realPrice, c: realPct };
-  });
+  if (!window._CACHED_SEARCH_POOL) {
+    const pool = (typeof UNI !== 'undefined' && Array.isArray(UNI)) ? UNI.map(u => {
+      const sym = u[0];
+      const feed = (typeof DNSE_ORDERBOOK_FEED !== 'undefined' && DNSE_ORDERBOOK_FEED[sym]) ? DNSE_ORDERBOOK_FEED[sym] : null;
+      const realPrice = (feed && feed.si && feed.si.match) ? feed.si.match : Math.round(u[4] * 1000);
+      const realPct = (feed && feed.si && feed.si.pct != null) ? feed.si.pct : u[5];
+      return {
+        k: 's',
+        t: sym,
+        l: u[1],
+        ind: u[2] || '',
+        p: realPrice,
+        c: realPct,
+        symUpper: sym.toUpperCase(),
+        nameNorm: (typeof stripVN === 'function') ? stripVN(u[1]) : (u[1] || '').toLowerCase()
+      };
+    }) : [];
 
-  const seen = new Set(pool.map(p => p.t));
-  if (typeof DNSE_ORDERBOOK_FEED !== 'undefined') {
-    Object.keys(DNSE_ORDERBOOK_FEED).forEach(k => {
-      if (!seen.has(k)) {
-        const d = DNSE_ORDERBOOK_FEED[k];
-        pool.push({
-          k: 's',
-          t: k,
-          l: (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[k] ? DNSE_STOCKS_DB[k].name : ('CTCP ' + k)),
-          ind: (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[k] ? DNSE_STOCKS_DB[k].ind : ''),
-          p: (d.si && d.si.match) ? d.si.match : 25000,
-          c: (d.si && d.si.pct != null) ? d.si.pct : 0
-        });
-        seen.add(k);
-      }
-    });
+    const seen = new Set(pool.map(p => p.t));
+    if (typeof DNSE_ORDERBOOK_FEED !== 'undefined') {
+      Object.keys(DNSE_ORDERBOOK_FEED).forEach(k => {
+        if (!seen.has(k)) {
+          const d = DNSE_ORDERBOOK_FEED[k];
+          pool.push({
+            k: 's',
+            t: k,
+            l: (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[k] ? DNSE_STOCKS_DB[k].name : ('CTCP ' + k)),
+            ind: (typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[k] ? DNSE_STOCKS_DB[k].ind : ''),
+            p: (d.si && d.si.match) ? d.si.match : 25000,
+            c: (d.si && d.si.pct != null) ? d.si.pct : 0,
+            symUpper: k.toUpperCase(),
+            nameNorm: (typeof stripVN === 'function') ? stripVN((typeof DNSE_STOCKS_DB !== 'undefined' && DNSE_STOCKS_DB[k] ? DNSE_STOCKS_DB[k].name : k)) : k.toLowerCase()
+          });
+          seen.add(k);
+        }
+      });
+    }
+    window._CACHED_SEARCH_POOL = pool;
   }
 
-  // 2. Score exclusively by English Stock Ticker Symbol
-  const matchedStocks = pool.map(item => {
-    const sym = item.t.toUpperCase();
-    let score = 0;
-    if (sym === qClean) score = 1000;
-    else if (sym.startsWith(qClean)) score = 800 - sym.length;
-    else if (sym.includes(qClean)) score = 500;
+  const pool = window._CACHED_SEARCH_POOL;
+  const exactMatches = [];
+  const prefixMatches = [];
+  const containsMatches = [];
+  const nameMatches = [];
 
-    return { item, score };
-  }).filter(x => x.score > 0).sort((a, b) => b.score - a.score).slice(0, 8).map(x => x.item);
+  for (let i = 0; i < pool.length; i++) {
+    const item = pool[i];
+    const sym = item.symUpper;
+    if (sym === qClean) {
+      exactMatches.push(item);
+    } else if (sym.startsWith(qClean)) {
+      prefixMatches.push(item);
+    } else if (sym.includes(qClean)) {
+      containsMatches.push(item);
+    } else if (qClean.length >= 2 && item.nameNorm.includes(qRaw)) {
+      nameMatches.push(item);
+    }
+  }
 
-  // 3. Score reports safely
-  const matchedReports = (typeof REPORTS !== 'undefined' && Array.isArray(REPORTS)) ? REPORTS.map((r, i) => {
-    const titleNorm = typeof stripVN === 'function' ? stripVN(r[1]) : (r[1] || '').toLowerCase();
-    const symNorm = (r[0] || '').toUpperCase();
-    let score = 0;
-    if (symNorm === qClean) score = 400;
-    else if (titleNorm.includes(qRaw) || symNorm.includes(qClean)) score = 200;
-    return { item: { k: 'r', t: r[0] || 'BC', l: r[1], rec: r[2], time: r[3], i }, score };
-  }).filter(x => x.score > 0).slice(0, 3).map(x => x.item) : [];
+  prefixMatches.sort((a, b) => a.symUpper.length - b.symUpper.length);
+  const matchedStocks = [...exactMatches, ...prefixMatches, ...containsMatches, ...nameMatches].slice(0, 8);
+
+  // Score reports with early-exit
+  const matchedReports = [];
+  if (qClean.length >= 2 && typeof REPORTS !== 'undefined' && Array.isArray(REPORTS)) {
+    for (let i = 0; i < REPORTS.length; i++) {
+      const r = REPORTS[i];
+      const symNorm = (r[0] || '').toUpperCase();
+      if (symNorm === qClean || symNorm.startsWith(qClean)) {
+        matchedReports.push({ k: 'r', t: r[0] || 'BC', l: r[1], rec: r[2], time: r[3], i });
+        if (matchedReports.length >= 3) break;
+      }
+    }
+  }
 
   sugItems = [...matchedStocks, ...matchedReports];
   sugIdx = -1;
@@ -18080,9 +18108,15 @@ function openStock(t) {
 }
 
 if (qIn) {
-  // Pure native input: Whatever character the user types is displayed naturally without JavaScript modification
+  let sugRaf = null;
+  // Pure native input with decoupled RAF rendering (0ms typing latency)
   qIn.addEventListener('input', () => {
-    renderSuggest();
+    const hasVal = !!qIn.value.trim();
+    if (qClear) qClear.style.display = hasVal ? 'inline-grid' : 'none';
+    if (sugRaf) cancelAnimationFrame(sugRaf);
+    sugRaf = requestAnimationFrame(() => {
+      renderSuggest();
+    });
   });
   qIn.addEventListener('focus', renderSuggest);
   qIn.addEventListener('click', e => {

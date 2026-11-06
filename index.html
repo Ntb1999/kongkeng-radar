@@ -8759,11 +8759,17 @@ function sanitizeToEnglishTicker(val) {
 }
 
 function renderMcpOrderBook() {
-  const sym = (typeof STOCK !== 'undefined' && STOCK && STOCK.sym) ? STOCK.sym : 'MBB';
+  const sym = (typeof STOCK !== 'undefined' && STOCK && STOCK.sym) ? STOCK.sym : 'SSI';
   const dnseBook = (typeof DNSE_ORDERBOOK_FEED !== 'undefined' && DNSE_ORDERBOOK_FEED[sym]) ? DNSE_ORDERBOOK_FEED[sym] : null;
   const vn30 = (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym]) ? VN30_DATA_FEED[sym] : null;
+  const uStock = (typeof UNI !== 'undefined' && Array.isArray(UNI)) ? UNI.find(x => x[0] === sym) : null;
+  const uniPrice = uStock ? Math.round(uStock[4] * 1000) : 0;
 
-  const curPrice = (dnseBook && dnseBook.si && dnseBook.si.match) ? dnseBook.si.match : (STOCK.price || (vn30 ? vn30.price : 18850));
+  const curPrice = (dnseBook && dnseBook.si && dnseBook.si.match) 
+    ? dnseBook.si.match 
+    : ((STOCK && STOCK.sym === sym && STOCK.price) 
+        ? STOCK.price 
+        : (uniPrice || (vn30 ? vn30.price : 20000)));
   const tickStep = curPrice < 10000 ? 10 : curPrice < 50000 ? 50 : 100;
   const ex = STOCK.ex || 'HOSE';
   const exPct = (ex === 'UPCOM' ? 0.15 : ex === 'HNX' ? 0.10 : 0.07);
@@ -8774,30 +8780,30 @@ function renderMcpOrderBook() {
   const openPrice = (dnseBook && dnseBook.si && dnseBook.si.open) ? dnseBook.si.open : (STOCK.open || ref);
   const highVal = (dnseBook && dnseBook.si && dnseBook.si.high) ? dnseBook.si.high : (STOCK.high || Math.min(ceil, Math.max(curPrice, openPrice)));
   const lowVal = (dnseBook && dnseBook.si && dnseBook.si.low) ? dnseBook.si.low : (STOCK.low || Math.max(floor, Math.min(curPrice, openPrice)));
-  const chgVal = (dnseBook && dnseBook.si && dnseBook.si.chg != null) ? dnseBook.si.chg : (STOCK.chg || (curPrice - ref));
-  const pctVal = (dnseBook && dnseBook.si && dnseBook.si.pct != null) ? dnseBook.si.pct : (STOCK.pct || (ref ? (chgVal / ref) * 100 : 0));
+  const chgVal = (dnseBook && dnseBook.si && dnseBook.si.chg != null) ? dnseBook.si.chg : (STOCK.chg != null ? STOCK.chg : (curPrice - ref));
+  const pctVal = (dnseBook && dnseBook.si && dnseBook.si.pct != null) ? dnseBook.si.pct : (STOCK.pct != null ? STOCK.pct : (ref ? (chgVal / ref) * 100 : 0));
   const matchVol = (dnseBook && dnseBook.si && dnseBook.si.vol) ? dnseBook.si.vol : (STOCK.vol || 350000);
 
-  // 3 Bids (Prices & Volumes from DNSE Open API)
-  const b1 = (dnseBook && dnseBook.tp && dnseBook.tp.b1) ? dnseBook.tp.b1 : curPrice;
-  const b1Vol = (dnseBook && dnseBook.tp && dnseBook.tp.b1Vol) ? dnseBook.tp.b1Vol : Math.round((curPrice * 13.7) % 350000 + 120000);
+  // 3 Bids (Prices & Volumes from Realtime Feed or Dynamic Consistency)
+  const b1 = (dnseBook && dnseBook.tp && dnseBook.tp.b1) ? dnseBook.tp.b1 : (curPrice > ref ? curPrice - tickStep : curPrice);
+  const b1Vol = (dnseBook && dnseBook.tp && dnseBook.tp.b1Vol != null) ? dnseBook.tp.b1Vol : Math.round((matchVol * 0.12) || 25000);
   const b2 = (dnseBook && dnseBook.tp && dnseBook.tp.b2) ? dnseBook.tp.b2 : (b1 - tickStep);
-  const b2Vol = (dnseBook && dnseBook.tp && dnseBook.tp.b2Vol) ? dnseBook.tp.b2Vol : Math.round((curPrice * 9.2) % 280000 + 90000);
+  const b2Vol = (dnseBook && dnseBook.tp && dnseBook.tp.b2Vol != null) ? dnseBook.tp.b2Vol : Math.round((matchVol * 0.08) || 18000);
   const b3 = (dnseBook && dnseBook.tp && dnseBook.tp.b3) ? dnseBook.tp.b3 : (b2 - tickStep);
-  const b3Vol = (dnseBook && dnseBook.tp && dnseBook.tp.b3Vol) ? dnseBook.tp.b3Vol : Math.round((curPrice * 17.1) % 250000 + 75000);
+  const b3Vol = (dnseBook && dnseBook.tp && dnseBook.tp.b3Vol != null) ? dnseBook.tp.b3Vol : Math.round((matchVol * 0.06) || 12000);
 
-  // 3 Asks (Prices & Volumes from DNSE Open API)
-  const a1 = (dnseBook && dnseBook.tp && dnseBook.tp.a1) ? dnseBook.tp.a1 : (curPrice + tickStep);
-  const a1Vol = (dnseBook && dnseBook.tp && dnseBook.tp.a1Vol) ? dnseBook.tp.a1Vol : Math.round((curPrice * 11.4) % 320000 + 110000);
+  // 3 Asks (Prices & Volumes from Realtime Feed or Dynamic Consistency)
+  const a1 = (dnseBook && dnseBook.tp && dnseBook.tp.a1) ? dnseBook.tp.a1 : (curPrice < ref ? curPrice + tickStep : (b1 + tickStep));
+  const a1Vol = (dnseBook && dnseBook.tp && dnseBook.tp.a1Vol != null) ? dnseBook.tp.a1Vol : Math.round((matchVol * 0.10) || 22000);
   const a2 = (dnseBook && dnseBook.tp && dnseBook.tp.a2) ? dnseBook.tp.a2 : (a1 + tickStep);
-  const a2Vol = (dnseBook && dnseBook.tp && dnseBook.tp.a2Vol) ? dnseBook.tp.a2Vol : Math.round((curPrice * 15.3) % 260000 + 85000);
+  const a2Vol = (dnseBook && dnseBook.tp && dnseBook.tp.a2Vol != null) ? dnseBook.tp.a2Vol : Math.round((matchVol * 0.07) || 16000);
   const a3 = (dnseBook && dnseBook.tp && dnseBook.tp.a3) ? dnseBook.tp.a3 : (a2 + tickStep);
-  const a3Vol = (dnseBook && dnseBook.tp && dnseBook.tp.a3Vol) ? dnseBook.tp.a3Vol : Math.round((curPrice * 8.6) % 240000 + 65000);
+  const a3Vol = (dnseBook && dnseBook.tp && dnseBook.tp.a3Vol != null) ? dnseBook.tp.a3Vol : Math.round((matchVol * 0.05) || 10000);
 
-  const totalBidVol = b1Vol + b2Vol + b3Vol;
-  const totalAskVol = a1Vol + a2Vol + a3Vol;
+  const totalBidVol = (dnseBook && dnseBook.tp && dnseBook.tp.totalBidVol) ? dnseBook.tp.totalBidVol : (b1Vol + b2Vol + b3Vol);
+  const totalAskVol = (dnseBook && dnseBook.tp && dnseBook.tp.totalAskVol) ? dnseBook.tp.totalAskVol : (a1Vol + a2Vol + a3Vol);
   const totalSum = totalBidVol + totalAskVol || 1;
-  const bidRatio = Math.round((totalBidVol / totalSum) * 100);
+  const bidRatio = (dnseBook && dnseBook.tp && dnseBook.tp.buyRatio != null) ? dnseBook.tp.buyRatio : Math.round((totalBidVol / totalSum) * 100);
   const askRatio = 100 - bidRatio;
 
   const maxVol = Math.max(b1Vol, b2Vol, b3Vol, a1Vol, a2Vol, a3Vol, 1);
@@ -45727,11 +45733,12 @@ class DnseKrxSocketManager {
 
   handleWorkerMessage(msg) {
     if (!msg) return;
-    if (msg.type === 'CONNECTION_STATUS') {
+    const type = (msg.type || '').toLowerCase();
+    if (type === 'connectionstatus' || type === 'connection_status') {
       this.updateIndicator(msg.payload === 'connect');
       return;
     }
-    if (msg.type !== 'ENCAP') return;
+    if (type !== 'encap') return;
     const { topic, payload } = msg.payload || {};
     if (!topic || !payload) return;
 
@@ -45802,8 +45809,6 @@ class DnseKrxSocketManager {
     const statEl = document.getElementById('dnse-stat-ob');
     if (statEl) statEl.textContent = this.stats.orderBooks;
 
-    if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
-
     const bids = p.bidList || [];
     const asks = p.offerList || [];
 
@@ -45813,6 +45818,30 @@ class DnseKrxSocketManager {
     const totalDepth = totalBidVol + totalAskVol;
     const buyRatio = totalDepth > 0 ? Math.min(95, Math.max(5, Math.round((totalBidVol / totalDepth) * 100))) : 50;
     const sellRatio = 100 - buyRatio;
+
+    // Cache to global feed so any subsequent render has exact live data
+    if (typeof DNSE_ORDERBOOK_FEED === 'undefined') window.DNSE_ORDERBOOK_FEED = {};
+    if (!DNSE_ORDERBOOK_FEED[p.symbol]) DNSE_ORDERBOOK_FEED[p.symbol] = {};
+    DNSE_ORDERBOOK_FEED[p.symbol].tp = {
+      b1: bids[0] ? Math.round(bids[0].price * 1000) : null,
+      b1Vol: bids[0] ? bids[0].qtty : 0,
+      b2: bids[1] ? Math.round(bids[1].price * 1000) : null,
+      b2Vol: bids[1] ? bids[1].qtty : 0,
+      b3: bids[2] ? Math.round(bids[2].price * 1000) : null,
+      b3Vol: bids[2] ? bids[2].qtty : 0,
+      a1: asks[0] ? Math.round(asks[0].price * 1000) : null,
+      a1Vol: asks[0] ? asks[0].qtty : 0,
+      a2: asks[1] ? Math.round(asks[1].price * 1000) : null,
+      a2Vol: asks[1] ? asks[1].qtty : 0,
+      a3: asks[2] ? Math.round(asks[2].price * 1000) : null,
+      a3Vol: asks[2] ? asks[2].qtty : 0,
+      totalBidVol,
+      totalAskVol,
+      buyRatio,
+      sellRatio
+    };
+
+    if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
 
     // Update Depth Bar
     const buyTrack = document.getElementById('ob-track-buy');
@@ -45824,6 +45853,9 @@ class DnseKrxSocketManager {
     if (sellTrack) sellTrack.style.width = sellRatio + '%';
     if (buyLbl && typeof fmtVN === 'function') buyLbl.innerHTML = `DƯ MUA: <b>${fmtVN(totalBidVol, 0)}</b> (${buyRatio}%)`;
     if (sellLbl && typeof fmtVN === 'function') sellLbl.innerHTML = `DƯ BÁN: <b>${fmtVN(totalAskVol, 0)}</b> (${sellRatio}%)`;
+
+    // Reference price for color classification
+    const refPx = (STOCK.ref && STOCK.ref > 200 ? STOCK.ref / 1000 : STOCK.ref) || 20.0;
 
     // Max volume for row background bars
     const maxRowVol = Math.max(
@@ -45848,6 +45880,7 @@ class DnseKrxSocketManager {
       if (bItem && bPriceEl && bVolEl) {
         bPriceEl.textContent = (bItem.price).toFixed(2);
         bVolEl.textContent = typeof fmtVN === 'function' ? fmtVN(bItem.qtty, 0) : bItem.qtty;
+        bPriceEl.className = bItem.price > refPx ? 'up' : bItem.price < refPx ? 'down' : 'ref';
         if (bBarEl) bBarEl.style.width = Math.min(100, Math.round(((bItem.qtty || 0) / maxRowVol) * 100)) + '%';
         bPriceEl.classList.remove('flash-up');
         void bPriceEl.offsetWidth;
@@ -45857,6 +45890,7 @@ class DnseKrxSocketManager {
       if (aItem && aPriceEl && aVolEl) {
         aPriceEl.textContent = (aItem.price).toFixed(2);
         aVolEl.textContent = typeof fmtVN === 'function' ? fmtVN(aItem.qtty, 0) : aItem.qtty;
+        aPriceEl.className = aItem.price > refPx ? 'up' : aItem.price < refPx ? 'down' : 'ref';
         if (aBarEl) aBarEl.style.width = Math.min(100, Math.round(((aItem.qtty || 0) / maxRowVol) * 100)) + '%';
         aPriceEl.classList.remove('flash-down');
         void aPriceEl.offsetWidth;
@@ -45871,14 +45905,7 @@ class DnseKrxSocketManager {
     const statEl = document.getElementById('dnse-stat-ticks');
     if (statEl) statEl.textContent = this.stats.ticks;
 
-    if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
-
-    const matchPx = p.matchPrice;
-    const matchQty = p.matchQtty || p.matchQuantity || 10;
-    const side = p.side === 1 ? 'MUA' : 'BÁN';
-    const sideCls = p.side === 1 ? 'M' : 'B';
-
-    // Format time
+    // Cache tick into global feed
     let tStr = '';
     if (p.sendingTime && p.sendingTime.seconds) {
       const d = new Date(p.sendingTime.seconds * 1000);
@@ -45887,11 +45914,31 @@ class DnseKrxSocketManager {
       tStr = new Date().toTimeString().split(' ')[0];
     }
 
+    if (typeof DNSE_ORDERBOOK_FEED === 'undefined') window.DNSE_ORDERBOOK_FEED = {};
+    if (!DNSE_ORDERBOOK_FEED[p.symbol]) DNSE_ORDERBOOK_FEED[p.symbol] = {};
+    if (!DNSE_ORDERBOOK_FEED[p.symbol].ticks) DNSE_ORDERBOOK_FEED[p.symbol].ticks = [];
+    DNSE_ORDERBOOK_FEED[p.symbol].ticks.unshift({
+      time: tStr,
+      price: Math.round(p.matchPrice * 1000),
+      vol: p.matchQtty || p.matchQuantity || 10,
+      side: p.side === 1 ? 'M' : 'B'
+    });
+    if (DNSE_ORDERBOOK_FEED[p.symbol].ticks.length > 20) {
+      DNSE_ORDERBOOK_FEED[p.symbol].ticks.length = 20;
+    }
+
+    if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
+
+    const matchPx = p.matchPrice;
+    const matchQty = p.matchQtty || p.matchQuantity || 10;
+    const side = p.side === 1 ? 'MUA' : 'BÁN';
+    const sideCls = p.side === 1 ? 'M' : 'B';
+
     // Central match price in Order Book
     const obPriceEl = document.getElementById('ob-match-price');
     const obChgEl = document.getElementById('ob-match-chg');
     const obVolEl = document.getElementById('ob-match-vol');
-    const refPx = (STOCK.ref || STOCK.tc || (STOCK.price > 200 ? STOCK.price / 1000 : STOCK.price));
+    const refPx = (STOCK.ref && STOCK.ref > 200 ? STOCK.ref / 1000 : STOCK.ref) || matchPx;
     const chgVal = matchPx - refPx;
     const pctVal = refPx > 0 ? (chgVal / refPx) * 100 : 0;
     const isUp = chgVal > 0;
@@ -45938,17 +45985,91 @@ class DnseKrxSocketManager {
     }
 
     const statusEl = document.getElementById('ob-trades-status');
-    if (statusEl) statusEl.textContent = 'Live KRX Stream (Đang stream realtime)';
+    if (statusEl) statusEl.textContent = 'Live KRX';
   }
 
   handleStockInfoUpdate(p) {
     if (!p || !p.symbol) return;
+    this.stats.indices++;
+
+    // Cache into global feed
+    if (typeof DNSE_ORDERBOOK_FEED === 'undefined') window.DNSE_ORDERBOOK_FEED = {};
+    if (!DNSE_ORDERBOOK_FEED[p.symbol]) DNSE_ORDERBOOK_FEED[p.symbol] = {};
+    if (!DNSE_ORDERBOOK_FEED[p.symbol].si) DNSE_ORDERBOOK_FEED[p.symbol].si = {};
+    const si = DNSE_ORDERBOOK_FEED[p.symbol].si;
+    if (p.referencePrice) si.ref = Math.round(p.referencePrice * 1000);
+    if (p.highLimitPrice) si.ceil = Math.round(p.highLimitPrice * 1000);
+    if (p.lowLimitPrice) si.floor = Math.round(p.lowLimitPrice * 1000);
+    if (p.openPrice) si.open = Math.round(p.openPrice * 1000);
+    if (p.highestPrice) si.high = Math.round(p.highestPrice * 1000);
+    if (p.lowestPrice) si.low = Math.round(p.lowestPrice * 1000);
+    if (p.matchPrice) si.match = Math.round(p.matchPrice * 1000);
+    if (p.matchQuantity) si.matchVol = p.matchQuantity;
+    if (p.totalVolumeTraded) si.vol = p.totalVolumeTraded;
+    if (p.changedValue != null) si.chg = Math.round(p.changedValue * 1000);
+    if (p.changedRatio != null) si.pct = p.changedRatio;
+
     if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
 
-    if (p.referencePrice) STOCK.ref = p.referencePrice;
-    if (p.highLimitPrice) STOCK.tran = p.highLimitPrice;
-    if (p.lowLimitPrice) STOCK.san = p.lowLimitPrice;
-    if (p.matchPrice) STOCK.price = p.matchPrice * 1000;
+    if (p.referencePrice) STOCK.ref = Math.round(p.referencePrice * 1000);
+    if (p.highLimitPrice) STOCK.ceil = Math.round(p.highLimitPrice * 1000);
+    if (p.lowLimitPrice) STOCK.floor = Math.round(p.lowLimitPrice * 1000);
+    if (p.openPrice) STOCK.open = Math.round(p.openPrice * 1000);
+    if (p.highestPrice) STOCK.high = Math.round(p.highestPrice * 1000);
+    if (p.lowestPrice) STOCK.low = Math.round(p.lowestPrice * 1000);
+    if (p.matchPrice) STOCK.price = Math.round(p.matchPrice * 1000);
+    if (p.totalVolumeTraded) STOCK.vol = p.totalVolumeTraded;
+    if (p.changedValue != null) STOCK.chg = Math.round(p.changedValue * 1000);
+    if (p.changedRatio != null) STOCK.pct = p.changedRatio;
+
+    // Direct DOM update in Session Strip
+    const ceilEl = document.getElementById('ob-val-ceil');
+    const floorEl = document.getElementById('ob-val-floor');
+    const refEl = document.getElementById('ob-val-ref');
+    const openEl = document.getElementById('ob-val-open');
+    const highEl = document.getElementById('ob-val-high');
+    const lowEl = document.getElementById('ob-val-low');
+
+    if (ceilEl && p.highLimitPrice) ceilEl.textContent = p.highLimitPrice.toFixed(2);
+    if (floorEl && p.lowLimitPrice) floorEl.textContent = p.lowLimitPrice.toFixed(2);
+    if (refEl && p.referencePrice) refEl.textContent = p.referencePrice.toFixed(2);
+    if (openEl && p.openPrice) openEl.textContent = p.openPrice.toFixed(2);
+    if (highEl && p.highestPrice) highEl.textContent = p.highestPrice.toFixed(2);
+    if (lowEl && p.lowestPrice) lowEl.textContent = p.lowestPrice.toFixed(2);
+
+    // Direct DOM update in Hero Box
+    const priceEl = document.getElementById('c360-live-price');
+    const chgEl = document.getElementById('c360-live-chg');
+    if (priceEl && chgEl && STOCK.price) {
+      const isZero = !STOCK.chg || Math.abs(STOCK.chg) < 0.001;
+      const chgClass = isZero ? 'ref' : (STOCK.chg > 0 ? 'up' : 'down');
+      const chgSign = STOCK.chg > 0 ? '▲ +' : (STOCK.chg < 0 ? '▼ ' : '');
+      const chgTxt = isZero ? '0 (0.00%)' : `${chgSign}${fmtVN(Math.abs(STOCK.chg), 0)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)`;
+      priceEl.className = `p ${chgClass}`;
+      priceEl.innerHTML = `${fmtVN(STOCK.price, 0)} <span style="font-size:13px;font-weight:500;color:var(--ink3)">đ</span>`;
+      chgEl.className = `c ${chgClass}`;
+      chgEl.textContent = chgTxt;
+    }
+
+    // Direct DOM update in Match bar
+    const obPriceEl = document.getElementById('ob-match-price');
+    const obChgEl = document.getElementById('ob-match-chg');
+    const obVolEl = document.getElementById('ob-match-vol');
+    if (obPriceEl && STOCK.price) {
+      const isUp = STOCK.chg > 0;
+      const isDown = STOCK.chg < 0;
+      obPriceEl.textContent = (STOCK.price / 1000).toFixed(2);
+      obPriceEl.className = isUp ? 'up' : isDown ? 'down' : 'ref';
+    }
+    if (obChgEl && STOCK.chg != null) {
+      const isUp = STOCK.chg > 0;
+      const isDown = STOCK.chg < 0;
+      obChgEl.textContent = `${STOCK.chg > 0 ? '+' : ''}${(STOCK.chg / 1000).toFixed(2)} (${STOCK.pct >= 0 ? '+' : ''}${STOCK.pct.toFixed(2)}%)`;
+      obChgEl.className = isUp ? 'up' : isDown ? 'down' : 'ref';
+    }
+    if (obVolEl && STOCK.vol) {
+      obVolEl.textContent = typeof fmtVN === 'function' ? fmtVN(STOCK.vol, 0) : STOCK.vol;
+    }
   }
 }
 

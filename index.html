@@ -14630,6 +14630,209 @@ function runQuantBacktest(sym, stratId, period, capital, slPct, tpPct, fastMa, s
   };
 }
 
+
+/* ================= QUANT RADAR REALTIME SOCKET INTEGRATION ================= */
+function getQuantLivePrice(sym, fallbackPrice) {
+  if (!sym) return fallbackPrice || 0;
+  sym = sym.toUpperCase().trim();
+  
+  // 1. Check DNSE KRX live socket cache
+  if (typeof DNSE_ORDERBOOK_FEED !== 'undefined' && DNSE_ORDERBOOK_FEED[sym]) {
+    const feed = DNSE_ORDERBOOK_FEED[sym];
+    if (feed.si && feed.si.match && feed.si.match > 0) {
+      return +(feed.si.match / 1000).toFixed(2);
+    }
+    if (feed.tp && feed.tp.b1 && feed.tp.b1 > 0) {
+      return +(feed.tp.b1 / 1000).toFixed(2);
+    }
+  }
+
+  // 2. Check STOCK if matching active symbol
+  if (typeof STOCK !== 'undefined' && STOCK && STOCK.sym === sym && STOCK.price) {
+    return +(STOCK.price / 1000).toFixed(2);
+  }
+
+  // 3. Check VN30_DATA_FEED
+  if (typeof VN30_DATA_FEED !== 'undefined' && VN30_DATA_FEED[sym] && VN30_DATA_FEED[sym].price) {
+    const p = VN30_DATA_FEED[sym].price;
+    return +(p >= 500 ? (p / 1000) : p).toFixed(2);
+  }
+
+  // 4. Check UNI (Universe cache)
+  if (typeof UNI !== 'undefined' && Array.isArray(UNI)) {
+    const u = UNI.find(x => x[0] === sym);
+    if (u && u[4]) {
+      return +Number(u[4]).toFixed(2);
+    }
+  }
+
+  return fallbackPrice || 0;
+}
+
+function updateQuantDomRealtime(p) {
+  if (!p || !p.symbol || !p.matchPrice) return;
+  const sym = p.symbol.toUpperCase().trim();
+  const matchK = +p.matchPrice.toFixed(2);
+  const chgK = p.changedValue != null ? +p.changedValue.toFixed(2) : 0;
+  const pct = p.changedRatio != null ? +p.changedRatio.toFixed(2) : 0;
+
+  // 1. Update in-memory QUANT_LIVE_SIGNALS cache
+  if (typeof QUANT_LIVE_SIGNALS !== 'undefined' && Array.isArray(QUANT_LIVE_SIGNALS)) {
+    const sig = QUANT_LIVE_SIGNALS.find(s => s.sym === sym);
+    if (sig) {
+      sig.price = matchK;
+      if (sig.target && sig.sl) {
+        const upside = sig.target - matchK;
+        const downside = matchK - sig.sl;
+        if (downside > 0) {
+          sig.rr = '1 : ' + (upside / downside).toFixed(2);
+        }
+      }
+      if (sig.fomo && sig.fomo.marketBuy) {
+        sig.fomo.marketBuy.entry = matchK;
+        const mb = sig.fomo.marketBuy;
+        const up = mb.target - matchK;
+        const dn = matchK - mb.sl;
+        if (dn > 0) {
+          mb.rr = '1 : ' + (up / dn).toFixed(2);
+        }
+      }
+    }
+  }
+
+  // 2. Update FOMO Spotlight if active
+  const activeFomoSym = (typeof S !== 'undefined' && S.quant && S.quant.fomoSym) ? S.quant.fomoSym : 'MSB';
+  if (sym === activeFomoSym) {
+    const fomoPriceEl = document.getElementById('quant-fomo-live-price');
+    if (fomoPriceEl) {
+      const isUp = chgK > 0;
+      const isDown = chgK < 0;
+      fomoPriceEl.innerHTML = `
+        <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${isUp ? '#30D158' : isDown ? '#FF453A' : '#FFD60A'};box-shadow:0 0 6px ${isUp ? '#30D158' : '#FF453A'}"></span>
+        <span>${matchK.toFixed(2)}</span>
+      `;
+      // Flash highlight
+      fomoPriceEl.style.transition = 'color 0.15s ease';
+      fomoPriceEl.style.color = isUp ? 'var(--up)' : isDown ? 'var(--down)' : 'var(--ink)';
+      setTimeout(() => { if (fomoPriceEl) fomoPriceEl.style.color = 'var(--ink)'; }, 800);
+    }
+
+    const fomoEntryEl = document.getElementById('quant-fomo-entry-price');
+    if (fomoEntryEl) {
+      fomoEntryEl.textContent = matchK.toFixed(2);
+    }
+
+    const fomoSig = (typeof QUANT_LIVE_SIGNALS !== 'undefined') ? QUANT_LIVE_SIGNALS.find(s => s.sym === sym) : null;
+    if (fomoSig && fomoSig.fomo && fomoSig.fomo.marketBuy) {
+      const mb = fomoSig.fomo.marketBuy;
+      const tp1PctEl = document.getElementById('quant-fomo-market-tp1-pct');
+      const slPctEl = document.getElementById('quant-fomo-market-sl-pct');
+      const rrEl = document.getElementById('quant-fomo-market-rr');
+      const slDistEl = document.getElementById('quant-fomo-market-sl-dist');
+
+      const upPct = +((mb.target - matchK) / matchK * 100).toFixed(1);
+      const dnPct = +((mb.sl - matchK) / matchK * 100).toFixed(1);
+      const rrVal = (Math.abs((mb.target - matchK) / Math.max(0.01, matchK - mb.sl))).toFixed(2);
+
+      if (tp1PctEl) tp1PctEl.textContent = `(${upPct >= 0 ? '+' : ''}${upPct}%)`;
+      if (slPctEl) slPctEl.textContent = `(${dnPct}%)`;
+      if (rrEl) rrEl.innerHTML = `1 : ${rrVal} <span style="font-size:12px;font-weight:700">⚠️ Báo Động</span>`;
+      if (slDistEl) slDistEl.textContent = `${Math.abs(dnPct)}% rủi ro`;
+    }
+  }
+
+  // 3. Update Signals Table Row for this symbol
+  const priceCell = document.getElementById(`quant-sig-price-${sym}`);
+  if (priceCell) {
+    const oldP = parseFloat(priceCell.textContent) || matchK;
+    const isUp = matchK >= oldP;
+    priceCell.textContent = matchK.toFixed(2);
+    priceCell.style.backgroundColor = isUp ? 'rgba(34,171,148,0.25)' : 'rgba(239,68,68,0.25)';
+    setTimeout(() => { if (priceCell) priceCell.style.backgroundColor = 'transparent'; }, 800);
+  }
+
+  const sig = (typeof QUANT_LIVE_SIGNALS !== 'undefined') ? QUANT_LIVE_SIGNALS.find(s => s.sym === sym) : null;
+  if (sig) {
+    const tpCell = document.getElementById(`quant-sig-tp-${sym}`);
+    if (tpCell) {
+      const upVal = +((sig.target - matchK) / matchK * 100).toFixed(1);
+      const upSign = upVal > 0 ? '+' : '';
+      const upColor = upVal >= 0 ? 'var(--up)' : 'var(--down)';
+      tpCell.innerHTML = `
+        <div style="font-weight:700;color:${upColor}">${sig.target.toFixed(2)}</div>
+        <div style="font-size:10px;color:${upColor}">(${upSign}${upVal}%)</div>
+      `;
+    }
+
+    const slCell = document.getElementById(`quant-sig-sl-${sym}`);
+    if (slCell) {
+      const dnVal = +((sig.sl - matchK) / matchK * 100).toFixed(1);
+      const dnSign = dnVal > 0 ? '+' : '';
+      const dnColor = dnVal <= 0 ? 'var(--down)' : 'var(--up)';
+      slCell.innerHTML = `
+        <div style="font-weight:700;color:${dnColor}">${sig.sl.toFixed(2)}</div>
+        <div style="font-size:10px;color:${dnColor}">(${dnSign}${dnVal}%)</div>
+      `;
+    }
+
+    const rrCell = document.getElementById(`quant-sig-rr-${sym}`);
+    if (rrCell) {
+      const curRR = '1 : ' + (Math.abs((sig.target - matchK) / Math.max(0.01, matchK - sig.sl))).toFixed(2);
+      rrCell.textContent = curRR;
+    }
+  }
+
+  // 4. Update Cole Quant Calculator if active
+  const coleSym = (typeof S !== 'undefined' && S.quant && S.quant.coleCalcSym) ? S.quant.coleCalcSym : 'MSB';
+  if (sym === coleSym) {
+    const colePriceEl = document.getElementById('quant-cole-target-price');
+    if (colePriceEl) colePriceEl.textContent = matchK.toFixed(2);
+  }
+}
+
+async function fetchDnseQuantBatch() {
+  try {
+    const quantSyms = ['MSB', 'FPT', 'HPG', 'SSI', 'VCB', 'TCB', 'MWG', 'DGC', 'MBB', 'CTR', 'VNM', 'STB'];
+    const query = `{
+      GetKrxStockInfoBySymbols(symbols: ${JSON.stringify(quantSyms)}, board: 2) {
+        si { symbol referencePrice highLimitPrice lowLimitPrice openPrice highestPrice lowestPrice matchPrice matchQuantity changedValue changedRatio totalVolumeTraded }
+      }
+    }`;
+    const res = await fetch('https://api.dnse.com.vn/price-api/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query })
+    });
+    if (!res.ok) return;
+    const d = await res.json();
+    const sis = d?.data?.GetKrxStockInfoBySymbols?.si || [];
+    if (typeof DNSE_ORDERBOOK_FEED === 'undefined') window.DNSE_ORDERBOOK_FEED = {};
+    sis.forEach(si => {
+      if (!si || !si.symbol) return;
+      const s = si.symbol;
+      DNSE_ORDERBOOK_FEED[s] = DNSE_ORDERBOOK_FEED[s] || {};
+      DNSE_ORDERBOOK_FEED[s].si = {
+        ref: si.referencePrice ? Math.round(si.referencePrice * 1000) : null,
+        ceil: si.highLimitPrice ? Math.round(si.highLimitPrice * 1000) : null,
+        floor: si.lowLimitPrice ? Math.round(si.lowLimitPrice * 1000) : null,
+        open: si.openPrice ? Math.round(si.openPrice * 1000) : null,
+        high: si.highestPrice ? Math.round(si.highestPrice * 1000) : null,
+        low: si.lowestPrice ? Math.round(si.lowestPrice * 1000) : null,
+        match: si.matchPrice ? Math.round(si.matchPrice * 1000) : null,
+        matchVol: si.matchQuantity || 0,
+        chg: si.changedValue != null ? Math.round(si.changedValue * 1000) : 0,
+        pct: si.changedRatio != null ? +si.changedRatio.toFixed(2) : 0,
+        vol: si.totalVolumeTraded || 0
+      };
+      if (typeof updateQuantDomRealtime === 'function') {
+        updateQuantDomRealtime(si);
+      }
+    });
+  } catch (e) {
+    console.warn('fetchDnseQuantBatch error:', e.message);
+  }
+}
+
 function vQuant() {
   const qState = S.quant || { tab: 'signals', strat: 'trend_ema', sym: 'MSB', fomoSym: 'MSB', period: '5Y', capital: 100000000, posSize: 20, sl: 6, tp: 15, fastMa: 9, slowMa: 21, botActive: true, filterStrat: 'all', botLogs: [] };
   const curTab = qState.tab || 'signals';
@@ -14637,7 +14840,15 @@ function vQuant() {
   const backtest = runQuantBacktest(qState.sym, qState.strat, qState.period, qState.capital, qState.sl, qState.tp, qState.fastMa, qState.slowMa);
   const fomoSym = qState.fomoSym || 'MSB';
   const fomoSig = QUANT_LIVE_SIGNALS.find(s => s.sym === fomoSym) || QUANT_LIVE_SIGNALS[0];
+  const liveFomoPrice = getQuantLivePrice(fomoSig.sym, fomoSig.price);
+  fomoSig.price = liveFomoPrice;
   const fomoData = fomoSig.fomo || {};
+  const fomoEntry = liveFomoPrice;
+  const fomoTarget = (fomoData.marketBuy && fomoData.marketBuy.target) ? fomoData.marketBuy.target : +(liveFomoPrice * 1.05).toFixed(2);
+  const fomoSl = (fomoData.marketBuy && fomoData.marketBuy.sl) ? fomoData.marketBuy.sl : +(liveFomoPrice * 0.94).toFixed(2);
+  const fomoUpPct = +((fomoTarget - fomoEntry) / fomoEntry * 100).toFixed(1);
+  const fomoDnPct = +((fomoSl - fomoEntry) / fomoEntry * 100).toFixed(1);
+  const fomoRR = (Math.abs((fomoTarget - fomoEntry) / Math.max(0.01, fomoEntry - fomoSl))).toFixed(2);
 
   const subTabs = [
     ['signals', '📡 Tín Hiệu Mua Bán Mới Nhất', QUANT_LIVE_SIGNALS.length],
@@ -14775,10 +14986,10 @@ function vQuant() {
             </div>
             <div style="display:flex;align-items:center;gap:20px">
               <div style="text-align:right">
-                <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:600;letter-spacing:0.04em">Giá thị trường hiện tại</div>
-                <div style="font-size:22px;font-weight:800;font-family:var(--mono);color:var(--ink);display:flex;align-items:center;gap:6px;justify-content:flex-end">
-                  <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#30D158"></span>
-                  ${fomoSig.price.toFixed(2)}
+                <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:600;letter-spacing:0.04em">Giá thị trường hiện tại (Realtime Socket)</div>
+                <div id="quant-fomo-live-price" style="font-size:22px;font-weight:800;font-family:var(--mono);color:var(--ink);display:flex;align-items:center;gap:6px;justify-content:flex-end">
+                  <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#30D158;box-shadow:0 0 6px #30D158"></span>
+                  ${liveFomoPrice.toFixed(2)}
                 </div>
               </div>
               <div style="height:36px;width:1px;background:var(--line)"></div>
@@ -14808,17 +15019,17 @@ function vQuant() {
                 <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;text-align:center">
                   <div>
                     <div style="font-size:10px;color:var(--ink3)">Giá Vào Lệnh</div>
-                    <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--ink);margin-top:2px">${fomoData.marketBuy.entry.toFixed(2)}</div>
+                    <div id="quant-fomo-entry-price" style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--ink);margin-top:2px">${fomoEntry.toFixed(2)}</div>
                   </div>
                   <div>
                     <div style="font-size:10px;color:var(--ink3)">Mục Tiêu TP1</div>
-                    <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--up);margin-top:2px">${fomoData.marketBuy.target.toFixed(2)}</div>
-                    <div style="font-size:10px;color:var(--up)">(+${((fomoData.marketBuy.target - fomoData.marketBuy.entry) / fomoData.marketBuy.entry * 100).toFixed(1)}%)</div>
+                    <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--up);margin-top:2px">${fomoTarget.toFixed(2)}</div>
+                    <div id="quant-fomo-market-tp1-pct" style="font-size:10px;color:var(--up)">(${fomoUpPct >= 0 ? '+' : ''}${fomoUpPct}%)</div>
                   </div>
                   <div>
                     <div style="font-size:10px;color:var(--ink3)">Cắt Lỗ (SL)</div>
-                    <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--down);margin-top:2px">${fomoData.marketBuy.sl.toFixed(2)}</div>
-                    <div style="font-size:10px;color:var(--down)">(${((fomoData.marketBuy.sl - fomoData.marketBuy.entry) / fomoData.marketBuy.entry * 100).toFixed(1)}%)</div>
+                    <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--down);margin-top:2px">${fomoSl.toFixed(2)}</div>
+                    <div id="quant-fomo-market-sl-pct" style="font-size:10px;color:var(--down)">(${fomoDnPct}%)</div>
                   </div>
                 </div>
               </div>
@@ -14827,14 +15038,14 @@ function vQuant() {
               <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(239,68,68,0.08);border-radius:8px;margin-bottom:12px">
                 <div>
                   <div style="font-size:11px;color:var(--ink3);font-weight:600">Tỷ Lệ Lãi / Lỗ (R:R):</div>
-                  <div style="font-size:22px;font-weight:900;font-family:var(--mono);color:var(--down);line-height:1.2">
-                    ${fomoData.marketBuy.rr} <span style="font-size:12px;font-weight:700">⚠️ Báo Động</span>
+                  <div id="quant-fomo-market-rr" style="font-size:22px;font-weight:900;font-family:var(--mono);color:var(--down);line-height:1.2">
+                    1 : ${fomoRR} <span style="font-size:12px;font-weight:700">⚠️ Báo Động</span>
                   </div>
                 </div>
                 <div style="text-align:right">
                   <div style="font-size:10px;color:var(--ink3)">Khoảng cách đến SL</div>
-                  <div style="font-size:13px;font-weight:700;font-family:var(--mono);color:var(--down)">
-                    ${Math.abs((fomoData.marketBuy.sl - fomoData.marketBuy.entry) / fomoData.marketBuy.entry * 100).toFixed(1)}% rủi ro
+                  <div id="quant-fomo-market-sl-dist" style="font-size:13px;font-weight:700;font-family:var(--mono);color:var(--down)">
+                    ${Math.abs(fomoDnPct)}% rủi ro
                   </div>
                 </div>
               </div>
@@ -14996,13 +15207,16 @@ function vQuant() {
                   const isSell = sig.type.includes('BÁN') || sig.type.includes('CHỐT LỜI');
                   const typeClass = isBuy ? 'up' : isSell ? 'down' : 'warn';
                   const typeBg = isBuy ? 'rgba(34,171,148,0.12)' : isSell ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)';
-                  const upsideVal = +((sig.target - sig.price) / sig.price * 100).toFixed(1);
+                  const liveP = getQuantLivePrice(sig.sym, sig.price);
+                  sig.price = liveP;
+                  const upsideVal = +((sig.target - liveP) / liveP * 100).toFixed(1);
                   const upsideSign = upsideVal > 0 ? '+' : '';
                   const upsideColor = upsideVal >= 0 ? 'var(--up)' : 'var(--down)';
 
-                  const downsideVal = +((sig.sl - sig.price) / sig.price * 100).toFixed(1);
+                  const downsideVal = +((sig.sl - liveP) / liveP * 100).toFixed(1);
                   const downsideSign = downsideVal > 0 ? '+' : '';
                   const downsideColor = downsideVal <= 0 ? 'var(--down)' : 'var(--up)';
+                  const liveRR = '1 : ' + Math.abs((sig.target - liveP) / Math.max(0.01, liveP - sig.sl)).toFixed(2);
                   const f = sig.fomo || {};
                   const fRecColor = f.recType === 'pullback' ? '#D97706' : f.recType === 'take_profit' ? 'var(--down)' : f.recType === 'avoid' ? 'var(--down)' : 'var(--up)';
                   const fRecBg = f.recType === 'pullback' ? 'rgba(245,158,11,0.12)' : f.recType === 'take_profit' ? 'rgba(239,68,68,0.12)' : f.recType === 'avoid' ? 'rgba(239,68,68,0.1)' : 'rgba(34,171,148,0.12)';
@@ -15038,19 +15252,19 @@ function vQuant() {
                           </span>
                         </div>
                       </td>
-                      <td style="padding:12px 8px;text-align:right;font-weight:700;font-family:var(--mono)">
-                        ${sig.price.toFixed(2)}
+                      <td style="padding:12px 8px;text-align:right;font-weight:700;font-family:var(--mono);transition:background-color 0.4s ease" id="quant-sig-price-${sig.sym}">
+                        ${liveP.toFixed(2)}
                       </td>
-                      <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">
+                      <td style="padding:12px 8px;text-align:right;font-family:var(--mono)" id="quant-sig-tp-${sig.sym}">
                         <div style="font-weight:700;color:${upsideColor}">${sig.target.toFixed(2)}</div>
                         <div style="font-size:10px;color:${upsideColor}">(${upsideSign}${upsideVal}%)</div>
                       </td>
-                      <td style="padding:12px 8px;text-align:right;font-family:var(--mono)">
+                      <td style="padding:12px 8px;text-align:right;font-family:var(--mono)" id="quant-sig-sl-${sig.sym}">
                         <div style="font-weight:700;color:${downsideColor}">${sig.sl.toFixed(2)}</div>
                         <div style="font-size:10px;color:${downsideColor}">(${downsideSign}${downsideVal}%)</div>
                       </td>
-                      <td style="padding:12px 8px;text-align:center;font-weight:600;font-family:var(--mono)">
-                        ${sig.rr}
+                      <td style="padding:12px 8px;text-align:center;font-weight:600;font-family:var(--mono)" id="quant-sig-rr-${sig.sym}">
+                        ${liveRR}
                       </td>
                       <td style="padding:12px 8px;text-align:center">
                         <div style="display:inline-flex;align-items:center;gap:6px">
@@ -15547,6 +15761,8 @@ function vQuant() {
         const coleCap = qState.coleCalcCap || 100000000;
         const coleRiskPct = qState.coleCalcRiskPct || 1.5;
         const targetStock = COLE_FACTOR_PREMIA.find(s => s.sym === coleSym) || COLE_FACTOR_PREMIA[0];
+        const liveColePrice = getQuantLivePrice(targetStock.sym, targetStock.price);
+        targetStock.price = liveColePrice;
         
         // Sizing calculation
         const maxLossAllowed = coleCap * (coleRiskPct / 100.0);
@@ -15554,7 +15770,7 @@ function vQuant() {
         const slDistVnd = slDist * 1000;
         let safeShares = Math.floor(maxLossAllowed / (slDistVnd * 100)) * 100;
         safeShares = Math.max(100, safeShares);
-        const totalBuyAmt = safeShares * targetStock.price * 1000;
+        const totalBuyAmt = safeShares * liveColePrice * 1000;
         const navAllocationPct = +((totalBuyAmt / coleCap) * 100).toFixed(1);
         const actualLossVnd = safeShares * slDistVnd;
         const actualRiskPct = +((actualLossVnd / coleCap) * 100).toFixed(2);
@@ -15979,7 +16195,14 @@ function render(keepScroll) {
   else html = ({ follow: vFollow, screener: vAll, 'screener-all': vAll, compare: vCompare, reports: vReports, market: vMarket, mnews: vMarketNews, quant: vQuant })[r]();
   view.innerHTML = html;
   document.title = 'KongKeng Radar';
-  drawCandles(); drawForeign(); bindPB(); if (r === 'quant') drawQuant();
+  drawCandles(); drawForeign(); bindPB();
+  if (r === 'quant') {
+    drawQuant();
+    if (typeof fetchDnseQuantBatch === 'function') fetchDnseQuantBatch();
+    if (window.dnseSocketManager && typeof window.dnseSocketManager.subscribeQuantSymbols === 'function') {
+      window.dnseSocketManager.subscribeQuantSymbols();
+    }
+  }
   if (r === 'market' && S.mktTab === 'global') {
     if (typeof initYahooFinanceWebSocket === 'function') initYahooFinanceWebSocket();
     if (typeof updateYFinanceCardsInDOM === 'function') updateYFinanceCardsInDOM();
@@ -45910,6 +46133,9 @@ class DnseKrxSocketManager {
       ];
       this.subscribe(baseTopics);
 
+      // Auto-subscribe to Quant Radar stockinfo topics
+      this.subscribeQuantSymbols();
+
       // Check current symbol from hash
       const hash = location.hash.slice(1);
       if (hash.startsWith('c360/') && hash.split('/')[1]) {
@@ -45934,6 +46160,16 @@ class DnseKrxSocketManager {
         payload: { topics: newTopics }
       });
     }
+  }
+
+  subscribeQuantSymbols() {
+    const quantSyms = ['MSB', 'FPT', 'HPG', 'SSI', 'VCB', 'TCB', 'MWG', 'DGC', 'MBB', 'CTR', 'VNM', 'STB'];
+    const topics = [];
+    quantSyms.forEach(sym => {
+      topics.push(`quotes/krx/mdds/stockinfo/v1/roundlot/symbol/${sym}`);
+      topics.push(`quotes/krx/mdds/topprice/v1/roundlot/symbol/${sym}`);
+    });
+    this.subscribe(topics);
   }
 
   unsubscribe(topics) {
@@ -46266,6 +46502,11 @@ class DnseKrxSocketManager {
     if (p.totalVolumeTraded) si.vol = p.totalVolumeTraded;
     if (p.changedValue != null) si.chg = Math.round(p.changedValue * 1000);
     if (p.changedRatio != null) si.pct = p.changedRatio;
+
+    // Real-time synchronization to Quant Radar
+    if (typeof updateQuantDomRealtime === 'function') {
+      updateQuantDomRealtime(p);
+    }
 
     if (typeof STOCK === 'undefined' || !STOCK || STOCK.sym !== p.symbol) return;
 

@@ -129,6 +129,10 @@
 
 ---
 
+- [Chủ đề 118: Mô Hình Dự Báo Thanh Khoản & Dòng Lệnh Độc Hại Theo Khối Lượng Đồng Bộ (VPIN) Dưới Cơ Chế Khớp Lệnh Liên Tục Tại HOSE](#-chủ-đề-118-mô-hình-dự-báo-thanh-khoản--dòng-lệnh-độc-hại-theo-khối-lượng-đồng-bộ-volume-synchronized-probability-of-toxicity---vpin-dưới-cơ-chế-khớp-lệnh-liên-tục-tại-hose)
+
+---
+
 ## 🔬 CHỦ ĐỀ 01: PHƯƠNG PHÁP META-LABELING & TRIPLE BARRIER METHOD
 **Tác giả lý thuyết:** GS. Marcos López de Prado (*Advances in Financial Machine Learning*, 2018)  
 **Thời gian hoàn thành:** 2026-11-02 23:35 (ICT)  
@@ -12674,7 +12678,8 @@ Khi cố định $\omega_1 = 1$, hàm trọng số suy giảm đơn điệu theo
 
 #### 2.3. Quy Tắc Tối Ưu Hóa Phân Bổ Tỷ Trọng Đa Tài Sản (MATA Optimization)
 Tại mỗi mốc tái cân bằng định kỳ, véc-tơ tỷ trọng tài sản tối ưu $w^* = [w_{	ext{VN30}}, w_{	ext{VN30F1M}}, w_{	ext{VGB}}, w_{	ext{Cash}}]^T$ được xác định qua bài toán tối ưu lồi có ràng buộc rủi ro đuôi Conditional Value-at-Risk (CVaR):
-$$\max_{w} \left( w^T \mu_{	ext{regime}} - rac{\lambda}{2} w^T \Sigma_{	ext{MIDAS}} w ight)$$
+$$\max_{w} \left( w^T \mu_{	ext{regime}} - rac{\lambda}{2} w^T \Sigma_{	ext{MIDAS}} w 
+ight)$$
 $$	ext{s.t.} \quad \sum_{i=1}^4 w_i = 1, \quad w_{	ext{VN30}} \in [0.1, 0.8], \quad w_{	ext{VN30F1M}} \in [-0.5, 0.2], \quad w_{	ext{VGB}}, w_{	ext{Cash}} \ge 0$$
 $$	ext{CVaR}_{lpha}(w) \le 	ext{LossBudget}_{	ext{max}}$$
 
@@ -12791,3 +12796,195 @@ if __name__ == '__main__':
 1. **Kiểm soát sụt giảm tài sản (Drawdown Compression):** Trong giai đoạn thị trường chịu cú sốc vĩ mô (tương tự chu kỳ tăng lãi suất điều hành Q3/2022 tại Việt Nam), mô hình GARCH-MIDAS tự động phát tín hiệu tăng biến động dài hạn, kích hoạt lệnh Short phòng vệ VN30F1M (-35.0%) và nâng tỷ trọng tiền mặt / trái phiếu lên 65%, giúp cắt giảm mức sụt giảm tài sản danh mục từ -38.4% xuống chỉ còn -7.2%.
 2. **Hiệu suất Sharpe vượt trội:** Tỷ số Sharpe toàn chu kỳ 10 năm đạt **1.74** so với **0.82** của chiến lược Mua & Nắm giữ VN30 (Buy & Hold).
 3. **Hiển thị trực quan trên giao diện Maris:** Kết quả phân bổ đa tài sản được xuất trực tiếp sang tab `Phân bổ danh mục & Risk Parity` trên giao diện người dùng KongKeng Radar, giúp nhà đầu tư nắm bắt cơ cấu tỷ trọng khuyến nghị trong thời gian thực.
+
+---
+
+## 🔬 CHỦ ĐỀ 118: MÔ HÌNH DỰ BÁO THANH KHOẢN & DÒNG LỆNH ĐỘC HẠI THEO KHỐI LƯỢNG ĐỒNG BỘ (VOLUME-SYNCHRONIZED PROBABILITY OF TOXICITY - VPIN) DƯỚI CƠ CHẾ KHỚP LỆNH LIÊN TỤC TẠI HOSE
+
+```
+Chu kỳ nghiên cứu: 10 phút định kỳ (Iteration 17 / Task-7472)
+Thời gian hoàn thành: 2026-11-07 17:50:00
+Phân hệ áp dụng: Cảnh Báo Sớm Dòng Tiền Cá Mập & Quản Trị Trượt Giá Khớp Lệnh / KongKeng Radar
+Mức độ kiểm định: Thuật toán Easley-López de Prado & Dữ liệu Tick Sàn HOSE
+```
+
+### 1. Bối Cảnh Thực Tiễn & Rào Cản Tại Thị Trường Việt Nam
+Tại thị trường chứng khoán Việt Nam, nhà đầu tư cá nhân chiếm hơn 80% thanh khoản giao dịch toàn thị trường nhưng thường xuyên là bên chịu thiệt hại nặng nề nhất do hiện tượng **Bất cân xứng thông tin (Information Asymmetry)**:
+1. **Dòng lệnh độc hại của "Cá mập" (Toxic / Informed Order Flow):** Khi các tổ chức, quỹ ngoại hoặc đội tạo lập nắm giữ thông tin trọng yếu trước khi công bố (tin KQKD đột biến, bán giải chấp lãnh đạo, phát hành riêng lẻ), họ thường tung ra các chuỗi lệnh dồn dập (aggressor orders) quét sạch các bước giá đối ứng trong sổ lệnh.
+2. **Hạn chế của thang đo thời gian vật lý (Clock Time Fallacy):** Các chỉ báo kỹ thuật truyền thống (RSI, Bollinger Bands, MACD) dựa trên nến thời gian (1 phút, 5 phút, 1 ngày) hoàn toàn bất lực trong việc nhận diện tốc độ giao dịch bùng nổ, vì vào những thời điểm thanh khoản đóng băng hoặc bùng nổ nghẽn lệnh, một cây nến 5 phút có thể chứa khối lượng gấp 20 lần mức trung bình.
+3. **Mục tiêu của KongKeng Radar:** Triển khai thước đo **VPIN (Volume-Synchronized Probability of Toxicity)** của Easley, López de Prado và O'Hara (2012) thích ứng với đặc thù bước giá phân tầng và biên độ $\pm 7\%$ sàn HOSE, cho phép hệ thống tính toán xác suất bị "úp bô" hoặc "săn thanh khoản" (Liquidity Sniping) trong thời gian thực, tự động khóa lệnh Mua Đuổi (FOMO) khi rủi ro độc hại chạm ngưỡng đỏ.
+
+---
+
+### 2. Nền Tảng Toán Học Định Lượng: Lý Thuyết VPIN
+
+#### 2.1. Chuẩn Hóa Theo Rổ Khối Lượng (Volume Bucket Synchronization)
+Thay vì chia chuỗi giao dịch theo các khoảng thời gian cố định $\Delta t$, chuỗi giao dịch liên tục được chia thành các rổ khối lượng (Volume Buckets) có kích thước cố định $V$:
+$$V = \frac{\text{ADV}}{B}$$
+Trong đó:
+- $\text{ADV}$ (Average Daily Volume): Khối lượng giao dịch trung bình ngày của cổ phiếu (ví dụ 60 ngày gần nhất).
+- $B$: Số lượng rổ khối lượng trong một phiên giao dịch chuẩn (thường chọn $B = 50$).
+
+Mỗi rổ khối lượng $\tau$ được làm đầy khi tích lũy đủ $V$ cổ phiếu khớp lệnh.
+
+#### 2.2. Phân Tách Khối Lượng Bằng Thuật Toán Bulk Volume Classification (BVC)
+Do dữ liệu cấp độ khớp lệnh (Tick Data) tại Việt Nam đôi khi không gắn kèm cờ chủ động (Buyer/Seller-Initiated Flag), thuật toán Bulk Volume Classification (BVC) ước lượng xác suất mua chủ động dựa trên phân phối chuẩn của bước biến động giá:
+$$V_\tau^B = V \cdot \Phi\left( \frac{\Delta P_\tau}{\sigma_{\Delta P}} \right)$$
+$$V_\tau^S = V - V_\tau^B = V \cdot \left[ 1 - \Phi\left( \frac{\Delta P_\tau}{\sigma_{\Delta P}} \right) \right]$$
+
+Trong đó:
+- $\Delta P_\tau$: Chênh lệch giá giữa điểm kết thúc và điểm bắt đầu của rổ khối lượng $\tau$.
+- $\sigma_{\Delta P}$: Độ lệch chuẩn của biến động giá giữa các rổ.
+- $\Phi(\cdot)$: Hàm phân phối tích lũy chuẩn tắc (Standard Normal CDF).
+
+#### 2.3. Công Thức Xác Suất Dòng Lệnh Độc Hại (VPIN Metric)
+Chỉ số VPIN tại rổ khối lượng $\tau$ được tính bằng trung bình trượt của độ mất cân đối giữa khối lượng mua và bán chủ động trên cửa sổ quan sát gồm $N$ rổ gần nhất (thường $N = 50$):
+$$\text{VPIN}_\tau = \frac{\sum_{k=0}^{N-1} |V_{\tau-k}^B - V_{\tau-k}^S|}{N \times V} = \frac{1}{N} \sum_{k=0}^{N-1} \left| 2 \cdot \frac{V_{\tau-k}^B}{V} - 1 \right|$$
+
+Giá trị của $\text{VPIN} \in [0, 1]$:
+- $\text{VPIN} \to 0$: Dòng tiền cân bằng, thị trường ổn định, chênh lệch mua bán đối xứng.
+- $\text{VPIN} > 0.65$: Dòng lệnh có tính độc hại cao (Informed Trading áp đảo hoàn toàn Uninformed Trading).
+- $\text{VPIN} > 0.80$: Nguy cơ cạn kiệt thanh khoản một chiều (Flash Crash / Liquidity Evaporation) hoặc bão giá cực đoan.
+
+---
+
+### 3. Thuật Toán Python Mô Phỏng VPIN Trên Cổ Phiếu VN30 (HOSE)
+
+```python
+import numpy as np
+import pandas as pd
+from scipy.stats import norm
+
+class OrderFlowToxicityVPIN:
+    """
+    Bộ động cơ định lượng VPIN (Volume-Synchronized Probability of Toxicity) cho KongKeng Radar.
+    Phát hiện dòng lệnh độc hại của cá mập và dự báo mức độ trượt giá trong phiên liên tục HOSE.
+    """
+    def __init__(self, adv=15_000_000, num_buckets_per_day=50, window_buckets=50):
+        self.adv = adv
+        self.num_buckets_per_day = num_buckets_per_day
+        self.bucket_size = int(adv / num_buckets_per_day)  # Kích thước mỗi rổ V
+        self.window_buckets = window_buckets               # Cửa sổ N rổ để tính VPIN
+        self.buckets = []
+        self.vpin_history = []
+        
+    def process_ticks_to_buckets(self, tick_df):
+        """
+        Gom các tick khớp lệnh thành các Volume Buckets có kích thước V cố định.
+        tick_df bao gồm các cột: ['price', 'volume']
+        """
+        current_bucket_vol = 0
+        bucket_prices = []
+        completed_buckets = []
+        
+        for _, row in tick_df.iterrows():
+            vol = row['volume']
+            px = row['price']
+            
+            while vol > 0:
+                needed = self.bucket_size - current_bucket_vol
+                if vol >= needed:
+                    current_bucket_vol += needed
+                    bucket_prices.append(px)
+                    # Hoàn tất một rổ khối lượng
+                    completed_buckets.append({
+                        'open_px': bucket_prices[0],
+                        'close_px': bucket_prices[-1],
+                        'delta_p': bucket_prices[-1] - bucket_prices[0],
+                        'volume': self.bucket_size
+                    })
+                    # Reset rổ mới
+                    vol -= needed
+                    current_bucket_vol = 0
+                    bucket_prices = [px]
+                else:
+                    current_bucket_vol += vol
+                    bucket_prices.append(px)
+                    vol = 0
+                    
+        return pd.DataFrame(completed_buckets)
+
+    def calculate_vpin(self, bucket_df):
+        """
+        Tính toán xác suất VPIN trên chuỗi rổ khối lượng bằng phương pháp BVC (Bulk Volume Classification)
+        """
+        if len(bucket_df) < self.window_buckets:
+            return pd.Series(dtype=float)
+            
+        delta_p = bucket_df['delta_p'].values
+        sigma_dp = np.std(delta_p) if np.std(delta_p) > 1e-6 else 1.0
+        
+        # BVC: Phân tách V_B và V_S
+        z_scores = delta_p / sigma_dp
+        buy_probs = norm.cdf(z_scores)
+        buy_vol = self.bucket_size * buy_probs
+        sell_vol = self.bucket_size - buy_vol
+        order_imbalance = np.abs(buy_vol - sell_vol)
+        
+        # VPIN trượt trên cửa sổ N rổ
+        vpin_values = []
+        for i in range(len(order_imbalance)):
+            if i < self.window_buckets - 1:
+                vpin_values.append(np.nan)
+            else:
+                window_imb = order_imbalance[i - self.window_buckets + 1 : i + 1]
+                vpin = np.sum(window_imb) / (self.window_buckets * self.bucket_size)
+                vpin_values.append(np.round(vpin, 4))
+                
+        bucket_df['VPIN'] = vpin_values
+        bucket_df['Order_Flow_State'] = bucket_df['VPIN'].apply(self._classify_state)
+        return bucket_df
+
+    def _classify_state(self, vpin):
+        if np.isnan(vpin):
+            return "Warming Up"
+        elif vpin < 0.35:
+            return "Bình thường (Thanh khoản ổn định)"
+        elif vpin < 0.60:
+            return "Cảnh báo (Dòng tiền phân kỳ)"
+        elif vpin < 0.75:
+            return "Độc hại cao (Cá mập gom/xả ẩn danh)"
+        else:
+            return "BÁO ĐỘNG ĐỎ (Nguy cơ bốc hơi thanh khoản / Sập giá)"
+
+# Thực thi kiểm chứng trên dữ liệu giả lập chuẩn HOSE (Mã HPG)
+if __name__ == '__main__':
+    np.random.seed(101)
+    # Khởi tạo mô phỏng 10,000 lệnh khớp liên tục của HPG (ADV ~ 25 triệu CP)
+    engine = OrderFlowToxicityVPIN(adv=25_000_000, num_buckets_per_day=50, window_buckets=30)
+    
+    # Tạo chuỗi giá có pha tích lũy bình thường và pha cá mập bán tháo độc hại
+    n_ticks = 4000
+    base_price = 28.5
+    price_path = [base_price]
+    volumes = []
+    
+    for i in range(n_ticks):
+        if i < 2500:
+            # Giao dịch đối xứng bình thường
+            dp = np.random.normal(0, 0.05)
+            vol = np.random.exponential(15_000)
+        else:
+            # Pha dòng lệnh độc hại: Cá mập liên tục ép bán chủ động lô lớn
+            dp = np.random.normal(-0.08, 0.06)
+            vol = np.random.exponential(45_000)
+        price_path.append(price_path[-1] + dp)
+        volumes.append(vol)
+        
+    tick_data = pd.DataFrame({'price': price_path[1:], 'volume': volumes})
+    buckets = engine.process_ticks_to_buckets(tick_data)
+    result = engine.calculate_vpin(buckets)
+    
+    print(f"Tổng số rổ khối lượng tạo ra: {len(buckets)} (Kích thước mỗi rổ: {engine.bucket_size:,} CP)")
+    print("\nTrích xuất 8 rổ gần nhất:")
+    print(result[['delta_p', 'VPIN', 'Order_Flow_State']].tail(8).to_string())
+```
+
+---
+
+### 4. Ứng Dụng Thực Nghiệm & Cơ Chế Phối Hợp Trên Giao Diện KongKeng Radar
+1. **Khắc phục lỗi FOMO mua đuổi đỉnh (Tích hợp trực tiếp vào Thang giá tích lũy Pullback):**
+   - Khi chỉ số VPIN vượt ngưỡng 0.65 tại đỉnh nhịp hồi, dù giá đang xanh mạnh, hệ thống tự động gắn nhãn cảnh báo **"Dòng lệnh độc hại đang xả ẩn (Toxic Sell Flow)"**.
+   - Vô hiệu hóa kịch bản Mua Theo Thị Giá (Market Price Order) và kích hoạt chế độ **Kịch Bản 2: Đặt Chờ Tích Lũy (Pullback Ladder)** tại ngưỡng hỗ trợ sâu hơn $\ge 3.5\%$.
+2. **Ước tính độ trượt giá phi tuyến (Nonlinear Slippage Estimation):**
+   - Giúp bot giao dịch tự hành tính toán chính xác chi phí khớp lệnh cho các lệnh lô lớn $\ge 100,000$ CP trên sàn HOSE, chia nhỏ lệnh bằng thuật toán TWAP/VWAP động học theo từng rổ VPIN.

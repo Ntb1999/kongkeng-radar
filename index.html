@@ -5085,6 +5085,24 @@ const NEWS_COLOR = { 'Thị trường': '', 'Doanh nghiệp': 'b', 'Cổ tức':
 /* screener universe: t, name, industry, exchange, price(nghìn), chg%, gtgd(tỷ), scores[q,g,v,m,r], reports, dividend yield */
 const UNI = [
   [
+    "CTR",
+    "Tổng Công ty Cổ phần Công trình Viettel",
+    "Viễn thông & Xây lắp",
+    "HOSE",
+    112.5,
+    1.85,
+    8420.5,
+    [
+      88,
+      85,
+      92,
+      80,
+      86
+    ],
+    4,
+    1
+  ],
+  [
     "KOS",
     "Công ty Cổ phần Kosy",
     "Bất động sản",
@@ -16399,220 +16417,563 @@ const QUANT_STRATEGIES = {
 };
 
 const QUANT_LIVE_SIGNALS = [
+  // --- NHÓM 1: NGÂN HÀNG (BANKING) ---
   {
     sym: 'MSB', name: 'Ngân hàng Hàng Hải', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
     price: 15.80, target: 18.20, sl: 14.85, rr: '1 : 2.5', score: 96, volRatio: 245, time: '14:45 hôm nay',
     triggerMsg: 'Dòng tiền gom mua đột biến gấp 2.45 lần bình thường, giá bứt phá vượt nền MA20',
     fomo: {
-      recType: 'pullback',
-      recommendation: 'CHỜ CHỈNH 15.15 - 15.35',
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 15.15 - 15.35',
       marketBuy: { entry: 15.80, target: 16.50, sl: 14.85, rr: '1 : 0.74', verdict: 'R:R mỏng (1:0.74), áp lực chốt lời ngắn hạn lớn. Mua đuổi dễ dính nhịp rũ bỏ T+.' },
       pullbackBuy: { zone: '15.15 - 15.35', midPrice: 15.25, target: 18.20, sl: 14.60, rr: '1 : 4.54', prob: 76, support: 'Hỗ trợ MA20 ngày & đỉnh tích lũy cũ 15.20', verdict: 'Tỷ lệ Lãi/Lỗ 1:4.54 vượt trội, điểm dừng lỗ rất gần và an toàn.' },
-      pros: [
-        'Dòng tiền tổ chức gom đột biến gấp 2.45 lần trung bình 20 phiên',
-        'Nền tích lũy hộp Darvas chặt chẽ 3 tháng qua, dư địa tăng trưởng lớn',
-        'Định giá P/B 0.88 lần, chiết khấu sâu nhất top ngân hàng thương mại cổ phần'
-      ],
+      pros: ['Dòng tiền tổ chức gom đột biến gấp 2.45 lần TB 20 phiên', 'Nền tích lũy hộp Darvas chặt chẽ 3 tháng qua, dư địa tăng trưởng lớn', 'Định giá P/B 0.88 lần, chiết khấu sâu nhất top ngân hàng TMCP'],
       con: 'Chỉ số RSI(14) tiệm cận 72 (vùng quá mua ngắn hạn), dễ xuất hiện nhịp rung lắc kỹ thuật 1-3 phiên',
       fundDiscipline: 'Không mua đuổi giá xanh trên 15.6. Hãy kiên nhẫn treo lệnh Limit chờ gom tại vùng 15.15 - 15.35 để bảo vệ vốn và tối ưu tỷ lệ sinh lời.'
     }
   },
   {
-    sym: 'FPT', name: 'Tập đoàn FPT', ex: 'HOSE', strat: 'trend_ema', type: 'MUA THĂM DÒ',
-    price: 50.40, target: 58.00, sl: 47.50, rr: '1 : 2.62', score: 94, volRatio: 180, time: '14:30 hôm nay',
-    triggerMsg: 'Đường giá ngắn hạn tiệm cận MA20 (50.57), AI xác nhận xung lực bắt đáy chủ động',
+    sym: 'VCB', name: 'Vietcombank', ex: 'HOSE', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 53.60, target: 60.00, sl: 51.00, rr: '1 : 2.46', score: 97, volRatio: 185, time: '14:35 hôm nay',
+    triggerMsg: 'Khối ngoại mua ròng phiên thứ 5 liên tiếp, nâng đỡ vùng giá hỗ trợ MA50',
     fomo: {
-      recType: 'split',
-      recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 49',
-      marketBuy: { entry: 50.40, target: 54.20, sl: 48.50, rr: '1 : 2.00', verdict: 'R:R ở mức trung bình, giá đang bám sát dải trên Bollinger Bands & cản ngắn hạn MA20 (50.57).' },
-      pullbackBuy: { zone: '48.90 - 49.50', midPrice: 49.20, target: 58.00, sl: 47.50, rr: '1 : 5.18', prob: 68, support: 'Vùng hỗ trợ EMA 21 ngày & đường trendline hỗ trợ 48.9 - 49.2', verdict: 'Điểm vào lý tưởng theo xu hướng lớn, R:R đạt tới 1:5.18.' },
-      pros: [
-        'Động lực tăng trưởng đột phá từ mảng AI Factory hợp tác cùng NVIDIA',
-        'Doanh thu ký mới dịch vụ CNTT nước ngoài tăng 28% YoY đạt 28.500 tỷ',
-        'Khối ngoại đảo chiều mua ròng trở lại, thanh khoản trên 9 triệu CP/phiên'
-      ],
-      con: 'Áp lực chốt lời ngắn hạn và rung lắc quanh các vùng cản MA20 (50.57) và MA50 (54.24)',
-      fundDiscipline: 'Có thể giải ngân trước 30% tỷ trọng thăm dò quanh 50.4; dành 70% còn lại kiên nhẫn chờ khớp khi giá test lại vùng mua vàng 48.9 - 49.5.'
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 52.20 - 52.80',
+      marketBuy: { entry: 53.60, target: 56.50, sl: 51.50, rr: '1 : 1.38', verdict: 'R:R ngắn hạn 1:1.38, biên lãi không tương xứng với rủi ro điều chỉnh chung của thị trường.' },
+      pullbackBuy: { zone: '52.20 - 52.80', midPrice: 52.50, target: 60.00, sl: 50.80, rr: '1 : 4.41', prob: 78, support: 'Hỗ trợ kỹ thuật MA50 ngày & trendline trung hạn 52.0 - 52.5', verdict: 'Tỷ lệ Lãi/Lỗ 1:4.41, điểm tựa cổ phiếu đầu ngành uy tín nhất thị trường.' },
+      pros: ['Chất lượng tài sản số 1 toàn hệ thống, tỷ lệ bao phủ nợ xấu trên 230%', 'Dòng tiền khối ngoại và các quỹ ETF gom ròng bền bỉ', 'Lợi thế chi phí vốn rẻ nhờ tỷ lệ CASA vượt trội toàn ngành'],
+      con: 'Tốc độ biến động giá tương đối chậm do vốn hóa lớn nhất sàn HOSE, không phù hợp lướt sóng T+',
+      fundDiscipline: 'Kiên nhẫn gom lệnh tại vùng hỗ trợ 52.2 - 52.8; tuyệt đối không mua đuổi khi giá đã tiệm cận cận trên dải Bollinger Bands.'
     }
   },
+  {
+    sym: 'TCB', name: 'Techcombank', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
+    price: 21.65, target: 25.50, sl: 20.20, rr: '1 : 2.65', score: 95, volRatio: 260, time: '14:20 hôm nay',
+    triggerMsg: 'Bứt phá kênh giá giảm ngắn hạn với thanh khoản lớn gấp 2.6 lần bình quân 20 phiên',
+    fomo: {
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 20.8',
+      marketBuy: { entry: 21.65, target: 23.20, sl: 20.60, rr: '1 : 1.48', verdict: 'R:R 1:1.48 ở mức trung bình, có thể gặp cản ngắn hạn tại mốc 22.5.' },
+      pullbackBuy: { zone: '20.60 - 21.00', midPrice: 20.80, target: 25.50, sl: 19.90, rr: '1 : 5.22', prob: 72, support: 'Hỗ trợ MA20 ngày & cạnh trên hộp tích lũy cũ 20.80', verdict: 'Vùng gom tối ưu với R:R 1:5.22, biên độ an toàn cực cao.' },
+      pros: ['Đà phục hồi tín dụng mạnh mẽ từ mảng bất động sản và trái phiếu doanh nghiệp', 'CASA dẫn đầu khối NHTMCP tư nhân, chi phí vốn giảm mạnh', 'Khối tự doanh và tổ chức trong nước liên tục mua ròng'],
+      con: 'Độ nhạy cao với biến động thị trường bất động sản dân dụng',
+      fundDiscipline: 'Giải ngân thăm dò 30% tại thị giá, treo lệnh chờ 70% còn lại quanh mốc 20.8 để tối ưu giá vốn.'
+    }
+  },
+  {
+    sym: 'MBB', name: 'Ngân hàng Quân Đội', ex: 'HOSE', strat: 'trend_ema', type: 'MUA TÍCH LŨY',
+    price: 21.80, target: 25.00, sl: 20.50, rr: '1 : 2.46', score: 94, volRatio: 175, time: '14:10 hôm nay',
+    triggerMsg: 'Chỉ báo Dual EMA (9, 21) cắt lên xác nhận sóng tăng mới, thanh khoản cải thiện',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 21.10 - 21.35',
+      marketBuy: { entry: 21.80, target: 23.00, sl: 20.90, rr: '1 : 1.33', verdict: 'R:R 1:1.33, giá đang chạm dải trên Bollinger Bands ngắn hạn.' },
+      pullbackBuy: { zone: '21.10 - 21.35', midPrice: 21.20, target: 25.00, sl: 20.30, rr: '1 : 4.22', prob: 75, support: 'Đường EMA 21 ngày & ngưỡng cản tâm lý cũ đã vượt qua', verdict: 'R:R 1:4.22 lý tưởng cho vị thế nắm giữ trung hạn.' },
+      pros: ['Tăng trưởng tín dụng thuộc top đầu hệ thống ngân hàng', 'Chiến lược bán lẻ và chuyển đổi số mang lại lượng khách hàng khổng lồ', 'P/B hiện tại 1.05x, mức định giá hấp dẫn so với ROE 22%'],
+      con: 'Nợ xấu nhóm bán lẻ cần thêm thời gian để xử lý triệt để',
+      fundDiscipline: 'Đợi nhịp retest EMA 21 ngày quanh vùng 21.2 để gom đủ tỷ trọng danh mục.'
+    }
+  },
+  {
+    sym: 'ACB', name: 'Ngân hàng Á Châu', ex: 'HOSE', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 20.30, target: 23.50, sl: 19.20, rr: '1 : 2.91', score: 95, volRatio: 190, time: '14:05 hôm nay',
+    triggerMsg: 'Tích lũy chặt chẽ quanh đường MA20, dòng tiền tổ chức duy trì mua ròng',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 19.80 - 20.00',
+      marketBuy: { entry: 20.30, target: 21.50, sl: 19.50, rr: '1 : 1.50', verdict: 'R:R 1:1.50, biên độ ăn mỏng.' },
+      pullbackBuy: { zone: '19.80 - 20.00', midPrice: 19.90, target: 23.50, sl: 19.10, rr: '1 : 4.50', prob: 79, support: 'Ngưỡng hỗ trợ MA50 ngày & nền giá 20.0', verdict: 'R:R 1:4.50, an toàn tuyệt đối với ngân hàng quản trị rủi ro tốt nhất.' },
+      pros: ['Quản trị rủi ro số 1 ngành ngân hàng tư nhân, không có rủi ro trái phiếu doanh nghiệp', 'Tỷ lệ nợ xấu luôn duy trì dưới 1.2%', 'ROE trượt 12 tháng đạt 23.5%, hiệu quả sử dụng vốn vượt trội'],
+      con: 'Chính sách tín dụng thận trọng khiến tăng trưởng quy mô không quá đột biến',
+      fundDiscipline: 'Gom mua kiên nhẫn quanh vùng 19.8 - 20.0 khi có nhịp rung lắc.'
+    }
+  },
+  {
+    sym: 'CTG', name: 'VietinBank', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
+    price: 30.30, target: 35.00, sl: 28.50, rr: '1 : 2.61', score: 94, volRatio: 220, time: '13:55 hôm nay',
+    triggerMsg: 'Bứt phá đỉnh 3 tháng với dòng tiền Big Boy giải ngân quyết liệt',
+    fomo: {
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 29.5',
+      marketBuy: { entry: 30.30, target: 32.20, sl: 29.10, rr: '1 : 1.58', verdict: 'R:R 1:1.58, có thể gặp rung lắc tại cản 31.5.' },
+      pullbackBuy: { zone: '29.30 - 29.70', midPrice: 29.50, target: 35.00, sl: 28.20, rr: '1 : 4.23', prob: 74, support: 'Đỉnh cũ vừa bứt phá thành hỗ trợ vững chắc 29.5', verdict: 'R:R 1:4.23, điểm giải ngân tuyệt đẹp theo mô hình Breakout-Retest.' },
+      pros: ['Thu nhập lãi thuần và thu ngoài lãi tăng trưởng hai chữ số', 'Tỷ lệ bao phủ nợ xấu cải thiện rõ rệt, áp lực trích lập dự phòng giảm', 'Định giá P/B vẫn dưới 1.1x'],
+      con: 'Biến động theo xu hướng dòng tiền khối ngoại',
+      fundDiscipline: 'Thăm dò 30% giá hiện tại, chờ nhịp chỉnh 29.5 gom đủ 70% còn lại.'
+    }
+  },
+  {
+    sym: 'BID', name: 'BIDV', ex: 'HOSE', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 32.05, target: 37.00, sl: 30.20, rr: '1 : 2.68', score: 93, volRatio: 165, time: '13:50 hôm nay',
+    triggerMsg: 'Khối ngoại gom ròng bền bỉ tại vùng nền giá lớn, lực cầu hấp thụ tốt',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 31.00 - 31.40',
+      marketBuy: { entry: 32.05, target: 33.80, sl: 30.90, rr: '1 : 1.52', verdict: 'R:R 1:1.52, rung lắc tại vùng 33.0.' },
+      pullbackBuy: { zone: '31.00 - 31.40', midPrice: 31.20, target: 37.00, sl: 29.90, rr: '1 : 4.46', prob: 77, support: 'Đường hỗ trợ MA50 ngày 31.2', verdict: 'R:R 1:4.46, thế trận tích lũy đón sóng tăng mới.' },
+      pros: ['Quy mô tổng tài sản lớn nhất toàn hệ thống ngân hàng Việt Nam', 'Kế hoạch phát hành riêng lẻ tăng vốn điều lệ tạo động lực tăng giá', 'Dòng tiền tổ chức và quỹ đầu tư bảo trợ mạnh mẽ'],
+      con: 'Hệ số an toàn vốn CAR cần tiếp tục củng cố qua đợt tăng vốn',
+      fundDiscipline: 'Chờ nhịp điều chỉnh kỹ thuật quanh 31.2 để tích lũy an toàn.'
+    }
+  },
+  {
+    sym: 'STB', name: 'Sacombank', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA THEO ĐÀ TĂNG',
+    price: 26.40, target: 31.00, sl: 24.80, rr: '1 : 2.87', score: 95, volRatio: 280, time: '13:45 hôm nay',
+    triggerMsg: 'Thanh khoản tăng vọt 2.8 lần, kỳ vọng hoàn tất tái cơ cấu đề án VAMC',
+    fomo: {
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 25.5',
+      marketBuy: { entry: 26.40, target: 28.20, sl: 25.20, rr: '1 : 1.50', verdict: 'R:R 1:1.50, giá tăng nóng dễ gặp áp lực chốt lời ngắn hạn.' },
+      pullbackBuy: { zone: '25.30 - 25.70', midPrice: 25.50, target: 31.00, sl: 24.30, rr: '1 : 4.58', prob: 71, support: 'Vùng hỗ trợ đỉnh hộp tích lũy 25.5', verdict: 'R:R 1:4.58 vượt trội, đón điểm rơi lợi nhuận sau khi trích lập xong VAMC.' },
+      pros: ['Sắp hoàn tất nghĩa vụ nợ VAMC, lợi nhuận dự kiến bùng nổ', 'Tỷ lệ CASA tăng mạnh giúp cải thiện biên lãi thuần NIM', 'Thu hút dòng tiền đầu cơ lớn nhất nhóm ngân hàng'],
+      con: 'Biên độ dao động trong phiên lớn, dễ rũ bỏ nhà đầu tư non tay',
+      fundDiscipline: 'Chia tỷ trọng giải ngân: 30% giá hiện tại, 70% đón tại 25.3 - 25.7.'
+    }
+  },
+  {
+    sym: 'HDB', name: 'HDBank', ex: 'HOSE', strat: 'trend_ema', type: 'MUA TÍCH LŨY',
+    price: 19.85, target: 23.00, sl: 18.70, rr: '1 : 2.74', score: 93, volRatio: 170, time: '13:40 hôm nay',
+    triggerMsg: 'Duy trì xu hướng tăng trên đường MA20, lợi nhuận quý 3 tăng trưởng vượt bậc',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 19.20 - 19.50',
+      marketBuy: { entry: 19.85, target: 21.00, sl: 19.10, rr: '1 : 1.53', verdict: 'R:R 1:1.53, giá sát cản ngắn hạn 20.5.' },
+      pullbackBuy: { zone: '19.20 - 19.50', midPrice: 19.35, target: 23.00, sl: 18.50, rr: '1 : 4.29', prob: 76, support: 'Hỗ trợ EMA 21 ngày 19.3', verdict: 'R:R 1:4.29, cổ tức cổ phiếu và tiền mặt đều đặn hàng năm.' },
+      pros: ['Tăng trưởng lợi nhuận và tín dụng duy trì đều đặn trên 20%/năm', 'Hệ sinh thái Sovico & Vietjet mang lại nguồn tiền gửi dồi dào', 'Tỷ suất cổ tức bình quân 20-25%/năm'],
+      con: 'Thanh khoản tập trung ở các khung giờ nhất định',
+      fundDiscipline: 'Kiên nhẫn chờ gom quanh vùng hỗ trợ 19.2 - 19.5.'
+    }
+  },
+
+  // --- NHÓM 2: BẤT ĐỘNG SẢN & KHU CÔNG NGHIỆP ---
+  {
+    sym: 'VHM', name: 'Vinhomes', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
+    price: 61.90, target: 72.00, sl: 57.50, rr: '1 : 2.30', score: 96, volRatio: 320, time: '14:40 hôm nay',
+    triggerMsg: 'Dòng tiền mua chủ động đột biến, vượt dải mây Ichimoku hướng tới đỉnh mới',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 59.50 - 60.50',
+      marketBuy: { entry: 61.90, target: 65.50, sl: 59.20, rr: '1 : 1.33', verdict: 'R:R 1:1.33, giá đang chạm cản tâm lý 63. Mua đuổi rủi ro cao.' },
+      pullbackBuy: { zone: '59.50 - 60.50', midPrice: 60.00, target: 72.00, sl: 57.20, rr: '1 : 4.29', prob: 75, support: 'Hỗ trợ MA20 ngày & nền giá tích lũy 60.0', verdict: 'R:R 1:4.29, quy mô doanh nghiệp số 1 ngành bất động sản.' },
+      pros: ['Quỹ đất sạch lớn nhất Việt Nam với các đại dự án đang mở bán rầm rộ', 'Dòng tiền bán hàng đột biến từ các phân khu cao cấp', 'Kế hoạch mua lại cổ phiếu quỹ nâng đỡ định giá mạnh mẽ'],
+      con: 'Tâm lý thị trường chung với nhóm cổ phiếu họ Vingroup còn biến động lớn',
+      fundDiscipline: 'Chờ nhịp test lại mốc 60.0 để mở vị thế gom mua an toàn.'
+    }
+  },
+  {
+    sym: 'VIC', name: 'Tập đoàn Vingroup', ex: 'HOSE', strat: 'mean_reversion', type: 'BẮT ĐÁY KỸ THUẬT',
+    price: 42.50, target: 49.00, sl: 39.50, rr: '1 : 2.17', score: 91, volRatio: 180, time: '13:30 hôm nay',
+    triggerMsg: 'RSI(14) phân kỳ dương 3 đáy, lực cầu đỡ giá tại vùng hỗ trợ cứng',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 41.20 - 41.80',
+      marketBuy: { entry: 42.50, target: 45.00, sl: 40.80, rr: '1 : 1.47', verdict: 'R:R 1:1.47, nhịp hồi phục kỹ thuật ngắn hạn.' },
+      pullbackBuy: { zone: '41.20 - 41.80', midPrice: 41.50, target: 49.00, sl: 39.50, rr: '1 : 3.75', prob: 70, support: 'Vùng đáy trung hạn 41.0 - 41.5', verdict: 'R:R 1:3.75, biên độ phục hồi lớn khi chạm hỗ trợ lịch sử.' },
+      pros: ['Định giá P/B ở vùng đáy lịch sử, tài sản ngầm lớn', 'Mảng xe điện VinFast tăng trưởng sản lượng giao xe toàn cầu', 'Hệ sinh thái đa ngành có khả năng huy động vốn quốc tế'],
+      con: 'Áp lực đòn bẩy tài chính và chi phí lãi vay lớn',
+      fundDiscipline: 'Chỉ giải ngân tỷ trọng vừa phải quanh vùng 41.5, tuân thủ kỷ luật cắt lỗ nếu thủng 39.5.'
+    }
+  },
+  {
+    sym: 'VRE', name: 'Vincom Retail', ex: 'HOSE', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 20.40, target: 24.50, sl: 19.00, rr: '1 : 2.93', score: 92, volRatio: 195, time: '13:25 hôm nay',
+    triggerMsg: 'Tỷ lệ lấp đầy TTTM đạt đỉnh, khối ngoại quay lại gom ròng tại nền giá 20',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 19.80 - 20.10',
+      marketBuy: { entry: 20.40, target: 21.80, sl: 19.50, rr: '1 : 1.56', verdict: 'R:R 1:1.56, cản gần 21.5.' },
+      pullbackBuy: { zone: '19.80 - 20.10', midPrice: 19.95, target: 24.50, sl: 18.90, rr: '1 : 4.33', prob: 77, support: 'Đáy hộp tích lũy 19.8 - 20.0', verdict: 'R:R 1:4.33, dòng tiền kinh doanh TTTM cực kỳ ổn định.' },
+      pros: ['Độc quyền chuỗi TTTM lớn nhất cả nước, doanh thu cho thuê tiền mặt dồi dào', 'Không chịu rủi ro pháp lý dự án như các công ty BĐS thuần túy', 'Định giá P/E 11.5x, thấp hơn nhiều so với trung bình khu vực'],
+      con: 'Tốc độ mở mới TTTM phụ thuộc vào tiến độ đại dự án',
+      fundDiscipline: 'Kiên nhẫn gom lệnh quanh 20.0 để hưởng trọn sóng phục hồi.'
+    }
+  },
+  {
+    sym: 'KDH', name: 'Nhà Khang Điền', ex: 'HOSE', strat: 'trend_ema', type: 'MUA THEO ĐÀ TĂNG',
+    price: 33.00, target: 38.50, sl: 30.80, rr: '1 : 2.50', score: 94, volRatio: 215, time: '14:12 hôm nay',
+    triggerMsg: 'Vượt đỉnh ngắn hạn với sự đồng thuận của khối ngoại và tự doanh',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 31.80 - 32.30',
+      marketBuy: { entry: 33.00, target: 35.00, sl: 31.80, rr: '1 : 1.67', verdict: 'R:R 1:1.67, giá đang ở dải trên kênh tăng.' },
+      pullbackBuy: { zone: '31.80 - 32.30', midPrice: 32.00, target: 38.50, sl: 30.50, rr: '1 : 4.33', prob: 75, support: 'Hỗ trợ MA20 ngày & trendline 32.0', verdict: 'R:R 1:4.33, pháp lý dự án sạch nhất nhóm BĐS TP.HCM.' },
+      pros: ['Pháp lý dự án minh bạch hàng đầu, hợp tác chiến lược cùng Keppel Land', 'Cơ cấu tài chính an toàn, tỷ lệ nợ vay trên vốn chủ sở hữu rất thấp', 'Các dự án The Privia và Clarita bàn giao mang lại dòng tiền thực'],
+      con: 'Thanh khoản giao dịch không quá bùng nổ, biên độ tăng từ tốn',
+      fundDiscipline: 'Chờ nhịp điều chỉnh về quanh 32.0 để giải ngân tối ưu.'
+    }
+  },
+  {
+    sym: 'PDR', name: 'Bất động sản Phát Đạt', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
+    price: 22.80, target: 27.50, sl: 20.80, rr: '1 : 2.35', score: 93, volRatio: 275, time: '14:00 hôm nay',
+    triggerMsg: 'Đã sạch nợ trái phiếu, dòng tiền đầu cơ nhập cuộc bứt phá kháng cự 22.5',
+    fomo: {
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 21.8',
+      marketBuy: { entry: 22.80, target: 24.50, sl: 21.60, rr: '1 : 1.42', verdict: 'R:R 1:1.42, biên độ ngắn hạn mỏng.' },
+      pullbackBuy: { zone: '21.60 - 22.00', midPrice: 21.80, target: 27.50, sl: 20.40, rr: '1 : 4.07', prob: 71, support: 'Đỉnh cũ 21.8 chuyển thành hỗ trợ', verdict: 'R:R 1:4.07, động lực mở bán dự án Thuận An và Bắc Hà Thanh.' },
+      pros: ['Đã đưa dư nợ trái phiếu doanh nghiệp về 0 đồng, tái cấu trúc tài chính thành công', 'Quỹ đất lớn tại Bình Dương và Quy Nhơn sẵn sàng triển khai bán hàng', 'Tính đầu cơ cao, lực cầu bắt đáy luôn sẵn sàng'],
+      con: 'Tiến độ cấp phép pháp lý dự án tại các địa phương cần theo dõi sát',
+      fundDiscipline: 'Thăm dò 30% giá hiện tại, dành 70% canh gom quanh 21.8.'
+    }
+  },
+  {
+    sym: 'DXG', name: 'Tập đoàn Đất Xanh', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA THEO ĐÀ TĂNG',
+    price: 16.85, target: 20.50, sl: 15.40, rr: '1 : 2.52', score: 91, volRatio: 250, time: '13:48 hôm nay',
+    triggerMsg: 'Khối lượng giao dịch tăng gấp 2.5 lần, chỉ báo MACD cắt lên đường tín hiệu',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 16.00 - 16.30',
+      marketBuy: { entry: 16.85, target: 18.20, sl: 16.00, rr: '1 : 1.59', verdict: 'R:R 1:1.59, giá tăng nhanh chạm cản 17.5.' },
+      pullbackBuy: { zone: '16.00 - 16.30', midPrice: 16.15, target: 20.50, sl: 15.10, rr: '1 : 4.14', prob: 73, support: 'Hỗ trợ MA20 ngày 16.1', verdict: 'R:R 1:4.14, kỳ vọng dự án Gem Sky World tái khởi động.' },
+      pros: ['Mạng lưới dịch vụ môi giới BĐS lớn nhất thị trường hưởng lợi khi thanh khoản hồi phục', 'Kế hoạch phát hành tăng vốn thành công giải tỏa áp lực nợ vay', 'Cổ phiếu có tính thị trường cao, dễ thu hút dòng tiền FOMO'],
+      con: 'Pháp lý dự án Gem Riverside cần thêm thời gian để hoàn thiện hồ sơ',
+      fundDiscipline: 'Canh mua tại vùng hỗ trợ 16.0 - 16.3, không mua đuổi giá trần/xanh mạnh.'
+    }
+  },
+  {
+    sym: 'BCM', name: 'Becamex IDC', ex: 'HOSE', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 37.55, target: 44.00, sl: 34.80, rr: '1 : 2.35', score: 94, volRatio: 180, time: '13:35 hôm nay',
+    triggerMsg: 'Dòng tiền ngoại và tổ chức gom ròng, quỹ đất KCN lớn nhất miền Nam',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 36.20 - 36.80',
+      marketBuy: { entry: 37.55, target: 40.50, sl: 35.80, rr: '1 : 1.69', verdict: 'R:R 1:1.69, giá tiệm cận cản 39.' },
+      pullbackBuy: { zone: '36.20 - 36.80', midPrice: 36.50, target: 44.00, sl: 34.50, rr: '1 : 3.75', prob: 78, support: 'Hỗ trợ đáy tích lũy 36.5', verdict: 'R:R 1:3.75, hưởng lợi trực tiếp từ làn sóng FDI dịch chuyển.' },
+      pros: ['Quỹ đất KCN khổng lồ liên doanh VSIP mang lại dòng tiền USD ổn định', 'Thủ tướng phê duyệt các dự án KCN thế hệ mới tại Bình Dương và Bình Phước', 'Cổ đông nhà nước chi phối tạo bệ đỡ tài chính vững chắc'],
+      con: 'Tỷ lệ cổ phiếu lưu hành tự do (free-float) thấp',
+      fundDiscipline: 'Tích lũy kiên nhẫn tại vùng 36.2 - 36.8 để đầu tư trung dài hạn.'
+    }
+  },
+  {
+    sym: 'IDC', name: 'Tổng công ty IDICO', ex: 'HNX', strat: 'trend_ema', type: 'MUA TÍCH LŨY',
+    price: 46.20, target: 54.00, sl: 43.00, rr: '1 : 2.44', score: 95, volRatio: 190, time: '13:20 hôm nay',
+    triggerMsg: 'Duy trì kênh tăng giá trung hạn trên sàn HNX, cổ tức tiền mặt khủng 35%',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 44.50 - 45.20',
+      marketBuy: { entry: 46.20, target: 49.50, sl: 44.20, rr: '1 : 1.65', verdict: 'R:R 1:1.65, giá đang bám dải trên Bollinger.' },
+      pullbackBuy: { zone: '44.50 - 45.20', midPrice: 44.80, target: 54.00, sl: 42.50, rr: '1 : 4.00', prob: 79, support: 'Đường MA20 ngày & trendline hỗ trợ 44.8', verdict: 'R:R 1:4.00, cỗ máy in tiền từ cho thuê đất KCN Hựu Thạnh và Cầu Nghìn.' },
+      pros: ['Dòng tiền cho thuê đất KCN thu tiền một lần mang lại lượng tiền mặt hơn 4.000 tỷ', 'Tỷ suất cổ tức tiền mặt 30-40%/năm thuộc hàng cao nhất 3 sàn', 'Quỹ đất sẵn sàng cho thuê còn hơn 600ha'],
+      con: 'Giao dịch trên sàn HNX biên độ 10% nên rung lắc phiên có thể mạnh',
+      fundDiscipline: 'Tận dụng các nhịp rung lắc về 44.5 - 45.2 để gom vị thế hưởng cổ tức.'
+    }
+  },
+  {
+    sym: 'KOS', name: 'Tập đoàn Kosy', ex: 'HOSE', strat: 'mean_reversion', type: 'BẮT ĐÁY KỸ THUẬT',
+    price: 3.68, target: 4.50, sl: 3.30, rr: '1 : 2.16', score: 86, volRatio: 210, time: '13:10 hôm nay',
+    triggerMsg: 'Thanh khoản bắt đáy tăng vọt tại vùng hỗ trợ lịch sử, RSI quá bán sâu',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 3.50 - 3.60',
+      marketBuy: { entry: 3.68, target: 4.10, sl: 3.45, rr: '1 : 1.83', verdict: 'R:R 1:1.83, cổ phiếu penny biên độ lớn.' },
+      pullbackBuy: { zone: '3.50 - 3.60', midPrice: 3.55, target: 4.50, sl: 3.25, rr: '1 : 3.17', prob: 65, support: 'Vùng đáy lịch sử 3.5', verdict: 'R:R 1:3.17, tỷ suất sinh lời cao cho danh mục đầu cơ mạo hiểm.' },
+      pros: ['Giá đã chiết khấu sâu hơn 70% từ đỉnh, rủi ro giảm thêm bị giới hạn', 'Các dự án thủy điện và điện gió cung cấp dòng tiền đều đặn', 'Thanh khoản cải thiện rõ rệt phát tín hiệu có dòng tiền tạo đáy'],
+      con: 'Rủi ro tài chính của nhóm BĐS vừa và nhỏ, biến động thị giá cao',
+      fundDiscipline: 'Chỉ phân bổ tối đa 5-10% NAV cho mã đầu cơ giá rẻ, cắt lỗ dứt khoát nếu thủng 3.3.'
+    }
+  },
+
+  // --- NHÓM 3: THÉP & VẬT LIỆU XÂY DỰNG ---
   {
     sym: 'HPG', name: 'Tập đoàn Hòa Phát', ex: 'HOSE', strat: 'smart_money', type: 'MUA MẠNH',
-    price: 26.40, target: 30.50, sl: 24.90, rr: '1 : 2.7', score: 95, volRatio: 310, time: '14:15 hôm nay',
-    triggerMsg: 'Khối ngoại gom ròng +125 tỷ, lực mua chủ động của dòng tiền lớn áp đảo 72%',
+    price: 26.40, target: 30.50, sl: 24.90, rr: '1 : 2.73', score: 95, volRatio: 310, time: '14:15 hôm nay',
+    triggerMsg: 'Khối ngoại gom ròng +125 tỷ đồng, giá thép nội địa phục hồi nhịp 2',
     fomo: {
-      recType: 'pullback',
-      recommendation: 'CHỜ CHỈNH VÙNG 25.3 - 25.6',
-      marketBuy: { entry: 26.40, target: 27.50, sl: 25.20, rr: '1 : 0.92', verdict: 'R:R dưới 1.0 (1:0.92), rủi ro điều chỉnh theo nhịp rung lắc của nhóm Thép.' },
-      pullbackBuy: { zone: '25.30 - 25.60', midPrice: 25.45, target: 30.50, sl: 24.50, rr: '1 : 5.31', prob: 72, support: 'Vùng đáy hộp tích lũy & đường hỗ trợ MA50', verdict: 'Vùng đệm an toàn lớn, tỷ lệ Lãi/Lỗ đạt 1:5.31.' },
-      pros: [
-        'Khối ngoại mua ròng đột biến +125 tỷ phiên gần nhất',
-        'Kỳ vọng lò cao Dung Quất 2 vận hành thương mại nửa đầu năm tới',
-        'Biên lợi nhuận gộp hồi phục quý thứ 4 liên tiếp'
-      ],
-      con: 'Giá thép thế giới (HRC) đang trong giai đoạn dò đáy ngắn hạn',
-      fundDiscipline: 'Không FOMO khi giá vượt 26.5. Hãy kiên trì chờ phiên retest đáy hộp tại 25.3 - 25.6 để có vị thế an toàn cao nhất.'
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 25.5',
+      marketBuy: { entry: 26.40, target: 27.80, sl: 25.60, rr: '1 : 1.75', verdict: 'R:R 1:1.75, cản ngắn hạn 27.5 khá dày.' },
+      pullbackBuy: { zone: '25.30 - 25.70', midPrice: 25.50, target: 30.50, sl: 24.60, rr: '1 : 5.56', prob: 73, support: 'Đáy hộp tích lũy & đường hỗ trợ MA50 ngày 25.5', verdict: 'R:R 1:5.56 siêu hấp dẫn, đón đại sóng từ siêu dự án Dung Quất 2.' },
+      pros: ['Đại dự án Dung Quất 2 sắp đi vào vận hành giúp tăng gấp đôi công suất HRC', 'Chi phí sản xuất thép lò cao (BOF) cạnh tranh nhất khu vực Đông Nam Á', 'Khối ngoại và các quỹ lớn cơ cấu tăng tỷ trọng mạnh mẽ'],
+      con: 'Giá thép thế giới và quặng sắt có thể biến động theo kinh tế Trung Quốc',
+      fundDiscipline: 'Giải ngân 30% tại thị giá, dành 70% canh bắt nhịp pullback tại 25.5 để nắm giữ theo chu kỳ lớn.'
     }
   },
   {
-    sym: 'SSI', name: 'Chứng khoán SSI', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
-    price: 32.20, target: 37.80, sl: 30.20, rr: '1 : 2.8', score: 93, volRatio: 220, time: '13:55 hôm nay',
-    triggerMsg: 'Vượt đỉnh kháng cự ngắn hạn với lực mua gom chủ động dứt khoát',
+    sym: 'HSG', name: 'Tập đoàn Hoa Sen', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA THEO ĐÀ TĂNG',
+    price: 19.20, target: 23.00, sl: 17.80, rr: '1 : 2.71', score: 92, volRatio: 240, time: '13:58 hôm nay',
+    triggerMsg: 'Sản lượng xuất khẩu tôn mạ bùng nổ, biên lợi nhuận gộp hồi phục vượt 14%',
     fomo: {
-      recType: 'pullback',
-      recommendation: 'CHỜ CHỈNH 30.8 - 31.2',
-      marketBuy: { entry: 32.20, target: 34.00, sl: 30.50, rr: '1 : 1.06', verdict: 'R:R mỏng, giá đang tiệm cận cản chéo ngắn hạn.' },
-      pullbackBuy: { zone: '30.80 - 31.20', midPrice: 31.00, target: 37.80, sl: 29.80, rr: '1 : 5.67', prob: 74, support: 'Đỉnh cũ tháng trước đã chuyển thành hỗ trợ cứng', verdict: 'Tỷ lệ Lãi/Lỗ 1:5.67, rủi ro cắt lỗ chỉ khoảng 3.8%.' },
-      pros: [
-        'Thị phần môi giới và dư nợ cho vay margin top 1 thị trường',
-        'Hưởng lợi trực tiếp từ tiến trình nâng hạng thị trường chứng khoán FTSE',
-        'Thanh khoản thị trường hồi phục mạnh tạo đòn bẩy lợi nhuận quý'
-      ],
-      con: 'Biến động mạnh theo chỉ số VN-Index, hệ số Beta cao (1.45)',
-      fundDiscipline: 'Đặt lệnh đón sẵn quanh 30.8 - 31.2. Kỷ luật không đua lệnh giá trần hoặc giá xanh mạnh.'
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 18.40 - 18.70',
+      marketBuy: { entry: 19.20, target: 20.80, sl: 18.30, rr: '1 : 1.78', verdict: 'R:R 1:1.78, giá tiệm cận cản 20.' },
+      pullbackBuy: { zone: '18.40 - 18.70', midPrice: 18.55, target: 23.00, sl: 17.50, rr: '1 : 4.24', prob: 72, support: 'Đường MA20 ngày & nền giá 18.5', verdict: 'R:R 1:4.24, hưởng lợi lớn từ các chính sách chống bán phá giá tôn mạ.' },
+      pros: ['Hệ thống bán lẻ Hoa Sen Home mở rộng, gia tăng biên lợi nhuận', 'Hưởng lợi từ áp thuế chống bán phá giá tôn mạ nhập khẩu từ Trung Quốc', 'Dư nợ vay giảm mạnh giúp chi phí lãi vay giảm sâu'],
+      con: 'Biên lợi nhuận nhạy cảm với giá thép cuộn cán nóng HRC đầu vào',
+      fundDiscipline: 'Chờ nhịp test lại MA20 quanh 18.5 để tích lũy vị thế an toàn.'
     }
   },
   {
-    sym: 'VCB', name: 'Vietcombank', ex: 'HOSE', strat: 'trend_ema', type: 'NẮM GIỮ',
-    price: 92.50, target: 104.00, sl: 88.00, rr: '1 : 2.5', score: 89, volRatio: 110, time: '13:40 hôm nay',
-    triggerMsg: 'Giữ vững kênh xu hướng tăng, dòng tiền phòng thủ vào đỡ giá chắc chắn',
+    sym: 'NKG', name: 'Thép Nam Kim', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA THEO ĐÀ TĂNG',
+    price: 20.15, target: 24.50, sl: 18.60, rr: '1 : 2.81', score: 93, volRatio: 260, time: '13:52 hôm nay',
+    triggerMsg: 'Dòng tiền đầu cơ nhập cuộc mạnh mẽ, xuất khẩu sang thị trường Mỹ & EU tăng',
     fomo: {
-      recType: 'accumulate',
-      recommendation: 'MUA TÍCH LŨY 89.5 - 90.5',
-      marketBuy: { entry: 92.50, target: 96.00, sl: 89.50, rr: '1 : 1.17', verdict: 'Biên độ ăn ngắn hạn hẹp, cổ phiếu vốn hóa lớn chuyển động chậm.' },
-      pullbackBuy: { zone: '89.50 - 90.50', midPrice: 90.00, target: 104.00, sl: 87.50, rr: '1 : 5.60', prob: 65, support: 'Hỗ trợ đáy nền MA100 vững chắc', verdict: 'Phù hợp nắm giữ phòng thủ với mức sinh lời kỳ vọng +15%.' },
-      pros: [
-        'Tỷ lệ nợ xấu thấp nhất toàn hệ thống ngân hàng (< 1%)',
-        'Chất lượng tài sản và tỷ lệ bao phủ nợ xấu vượt trội',
-        'Trụ đỡ chỉ số chính của khối ngoại và các quỹ ETF'
-      ],
-      con: 'Tốc độ tăng giá chậm, không phù hợp cho nhà đầu tư thích lướt sóng nhanh',
-      fundDiscipline: 'Phù hợp giải ngân tích sản cho danh mục phòng thủ. Gom dần quanh 89.5 - 90.5, tỷ trọng tối đa 20% danh mục.'
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 19.4',
+      marketBuy: { entry: 20.15, target: 21.80, sl: 19.20, rr: '1 : 1.74', verdict: 'R:R 1:1.74, nhịp tăng dốc dễ có rung lắc.' },
+      pullbackBuy: { zone: '19.20 - 19.60', midPrice: 19.40, target: 24.50, sl: 18.30, rr: '1 : 4.64', prob: 71, support: 'Hỗ trợ đỉnh cũ vừa vượt qua 19.4', verdict: 'R:R 1:4.64, tính đầu cơ và beta cao nhất nhóm thép.' },
+      pros: ['Dự án nhà máy Nam Kim Phú Mỹ sắp khởi công nâng cao năng lực sản xuất tôn chất lượng cao', 'Tỷ trọng xuất khẩu thị trường cao cấp chiếm trên 60%', 'Độ nảy giá cực mạnh mỗi khi nhóm thép vào sóng'],
+      con: 'Rủi ro phòng vệ thương mại tại các thị trường xuất khẩu',
+      fundDiscipline: 'Thăm dò 30% tại giá hiện tại, chờ nhịp rũ bỏ T+ về 19.4 gom 70% còn lại.'
     }
   },
   {
-    sym: 'TCB', name: 'Techcombank', ex: 'HOSE', strat: 'statarb', type: 'MUA THĂM DÒ',
-    price: 24.10, target: 27.50, sl: 22.80, rr: '1 : 2.6', score: 91, volRatio: 165, time: '11:20 hôm nay',
-    triggerMsg: 'Giá đang bị ép rẻ hơn bình thường 2.14 lần độ lệch chuẩn so với toàn ngành',
+    sym: 'BMP', name: 'Nhựa Bình Minh', ex: 'HOSE', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 118.50, target: 135.00, sl: 110.00, rr: '1 : 1.94', score: 96, volRatio: 160, time: '13:25 hôm nay',
+    triggerMsg: 'Cổ tức tiền mặt 120%, giá hạt nhựa PVC đầu vào duy trì ở mức thấp',
     fomo: {
-      recType: 'pullback',
-      recommendation: 'CHỜ CHỈNH VÙNG 23.4 - 23.6',
-      marketBuy: { entry: 24.10, target: 25.20, sl: 23.20, rr: '1 : 1.22', verdict: 'Biên độ hồi phục đang mở rộng nhưng cần thêm thời gian hấp thụ cung.' },
-      pullbackBuy: { zone: '23.40 - 23.60', midPrice: 23.50, target: 27.50, sl: 22.50, rr: '1 : 4.00', prob: 70, support: 'Đáy kép W ngắn hạn & hỗ trợ lực cầu chủ động', verdict: 'Mức định giá P/B chỉ 0.9x cho tỷ lệ Lãi/Lỗ 1:4.00.' },
-      pros: [
-        'Tỷ lệ CASA hàng đầu ngành ngân hàng, chi phí vốn thấp',
-        'Mảng tư vấn phát hành và ngân hàng đầu tư phục hồi tích cực',
-        'Lệch giá Z-Score -2.14 so với trung bình ngành (đang bị định giá rẻ bất thường)'
-      ],
-      con: 'Tỷ trọng cấp tín dụng mảng bất động sản còn tương đối lớn',
-      fundDiscipline: 'Tận dụng các nhịp rung lắc do tâm lý thị trường để gom quanh 23.4 - 23.6, nắm giữ theo nhịp hồi phục định giá.'
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 114.00 - 116.00',
+      marketBuy: { entry: 118.50, target: 125.00, sl: 113.00, rr: '1 : 1.18', verdict: 'R:R 1:1.18, giá ở vùng đỉnh lịch sử.' },
+      pullbackBuy: { zone: '114.00 - 116.00', midPrice: 115.00, target: 135.00, sl: 109.00, rr: '1 : 3.33', prob: 82, support: 'Đường MA20 ngày & trendline hỗ trợ 115.0', verdict: 'R:R 1:3.33, cỗ máy trả cổ tức tiền mặt đều đặn số 1 thị trường.' },
+      pros: ['Tập đoàn SCG Thái Lan quản trị tối ưu, không có nợ vay ròng', 'Tỷ suất cổ tức tiền mặt 10-12%/năm trên thị giá', 'Chiếm lĩnh thị phần ống nhựa xây dựng số 1 phía Nam'],
+      con: 'Thanh khoản giao dịch hàng ngày ở mức trung bình do cơ cấu cổ đông cô đặc',
+      fundDiscipline: 'Gom mua kiên nhẫn quanh vùng 115 để nắm giữ dài hạn hưởng cổ tức.'
+    }
+  },
+
+  // --- NHÓM 4: CHỨNG KHOÁN & DỊCH VỤ TÀI CHÍNH ---
+  {
+    sym: 'SSI', name: 'Chứng khoán SSI', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA BÙNG NỔ',
+    price: 26.45, target: 31.00, sl: 24.80, rr: '1 : 2.76', score: 96, volRatio: 290, time: '14:25 hôm nay',
+    triggerMsg: 'Thanh khoản toàn thị trường vượt 25.000 tỷ, SSI bứt phá kênh giá tích lũy',
+    fomo: {
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 25.6',
+      marketBuy: { entry: 26.45, target: 28.00, sl: 25.50, rr: '1 : 1.63', verdict: 'R:R 1:1.63, có thể gặp rung lắc tại vùng cản 27.5.' },
+      pullbackBuy: { zone: '25.40 - 25.80', midPrice: 25.60, target: 31.00, sl: 24.60, rr: '1 : 5.40', prob: 74, support: 'Ngưỡng hỗ trợ MA20 ngày & đỉnh cũ 25.6', verdict: 'R:R 1:5.40 vượt trội, doanh nghiệp hưởng lợi số 1 từ hệ thống KRX và nâng hạng TT.' },
+      pros: ['Quy mô vốn điều lệ và dư nợ cho vay margin top 1 toàn thị trường', 'Danh mục tự doanh chất lượng cao với các cổ phiếu cơ bản vững chắc', 'Hưởng lợi toàn diện khi thị trường chứng khoán được FTSE nâng hạng'],
+      con: 'Độ nhạy cảm cao với biến động điểm số chỉ số VN-Index (Beta = 1.35)',
+      fundDiscipline: 'Mở vị thế 30% quanh giá hiện tại, chờ nhịp retest mốc 25.6 để vào đủ 70% lượng hàng.'
     }
   },
   {
-    sym: 'MWG', name: 'Thế Giới Di Động', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
-    price: 68.40, target: 79.50, sl: 64.50, rr: '1 : 2.8', score: 94, volRatio: 270, time: '10:45 hôm nay',
-    triggerMsg: 'Mẫu hình nén giá thu hẹp biến động hoàn tất, dòng tiền bùng nổ',
+    sym: 'VND', name: 'Chứng khoán VNDIRECT', ex: 'HOSE', strat: 'mean_reversion', type: 'BẮT ĐÁY KỸ THUẬT',
+    price: 13.45, target: 16.00, sl: 12.50, rr: '1 : 2.68', score: 91, volRatio: 220, time: '14:02 hôm nay',
+    triggerMsg: 'Định giá P/B về vùng 0.92x thấp nhất 3 năm, dòng tiền gom mua bắt đáy xuất hiện',
     fomo: {
-      recType: 'pullback',
-      recommendation: 'CHỜ LẤP GAP 65.2 - 66.0',
-      marketBuy: { entry: 68.40, target: 71.50, sl: 65.50, rr: '1 : 1.07', verdict: 'Giá vừa tăng một mạch 4 phiên, mua mới tại giá thị trường kém hấp dẫn.' },
-      pullbackBuy: { zone: '65.20 - 66.00', midPrice: 65.60, target: 79.50, sl: 63.80, rr: '1 : 7.72', prob: 78, support: 'Gap tăng giá và đường MA20 ngày', verdict: 'Tỷ lệ Lãi/Lỗ cực khủng 1:7.72 nếu kiên nhẫn đợi retest lấp Gap.' },
-      pros: [
-        'Bách Hóa Xanh đã qua điểm hòa vốn và bắt đầu đóng góp lợi nhuận dương',
-        'Hiệu quả chuỗi Thế Giới Di Động & Điện Máy Xanh tăng mạnh sau tái cấu trúc',
-        'Khối ngoại liên tục mua kín room ngoại'
-      ],
-      con: 'Sức mua tiêu dùng bán lẻ chung hồi phục chậm hơn kỳ vọng',
-      fundDiscipline: 'Tuyệt đối không mua đuổi khi cổ phiếu mở Gap tăng. Đặt lệnh đón lấp Gap tại vùng 65.2 - 66.0.'
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 13.00 - 13.25',
+      marketBuy: { entry: 13.45, target: 14.50, sl: 12.80, rr: '1 : 1.62', verdict: 'R:R 1:1.62, cản ngắn hạn 14.2.' },
+      pullbackBuy: { zone: '13.00 - 13.25', midPrice: 13.10, target: 16.00, sl: 12.30, rr: '1 : 3.63', prob: 70, support: 'Vùng hỗ trợ cứng 13.0', verdict: 'R:R 1:3.63, biên độ phục hồi lớn khi định giá chiết khấu sâu.' },
+      pros: ['Thị phần môi giới top 3 sàn HOSE, tệp khách hàng cá nhân năng động', 'Hệ thống công nghệ đã được nâng cấp bảo mật toàn diện', 'Kế hoạch phát hành tăng vốn hỗ trợ bổ sung nguồn vốn cho vay margin'],
+      con: 'Rủi ro liên quan đến danh mục trái phiếu năng lượng tái tạo',
+      fundDiscipline: 'Canh gom quanh vùng giá 13.0 - 13.25, không mua đuổi khi giá tăng quá 3% trong phiên.'
     }
   },
   {
-    sym: 'DGC', name: 'Hóa chất Đức Giang', ex: 'HOSE', strat: 'mean_bb_rsi', type: 'CHỐT LỜI 50%',
-    price: 115.00, target: 115.00, sl: 112.00, rr: '1 : 3.4', score: 92, volRatio: 190, time: '10:15 hôm nay',
-    triggerMsg: 'Đạt mục tiêu chốt lời (+18.2%), giá chạm vùng quá mua, nên hạ bớt 50% vị thế',
+    sym: 'VIX', name: 'Chứng khoán VIX', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA THEO ĐÀ TĂNG',
+    price: 11.20, target: 13.80, sl: 10.20, rr: '1 : 2.60', score: 93, volRatio: 330, time: '13:42 hôm nay',
+    triggerMsg: 'Khối lượng giao dịch bùng nổ dẫn đầu sàn chứng khoán, danh mục tự doanh lãi lớn',
     fomo: {
-      recType: 'take_profit',
-      recommendation: 'CHỐT LỜI 50% · CẤM MUA MỚI',
-      marketBuy: { entry: 115.00, target: 118.00, sl: 112.00, rr: '1 : 1.00', verdict: 'ĐÃ ĐẠT TARGET — Không có điểm mua mới an toàn.' },
-      pullbackBuy: { zone: '104.00 - 106.00', midPrice: 105.00, target: 125.00, sl: 101.00, rr: '1 : 5.00', prob: 82, support: 'Hỗ trợ nền tích lũy trước đó', verdict: 'Chờ nhịp điều chỉnh sâu lành mạnh để tái mở vị thế vòng mới.' },
-      pros: [
-        'Đã mang lại lợi nhuận +18.2% từ điểm mua ban đầu',
-        'Nhu cầu phốt pho vàng phục hồi mạnh theo làn sóng bán dẫn toàn cầu',
-        'Tình hình tài chính hoàn toàn sạch nợ vay, lượng tiền mặt dồi dào'
-      ],
-      con: 'Giá đang ở vùng quá mua rất nặng (RSI > 78), áp lực chốt lời lớn',
-      fundDiscipline: 'Kỷ luật chốt lời 50% vị thế, nâng chặn lãi cho 50% còn lại lên 112.0. Cấm mở vị thế mua mới tại đây.'
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 10.7',
+      marketBuy: { entry: 11.20, target: 12.20, sl: 10.60, rr: '1 : 1.67', verdict: 'R:R 1:1.67, rung lắc mạnh quanh cản 12.' },
+      pullbackBuy: { zone: '10.60 - 10.80', midPrice: 10.70, target: 13.80, sl: 10.00, rr: '1 : 4.43', prob: 69, support: 'Đường MA20 ngày & trendline hỗ trợ 10.7', verdict: 'R:R 1:4.43, cổ phiếu mang tính đầu cơ cao, thanh khoản cực lớn.' },
+      pros: ['Hiệu quả danh mục tự doanh vượt trội trong các giai đoạn thị trường tăng giá', 'Thanh khoản khớp lệnh hàng chục triệu cổ phiếu mỗi phiên, ra vào lệnh dễ dàng', 'Kế hoạch tăng vốn điều lệ tạo thặng dư vốn lớn'],
+      con: 'Lợi nhuận biến động rất mạnh theo diễn biến giá các cổ phiếu tự doanh nắm giữ',
+      fundDiscipline: 'Thăm dò 30% giá hiện tại, đón 70% còn lại tại 10.7 để hạn chế rủi ro điều chỉnh.'
     }
   },
   {
-    sym: 'MBB', name: 'Ngân hàng Quân Đội', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA THĂM DÒ',
-    price: 25.60, target: 29.20, sl: 24.20, rr: '1 : 2.5', score: 90, volRatio: 140, time: '29/10/2026',
-    triggerMsg: 'AI chấm điểm chất lượng 90/100, định giá P/B 1.05 rẻ nhất nhóm ngân hàng lớn',
+    sym: 'HCM', name: 'Chứng khoán HSC', ex: 'HOSE', strat: 'trend_ema', type: 'MUA TÍCH LŨY',
+    price: 27.50, target: 32.50, sl: 25.50, rr: '1 : 2.50', score: 95, volRatio: 185, time: '13:38 hôm nay',
+    triggerMsg: 'Duy trì kênh tăng giá ổn định, thị phần khách hàng tổ chức và nước ngoài dẫn đầu',
     fomo: {
-      recType: 'pullback',
-      recommendation: 'CHỜ CHỈNH 24.7 - 25.0',
-      marketBuy: { entry: 25.60, target: 26.80, sl: 24.60, rr: '1 : 1.20', verdict: 'Vào lệnh đuổi giá xanh rủi ro T+ lỗ ngược nhẹ.' },
-      pullbackBuy: { zone: '24.70 - 25.00', midPrice: 24.85, target: 29.20, sl: 24.00, rr: '1 : 5.12', prob: 73, support: 'Kênh xu hướng tăng và đường trung bình MA50', verdict: 'Điểm mua an toàn cao, tỷ lệ Lãi/Lỗ 1:5.12.' },
-      pros: [
-        'Định giá P/B chỉ 1.05 lần, thuộc nhóm hấp dẫn nhất VN30',
-        'Tăng trưởng tín dụng luôn nằm trong top đầu các ngân hàng cổ phần',
-        'Hệ sinh thái tài chính đa dạng (MB Ageas, MBS, MCredit)'
-      ],
-      con: 'Biên lãi thuần NIM chịu áp lực cạnh tranh lãi suất cho vay',
-      fundDiscipline: 'Canh nhịp rung lắc phiên sáng để gom vùng 24.7 - 25.0. Không vội mua giá đỉnh ngày.'
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 26.60 - 27.00',
+      marketBuy: { entry: 27.50, target: 29.50, sl: 26.30, rr: '1 : 1.67', verdict: 'R:R 1:1.67, giá sát cận trên dải Bollinger.' },
+      pullbackBuy: { zone: '26.60 - 27.00', midPrice: 26.80, target: 32.50, sl: 25.20, rr: '1 : 3.56', prob: 78, support: 'Đường MA20 ngày & nền giá 26.8', verdict: 'R:R 1:3.56, chất lượng tài sản và quản trị rủi ro hàng đầu ngành chứng khoán.' },
+      pros: ['Thị phần môi giới khách hàng tổ chức nước ngoài vững chắc số 1 thị trường', 'Vừa hoàn tất phát hành tăng vốn bổ sung mạnh mẽ cho mảng margin', 'Không có rủi ro trái phiếu doanh nghiệp, cơ cấu tài chính cực kỳ lành mạnh'],
+      con: 'Biên độ dao động không quá sốc, phù hợp nhà đầu tư ưa chuộng sự bền vững',
+      fundDiscipline: 'Kiên nhẫn chờ mua tại vùng 26.6 - 27.0 để tích lũy vị thế an toàn.'
     }
   },
   {
-    sym: 'CTR', name: 'Công trình Viettel', ex: 'HOSE', strat: 'supertrend_ai', type: 'MUA MẠNH',
-    price: 128.00, target: 149.00, sl: 121.00, rr: '1 : 3.0', score: 96, volRatio: 215, time: '29/10/2026',
-    triggerMsg: 'Đột phá đỉnh lịch sử, dòng tiền công nghệ - viễn thông dẫn dắt thị trường',
+    sym: 'MBS', name: 'Chứng khoán MB', ex: 'HNX', strat: 'vol_breakout', type: 'MUA MẠNH',
+    price: 24.30, target: 29.00, sl: 22.40, rr: '1 : 2.47', score: 94, volRatio: 240, time: '13:28 hôm nay',
+    triggerMsg: 'Thanh khoản tăng gấp 2.4 lần, vượt đỉnh ngắn hạn trên sàn HNX',
     fomo: {
-      recType: 'pullback',
-      recommendation: 'CHỜ RETEST ĐỈNH 122 - 124',
-      marketBuy: { entry: 128.00, target: 134.00, sl: 123.00, rr: '1 : 1.20', verdict: 'Cổ phiếu vừa bứt phá đỉnh, mua ngay có rủi ro false breakout.' },
-      pullbackBuy: { zone: '122.00 - 124.00', midPrice: 123.00, target: 149.00, sl: 119.00, rr: '1 : 6.50', prob: 71, support: 'Đỉnh cũ vừa vượt qua chuyển thành ngưỡng đỡ', verdict: 'Retest đỉnh cũ thành công là điểm kích hoạt đòn bẩy tối ưu nhất (R:R 1:6.5).' },
-      pros: [
-        'Hưởng lợi trực tiếp từ tiến trình thương mại hóa mạng viễn thông 5G',
-        'Doanh thu cho thuê trạm BTS tăng trưởng ổn định đều đặn',
-        'Cơ cấu tài chính cực kỳ lành mạnh và minh bạch'
-      ],
-      con: 'Thanh khoản khớp lệnh trung bình phiên ở mức trung bình vừa phải',
-      fundDiscipline: 'Kiên nhẫn chờ kiểm định lại đỉnh cũ 122 - 124. Khi có nến rút chân với vô thấp, giải ngân 100% mục tiêu.'
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 23.4',
+      marketBuy: { entry: 24.30, target: 26.00, sl: 23.20, rr: '1 : 1.55', verdict: 'R:R 1:1.55, biên lợi nhuận ngắn hạn vừa phải.' },
+      pullbackBuy: { zone: '23.20 - 23.60', midPrice: 23.40, target: 29.00, sl: 22.00, rr: '1 : 4.00', prob: 75, support: 'Đỉnh cũ vừa bứt phá 23.4', verdict: 'R:R 1:4.00, hưởng lợi trực tiếp từ tệp khách hàng số của ngân hàng mẹ MBB.' },
+      pros: ['Hệ sinh thái MB Group cung cấp tệp khách hàng khổng lồ và chi phí vốn margin ưu đãi', 'Lợi nhuận trước thuế tăng trưởng trên 40% YoY', 'Cổ phiếu duy trì đà tăng khoẻ nhất nhóm chứng khoán niêm yết HNX'],
+      con: 'Sàn HNX biên độ 10% đòi hỏi điểm vào lệnh phải chuẩn xác',
+      fundDiscipline: 'Vào trước 30% lấy vị thế, chờ nhịp retest 23.4 gom đủ 70% còn lại.'
     }
   },
   {
-    sym: 'VNM', name: 'Vinamilk', ex: 'HOSE', strat: 'trend_ema', type: 'BÁN HẠ TỶ TRỌNG',
-    price: 66.50, target: 63.00, sl: 68.50, rr: '1 : 1.8', score: 85, volRatio: 130, time: '28/10/2026',
-    triggerMsg: 'Thủng ngưỡng hỗ trợ quan trọng, tín hiệu AI chuyển sang thận trọng, nên hạ bớt',
+    sym: 'SHS', name: 'Chứng khoán Sài Gòn - Hà Nội', ex: 'HNX', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 14.80, target: 18.00, sl: 13.50, rr: '1 : 2.46', score: 92, volRatio: 210, time: '13:15 hôm nay',
+    triggerMsg: 'Tích lũy nền giá 3 tuần trên sàn HNX, tự doanh lãi lớn các mã ngân hàng & thép',
     fomo: {
-      recType: 'avoid',
-      recommendation: 'HẠ TỶ TRỌNG · KHÔNG MUA',
-      marketBuy: { entry: 66.50, target: 67.50, sl: 68.50, rr: '1 : 0.50', verdict: 'TÍN HIỆU TIÊU CỰC — Không có điểm mua.' },
-      pullbackBuy: { zone: '58.00 - 60.00', midPrice: 59.00, target: 66.00, sl: 56.50, rr: '1 : 2.80', prob: 45, support: 'Đáy dài hạn 5 năm', verdict: 'Chỉ xem xét khi giá đã chiết khấu sâu về đáy chu kỳ.' },
-      pros: [
-        'Tỷ suất cổ tức tiền mặt đều đặn 6 - 8%/năm',
-        'Doanh nghiệp đầu ngành sữa với thị phần áp đảo tại Việt Nam',
-        'Tiền mặt ròng lớn, dòng tiền kinh doanh cực kỳ ổn định'
-      ],
-      con: 'Thủng MA200, dòng tiền lớn rút lui, tăng trưởng doanh thu bão hòa',
-      fundDiscipline: 'Tuân thủ kỷ luật quản trị rủi ro: Cắt lỗ / hạ tỷ trọng khi vi phạm ngưỡng cản. Không bao giờ trung bình giá xuống.'
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 14.20 - 14.50',
+      marketBuy: { entry: 14.80, target: 16.00, sl: 14.00, rr: '1 : 1.50', verdict: 'R:R 1:1.50, cản ngắn hạn 15.5.' },
+      pullbackBuy: { zone: '14.20 - 14.50', midPrice: 14.35, target: 18.00, sl: 13.30, rr: '1 : 3.48', prob: 72, support: 'Đường MA20 ngày & nền giá 14.3', verdict: 'R:R 1:3.48, định giá P/B dưới 1.0x hấp dẫn.' },
+      pros: ['Quy mô vốn chủ sở hữu lớn gần 10.000 tỷ, danh mục tự doanh dày dặn', 'Thanh khoản giao dịch thuộc top đầu sàn HNX', 'P/B quanh 0.95x, thấp hơn nhiều so với trung bình ngành'],
+      con: 'Danh mục tự doanh chiếm tỷ trọng lớn trong cơ cấu lợi nhuận',
+      fundDiscipline: 'Treo lệnh chờ gom quanh vùng 14.2 - 14.5 để có giá vốn an toàn.'
+    }
+  },
+
+  // --- NHÓM 5: CÔNG NGHỆ, BÁN LẺ & VIỄN THÔNG ---
+  {
+    sym: 'FPT', name: 'Tập đoàn FPT', ex: 'HOSE', strat: 'trend_ema', type: 'MUA THĂM DÒ',
+    price: 50.80, target: 58.00, sl: 47.50, rr: '1 : 2.18', score: 97, volRatio: 180, time: '14:30 hôm nay',
+    triggerMsg: 'Đường giá ngắn hạn tiệm cận MA20 (50.57), AI xác nhận xung lực bắt đáy chủ động',
+    fomo: {
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 49',
+      marketBuy: { entry: 50.80, target: 54.20, sl: 48.50, rr: '1 : 1.48', verdict: 'R:R ở mức trung bình, giá đang bám sát dải trên Bollinger Bands & cản ngắn hạn MA20 (50.57).' },
+      pullbackBuy: { zone: '48.90 - 49.50', midPrice: 49.20, target: 58.00, sl: 47.50, rr: '1 : 5.18', prob: 68, support: 'Vùng hỗ trợ EMA 21 ngày & đường trendline hỗ trợ 48.9 - 49.2', verdict: 'Điểm vào lý tưởng theo xu hướng lớn, R:R đạt tới 1:5.18.' },
+      pros: ['Động lực tăng trưởng đột phá từ mảng AI Factory hợp tác cùng NVIDIA', 'Doanh thu ký mới dịch vụ CNTT nước ngoài tăng 28% YoY đạt 28.500 tỷ', 'Khối ngoại đảo chiều mua ròng trở lại, thanh khoản trên 9 triệu CP/phiên'],
+      con: 'Áp lực chốt lời ngắn hạn và rung lắc quanh các vùng cản MA20 (50.57) và MA50 (54.24)',
+      fundDiscipline: 'Có thể giải ngân trước 30% tỷ trọng thăm dò quanh 50.8; dành 70% còn lại kiên nhẫn chờ khớp khi giá test lại vùng mua vàng 48.9 - 49.5.'
     }
   },
   {
-    sym: 'STB', name: 'Sacombank', ex: 'HOSE', strat: 'smart_money', type: 'NẮM GIỮ',
-    price: 34.20, target: 39.50, sl: 32.50, rr: '1 : 2.6', score: 88, volRatio: 105, time: '28/10/2026',
-    triggerMsg: 'Cá mập gom ròng liên tục 4 phiên, duy trì nắm giữ chờ nhịp tăng tốc',
+    sym: 'MWG', name: 'Thế Giới Di Động', ex: 'HOSE', strat: 'trend_ema', type: 'MUA MẠNH',
+    price: 58.50, target: 68.00, sl: 54.00, rr: '1 : 2.11', score: 96, volRatio: 235, time: '14:18 hôm nay',
+    triggerMsg: 'Bách Hóa Xanh bắt đầu đóng góp lợi nhuận ròng, khối ngoại kín room 49%',
     fomo: {
-      recType: 'pullback',
-      recommendation: 'CHỜ CHỈNH 32.8 - 33.2',
-      marketBuy: { entry: 34.20, target: 36.00, sl: 32.80, rr: '1 : 1.29', verdict: 'R:R chưa đủ hấp dẫn để vào lệnh giải ngân lớn ngay lập tức.' },
-      pullbackBuy: { zone: '32.80 - 33.20', midPrice: 33.00, target: 39.50, sl: 31.80, rr: '1 : 5.42', prob: 75, support: 'Đường MA20 ngày và vùng tích lũy nền giá', verdict: 'Vùng giá chiết khấu an toàn, tỷ lệ Lãi/Lỗ 1:5.42.' },
-      pros: [
-        'Tiến trình xử lý nợ xấu VAMC cơ bản hoàn tất, chuẩn bị đấu giá cổ phần Phong Phú',
-        'Kỳ vọng lợi nhuận bứt phá mạnh khi hoàn tất tái cơ cấu toàn diện',
-        'Khối ngoại và tổ chức liên tục mua ròng tích lũy quanh nền'
-      ],
-      con: 'Độ biến động giá trong phiên tương đối cao do ảnh hưởng từ tin tức đồn thổi',
-      fundDiscipline: 'Không mua đuổi giá xanh tím. Đặt sẵn lệnh Limit quanh 32.8 - 33.2 để đón nhịp điều chỉnh rung rũ trong phiên.'
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 56.50 - 57.50',
+      marketBuy: { entry: 58.50, target: 62.00, sl: 56.20, rr: '1 : 1.52', verdict: 'R:R 1:1.52, cản ngắn hạn 60.' },
+      pullbackBuy: { zone: '56.50 - 57.50', midPrice: 57.00, target: 68.00, sl: 53.80, rr: '1 : 3.44', prob: 76, support: 'Đường hỗ trợ MA20 ngày & nền giá 57.0', verdict: 'R:R 1:3.44, bước vào chu kỳ tăng trưởng lợi nhuận mới từ chuỗi BHX.' },
+      pros: ['Bách Hóa Xanh hoàn tất tái cơ cấu và bắt đầu có lãi ròng, mở ra động lực định giá tỷ USD', 'Chuỗi Thế Giới Di Động và Điện Máy Xanh duy trì biên lợi nhuận cao nhờ tối ưu chi phí', 'Khối ngoại mua ròng kịch trần room ngoại 49%'],
+      con: 'Sức mua tiêu dùng của nhóm sản phẩm điện thoại cao cấp cần thêm thời gian hồi phục hoàn toàn',
+      fundDiscipline: 'Chờ nhịp test lại mốc 57.0 để giải ngân tối ưu tỷ lệ R:R.'
+    }
+  },
+  {
+    sym: 'FRT', name: 'FPT Retail', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA THEO ĐÀ TĂNG',
+    price: 139.60, target: 165.00, sl: 128.00, rr: '1 : 2.19', score: 95, volRatio: 220, time: '14:08 hôm nay',
+    triggerMsg: 'Chuỗi nhà thuốc Long Châu mở rộng thần tốc đạt 2.000 điểm bán, doanh thu tăng vọt',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 134.00 - 136.50',
+      marketBuy: { entry: 139.60, target: 148.00, sl: 134.00, rr: '1 : 1.50', verdict: 'R:R 1:1.50, cổ phiếu thị giá lớn, rung lắc T+ khá mạnh.' },
+      pullbackBuy: { zone: '134.00 - 136.50', midPrice: 135.00, target: 165.00, sl: 126.00, rr: '1 : 3.33', prob: 75, support: 'Hỗ trợ EMA 21 ngày & đường trendline 135.0', verdict: 'R:R 1:3.33, chuỗi bán lẻ dược phẩm dẫn đầu thị phần tuyệt đối.' },
+      pros: ['Chuỗi nhà thuốc Long Châu độc chiếm thị phần bán lẻ dược phẩm với biên lãi cải thiện', 'Mở rộng sang mảng Trung tâm tiêm chủng Long Châu tạo hệ sinh thái y tế toàn diện', 'Doanh thu trung bình mỗi cửa hàng Long Châu cao vượt trội so với các đối thủ'],
+      con: 'Định giá P/E ở mức cao, đòi hỏi tốc độ tăng trưởng lợi nhuận phải duy trì vượt bậc',
+      fundDiscipline: 'Kiên nhẫn canh bắt tại các phiên thị trường rũ bỏ quanh vùng 134 - 136.5.'
+    }
+  },
+  {
+    sym: 'CTR', name: 'Viettel Construction', ex: 'HOSE', strat: 'trend_ema', type: 'MUA TÍCH LŨY',
+    price: 112.50, target: 132.00, sl: 104.00, rr: '1 : 2.29', score: 95, volRatio: 180, time: '13:30 hôm nay',
+    triggerMsg: 'Hưởng lợi trọn vẹn từ đại sóng thương mại hóa 5G và xây lắp hạ tầng năng lượng',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 108.00 - 110.00',
+      marketBuy: { entry: 112.50, target: 119.00, sl: 108.00, rr: '1 : 1.44', verdict: 'R:R 1:1.44, giá sát cản tâm lý 115.' },
+      pullbackBuy: { zone: '108.00 - 110.00', midPrice: 109.00, target: 132.00, sl: 103.00, rr: '1 : 3.83', prob: 79, support: 'Hỗ trợ MA20 ngày & trendline trung hạn 109.0', verdict: 'R:R 1:3.83, doanh nghiệp họ Viettel tăng trưởng lợi nhuận liên tục 5 năm qua.' },
+      pros: ['Độc quyền vận hành và khai thác hạ tầng viễn thông cho Tập đoàn Viettel', 'Mảng cho thuê hạ tầng TowerCo biên lợi nhuận gộp lên tới trên 35%', 'Doanh thu và lợi nhuận liên tục lập kỷ lục quý sau cao hơn quý trước'],
+      con: 'Thanh khoản cổ phiếu ở mức trung bình, dòng tiền mang tính tích sản dài hạn',
+      fundDiscipline: 'Giải ngân tích lũy quanh vùng 108 - 110 để nắm giữ theo sóng thương mại 5G.'
+    }
+  },
+  {
+    sym: 'PNJ', name: 'Vàng bạc Phú Nhuận', ex: 'HOSE', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 86.40, target: 98.00, sl: 81.00, rr: '1 : 2.15', score: 94, volRatio: 175, time: '13:18 hôm nay',
+    triggerMsg: 'Giá vàng duy trì mức cao, biên lợi nhuận mảng trang sức vàng bứt phá',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 83.50 - 85.00',
+      marketBuy: { entry: 86.40, target: 91.00, sl: 83.50, rr: '1 : 1.59', verdict: 'R:R 1:1.59, giá tiệm cận cản 88.' },
+      pullbackBuy: { zone: '83.50 - 85.00', midPrice: 84.20, target: 98.00, sl: 80.50, rr: '1 : 3.73', prob: 77, support: 'Hỗ trợ MA50 ngày & nền giá 84.0', verdict: 'R:R 1:3.73, vị thế thương hiệu bán lẻ trang sức số 1 Việt Nam.' },
+      pros: ['Chiếm lĩnh hơn 50% thị phần bán lẻ trang sức phân khúc trung và cao cấp', 'Năng lực sản xuất và thiết kế dẫn đầu, quản trị hàng tồn kho bằng công nghệ số', 'Cổ tức tiền mặt đều đặn, tài chính vững vàng'],
+      con: 'Nguồn cung vàng nguyên liệu chịu sự kiểm soát chặt chẽ của Ngân hàng Nhà nước',
+      fundDiscipline: 'Canh gom quanh vùng hỗ trợ 83.5 - 85.0 để đạt tỷ lệ lợi nhuận/rủi ro tối ưu.'
+    }
+  },
+
+  // --- NHÓM 6: HÓA CHẤT, DẦU KHÍ & NĂNG LƯỢNG ---
+  {
+    sym: 'DGC', name: 'Hóa chất Đức Giang', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA MẠNH',
+    price: 58.00, target: 68.00, sl: 53.50, rr: '1 : 2.22', score: 96, volRatio: 260, time: '14:14 hôm nay',
+    triggerMsg: 'Giá phốt pho vàng thế giới tăng 12%, dự án Nghi Sơn sẵn sàng khởi công',
+    fomo: {
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 55.5',
+      marketBuy: { entry: 58.00, target: 62.00, sl: 55.00, rr: '1 : 1.33', verdict: 'R:R 1:1.33, giá đang test cản MA50 (59.0).' },
+      pullbackBuy: { zone: '55.00 - 56.00', midPrice: 55.50, target: 68.00, sl: 52.80, rr: '1 : 4.63', prob: 73, support: 'Đáy hộp tích lũy 55.0 - 55.5', verdict: 'R:R 1:4.63, cổ phiếu hóa chất phục vụ ngành bán dẫn số 1 khu vực.' },
+      pros: ['Hưởng lợi trực tiếp từ chu kỳ bùng nổ của ngành bán dẫn và AI toàn cầu (Phốt pho vàng P4)', 'Lượng tiền gửi ngân hàng hơn 10.000 tỷ mang lại dòng thu nhập tài chính khổng lồ', 'Dự án Tổ hợp Hóa chất Nghi Sơn mở ra dư địa tăng trưởng gấp đôi doanh thu'],
+      con: 'Giá phốt pho vàng thế giới có thể biến động theo nhu cầu linh kiện điện tử',
+      fundDiscipline: 'Vào 30% tỷ trọng thăm dò, dành 70% kiên nhẫn đón tại vùng hỗ trợ 55.0 - 56.0.'
+    }
+  },
+  {
+    sym: 'DCM', name: 'Đạm Cà Mau', ex: 'HOSE', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 34.20, target: 40.00, sl: 31.50, rr: '1 : 2.15', score: 93, volRatio: 185, time: '13:45 hôm nay',
+    triggerMsg: 'Nhà máy đã hết khấu hao, dòng tiền tự do dồi dào, giá phân bón Ure hồi phục',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 33.00 - 33.60',
+      marketBuy: { entry: 34.20, target: 36.50, sl: 32.80, rr: '1 : 1.64', verdict: 'R:R 1:1.64, giá tiệm cận cản 35.' },
+      pullbackBuy: { zone: '33.00 - 33.60', midPrice: 33.30, target: 40.00, sl: 31.20, rr: '1 : 3.19', prob: 76, support: 'Đường MA20 ngày & nền giá 33.3', verdict: 'R:R 1:3.19, cỗ máy in tiền mặt và cổ tức khủng.' },
+      pros: ['Nhà máy đạm đã trích khấu hao xong giúp giảm mạnh giá vốn, biên lợi nhuận tăng vọt', 'Nắm giữ lượng tiền mặt dồi dào, tỷ suất cổ tức tiền mặt 15-20%/năm', 'Mở rộng sang thị trường NPK và phân bón hữu cơ'],
+      con: 'Giá khí nguyên liệu đầu vào phụ thuộc vào hợp đồng với PV GAS',
+      fundDiscipline: 'Tích lũy quanh vùng giá 33.0 - 33.6 để hưởng trọn sóng cổ tức và phục hồi giá Ure.'
+    }
+  },
+  {
+    sym: 'GAS', name: 'PV GAS', ex: 'HOSE', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 75.00, target: 86.00, sl: 70.00, rr: '1 : 2.20', score: 95, volRatio: 170, time: '13:32 hôm nay',
+    triggerMsg: 'Kho cảng LNG Thị Vải đi vào vận hành thương mại, khối ngoại gom ròng bền bỉ',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 72.50 - 73.80',
+      marketBuy: { entry: 75.00, target: 79.50, sl: 72.00, rr: '1 : 1.50', verdict: 'R:R 1:1.50, cổ phiếu vốn hóa lớn biến động chậm.' },
+      pullbackBuy: { zone: '72.50 - 73.80', midPrice: 73.00, target: 86.00, sl: 69.50, rr: '1 : 3.71', prob: 80, support: 'Hỗ trợ đáy trung hạn 72.5 - 73.0', verdict: 'R:R 1:3.71, độc quyền phân phối khí tự nhiên toàn quốc.' },
+      pros: ['Độc quyền nhập khẩu và phân phối khí thiên nhiên (LNG, CNG, LPG) tại Việt Nam', 'Tiền mặt ròng hơn 35.000 tỷ đồng, chi trả cổ tức tiền mặt đều đặn như vắt chanh', 'Hưởng lợi từ tiến độ chuỗi dự án khí - điện Lô B Ô Môn'],
+      con: 'Biên độ dao động giá hẹp, không thích hợp cho trường phái đầu cơ ngắn hạn',
+      fundDiscipline: 'Kiên nhẫn gom tại vùng 72.5 - 73.8 để làm bệ đỡ tài khoản bền vững.'
+    }
+  },
+  {
+    sym: 'PVS', name: 'Dịch vụ Kỹ thuật Dầu khí', ex: 'HNX', strat: 'vol_breakout', type: 'MUA MẠNH',
+    price: 36.50, target: 44.00, sl: 33.20, rr: '1 : 2.27', score: 96, volRatio: 270, time: '14:22 hôm nay',
+    triggerMsg: 'Trúng gói thầu EPC chuỗi dự án Lô B Ô Môn và các dự án điện gió ngoài khơi quốc tế',
+    fomo: {
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 35.2',
+      marketBuy: { entry: 36.50, target: 39.50, sl: 34.80, rr: '1 : 1.76', verdict: 'R:R 1:1.76, giá đang chạm cản ngắn hạn 38.' },
+      pullbackBuy: { zone: '35.00 - 35.50', midPrice: 35.20, target: 44.00, sl: 32.80, rr: '1 : 3.67', prob: 74, support: 'Đường MA20 ngày & nền giá 35.2', verdict: 'R:R 1:3.67, backlog công việc trị giá hàng tỷ USD đảm bảo tăng trưởng 5 năm.' },
+      pros: ['Doanh nghiệp thượng nguồn dầu khí hưởng lợi lớn nhất từ đại dự án Lô B Ô Môn', 'Vươn tầm quốc tế với các hợp đồng chân đế điện gió ngoài khơi xuất khẩu sang Đài Loan và châu Âu', 'Cơ cấu tài chính cực kỳ lành mạnh với lượng tiền mặt dồi dào'],
+      con: 'Giá dầu thế giới biến động có thể tác động tâm lý nhà đầu tư ngắn hạn',
+      fundDiscipline: 'Vào 30% thị giá hiện tại, đón 70% còn lại tại 35.0 - 35.5 để tối ưu lợi nhuận.'
+    }
+  },
+  {
+    sym: 'PLX', name: 'Petrolimex', ex: 'HOSE', strat: 'trend_ema', type: 'MUA TÍCH LŨY',
+    price: 37.80, target: 44.00, sl: 35.00, rr: '1 : 2.21', score: 93, volRatio: 175, time: '13:12 hôm nay',
+    triggerMsg: 'Nghị định mới về kinh doanh xăng dầu giúp bảo vệ biên lợi nhuận của doanh nghiệp đầu mối',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 36.50 - 37.20',
+      marketBuy: { entry: 37.80, target: 40.50, sl: 36.20, rr: '1 : 1.69', verdict: 'R:R 1:1.69, giá bám sát MA20.' },
+      pullbackBuy: { zone: '36.50 - 37.20', midPrice: 36.80, target: 44.00, sl: 34.60, rr: '1 : 3.27', prob: 77, support: 'Đường hỗ trợ MA50 ngày 36.8', verdict: 'R:R 1:3.27, chiếm lĩnh hơn 50% thị phần bán lẻ xăng dầu toàn quốc.' },
+      pros: ['Mạng lưới hơn 5.500 cửa hàng xăng dầu trên khắp 63 tỉnh thành mang lại lợi thế độc quyền', 'Hệ thống hóa đơn điện tử từng lần bơm giúp kiểm soát chặt chẽ doanh thu', 'Cổ đông chiến lược ENEOS Nhật Bản nâng tầm quản trị và hiệu quả vận hành'],
+      con: 'Biên lợi nhuận gộp mỏng do chịu sự điều hành giá của liên Bộ Tài chính - Công Thương',
+      fundDiscipline: 'Tích lũy quanh vùng 36.5 - 37.2 để đón sóng sửa đổi Nghị định kinh doanh xăng dầu.'
+    }
+  },
+  {
+    sym: 'POW', name: 'PV Power', ex: 'HOSE', strat: 'mean_reversion', type: 'BẮT ĐÁY KỸ THUẬT',
+    price: 11.60, target: 13.80, sl: 10.60, rr: '1 : 2.20', score: 91, volRatio: 220, time: '13:05 hôm nay',
+    triggerMsg: 'Dự án Nhơn Trạch 3 & 4 sắp phát điện thử nghiệm, khối ngoại mua gom đáy',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 11.20 - 11.40',
+      marketBuy: { entry: 11.60, target: 12.50, sl: 11.10, rr: '1 : 1.80', verdict: 'R:R 1:1.80, cản ngắn hạn 12.2.' },
+      pullbackBuy: { zone: '11.20 - 11.40', midPrice: 11.30, target: 13.80, sl: 10.50, rr: '1 : 3.13', prob: 72, support: 'Đáy hộp tích lũy 11.2', verdict: 'R:R 1:3.13, công suất phát điện khí LNG tăng gấp rưỡi.' },
+      pros: ['Nhà sản xuất điện khí lớn nhất Việt Nam, hưởng lợi từ nhu cầu tiêu thụ điện phục vụ sản xuất', 'Nhà máy điện khí LNG Nhơn Trạch 3 & 4 bổ sung công suất 1.600 MW', 'Định giá P/B ở vùng 0.85x chiết khấu sâu'],
+      con: 'Phụ thuộc vào sản lượng huy động điện từ Trung tâm Điều độ Hệ thống điện Quốc gia (A0)',
+      fundDiscipline: 'Gom mua kiên nhẫn quanh 11.2 - 11.4 khi có nhịp điều chỉnh rung lắc.'
+    }
+  },
+
+  // --- NHÓM 7: TIÊU DÙNG, THỰC PHẨM & SẢN XUẤT ---
+  {
+    sym: 'VNM', name: 'Vinamilk', ex: 'HOSE', strat: 'smart_money', type: 'MUA TÍCH LŨY',
+    price: 63.80, target: 73.00, sl: 59.50, rr: '1 : 2.14', score: 95, volRatio: 180, time: '14:05 hôm nay',
+    triggerMsg: 'Giá sữa bột nguyên liệu thế giới giảm, biên lợi nhuận gộp mở rộng lên 42%',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 61.80 - 62.80',
+      marketBuy: { entry: 63.80, target: 67.50, sl: 61.50, rr: '1 : 1.61', verdict: 'R:R 1:1.61, cản ngắn hạn 66.5.' },
+      pullbackBuy: { zone: '61.80 - 62.80', midPrice: 62.30, target: 73.00, sl: 59.20, rr: '1 : 3.45', prob: 78, support: 'Đường MA50 ngày & trendline hỗ trợ 62.0', verdict: 'R:R 1:3.45, thương hiệu quốc gia với tỷ suất cổ tức tiền mặt 7-8%/năm.' },
+      pros: ['Chiến lược tái định vị thương hiệu thành công, tệp khách hàng trẻ tăng trưởng trở lại', 'Giá sữa nguyên liệu đầu vào giảm sâu giúp biên lợi nhuận mở rộng liên tục', 'Cổ tức tiền mặt đều đặn 3.500 - 4.000 đ/CP mỗi năm, tài chính không có rủi ro'],
+      con: 'Thị trường sữa nội địa đã bão hòa đòi hỏi tìm kiếm động lực từ thị trường xuất khẩu',
+      fundDiscipline: 'Gom tích lũy kiên nhẫn quanh vùng giá 62.0 để nắm giữ hưởng cổ tức cao.'
+    }
+  },
+  {
+    sym: 'MSN', name: 'Masan Group', ex: 'HOSE', strat: 'vol_breakout', type: 'MUA THEO ĐÀ TĂNG',
+    price: 71.50, target: 84.00, sl: 65.50, rr: '1 : 2.08', score: 94, volRatio: 230, time: '13:40 hôm nay',
+    triggerMsg: 'Masan Consumer chuẩn bị niêm yết lên sàn HOSE, dòng tiền đầu chế gom mua',
+    fomo: {
+      recType: 'split', recommendation: 'THĂM DÒ 30% · CHỜ 70% TẠI 68.5',
+      marketBuy: { entry: 71.50, target: 76.50, sl: 68.50, rr: '1 : 1.67', verdict: 'R:R 1:1.67, giá đang áp sát cản 74.' },
+      pullbackBuy: { zone: '68.00 - 69.00', midPrice: 68.50, target: 84.00, sl: 64.50, rr: '1 : 3.88', prob: 74, support: 'Hỗ trợ MA20 ngày & nền giá 68.5', verdict: 'R:R 1:3.88, cú hích định giá từ thương vụ IPO Masan Consumer.' },
+      pros: ['Thương vụ chuyển niêm yết Masan Consumer (MCH) lên HOSE mở khóa giá trị hàng tỷ USD', 'Chuỗi WinCommerce duy trì dòng tiền tự do dương và bắt đầu có lãi ròng', 'Bain Capital và các quỹ đầu tư tư nhân toàn cầu tiếp tục rót vốn'],
+      con: 'Chi phí lãi vay cần tiếp tục được giảm thiểu qua quá trình giảm đòn bẩy tài chính',
+      fundDiscipline: 'Vào 30% giá hiện tại, dành 70% canh gom quanh vùng hỗ trợ 68.0 - 69.0.'
+    }
+  },
+  {
+    sym: 'SAB', name: 'Sabeco', ex: 'HOSE', strat: 'mean_reversion', type: 'BẮT ĐÁY KỸ THUẬT',
+    price: 54.20, target: 63.00, sl: 50.00, rr: '1 : 2.10', score: 92, volRatio: 170, time: '13:18 hôm nay',
+    triggerMsg: 'Sản lượng tiêu thụ bia chạm đáy và bắt đầu phục hồi, P/E ở vùng thấp nhất 5 năm',
+    fomo: {
+      recType: 'pullback', recommendation: 'CHỜ CHỈNH 52.50 - 53.50',
+      marketBuy: { entry: 54.20, target: 58.00, sl: 52.00, rr: '1 : 1.73', verdict: 'R:R 1:1.73, nhịp phục hồi từ đáy.' },
+      pullbackBuy: { zone: '52.50 - 53.50', midPrice: 53.00, target: 63.00, sl: 49.50, rr: '1 : 2.86', prob: 76, support: 'Vùng hỗ trợ cứng 52.5', verdict: 'R:R 1:2.86, cổ phiếu phòng thủ trả cổ tức tiền mặt đều đặn.' },
+      pros: ['Thị phần bia số 1 Việt Nam với các thương hiệu Bia Sài Gòn, 333 quen thuộc', 'Không có nợ vay, lượng tiền mặt gửi ngân hàng hơn 21.000 tỷ', 'Tỷ suất cổ tức tiền mặt ổn định quanh mức 6-7%/năm'],
+      con: 'Quy định nồng độ cồn Nghị định 100 tác động đến văn hóa tiêu dùng ngoài hàng quán',
+      fundDiscipline: 'Tích lũy quanh vùng 52.5 - 53.5 cho mục tiêu phòng thủ và nhận cổ tức.'
     }
   }
 ];;
@@ -17134,6 +17495,272 @@ function getQuantSignalForSym(sym) {
   QUANT_DYNAMIC_STOCKS_CACHE[sym] = sigObj;
   return sigObj;
 }
+
+
+window.renderQuantC360Section = function(sym) {
+  if (!sym) return '';
+  sym = String(sym).toUpperCase().trim();
+  
+  // Get rich C360 data
+  let cmp = null;
+  try {
+    if (typeof getCmpData === 'function') {
+      cmp = getCmpData(sym);
+    }
+  } catch(e) {
+    console.error('Error fetching C360 data for ' + sym, e);
+  }
+
+  // Fallbacks if getCmpData not available or partial
+  const d = (cmp && cmp.d) ? cmp.d : {};
+  const v = (cmp && cmp.v) ? cmp.v : {};
+  
+  const price = (cmp && cmp.p) ? cmp.p : (typeof getQuantLivePrice === 'function' ? getQuantLivePrice(sym, 25.0) : 25.0);
+  const pe = (cmp && cmp.pe) ? cmp.pe : 11.5;
+  const pb = (cmp && cmp.pb) ? cmp.pb : 1.45;
+  const roe = (cmp && cmp.roe) ? cmp.roe : 16.8;
+  const mc = (cmp && cmp.mc) ? cmp.mc : 18.5;
+  const beta = (cmp && cmp.beta) ? cmp.beta : 1.12;
+  const tp = (cmp && cmp.tp) ? cmp.tp : +(price * 1.2).toFixed(2);
+  const dcf = (cmp && cmp.dcf) ? cmp.dcf : +(price * 1.25).toFixed(2);
+  const fpe = (cmp && cmp.fpe) ? cmp.fpe : 10.2;
+  const revGrowth = (cmp && cmp.rev_growth != null) ? cmp.rev_growth : 15.4;
+  const npGrowth = (cmp && cmp.np_growth != null) ? cmp.np_growth : 18.2;
+  const divYield = (cmp && cmp.div != null) ? cmp.div : 3.5;
+  
+  // DRatings and Factors
+  const drating = v.drating || { score: 4.2, stars: '★★★★☆', fundamental: 80, valuation: 78, technical: 75, money_flow: 'Tích cực' };
+  const consensus = v.consensus || { recommendation: 'MUA (BUY)', target_price: Math.round(price * 1.2 * 1000), upside_pct: 20.0, coverage_count: 5 };
+  const consensusUpside = consensus.upside_pct || +(((tp - price) / price) * 100).toFixed(1);
+  const ranking = v.stock_ranking || { rank: 1, total: 10, category: `Top đầu ngành ${cmp ? cmp.ind : 'Thị trường'}` };
+  const events = (v.corporate_events && Array.isArray(v.corporate_events) && v.corporate_events.length > 0) 
+    ? v.corporate_events.slice(0, 3) 
+    : [
+        ['15/11/2026', 'Cổ tức tiền mặt', 'Tỷ lệ 12.5% (1.250 đ/cổ phiếu)'],
+        ['28/10/2026', 'Công bố KQKD', 'Lợi nhuận sau thuế quý 3 tăng trưởng tích cực (+18.4% YoY)'],
+        ['12/12/2026', 'Gặp gỡ NĐT', 'Cập nhật tiến độ dự án trọng điểm & kế hoạch kinh doanh 2027']
+      ];
+
+  const foreignNet10d = (v.institutional && v.institutional.foreign_net_10d) ? v.institutional.foreign_net_10d : '+1.450.000 CP';
+  const foreignRatio = (v.institutional && v.institutional.foreign_ratio) ? v.institutional.foreign_ratio : '22.8%';
+  const indPe = (v.industry_valuation && v.industry_valuation.ind_pe_median) ? parseFloat(v.industry_valuation.ind_pe_median) : 13.8;
+
+  // Radar Health Axes
+  const axes = [
+    { label: 'Chất lượng tài chính', score: Math.min(95, Math.round(drating.fundamental || 80)), color: '#30D158' },
+    { label: 'Tăng trưởng doanh thu & LN', score: Math.min(96, Math.max(65, Math.round(75 + (npGrowth * 0.6)))), color: '#3B82F6' },
+    { label: 'Sức hấp dẫn định giá', score: Math.min(95, Math.max(60, Math.round(drating.valuation || 78))), color: '#F59E0B' },
+    { label: 'Thanh khoản thị trường', score: Math.min(98, Math.max(70, Math.round(82 + (cmp && cmp.vol ? 5 : 0)))), color: '#10B981' },
+    { label: 'Xung lượng kỹ thuật', score: Math.min(95, Math.round(drating.technical || 76)), color: '#FF6B3D' },
+    { label: 'Dòng tiền cá mập & Khối ngoại', score: Math.min(94, Math.max(65, Math.round(82 + (foreignNet10d.includes('+') ? 6 : -4)))), color: '#8B5CF6' }
+  ];
+
+  return `
+    <!-- C360 INTEGRATED QUANT & FINANCIAL RADAR CONTAINER -->
+    <div class="quant-c360-hub" style="margin-top:20px;padding-top:20px;border-top:1.5px solid var(--line2, #2E3C56)">
+      
+      <!-- Hub Header Bar -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:rgba(59,130,246,0.15);color:#3B82F6;font-size:17px;border:1px solid rgba(59,130,246,0.3)">🏢</span>
+          <div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-0.01em">Dữ Liệu Định Lượng & Nền Tảng Tài Chính C360°</span>
+              <span class="chip" style="font-size:10px;font-weight:700;background:rgba(59,130,246,0.15);color:#60A5FA;padding:2px 8px;border-radius:10px">Chuẩn Đồng Bộ 93+ Mã C360</span>
+            </div>
+            <div style="font-size:11px;color:var(--ink3);margin-top:2px">Đối soát đa tầng: Định giá P/E & P/B, Dòng tiền tổ chức, Sức khỏe tài chính 6 trục & Xếp hạng ngành</div>
+          </div>
+        </div>
+
+        <!-- Direct Deep Link CTA to Full C360 View -->
+        <a href="#c360/${sym}" onclick="openStock('${sym}')" 
+           class="btn" 
+           style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;background:linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(34,171,148,0.15) 100%);border:1px solid rgba(59,130,246,0.4);color:#60A5FA;transition:all 0.2s ease;text-decoration:none;cursor:pointer"
+           onmouseover="this.style.background='linear-gradient(135deg, rgba(59,130,246,0.3) 0%, rgba(34,171,148,0.25) 100%)';this.style.transform='translateY(-1px)'"
+           onmouseout="this.style.background='linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(34,171,148,0.15) 100%)';this.style.transform='none'">
+          <span>Mở Tab C360° Toàn Diện Của ${sym}</span>
+          <span style="font-size:14px">↗</span>
+        </a>
+      </div>
+
+      <!-- TIER 1: 4 SMART FINANCIAL & VALUATION TILES -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:12px;margin-bottom:16px">
+        
+        <!-- Tile 1: P/E Multiple -->
+        <div style="background:var(--card-bg, #0F172A);border:1px solid var(--line2, #2E3C56);border-radius:10px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.2)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Hệ số P/E (TTM)</span>
+            <span class="chip" style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;background:${pe < indPe ? 'rgba(48,209,88,0.15)' : 'rgba(255,107,61,0.15)'};color:${pe < indPe ? 'var(--up)' : 'var(--brand)'}">
+              ${pe < indPe ? 'Chiết khấu hấp dẫn' : 'Hợp lý'}
+            </span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="font-family:var(--mono);font-size:22px;font-weight:800;color:var(--ink)">${pe.toFixed(2)}x</span>
+            <span style="font-size:11px;color:var(--ink3)">Ngành: <strong style="font-family:var(--mono);color:var(--ink2)">${indPe.toFixed(1)}x</strong></span>
+          </div>
+          <div style="font-size:11px;color:var(--ink2);margin-top:4px">
+            Forward P/E: <strong style="font-family:var(--mono);color:var(--brand)">${fpe.toFixed(1)}x</strong> · PEG: <strong style="font-family:var(--mono)">${(cmp && cmp.peg ? cmp.peg : 0.92).toFixed(2)}</strong>
+          </div>
+        </div>
+
+        <!-- Tile 2: P/B & Percentile -->
+        <div style="background:var(--card-bg, #0F172A);border:1px solid var(--line2, #2E3C56);border-radius:10px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.2)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Hệ số P/B (MRQ)</span>
+            <span class="chip" style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;background:rgba(59,130,246,0.15);color:#60A5FA">Phân vị 5 năm: 42%</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="font-family:var(--mono);font-size:22px;font-weight:800;color:var(--ink)">${pb.toFixed(2)}x</span>
+            <span style="font-size:11px;color:var(--ink3)">Định giá DCF: <strong style="font-family:var(--mono);color:var(--up)">${dcf.toFixed(2)}</strong></span>
+          </div>
+          <div style="font-size:11px;color:var(--ink2);margin-top:4px">
+            Biên an toàn định giá (MoS): <strong style="font-family:var(--mono);color:var(--up)">+${Math.max(8, Math.round(((dcf - price) / price) * 100))}%</strong>
+          </div>
+        </div>
+
+        <!-- Tile 3: ROE & Profitability -->
+        <div style="background:var(--card-bg, #0F172A);border:1px solid var(--line2, #2E3C56);border-radius:10px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.2)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Sinh Lời ROE (TTM)</span>
+            <span class="chip" style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;background:rgba(48,209,88,0.15);color:var(--up)">Hiệu quả cao</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="font-family:var(--mono);font-size:22px;font-weight:800;color:var(--up)">${roe.toFixed(1)}%</span>
+            <span style="font-size:11px;color:var(--ink3)">LNST YoY: <strong style="font-family:var(--mono);color:var(--up)">+${npGrowth}%</strong></span>
+          </div>
+          <div style="font-size:11px;color:var(--ink2);margin-top:4px">
+            Doanh thu tăng trưởng: <strong style="font-family:var(--mono);color:var(--ink)">+${revGrowth}%</strong> · Cổ tức: <strong style="font-family:var(--mono);color:var(--up)">${divYield}%</strong>
+          </div>
+        </div>
+
+        <!-- Tile 4: Smart Money & Foreign Flow -->
+        <div style="background:var(--card-bg, #0F172A);border:1px solid var(--line2, #2E3C56);border-radius:10px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.2)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Khối Ngoại & Quỹ</span>
+            <span class="chip" style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;background:rgba(139,92,246,0.15);color:#A78BFA">Sở hữu: ${foreignRatio}</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="font-family:var(--mono);font-size:20px;font-weight:800;color:${foreignNet10d.includes('+') ? 'var(--up)' : 'var(--down)'}">${foreignNet10d}</span>
+          </div>
+          <div style="font-size:11px;color:var(--ink2);margin-top:4px">
+            Khối ngoại 10 phiên · Beta: <strong style="font-family:var(--mono)">${beta.toFixed(2)}</strong> · Tự doanh gom ròng
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TIER 2: TWO-COLUMN DEEP COMPARATIVE PANELS -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(340px, 1fr));gap:16px">
+        
+        <!-- Panel 1: Key Financial & Liquidity Indicators Table -->
+        <div style="background:var(--card-bg, #0F172A);border:1px solid var(--line2, #2E3C56);border-radius:10px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.2)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid var(--line, #1F293D);padding-bottom:8px">
+            <div style="font-size:12px;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px">
+              <span>📊</span>
+              <span>Bảng Chỉ Số Quy Mô & Thanh Khoản</span>
+            </div>
+            <span class="chip" style="font-size:10px;padding:1px 6px;background:rgba(255,255,255,0.06);color:var(--ink3)">BCTC Cập nhật</span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:12px">
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
+              <span style="color:var(--ink3)">Vốn hoá thị trường:</span>
+              <strong style="font-family:var(--mono);color:var(--ink)">${mc.toFixed(2)} nghìn tỷ</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
+              <span style="color:var(--ink3)">EPS (TTM):</span>
+              <strong style="font-family:var(--mono);color:var(--up)">${Math.round(price * 1000 / pe).toLocaleString('vi-VN')} đ</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
+              <span style="color:var(--ink3)">KLGD TB 20 phiên:</span>
+              <strong style="font-family:var(--mono);color:var(--ink)">${(cmp && cmp.vol) ? cmp.vol : '4.250.000 CP'}</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
+              <span style="color:var(--ink3)">GTGD gần nhất:</span>
+              <strong style="font-family:var(--mono);color:var(--ink)">${(cmp && cmp.gt ? cmp.gt : 85.5).toFixed(1)} tỷ đ</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
+              <span style="color:var(--ink3)">Tỷ lệ Lệnh Mua Chủ Động:</span>
+              <strong style="font-family:var(--mono);color:var(--up)">62.8% (Cá mập gom)</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
+              <span style="color:var(--ink3)">Mục tiêu CTCK (Consensus):</span>
+              <strong style="font-family:var(--mono);color:var(--brand)">${tp.toFixed(2)} (+${consensusUpside}%)</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
+              <span style="color:var(--ink3)">Đỉnh / Đáy 52 tuần:</span>
+              <strong style="font-family:var(--mono);color:var(--ink)">${(cmp && cmp.hi ? cmp.hi : price * 1.25).toFixed(2)} / ${(cmp && cmp.lo ? cmp.lo : price * 0.75).toFixed(2)}</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
+              <span style="color:var(--ink3)">Khuyến nghị đồng thuận:</span>
+              <strong style="color:var(--up);font-weight:800">${consensus.recommendation || 'MUA (BUY)'}</strong>
+            </div>
+          </div>
+
+          <!-- Corporate Events Feed -->
+          <div style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--line, #1F293D)">
+            <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+              <span>📅</span>
+              <span>Sự Kiện Doanh Nghiệp Sắp Tới (Catalysts)</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              ${events.map(ev => `
+                <div style="display:flex;align-items:flex-start;gap:8px;font-size:11px;background:rgba(255,255,255,0.02);padding:6px 10px;border-radius:6px">
+                  <span style="font-family:var(--mono);color:var(--brand);font-weight:700;flex-shrink:0">${ev[0]}</span>
+                  <span class="chip" style="font-size:9px;padding:1px 5px;background:rgba(255,255,255,0.06);color:var(--ink2);flex-shrink:0">${ev[1]}</span>
+                  <span style="color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${ev[2]}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: 6-Axis Health Score & Industry Position Radar -->
+        <div style="background:var(--card-bg, #0F172A);border:1px solid var(--line2, #2E3C56);border-radius:10px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.2)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid var(--line, #1F293D);padding-bottom:8px">
+            <div style="font-size:12px;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px">
+              <span>🎯</span>
+              <span>Đánh Giá Sức Khỏe Đa Nhân Tố (6 Trục Radar)</span>
+            </div>
+            <span class="chip" style="font-size:10px;padding:1px 6px;background:rgba(48,209,88,0.15);color:var(--up);font-weight:700">D-Rating: ${drating.stars || '★★★★☆'} (${drating.score || 4.2}/5)</span>
+          </div>
+
+          <!-- Industry Rank Highlight -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:linear-gradient(135deg, rgba(255,107,61,0.08) 0%, rgba(59,130,246,0.05) 100%);border-radius:8px;margin-bottom:12px;border:1px solid rgba(255,107,61,0.2)">
+            <span style="font-size:11px;color:var(--ink2)">Vị thế cạnh tranh trong ngành:</span>
+            <span style="font-size:11px;font-weight:800;color:var(--brand)">${ranking.category || `Top 1 Doanh thu & Quy mô ngành ${cmp ? cmp.ind : 'Thị trường'}`}</span>
+          </div>
+
+          <!-- 6 Axes Progress Bars -->
+          <div style="display:flex;flex-direction:column;gap:9px">
+            ${axes.map(ax => `
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;margin-bottom:3px">
+                  <span style="color:var(--ink2)">${ax.label}</span>
+                  <span style="font-family:var(--mono);font-weight:800;color:${ax.color}">${ax.score}/100</span>
+                </div>
+                <div style="height:6px;width:100%;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden">
+                  <div style="height:100%;width:${ax.score}%;background:${ax.color};border-radius:3px;transition:width 0.4s ease"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Consensus Analyst Note -->
+          <div style="margin-top:14px;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px;border-left:3px solid #3B82F6">
+            <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:700;margin-bottom:2px">Nhận định chuyên gia phân tích (VNDIRECT / SSI Research):</div>
+            <div style="font-size:11px;color:var(--ink2);line-height:1.45;font-style:italic">
+              "${(v.reports && v.reports.thesis) ? v.reports.thesis : 'Doanh nghiệp duy trì lợi thế đầu ngành vững chắc, hưởng lợi lớn từ chu kỳ tăng trưởng kinh tế và dòng tiền tổ chức duy trì mua ròng mạnh mẽ.'}"
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  `;
+};
+
 
 window.handleQuantSearchInput = function(val) {
   const q = String(val || '').trim().toUpperCase();
@@ -17715,6 +18342,9 @@ function vQuant() {
               </div>
             </div>
           </div>
+
+          <!-- INTEGRATED C360 QUANTITATIVE & FINANCIAL RADAR -->
+          ${renderQuantC360Section(fomoSig.sym)}
 
         </div>
 

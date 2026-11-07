@@ -145,6 +145,10 @@
 
 ---
 
+- [Chủ đề 122: Mô Hình Đánh Giá Rủi Ro Tín Dụng Cấu Trúc & Khoảng Cách Vỡ Nợ (Merton DD) Thích Ứng Doanh Nghiệp Niêm Yết Tại Việt Nam](#-chủ-đề-122-mô-hình-đánh-giá-rủi-ro-tín-dụng-cấu-trúc--khoảng-cách-vỡ-nợ-merton-distance-to-default-thích-ứng-đòn-bẩy-tài-chính-doanh-nghiệp-niêm-yết-tại-việt-nam)
+
+---
+
 ## 🔬 CHỦ ĐỀ 01: PHƯƠNG PHÁP META-LABELING & TRIPLE BARRIER METHOD
 **Tác giả lý thuyết:** GS. Marcos López de Prado (*Advances in Financial Machine Learning*, 2018)  
 **Thời gian hoàn thành:** 2026-11-02 23:35 (ICT)  
@@ -13524,3 +13528,160 @@ if __name__ == '__main__':
    - Giúp nhà đầu tư chủ động kê lệnh chờ tại vùng tích lũy (Pullback Ladder) thay vì bị cuốn vào bẫy giá giả (False Breakout) do biến động tức thời của phái sinh gây ra.
 2. **Triệt tiêu độ trễ của chỉ số cơ sở VN30:**
    - Do rổ VN30 bao gồm 30 cổ phiếu với tốc độ khớp lệnh khác nhau (nhiều mã thanh khoản thấp phản ứng chậm hơn 2-3 phút), mô hình ETE hoạt động như một "kính thiên văn vi cấu trúc", truyền tín hiệu dẫn dắt tức thời cho bot giao dịch tự hành.
+
+---
+
+## 🔬 CHỦ ĐỀ 122: MÔ HÌNH ĐÁNH GIÁ RỦI RO TÍN DỤNG CẤU TRÚC & KHOẢNG CÁCH VỠ NỢ (MERTON DISTANCE-TO-DEFAULT) THÍCH ỨNG ĐÒN BẨY TÀI CHÍNH DOANH NGHIỆP NIÊM YẾT TẠI VIỆT NAM
+
+```
+Chu kỳ nghiên cứu: 10 phút định kỳ (Iteration 21 / Task-7472)
+Thời gian hoàn thành: 2026-11-07 18:30:00
+Phân hệ áp dụng: Trục Sức Khỏe Tài Chính & Thẩm Định An Toàn Tín Dụng Doanh Nghiệp (C360 Hub) / KongKeng Radar
+Mức độ kiểm định: Chuẩn mực Mô hình Cấu trúc Merton (KMV-EDF) & Báo cáo Tài chính VAS/IFRS
+```
+
+### 1. Bối Cảnh Thực Tiễn & Rào Cản Tại Thị Trường Việt Nam
+Tại thị trường chứng khoán Việt Nam, nhóm doanh nghiệp thâm dụng vốn lớn như Bất động sản dân cư (VHM, NVL, PDR, DXG, KDH) và Sản xuất công nghiệp nặng (HPG, HSG) có cấu trúc tài chính phụ thuộc mật thiết vào kênh Trái phiếu doanh nghiệp và Tín dụng ngân hàng:
+1. **Độ trễ và rủi ro che giấu của báo cáo tài chính (Accounting Data Latency & Masking):** BCTC chỉ được công bố định kỳ theo quý với độ trễ từ 30 đến 45 ngày. Trong giai đoạn căng thẳng thanh khoản, các chỉ số kế toán truyền thống (Debt/Equity, Lợi nhuận gộp, Hệ số thanh toán hiện hành) thường không phản ánh kịp thời áp lực đáo hạn trái phiếu và chi phí lãi vay thả nổi.
+2. **Hiện tượng "Bẫy bắt đáy cổ phiếu vỡ nợ" (Distressed Asset Trap):** Khi giá cổ phiếu giảm sâu 50% - 70%, nhà đầu tư cá nhân thường bị cám dỗ bởi P/B và P/E "rẻ bất thường", trong khi rủi ro mất trắng vốn do tái cơ cấu nợ hoặc mất khả năng thanh khoản đang ở mức báo động đỏ.
+3. **Mục tiêu của KongKeng Radar:** Triển khai mô hình rủi ro tín dụng cấu trúc **Merton Distance-to-Default (Merton DD)** - nền tảng của hệ thống Moody's KMV toàn cầu. Bằng cách xem vốn chủ sở hữu (Equity) như một quyền chọn mua (Call Option) trên tổng tài sản doanh nghiệp, mô hình kết hợp trực tiếp thị giá cổ phiếu hàng ngày, biến động thị trường và cấu trúc nợ vay để tính toán **Khoảng cách đến điểm vỡ nợ (Distance-to-Default - DD)** và **Tần suất vỡ nợ kỳ vọng (Expected Default Frequency - EDF)** trong thời gian thực.
+
+---
+
+### 2. Nền Tảng Toán Học Định Lượng: Mô Hình Cấu Trúc Merton (1974)
+
+#### 2.1. Cấu Trúc Vốn & Điểm Vỡ Nợ (Default Point - DP)
+Tổng tài sản doanh nghiệp $V_t$ tại thời điểm $t$ tuân theo chuyển động Brown hình học (Geometric Brownian Motion):
+$$dV_t = \mu_V V_t dt + \sigma_V V_t dW_t$$
+Doanh nghiệp có cấu trúc nợ gồm nợ vay ngắn hạn ($\text{STD}$) và nợ vay dài hạn ($\text{LTD}$) đáo hạn tại thời điểm $T$. Theo tiêu chuẩn thực nghiệm KMV, Điểm Vỡ Nợ (Default Point) được xác định:
+$$\text{DP} = \text{STD} + 0.5 \times \text{LTD}$$
+
+Nếu tại ngày đáo hạn $T$, tổng giá trị tài sản $V_T < \text{DP}$, doanh nghiệp vỡ nợ và tài sản được chuyển giao cho chủ nợ. Nếu $V_T \ge \text{DP}$, cổ đông trả hết nợ và giữ lại phần thặng dư $V_T - \text{DP}$.
+
+#### 2.2. Định Giá Vốn Chủ Sở Hữu Bằng Quyền Chọn Mua Black-Scholes
+Giá trị thị trường của vốn chủ sở hữu $E_t$ (Vốn hóa thị trường) tương đương với một quyền chọn mua kiểu Châu Âu trên tổng tài sản $V_t$ với giá thực hiện bằng $\text{DP}$:
+$$E_t = V_t \Phi(d_1) - \text{DP} \cdot e^{-r T} \Phi(d_2)$$
+Trong đó:
+$$d_1 = \frac{\ln(V_t / \text{DP}) + \left( r + \frac{1}{2}\sigma_V^2 \right) T}{\sigma_V \sqrt{T}}, \quad d_2 = d_1 - \sigma_V \sqrt{T}$$
+$\Phi(\cdot)$ là hàm phân phối tích lũy chuẩn tắc, và $r$ là lãi suất phi rủi ro (lãi suất Trái phiếu Chính phủ Việt Nam 10 năm - 10Y VGB).
+
+#### 2.3. Hệ Phương Trình Phi Tuyến Đồng Thời Xác Định $(V_t, \sigma_V)$
+Áp dụng Bổ đề Itô, mối quan hệ biến động giữa vốn chủ sở hữu $\sigma_E$ (tính từ độ biến động thị giá cổ phiếu hàng ngày) và biến động tổng tài sản $\sigma_V$ được biểu diễn:
+$$\sigma_E = \left( \frac{V_t}{E_t} \right) \frac{\partial E_t}{\partial V_t} \sigma_V = \left( \frac{V_t}{E_t} \right) \Phi(d_1) \sigma_V$$
+
+Từ các biến quan sát được trên thị trường $(E_t, \sigma_E, \text{DP}, r, T)$, hệ thống giải đồng thời hệ 2 phương trình phi tuyến để tìm ra giá trị ẩn của Tổng tài sản thực tế $V_t$ và Biến động tài sản $\sigma_V$.
+
+#### 2.4. Công Thức Khoảng Cách Đến Điểm Vỡ Nợ (Distance-to-Default)
+Khoảng cách đến điểm vỡ nợ đo lường số độ lệch chuẩn mà giá trị tài sản vượt trên điểm vỡ nợ:
+$$\text{DD} = \frac{\ln(V_t / \text{DP}) + \left( \mu_V - \frac{1}{2}\sigma_V^2 \right) T}{\sigma_V \sqrt{T}}$$
+Xác suất vỡ nợ lý thuyết (Expected Default Frequency):
+$$\text{EDF} = \Phi(-\text{DD})$$
+- $\text{DD} \ge 3.0$ ($\text{EDF} < 0.13\%$): Doanh nghiệp có sức khỏe tài chính xuất sắc, biên an toàn tín dụng vững chắc.
+- $1.5 \le \text{DD} < 3.0$: Doanh nghiệp ở mức độ rủi ro trung bình, cần theo dõi sát áp lực đáo hạn nợ.
+- $\text{DD} < 1.5$ ($\text{EDF} > 6.68\%$): **Báo động đỏ rủi ro tín dụng**, nguy cơ mất khả năng thanh toán cao.
+
+---
+
+### 3. Thuật Toán Python Giải Hệ Phương Trình Merton & Đánh Giá Rủi Ro Tín Dụng
+
+```python
+import numpy as np
+import pandas as pd
+from scipy.stats import norm
+from scipy.optimize import root
+
+class MertonStructuralCreditEngine:
+    """
+    Bộ động cơ định lượng rủi ro tín dụng cấu trúc Merton (KMV Distance-to-Default).
+    Tích hợp cho KongKeng Radar: Tự động cảnh báo rủi ro vỡ nợ và áp lực đáo hạn trái phiếu.
+    """
+    def __init__(self, risk_free_rate=0.035, maturity_T=1.0):
+        self.r = risk_free_rate  # Lãi suất TPCP 10 năm Việt Nam (~3.5%)
+        self.T = maturity_T      # Kỳ hạn đánh giá (1 năm)
+
+    def solve_asset_value_and_volatility(self, equity_val, equity_vol, default_point):
+        """
+        Giải hệ 2 phương trình phi tuyến Merton để tìm Tổng tài sản V_t và Biến động tài sản sigma_V
+        """
+        def equations(vars):
+            V, sigma_V = vars
+            if V <= 0 or sigma_V <= 0:
+                return [1e6, 1e6]
+                
+            d1 = (np.log(V / default_point) + (self.r + 0.5 * sigma_V**2) * self.T) / (sigma_V * np.sqrt(self.T))
+            d2 = d1 - sigma_V * np.sqrt(self.T)
+            
+            # Phương trình 1: Định giá Call Option Black-Scholes
+            eq1 = V * norm.cdf(d1) - default_point * np.exp(-self.r * self.T) * norm.cdf(d2) - equity_val
+            # Phương trình 2: Mối liên hệ biến động vốn chủ sở hữu
+            eq2 = (V / equity_val) * norm.cdf(d1) * sigma_V - equity_vol
+            return [eq1, eq2]
+
+        # Điểm khởi tạo xấp xỉ
+        init_V = equity_val + default_point
+        init_sigma_V = equity_vol * (equity_val / init_V)
+        
+        sol = root(equations, [init_V, init_sigma_V], method='hybr')
+        if sol.success and sol.x[0] > 0 and sol.x[1] > 0:
+            return sol.x[0], sol.x[1]
+        else:
+            return init_V, init_sigma_V
+
+    def calculate_distance_to_default(self, equity_val, equity_vol, short_term_debt, long_term_debt, mu_V=None):
+        """
+        Tính toán chỉ số Distance-to-Default (DD) và Xác suất vỡ nợ lý thuyết EDF(%)
+        """
+        dp = short_term_debt + 0.5 * long_term_debt
+        V, sigma_V = self.solve_asset_value_and_volatility(equity_val, equity_vol, dp)
+        
+        if mu_V is None:
+            mu_V = self.r  # Dưới thước đo rủi ro trung tính hoặc bằng lãi suất phi rủi ro
+            
+        dd = (np.log(V / dp) + (mu_V - 0.5 * sigma_V**2) * self.T) / (sigma_V * np.sqrt(self.T))
+        edf = norm.cdf(-dd)
+        
+        rating = "AAA/AA (Cực kỳ an toàn)" if dd >= 3.5 else (
+            "A/BBB (An toàn - Đòn bẩy vừa phải)" if dd >= 2.0 else (
+                "BB/B (Rủi ro trung bình cao - Chú ý đáo hạn nợ)" if dd >= 1.5 else "CCC/D (BÁO ĐỘNG ĐỎ - NGUY CƠ VỠ NỢ/MẤT THANH KHOẢN)"
+            )
+        )
+        
+        return {
+            'Market_Equity_E': np.round(equity_val, 2),
+            'Default_Point_DP': np.round(dp, 2),
+            'Implied_Asset_V': np.round(V, 2),
+            'Implied_Asset_Vol': np.round(sigma_V * 100, 2),
+            'Distance_to_Default_DD': np.round(dd, 3),
+            'Expected_Default_Freq_EDF_pct': np.round(edf * 100, 4),
+            'Credit_Safety_Rating': rating
+        }
+
+# Thực nghiệm định lượng trên 2 kịch bản doanh nghiệp niêm yết (Đơn vị: Tỷ đồng)
+if __name__ == '__main__':
+    engine = MertonStructuralCreditEngine(risk_free_rate=0.035, maturity_T=1.0)
+    
+    print("=== DOANH NGHIỆP 1: TẬP ĐOÀN CÔNG NGHỆ / SẢN XUẤT CƠ CẤU VỐN MẠNH (FPT) ===")
+    # Vốn hóa ~ 180,000 tỷ, Biến động giá ~ 24%, Nợ ngắn hạn ~ 22,000 tỷ, Nợ dài hạn ~ 2,000 tỷ
+    res_fpt = engine.calculate_distance_to_default(
+        equity_val=180_000, equity_vol=0.24, short_term_debt=22_000, long_term_debt=2_000
+    )
+    for k, v in res_fpt.items():
+        print(f"  - {k:30}: {v}")
+        
+    print("\n=== DOANH NGHIỆP 2: DOANH NGHIỆP BẤT ĐỘNG SẢN CHỊU ÁP LỰC ĐÁO HẠN TRÁI PHIẾU LỚN ===")
+    # Vốn hóa bị bán tháo xuống còn 12,000 tỷ, Biến động tăng vọt lên 55%, Nợ ngắn hạn ~ 28,000 tỷ, Nợ dài hạn ~ 18,000 tỷ
+    res_distressed = engine.calculate_distance_to_default(
+        equity_val=12_000, equity_vol=0.55, short_term_debt=28_000, long_term_debt=18_000
+    )
+    for k, v in res_distressed.items():
+        print(f"  - {k:30}: {v}")
+```
+
+---
+
+### 4. Ứng Dụng Đột Phá Vào Nền Tảng KongKeng Radar
+1. **Bộ lọc cảnh báo sớm cho Trục Sức Khỏe Tài Chính (C360 Radar Hub):**
+   - Khi chỉ số Distance-to-Default (DD) của một cổ phiếu rơi xuống dưới 1.5, hệ thống tự động gắn huy hiệu cảnh báo nguy hiểm **"Rủi ro đòn bẩy tài chính cao"** trên giao diện C360.
+   - Giúp nhà đầu tư định vị ngay lập tức các cổ phiếu có nguy cơ "vỡ bong bóng nợ", tránh bẫy ham rẻ bắt đáy khi doanh nghiệp chuẩn bị bước vào giai đoạn tái cơ cấu nợ đau đớn.
+2. **Kiểm định điều kiện kích hoạt chiến lược Mua Tích Lũy (Pullback Ladder):**
+   - Chỉ cho phép bot giao dịch tự hành và bộ lọc định lượng giải ngân theo chiến lược Đặt Chờ Tích Lũy (Pullback) đối với các mã cổ phiếu có $\text{DD} \ge 2.0$. Đối với các mã có $\text{DD} < 1.5$, hệ thống hoàn toàn khóa lệnh mua gom để bảo toàn vốn tuyệt đối cho nhà đầu tư.

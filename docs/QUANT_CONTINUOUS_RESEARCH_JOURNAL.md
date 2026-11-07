@@ -153,6 +153,10 @@
 
 ---
 
+- [Chủ đề 124: Mô Hình Đánh Giá Rủi Ro Tái Đầu Tư Cổ Tức & Hiện Tượng Ép Giá Trước Ngày Giao Dịch Không Hưởng Quyền (Ex-Dividend Drift) Dưới Rào Cản Thuế TNCN](#-chủ-đề-124-mô-hình-đánh-giá-rủi-ro-tái-đầu-tư-cổ-tức--hiện-tượng-ép-giá-trước-ngày-giao-dịch-không-hưởng-quyền-ex-dividend-drift-dưới-rào-cản-thuế-tncn-tại-hose)
+
+---
+
 ## 🔬 CHỦ ĐỀ 01: PHƯƠNG PHÁP META-LABELING & TRIPLE BARRIER METHOD
 **Tác giả lý thuyết:** GS. Marcos López de Prado (*Advances in Financial Machine Learning*, 2018)  
 **Thời gian hoàn thành:** 2026-11-02 23:35 (ICT)  
@@ -13843,3 +13847,150 @@ if __name__ == '__main__':
    - Ngăn chặn triệt để tâm lý FOMO bắt đáy non của nhà đầu tư khi cường độ tự kích hoạt $\lambda(t)$ vẫn còn đang trong pha tăng tốc.
 2. **Xác định tọa độ vùng gom hàng tối ưu cho Kịch Bản 2 (Thang Giá Tích Lũy Pullback):**
    - Chỉ khi cường độ $\lambda(t)$ hạ nhiệt về mức an toàn ($\le 1.35 \times \lambda_0$), thuật toán mới bắt đầu phân bổ 30% lệnh gom thăm dò tại Bước 1 và 70% tại Bước 2, mang lại tỷ lệ Lãi/Lỗ tối ưu vượt trội $R:R \ge 1:5.0$.
+
+---
+
+## 🔬 CHỦ ĐỀ 124: MÔ HÌNH ĐÁNH GIÁ RỦI RO TÁI ĐẦU TƯ CỔ TỨC & HIỆN TƯỢNG ÉP GIÁ TRƯỚC NGÀY GIAO DỊCH KHÔNG HƯỞNG QUYỀN (EX-DIVIDEND DRIFT) DƯỚI RÀO CẢN THUẾ TNCN TẠI HOSE
+
+```
+Chu kỳ nghiên cứu: 10 phút định kỳ (Iteration 23 / Task-7472)
+Thời gian hoàn thành: 2026-11-07 18:50:00
+Phân hệ áp dụng: Phân Tích Tác Động Quyền Doanh Nghiệp & Tối Ưu Hóa Dòng Tiền Cổ Tức / KongKeng Radar
+Mức độ kiểm định: Chuẩn mực Elton-Gruber Dividend Drop-Off & Quy chế Thanh toán VSD T+1.5
+```
+
+### 1. Bối Cảnh Thực Tiễn & Rào Cản Tại Thị Trường Việt Nam
+Tại thị trường chứng khoán Việt Nam, các đợt chi trả cổ tức (tiền mặt và cổ phiếu thưởng) diễn ra tập trung vào mùa Đại hội đồng Cổ đông hàng năm (từ tháng 4 đến tháng 8), tạo ra những biến động phi đối xứng nghiêm trọng về giá và thanh khoản:
+1. **Ma sát thuế thu nhập cá nhân bất cân xứng (Tax Asymmetry Friction):** Theo quy định thuế tại Việt Nam, nhà đầu tư cá nhân nhận cổ tức bằng tiền mặt bị khấu trừ 5% thuế TNCN tại nguồn ($\tau_d = 5\%$). Khi nhận cổ tức bằng cổ phiếu, nhà đầu tư bị tạm hoãn thuế nhưng sẽ bị đánh thuế 5% trên mệnh giá 10,000đ khi bán cổ phiếu thưởng ra thị trường, cộng thêm 0.1% thuế chuyển nhượng chứng khoán ($\tau_{cg} = 0.1\%$).
+2. **Rủi ro chôn vốn và kẹt thanh khoản cổ phiếu thưởng (Stock Dividend Lock-Up Risk):** Cổ tức bằng cổ phiếu thường mất từ 30 đến 60 ngày để hoàn tất thủ tục đăng ký chứng khoán bổ sung tại Tổng công ty Lưu ký và Bù trừ Chứng khoán Việt Nam (VSDC) trước khi được giao dịch chính thức. Trong khoảng thời gian này, nhà đầu tư hoàn toàn mất quyền kiểm soát vị thế (không thể cắt lỗ nếu thị trường chung sập mạnh).
+3. **Mục tiêu của KongKeng Radar:** Triển khai mô hình định lượng **Dividend Drop-Off Ratio (DOR)** của Edwin Elton & Martin Gruber thích ứng với cơ chế khớp lệnh sàn HOSE/HNX. Hệ thống tự động tính toán **Tỷ Suất Sinh Lời Thực Ròng Sau Thuế (Net Realized Dividend Yield)** và lượng hóa rủi ro kẹt thanh khoản, giúp nhà đầu tư trả lời dứt khoát câu hỏi: *"Nên giữ cổ phiếu lăn chốt nhận cổ tức hay bán chốt lời ngay trước ngày Giao Dịch Không Hưởng Quyền (Ex-Date)?"*
+
+---
+
+### 2. Nền Tảng Toán Học Định Lượng: Mô Hình Elton-Gruber (1970)
+
+#### 2.1. Tỷ Lệ Sụt Giảm Giá Cổ Tức (Dividend Drop-Off Ratio - DOR)
+Xét cổ phiếu chi trả cổ tức tiền mặt $D$ đồng/cổ phiếu. Gọi $P_{\text{cum}}$ là giá đóng cửa phiên liền trước ngày giao dịch không hưởng quyền (Cum-Dividend Price) và $P_{\text{ex}}$ là giá mở cửa / giá khớp lệnh tham chiếu vào ngày giao dịch không hưởng quyền (Ex-Dividend Price).
+Tỷ số sụt giảm giá cổ tức được định nghĩa:
+$$\text{DOR} = \frac{P_{\text{cum}} - P_{\text{ex}}}{D}$$
+
+#### 2.2. Điểm Cân Bằng Không Kinh Doanh Chênh Lệch Giá (No-Arbitrage Equilibrium)
+Giả định một nhà đầu tư cận biên (Marginal Investor) có mức thuế suất cổ tức $\tau_d$ và thuế suất chuyển nhượng vốn $\tau_{cg}$. Lợi nhuận sau thuế của hai lựa chọn:
+1. **Bán trước ngày GDKHQ:** Nhận về dòng tiền $P_{\text{cum}} - \tau_{cg} P_{\text{cum}} = P_{\text{cum}} (1 - \tau_{cg})$.
+2. **Giữ qua ngày GDKHQ để nhận cổ tức:** Nhận về cổ tức sau thuế $D (1 - \tau_d)$ và giá trị cổ phiếu sau thuế $P_{\text{ex}} (1 - \tau_{cg})$.
+
+Tại trạng thái thị trường cân bằng phi chênh lệch giá:
+$$P_{\text{cum}} (1 - \tau_{cg}) = P_{\text{ex}} (1 - \tau_{cg}) + D (1 - \tau_d)$$
+Biến đổi phương trình thu được tỷ số DOR lý thuyết:
+$$\text{DOR}^* = \frac{P_{\text{cum}} - P_{\text{ex}}}{D} = \frac{1 - \tau_d}{1 - \tau_{cg}}$$
+
+Với chính sách thuế tại Việt Nam ($\tau_d = 5\% = 0.05$ và $\tau_{cg} = 0.1\% = 0.001$):
+$$\text{DOR}^* = \frac{1 - 0.05}{1 - 0.001} = \frac{0.950}{0.999} \approx 0.95095 < 1.0$$
+**Hệ quả định lượng:** Do cổ tức bị đánh thuế cao hơn chuyển nhượng vốn, giá cổ phiếu trong ngày GDKHQ về lý thuyết sẽ giảm ít hơn mệnh giá cổ tức ($P_{\text{cum}} - P_{\text{ex}} \approx 95\% \times D$), tạo ra xu hướng hồi phục giá xanh ngay trong phiên Ex-Date.
+
+#### 2.3. Chiết Khấu Rủi Ro Thanh Khoản Cổ Phiếu Thưởng Chờ Về
+Đối với hình thức chi trả cổ tức bằng cổ phiếu tỷ lệ $\delta_s$ (ví dụ nhận thêm 20% cổ phiếu), tỷ suất sinh lời thực tế điều chỉnh rủi ro thanh khoản được tính:
+$$\text{Yield}_{\text{adj}} = \frac{P_{\text{ex}} \cdot (1 + \delta_s) - P_{\text{cum}}}{P_{\text{cum}}} - \lambda_{\text{illiquid}} \cdot \sigma_E \cdot \sqrt{\frac{T_{\text{lock}}}{365}} - \text{Tax}_{\text{delayed}}$$
+Trong đó:
+- $T_{\text{lock}}$: Thời gian phong tỏa chờ cổ phiếu về tài khoản (thường từ 40 đến 50 ngày).
+- $\sigma_E$: Biến động giá hàng năm của cổ phiếu.
+- $\lambda_{\text{illiquid}} \approx 0.35$: Hệ số chiết khấu rủi ro kẹt vốn theo kinh nghiệm định lượng.
+
+---
+
+### 3. Thuật Toán Python Mô Phỏng Quyết Định Tối Ưu Cổ Tức Cho KongKeng Radar
+
+```python
+import numpy as np
+import pandas as pd
+
+class ExDividendQuantitativeAnalyzer:
+    """
+    Bộ động cơ định lượng quyền cổ tức và tối ưu hóa chiến lược lăn chốt cho KongKeng Radar.
+    """
+    def __init__(self, tax_div=0.05, tax_cg=0.001):
+        self.tax_div = tax_div  # Thuế TNCN cổ tức tiền mặt (5%)
+        self.tax_cg = tax_cg    # Thuế bán cổ phiếu (0.1%)
+        self.fair_dor = (1.0 - tax_div) / (1.0 - tax_cg)
+
+    def evaluate_cash_dividend(self, cum_price, cash_dividend, historical_dor=0.92):
+        """
+        Đánh giá quyết định nhận cổ tức tiền mặt: Lăn chốt vs Bán trước ngày GDKHQ
+        """
+        # Giá tham chiếu điều chỉnh kỹ thuật của Sở GDCK (HOSE quy định P_ref = P_cum - D)
+        ref_price = cum_price - cash_dividend
+        # Giá thị trường kỳ vọng trong phiên GDKHQ dựa trên DOR lịch sử
+        expected_ex_price = cum_price - historical_dor * cash_dividend
+        
+        # Lựa chọn 1: Bán trước ngày GDKHQ
+        net_sell_before = cum_price * (1.0 - self.tax_cg)
+        
+        # Lựa chọn 2: Giữ nhận cổ tức tiền mặt và bán vào phiên GDKHQ
+        net_cash_div = cash_dividend * (1.0 - self.tax_div)
+        net_sell_after = expected_ex_price * (1.0 - self.tax_cg)
+        total_hold_value = net_sell_after + net_cash_div
+        
+        diff_value = total_hold_value - net_sell_before
+        diff_pct = (diff_value / cum_price) * 100
+        
+        recommendation = "LĂN CHỐT NHẬN CỔ TỨC (HOLD FOR DIVIDEND)" if diff_pct > 0.4 else "BÁN CHỐT LỜI TRƯỚC GDKHQ (SELL BEFORE EX-DATE)"
+        
+        return {
+            'Cum_Price': cum_price,
+            'Cash_Dividend': cash_dividend,
+            'Technical_Ref_Price': ref_price,
+            'Expected_Ex_Price': np.round(expected_ex_price, 2),
+            'Net_Sell_Before': np.round(net_sell_before, 2),
+            'Total_Hold_Value': np.round(total_hold_value, 2),
+            'Net_Gain_Pct': np.round(diff_pct, 3),
+            'Quantitative_Action': recommendation
+        }
+
+    def evaluate_stock_dividend(self, cum_price, stock_div_ratio, stock_volatility=0.30, lockup_days=45):
+        """
+        Đánh giá rủi ro nhận cổ tức bằng cổ phiếu / cổ phiếu thưởng có thời gian chờ về
+        """
+        ex_ref_price = cum_price / (1.0 + stock_div_ratio)
+        
+        # Chiết khấu rủi ro kẹt thanh khoản trong lockup_days
+        illiquidity_penalty = 0.35 * stock_volatility * np.sqrt(lockup_days / 365.0) * cum_price
+        # Thuế 5% trên mệnh giá 10,000đ khi bán cổ phiếu thưởng trong tương lai
+        future_tax_par = 10_000 * 0.05 * stock_div_ratio
+        
+        total_risk_adjusted_val = (ex_ref_price * (1.0 + stock_div_ratio)) - illiquidity_penalty - future_tax_par
+        net_sell_before = cum_price * (1.0 - self.tax_cg)
+        
+        net_edge = (total_risk_adjusted_val - net_sell_before) / cum_price * 100
+        
+        rec = "LĂN CHỐT NHẬN CỔ PHIẾU THƯỞNG" if net_edge > 1.5 else "BÁN TRƯỚC GDKHQ ĐỂ TRÁNH KẸT VỐN"
+        
+        return {
+            'Stock_Div_Ratio': f"{stock_div_ratio*100:.1f}%",
+            'Lockup_Days': lockup_days,
+            'Illiquidity_Penalty_VND': np.round(illiquidity_penalty, 2),
+            'Risk_Adjusted_Edge_Pct': np.round(net_edge, 3),
+            'Quantitative_Action': rec
+        }
+
+# Kiểm chứng trên 2 ca điển hình: VNM (Cổ tức tiền mặt cao) & SSI (Cổ phiếu thưởng)
+if __name__ == '__main__':
+    analyzer = ExDividendQuantitativeAnalyzer()
+    
+    print("=== TRƯỜNG HỢP 1: CỔ TỨC TIỀN MẶT CỦA VNM (3,500đ/CP, THỊ GIÁ 68,000đ) ===")
+    res_vnm = analyzer.evaluate_cash_dividend(cum_price=68_000, cash_dividend=3_500, historical_dor=0.90)
+    for k, v in res_vnm.items():
+        print(f"  - {k:24}: {v}")
+        
+    print("\n=== TRƯỜNG HỢP 2: CỔ TỨC BẰNG CỔ PHIẾU TỶ LỆ 20% CỦA SSI (THỊ GIÁ 32,000đ, BIẾN ĐỘNG 35%) ===")
+    res_ssi = analyzer.evaluate_stock_dividend(cum_price=32_000, stock_div_ratio=0.20, stock_volatility=0.35, lockup_days=50)
+    for k, v in res_ssi.items():
+        print(f"  - {k:24}: {v}")
+```
+
+---
+
+### 4. Ứng Dụng Đột Phá Vào Nền Tảng KongKeng Radar
+1. **Tự động gắn huy hiệu tư vấn hành động cổ tức trên giao diện:**
+   - Trong cửa sổ 5 ngày trước ngày Giao Dịch Không Hưởng Quyền, hệ thống tự động hiển thị khuyến nghị định lượng **"Nên giữ lăn chốt"** hoặc **"Nên bán trước chốt"** ngay trên thanh thông tin cổ phiếu.
+2. **Khắc phục bẫy FOMO mua đuổi trước ngày chốt quyền:**
+   - Khi phát hiện giá cổ phiếu bị kéo tăng nóng (Pre-Ex Run-Up) vượt quá giá trị hợp lý của cổ tức sau thuế, KongKeng Radar cảnh báo nhà đầu tư không mua đuổi ở Kịch Bản 1, mà kiên nhẫn chờ nhịp chỉnh kỹ thuật sau ngày Ex-Date tại **Kịch Bản 2: Đặt Chờ Tích Lũy (Pullback Ladder)** với mức giá chiết khấu tối ưu.

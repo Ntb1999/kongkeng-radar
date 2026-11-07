@@ -213,6 +213,12 @@
 
 ---
 
+- [Chủ đề 139: Mô Hình Phân Rã Thành Phần Bid-Ask Spread & Bất Đối Xứng Thông Tin Huang-Stoll & MRR Tại HOSE](#-chủ-đề-139-mô-hình-phân-rã-thành-phần-chênh-lệch-giá-đặt-muabán-bid-ask-spread--bất-đối-xứng-thông-tin-theo-huang-stoll-và-mrr-trên-sàn-hose)
+
+---
+
+---
+
 ## 🔬 CHỦ ĐỀ 01: PHƯƠNG PHÁP META-LABELING & TRIPLE BARRIER METHOD
 **Tác giả lý thuyết:** GS. Marcos López de Prado (*Advances in Financial Machine Learning*, 2018)  
 **Thời gian hoàn thành:** 2026-11-02 23:35 (ICT)  
@@ -16300,3 +16306,182 @@ if __name__ == '__main__':
 2. **Săn hàng chiết khấu đỉnh cao tại Kịch Bản 2 (Thang Giá Tích Lũy Pullback Ladder):**
    - Mô hình tính toán sẵn tọa độ đáy Force Sell kỳ vọng ($P_{\text{trough}}$ chiết khấu $-4\%$ đến $-5\%$ so với giá đầu phiên).
    - Hệ thống tự động kích hoạt lệnh kê gom trước tại Bước 1 (30%) và Bước 2 (70%) của Thang Giá Tích Lũy, đón trọn dòng tiền bắt đáy ngay khi lực bán giải chấp cạn kiệt, giúp nhà đầu tư ăn trọn nhịp hồi phục hình chữ V $+4.5\%$ ngay trong ngày.
+
+---
+
+## 🔬 CHỦ ĐỀ 139: MÔ HÌNH PHÂN RÃ THÀNH PHẦN CHÊNH LỆCH GIÁ ĐẶT MUA/BÁN (BID-ASK SPREAD) & BẤT ĐỐI XỨNG THÔNG TIN THEO HUANG-STOLL VÀ MRR TRÊN SÀN HOSE
+**Tác giả lý thuyết:** Roger D. Huang, Hans R. Stoll (1997) & Ananth Madhavan, David Richardson, Mark Roomans (1997)  
+**Thời gian hoàn thành:** 2026-11-07 21:18 (ICT)  
+**Mục tiêu giải quyết:** Bóc tách định lượng chính xác 3 thành phần cấu trúc của Bid-Ask Spread trên HOSE (Chi phí xử lý lệnh, Rủi ro nắm giữ vị thế và Chi phí bất đối xứng thông tin cá mập Adverse Selection), giúp thuật toán nhận diện trước các đợt gom hàng kín của tổ chức.
+
+### 1. Bối cảnh thực nghiệm tại Thị trường Chứng khoán Việt Nam (HOSE Microstructure)
+Trên thị trường chứng khoán Việt Nam, chênh lệch giá mua bán danh nghĩa (Quoted Bid-Ask Spread $S_t = A_t - B_t$) tại mỗi thời điểm không đơn thuần phản ánh ma sát thanh khoản, mà là sự tổng hòa của **ba thành phần vi cấu trúc cốt lõi**:
+1. **Chi phí xử lý lệnh (Order Processing Costs - $\phi$):** Chi phí công nghệ kết nối gateway KRX/HOSE, phí lưu ký VSDC, thuế giao dịch bán ra 0.1% và hoa hồng môi giới CTCK.
+2. **Rủi ro nắm giữ vị thế (Inventory Holding Costs - $\beta$):** Rủi ro biến động giá trong thời gian chờ khớp đối ứng, đặc biệt bị khuếch đại bởi chu kỳ thanh toán T+1.5 và biên độ giới hạn $\pm 7\%$ sàn HOSE.
+3. **Chi phí bất đối xứng thông tin (Adverse Selection Costs - $\theta$):** Thiệt hại kỳ vọng của các nhà tạo lập thanh khoản/đối ứng khi giao dịch nhầm với các nhà đầu tư nội gián có thông tin trước (Informed Traders / Cá mập / Quỹ tổ chức).
+
+Đặc biệt, cơ chế bước giá bậc thang tại HOSE (10đ cho $P < 10.000đ$, 50đ cho $10.000đ \le P < 50.000đ$, và 100đ cho $P \ge 50.000đ$) tạo ra hiện tượng **rời rạc hóa bước giá (Tick-Size Discreteness)**, khiến spread hiệu dụng (Effective Spread) thường xuyên vượt khỏi mức tối thiểu lý thuyết. Việc bóc tách định lượng chính xác thành phần $\theta$ giúp **KongKeng Radar** nhận diện dòng tiền cá mập đang âm thầm gom hàng trước khi tin tức BCTC hoặc M&A được công bố rộng rãi.
+
+---
+
+### 2. Mô hình Toán học Cấu trúc Huang & Stoll (1997)
+Mô hình Huang-Stoll giả định giá trị nội tại chưa quan sát được $V_t$ của cổ phiếu tiến hóa theo bước nhảy martingale:
+$$\Delta V_t = V_t - V_{t-1} = \alpha \cdot \frac{S}{2} Q_{t-1} + \epsilon_t$$
+
+Trong đó:
+* $Q_t \in \{+1, -1\}$: Chỉ báo hướng lệnh phân loại theo thuật toán Lee-Ready ($+1$ nếu khớp mua chủ động quét lên giá Ask, $-1$ nếu khớp bán chủ động đè xuống giá Bid).
+* $\alpha \in [0, 1]$: Tỷ trọng thành phần bất đối xứng thông tin trong nửa bước chênh lệch giá ($S/2$).
+* $\epsilon_t \sim \mathcal{N}(0, \sigma_\epsilon^2)$: Cú sốc thông tin công khai ngoại sinh không phụ thuộc vào dòng lệnh.
+
+Giá trung bình yết (Midquote $M_t = \frac{A_t + B_t}{2}$) phản ánh kỳ vọng của thị trường sau khi bù đắp chi phí inventory và adverse selection:
+$$\Delta M_t = M_t - M_{t-1} = (\alpha + \beta) \frac{S}{2} Q_{t-1} - \beta \frac{S}{2} Q_{t-2} + e_t$$
+
+Phương trình động học giá giao dịch thực tế $\Delta P_t$:
+$$\Delta P_t = P_t - P_{t-1} = \frac{S}{2}(Q_t - Q_{t-1}) + \alpha \frac{S}{2} Q_{t-1} + \beta \frac{S}{2} (Q_{t-1} - Q_{t-2}) + e_t$$
+
+---
+
+### 3. Mô hình Madhavan, Richardson & Roomans (MRR 1997)
+Mô hình MRR giải quyết hạn chế của Huang-Stoll bằng cách tính đến **tính tự tương quan của dòng lệnh (Order Flow Autocorrelation $\rho$)**:
+$$\mathbb{E}[Q_t | Q_{t-1}] = \rho Q_{t-1}, \quad |\rho| < 1$$
+
+Khi đó, bước nhảy giá giao dịch được biểu diễn dưới dạng hồi quy vi cấu trúc khả ước lượng trực tiếp:
+$$\Delta P_t = (\phi + \theta) Q_t - (\phi + \rho \theta) Q_{t-1} + u_t$$
+
+Trong đó:
+* $\theta$: Tham số đo lường mức độ bất đối xứng thông tin (Adverse Selection Parameter).
+* $\phi$: Tham số bù đắp chi phí xử lý lệnh và rủi ro tạo lập (Order Processing & Realized Spread).
+* $u_t$: Thành phần nhiễu trắng do bất định công khai.
+
+**Chỉ số Tỷ lệ Thông tin Bất đối xứng (Information Asymmetry Ratio - $\gamma_{\text{MRR}}$):**
+$$\gamma_{\text{MRR}} = \frac{\theta}{\phi + \theta} \in [0, 1]$$
+
+* Nếu $\gamma_{\text{MRR}} \ge 0.60$: Hơn 60% chênh lệch giá xuất phát từ rủi ro thông tin. Đây là đặc trưng kinh điển khi "Cá mập" (Informed Institutions) đang tích lũy hoặc phân phối khối lượng lớn.
+* Nếu $\gamma_{\text{MRR}} < 0.25$: Thị trường hoàn toàn cân bằng giữa các nhà đầu tư nhỏ lẻ (Noise Traders), thích hợp cho chiến lược bắt đảo chiều Mean-Reversion.
+
+---
+
+### 4. Thiết kế Thực nghiệm & Triển khai Python Mô phỏng Phân rã Spread Sàn HOSE
+Dưới đây là module Python định lượng độc lập ước lượng các tham số $\theta, \phi, \rho, \gamma_{\text{MRR}}$ trên chuỗi dữ liệu tick-by-tick của cổ phiếu bluechip HOSE:
+
+```python
+import numpy as np
+import pandas as pd
+
+def estimate_mrr_spread_decomposition(trades_df):
+    """
+    Ước lượng phân rã Spread theo mô hình Madhavan-Richardson-Roomans (MRR 1997)
+    trên chuỗi giao dịch khớp lệnh sàn HOSE.
+    
+    Tham số:
+        trades_df: DataFrame với các cột:
+            - 'price': Giá khớp thực tế P_t (VNĐ)
+            - 'bid': Giá dư mua tốt nhất B_t
+            - 'ask': Giá dư bán tốt nhất A_t
+            - 'vol': Khối lượng khớp QTY
+    """
+    df = trades_df.copy()
+    
+    # 1. Phân loại hướng lệnh (Lee-Ready Algorithm)
+    midquote = (df['ask'] + df['bid']) / 2.0
+    
+    trade_dir = np.zeros(len(df))
+    # Nếu giá cao hơn midquote -> Mua chủ động (+1)
+    trade_dir[df['price'] > midquote] = 1.0
+    # Nếu giá thấp hơn midquote -> Bán chủ động (-1)
+    trade_dir[df['price'] < midquote] = -1.0
+    # Nếu bằng midquote -> Tick test theo hướng giá trước
+    price_diff = df['price'].diff().fillna(0)
+    for i in range(len(trade_dir)):
+        if trade_dir[i] == 0:
+            if price_diff.iloc[i] > 0:
+                trade_dir[i] = 1.0
+            elif price_diff.iloc[i] < 0:
+                trade_dir[i] = -1.0
+            else:
+                trade_dir[i] = trade_dir[i-1] if i > 0 else 1.0
+                
+    df['Q'] = trade_dir
+    df['delta_P'] = df['price'].diff()
+    df['Q_lag'] = df['Q'].shift(1)
+    
+    clean_df = df.dropna().copy()
+    
+    # 2. Ước lượng tự tương quan dòng lệnh rho
+    rho = float(np.corrcoef(clean_df['Q'], clean_df['Q_lag'])[0, 1])
+    
+    # 3. Hồi quy vi cấu trúc OLS:
+    # delta_P_t = beta_1 * Q_t + beta_2 * Q_{t-1} + u_t
+    # Trong đó:
+    # beta_1 = phi + theta
+    # beta_2 = -(phi + rho * theta)
+    X = np.column_stack([clean_df['Q'], clean_df['Q_lag']])
+    y = clean_df['delta_P'].values
+    
+    # OLS Solution: (X^T X)^{-1} X^T y
+    coeffs, residuals, rank, s = np.linalg.lstsq(X, y, rcond=None)
+    beta_1 = coeffs[0]
+    beta_2 = coeffs[1]
+    
+    # 4. Giải hệ phương trình phi và theta:
+    # beta_1 + beta_2 = theta * (1 - rho)
+    # => theta = (beta_1 + beta_2) / (1 - rho)
+    # => phi = beta_1 - theta
+    if abs(1.0 - rho) > 1e-4:
+        theta = max(0.0, (beta_1 + beta_2) / (1.0 - rho))
+    else:
+        theta = max(0.0, beta_1 * 0.5)
+        
+    phi = max(0.0, beta_1 - theta)
+    effective_spread = 2.0 * (phi + theta)
+    adverse_selection_ratio = theta / max(1e-6, (phi + theta))
+    
+    return {
+        'rho': round(rho, 4),
+        'beta_1': round(beta_1, 2),
+        'beta_2': round(beta_2, 2),
+        'theta_adverse_selection': round(theta, 2),
+        'phi_order_processing': round(phi, 2),
+        'implied_half_spread': round(phi + theta, 2),
+        'effective_spread_vnd': round(effective_spread, 2),
+        'adverse_selection_ratio_gamma': round(adverse_selection_ratio, 4),
+        'whale_informed_flag': bool(adverse_selection_ratio >= 0.60)
+    }
+
+# Minh họa chạy kiểm định mô phỏng trên 1000 tick cổ phiếu FPT (Thị giá 135.000đ, Tick size 100đ)
+if __name__ == '__main__':
+    np.random.seed(42)
+    n = 1000
+    true_phi = 45.0      # Chi phí xử lý lệnh và rủi ro sổ lệnh (45 VNĐ)
+    true_theta = 85.0    # Chi phí bất đối xứng thông tin cá mập (85 VNĐ)
+    true_rho = 0.35      # Tính liên tục của dòng lệnh
+    
+    # Mô phỏng chuỗi lệnh AR(1)
+    Q = np.zeros(n)
+    Q[0] = 1.0 if np.random.rand() > 0.5 else -1.0
+    for t in range(1, n):
+        prob_same = (1.0 + true_rho) / 2.0 if Q[t-1] == 1.0 else (1.0 - true_rho) / 2.0
+        Q[t] = 1.0 if np.random.rand() < prob_same else -1.0
+        
+    delta_P = (true_phi + true_theta) * Q[1:] - (true_phi + true_rho * true_theta) * Q[:-1] + np.random.normal(0, 30.0, n-1)
+    prices = 135000.0 + np.cumsum(np.concatenate([[0], delta_P]))
+    
+    mock_trades = pd.DataFrame({
+        'price': prices,
+        'bid': prices - 50.0,
+        'ask': prices + 50.0,
+        'vol': np.random.randint(100, 5000, n)
+    })
+    
+    result = estimate_mrr_spread_decomposition(mock_trades)
+    print("--- KẾT QUẢ PHÂN RÃ SPREAD MRR CỔ PHIẾU FPT (HOSE) ---")
+    for k, v in result.items():
+        print(f"{k}: {v}")
+```
+
+---
+
+### 5. Ý nghĩa Tích hợp vào KongKeng Radar & FOMO Pullback Engine
+1. **Bộ lọc Chống Bẫy Giá (Anti-Bull Trap Filter):** Khi thị giá tăng vượt đỉnh nhưng $\gamma_{\text{MRR}} < 0.20$ (không có rủi ro bất đối xứng thông tin), đợt tăng thuần túy do nhỏ lẻ fomo hưng phấn mua đẩy giá -> Hệ thống phát tín hiệu cảnh báo **Kịch bản 1 (Rủi ro cao)** và hướng dẫn nhà đầu tư kiên nhẫn chờ nhịp chỉnh về hỗ trợ (Kịch bản 2).
+2. **Xác nhận Điểm Nổ Pocket Pivot:** Khi cổ phiếu bứt phá khỏi nền tích lũy kèm theo $\gamma_{\text{MRR}} \ge 0.65$ và $\rho \ge 0.40$, thuật toán khẳng định 100% dòng tiền cá mập đang quét lệnh gom sạch thanh khoản đối ứng -> Tự động kích hoạt tín hiệu Mua thăm dò tối ưu trên Radar.
+

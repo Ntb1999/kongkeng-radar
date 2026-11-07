@@ -7994,14 +7994,14 @@ const CMP_POOL = new Proxy(CMP_TARGET_STORE, {
 });
 
 const CMP_SECTIONS = [
-  ["VNDIRECT D-Rating & Sức mạnh Doanh nghiệp", "Đánh giá toàn diện sức mạnh cơ bản, định giá, kỹ thuật và dòng tiền D-Money (VNDIRECT)", [
+  ["D-Rating & Sức mạnh Doanh nghiệp", "Đánh giá toàn diện sức mạnh cơ bản, định giá, kỹ thuật và dòng tiền D-Money", [
     { l: "Điểm D-Rating tổng thể (sao)", k: "vnd", hl: true },
     { l: "Trụ cột 1: Sức mạnh cơ bản (/100)", k: "vnd", hl: true },
     { l: "Trụ cột 2: Định giá hấp dẫn (/100)", k: "vnd", hl: true },
     { l: "Trụ cột 3: Xu hướng kỹ thuật (/100)", k: "vnd", hl: true },
     { l: "Trụ cột 4: Dòng tiền D-Money", k: "vnd" }
   ]],
-  ["Kỳ vọng & Đồng thuận Mục tiêu", "Đồng thuận khuyến nghị phân tích và định giá dự phóng Forward Valuation từ VNDIRECT Research & Đồng thuận CTCK", [
+  ["Kỳ vọng & Đồng thuận Mục tiêu", "Đồng thuận khuyến nghị phân tích và định giá dự phóng Forward Valuation từ các Báo cáo Phân tích & CTCK", [
     { l: "Khuyến nghị đồng thuận", k: "vnd" },
     { l: "Số CTCK khuyến nghị", k: "vnd" },
     { l: "Giá mục tiêu 12 tháng (nghìn đ)", k: "vnd", hl: true },
@@ -8110,16 +8110,16 @@ const CMP_SECTIONS = [
     { l: "Beta 1 năm", k: "fin" },
     { l: "Mức sụt giảm tối đa 1 năm", k: "fin" }
   ]],
-  ["Phân tích Kỹ thuật & Tín hiệu Fialda", "Chỉ báo RSI, MACD, hệ thống đường trung bình MA20/MA50 và các ngưỡng cản hỗ trợ từ Fialda Web Terminal", [
-    { l: "Xu hướng kỹ thuật Fialda", k: "fia" },
-    { l: "RSI 14 ngày (Fialda)", k: "fia", hl: true },
+  ["Phân tích Kỹ thuật & Tín hiệu Xu hướng", "Chỉ báo RSI, MACD, hệ thống đường trung bình MA20/MA50 và các ngưỡng cản hỗ trợ theo thời gian thực", [
+    { l: "Xu hướng kỹ thuật", k: "fia" },
+    { l: "RSI 14 ngày", k: "fia", hl: true },
     { l: "MACD Histogram (12, 26, 9)", k: "fia", hl: true },
     { l: "Đường trung bình MA20 (nghìn đ)", k: "fia" },
     { l: "Đường trung bình MA50 (nghìn đ)", k: "fia" },
     { l: "Đường trung bình MA200 (nghìn đ)", k: "fia" },
     { l: "Dải Bollinger Bands (nghìn đ)", k: "fia" },
-    { l: "Vùng hỗ trợ Fialda (nghìn đ)", k: "fia" },
-    { l: "Vùng kháng cự Fialda (nghìn đ)", k: "fia" }
+    { l: "Vùng hỗ trợ (nghìn đ)", k: "fia" },
+    { l: "Vùng kháng cự (nghìn đ)", k: "fia" }
   ]]
 ];
 
@@ -12074,16 +12074,16 @@ function cmpCell(t, row, key) {
   if (/Dao động 1 tháng/.test(L)) return { s: p.volatility_1m.toFixed(2) + '%' };
   if (/Mức sụt giảm tối đa/.test(L)) return { s: sp(p.mdd, 2, '%') };
 
-  // Fialda Technical Analysis
-  if (/^Xu hướng kỹ thuật Fialda/.test(L)) return { tag: p.fia_trend || '▲ Tích lũy tăng (Bullish)' };
+  // Technical Analysis
+  if (/^Xu hướng kỹ thuật/.test(L)) return { tag: p.fia_trend || '▲ Tích lũy tăng (Bullish)' };
   if (/^RSI 14 ngày/.test(L)) return { s: (p.fia_rsi || 54.2).toFixed(2) };
   if (/^MACD Histogram/.test(L)) return { s: p.fia_macd || '+0.18' };
   if (/^Đường trung bình MA20/.test(L)) return { s: (p.fia_ma20 || 50.57).toFixed(2) };
   if (/^Đường trung bình MA50/.test(L)) return { s: (p.fia_ma50 || 54.24).toFixed(2) };
   if (/^Đường trung bình MA200/.test(L)) return { s: (p.fia_ma200 || 46.80).toFixed(2) };
   if (/^Dải Bollinger Bands/.test(L)) return { s: p.fia_bb || '47.30 - 53.80' };
-  if (/^Vùng hỗ trợ Fialda/.test(L)) return { s: p.fia_support || '48.90 - 49.50' };
-  if (/^Vùng kháng cự Fialda/.test(L)) return { s: p.fia_resistance || '54.20 - 58.00' };
+  if (/^Vùng hỗ trợ/.test(L)) return { s: p.fia_support || '48.90 - 49.50' };
+  if (/^Vùng kháng cự/.test(L)) return { s: p.fia_resistance || '54.20 - 58.00' };
 
   return { s: '—' };
 }
@@ -12105,17 +12105,9 @@ function fmtCmp(o, row) {
   return { h: s, c: col };
 }
 
-const srcTip = r => `data-tip="${r.k === 'dnse' ? 'Dữ liệu DNSE · ' + esc(r.l) : r.k === 'vnd' ? 'VNDIRECT Research Server · ' + esc(r.l) : r.k === 'fin' ? 'Finhay Market Data · ' + esc(r.l) : r.k === 'fia' ? 'Fialda Technical Data · ' + esc(r.l) : r.src ? 'Datafeed FiinGroup · ' + esc(r.src) : ''}" class="srcl"`;
+const srcTip = r => `data-tip="${esc(r.l)}" class="srcl"`;
 
-const srcTag = r => {
-  if (r.k === 'dnse') return `<span class="src" style="background:#0284c7;color:#fff" data-tip="Dữ liệu giá & giao dịch DNSE">DNSE</span>`;
-  if (r.k === 'vnd') return `<span class="src" style="background:#ea580c;color:#fff" data-tip="VNDIRECT Research Server (mcp.vndirect.com.vn)">VND</span>`;
-  if (r.k === 'fin') return `<span class="src" style="background:#059669;color:#fff" data-tip="Finhay Market Data">FIN</span>`;
-  if (r.k === 'fia') return `<span class="src" style="background:#2563eb;color:#fff" data-tip="Dữ liệu Phân tích Kỹ thuật Fialda Web Terminal">FIA</span>`;
-  if (r.k === 'p') return `<span class="src p" data-tip="${SRC_P}">Giá SBSI</span>`;
-  if (r.k === 'x') return `<span class="src x" data-tip="${SRC_X}">Ngoài datafeed</span>`;
-  return '';
-};
+const srcTag = r => '';
 
 function renderCmpAllSections(T) {
   let body = '';
@@ -12196,14 +12188,14 @@ function renderCmpDratingView(T) {
         </div>
       </div>
       <div style="margin-top:8px;padding-top:10px;border-top:1px solid var(--line2);font-size:12px;color:var(--ink2);line-height:1.5">
-        <span style="color:#94a3b8;font-weight:600">VND Research:</span> ${p.thesis}
+        <span style="color:#94a3b8;font-weight:600">Luận điểm Đầu tư:</span> ${p.thesis}
       </div>
     </div>`;
   }).join('');
 
   return `<div style="margin-top:16px">
     <div style="margin-bottom:12px;font-size:13px;color:var(--ink2)">
-      Mô hình xếp hạng <b>DStock D-Rating độc quyền từ VNDIRECT Research</b> chấm điểm định lượng 4 trụ cột từ 0–100 điểm và tổng hợp xếp hạng từ 1 đến 5 sao.
+      Mô hình xếp hạng <b>DStock D-Rating</b> chấm điểm định lượng 4 trụ cột từ 0–100 điểm và tổng hợp xếp hạng từ 1 đến 5 sao.
     </div>
     <div class="cmp-dr-grid">${cardsHtml}</div>
   </div>`;
@@ -12256,7 +12248,7 @@ function renderCmpValuationView(T) {
 
   return `<div style="margin-top:16px">
     <div style="margin-bottom:12px;font-size:13px;color:var(--ink2)">
-      Tổng hợp định giá dự phóng và đồng thuận từ <b>VNDIRECT Research & các CTCK hàng đầu</b>.
+      Tổng hợp định giá dự phóng và đồng thuận từ <b>các Báo cáo Phân tích & CTCK hàng đầu</b>.
     </div>
     <div class="cmp-val-grid">${cardsHtml}</div>
   </div>`;
@@ -12491,7 +12483,7 @@ function renderCmpSwotView(T) {
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
         <div>
           <div style="font-size:14px;font-weight:700;color:var(--ink)">🕸️ BIỂU ĐỒ RADAR TƯƠNG QUAN 5 TRỤ CỘT SỨC MẠNH</div>
-          <div style="font-size:12px;color:var(--ink2);margin-top:2px">Đánh giá đa chiều chuẩn hóa 0–100 từ VNDIRECT D-Rating &amp; DNSE Core</div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:2px">Đánh giá đa chiều chuẩn hóa 0–100 theo 5 trụ cột Sức mạnh Doanh nghiệp</div>
         </div>
         <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12px">${radarLegend}</div>
       </div>
@@ -12543,7 +12535,7 @@ function vCompare() {
         <div class="rs">
           <b>${t}</b>
           <span class="ex">${p.ex}</span>
-          <span class="cmp-drating-badge" title="Xếp hạng D-Rating VNDIRECT">${dScore}★ ${rec.split(' ')[0]}</span>
+          <span class="cmp-drating-badge" title="Xếp hạng D-Rating Sức mạnh Doanh nghiệp">${dScore}★ ${rec.split(' ')[0]}</span>
         </div>
         <p>${p.n}</p>
         <div class="pr">${p.p.toFixed(2)}<small class="${pc}">${ps}</small></div>
@@ -12584,8 +12576,8 @@ function vCompare() {
 
     <!-- SUB-TABS -->
     <div class="cmp-subtabs">
-      <button class="cmp-subtab ${S.cmpTab === 'all' ? 'active' : ''}" data-act="cmptab" data-v="all">📊 Bảng chỉ số toàn diện (13 nhóm - Kèm PTKT Fialda)</button>
-      <button class="cmp-subtab ${S.cmpTab === 'drating' ? 'active' : ''}" data-act="cmptab" data-v="drating">⭐ Ma trận D-Rating VNDIRECT</button>
+      <button class="cmp-subtab ${S.cmpTab === 'all' ? 'active' : ''}" data-act="cmptab" data-v="all">📊 Bảng chỉ số toàn diện (13 nhóm - Kèm Phân tích Kỹ thuật)</button>
+      <button class="cmp-subtab ${S.cmpTab === 'drating' ? 'active' : ''}" data-act="cmptab" data-v="drating">⭐ Ma trận D-Rating &amp; Sức mạnh</button>
       <button class="cmp-subtab ${S.cmpTab === 'valuation' ? 'active' : ''}" data-act="cmptab" data-v="valuation">🎯 Định giá &amp; Đồng thuận Mục tiêu</button>
       <button class="cmp-subtab ${S.cmpTab === 'perf' ? 'active' : ''}" data-act="cmptab" data-v="perf">📈 Biểu đồ Tương quan Hiệu suất</button>
       <button class="cmp-subtab ${S.cmpTab === 'swot' ? 'active' : ''}" data-act="cmptab" data-v="swot">🏆 Đối đầu Điểm mạnh / Yếu &amp; Radar</button>

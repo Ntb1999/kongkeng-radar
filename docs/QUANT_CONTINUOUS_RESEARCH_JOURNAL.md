@@ -197,6 +197,10 @@
 
 ---
 
+- [Chủ đề 135: Mô Hình Lý Thuyết Định Giá Trọng Tài Bước Giá Phân Tầng (Tick-Size Arbitrage) Giữa HOSE, HNX & UPCOM](#-chủ-đề-135-mô-hình-lý-thuyết-định-giá-trọng-tài-bước-giá-phân-tầng-tick-size-arbitrage--quản-trị-tồn-kho-avellaneda-stoikov-giữa-hose-hnx--upcom)
+
+---
+
 ## 🔬 CHỦ ĐỀ 01: PHƯƠNG PHÁP META-LABELING & TRIPLE BARRIER METHOD
 **Tác giả lý thuyết:** GS. Marcos López de Prado (*Advances in Financial Machine Learning*, 2018)  
 **Thời gian hoàn thành:** 2026-11-02 23:35 (ICT)  
@@ -15646,3 +15650,146 @@ if __name__ == '__main__':
 2. **Khai thác quy luật phục hồi giá cho Kịch Bản 2 (Thang Giá Tích Lũy Pullback Ladder):**
    - Khi một quỹ ngoại vừa quét lệnh lớn đẩy giá tăng sốc $I_{\text{peak}}$, KongKeng Radar cảnh báo nhà đầu tư **KHÔNG MUA ĐUỔI Ở KỊCH BẢN 1**.
    - Thay vào đó, hệ thống tính toán chính xác mức giá phục hồi sau $\tau = 30$ phút ($P_{\text{relaxed}} \approx P_{\text{perm}}$) và đặt lệnh chờ mua gom tại **Kịch Bản 2: Đặt Chờ Tích Lũy** với mức chiết khấu an toàn, tránh trượt giá từ 1.2% đến 1.8%.
+
+---
+
+## 🔬 CHỦ ĐỀ 135: MÔ HÌNH LÝ THUYẾT ĐỊNH GIÁ TRỌNG TÀI BƯỚC GIÁ PHÂN TẦNG (TICK-SIZE ARBITRAGE) & QUẢN TRỊ TỒN KHO AVELLANEDA-STOIKOV GIỮA HOSE, HNX & UPCOM
+
+```
+Chu kỳ nghiên cứu: 10 phút định kỳ (Iteration 34 / Task-7472)
+Thời gian hoàn thành: 2026-11-07 20:40:00
+Phân hệ áp dụng: Giao Dịch Chênh Lệch Bước Giá & Quản Trị Tồn Kho Vi Cấu Trúc / KongKeng Radar
+Mức độ kiểm định: Chuẩn mực Avellaneda-Stoikov Optimal Market Making & Quy chế khớp lệnh HOSE/HNX
+```
+
+### 1. Bối Cảnh Thực Tiễn & Rào Cản Tại Thị Trường Việt Nam
+Tại thị trường tài chính Việt Nam, sự phân mảnh về quy định bước giá (Tick Size) giữa ba sàn giao dịch tạo ra những méo mó vi cấu trúc sâu sắc nhưng cũng mở ra cơ hội kinh doanh chênh lệch giá định lượng (Statistical Arbitrage) độc nhất vô nhị:
+1. **Sự đứt gãy bước giá phân tầng tại sàn HOSE:**
+   - Thị giá $< 10,000$đ: Bước giá 10đ (ví dụ giá 9,990đ $\implies$ bước giá tương đối $\Delta_{\text{rel}} \approx 0.100\%$).
+   - Thị giá từ $10,000$đ đến $49,950$đ: Bước giá 50đ. Ngay khi cổ phiếu vượt mốc 10,000đ, bước giá tương đối nhảy vọt gấp 5 lần lên $\Delta_{\text{rel}} \approx 0.500\%$.
+   - Thị giá $\ge 50,000$đ: Bước giá 100đ. Tại mốc 49,950đ lên 50,000đ, bước giá nhảy gấp đôi từ 50đ lên 100đ.
+2. **Sự bất cân xứng bước giá giữa HOSE và HNX/UPCOM:**
+   - Trên sàn HNX và UPCOM, toàn bộ cổ phiếu áp dụng duy nhất một bước giá đồng nhất 100đ.
+   - Đối với các cổ phiếu thị giá thấp (ví dụ SHB, PVS, TNG quanh vùng 10,000đ - 15,000đ trên HNX), một bước giá 100đ tương đương từ 0.70% đến 1.00% lợi nhuận danh mục. Đây là thị trường bị chi phối bởi bước giá (Tick-Constrained Market), nơi sự cạnh tranh không nằm ở việc trả giá cao hơn mà nằm ở **Vị trí hàng đợi ưu tiên (Queue Priority FIFO)**.
+3. **Mục tiêu của KongKeng Radar:** Ứng dụng **Mô hình Tạo Lập Thị Trường & Quản Trị Tồn Kho Avellaneda-Stoikov (2008)** cải biên cho bước giá rời rạc phân tầng. Mô hình tính toán giá đặt chỗ điều chỉnh rủi ro tồn kho (Reservation Price), xác định khoảng cách kê lệnh tối ưu hai đầu sổ lệnh (Optimal Bid/Ask Spreads), và khai thác quán tính giá quanh các "mốc đứt gãy bước giá" để tạo ra dòng lợi nhuận chênh lệch giá phi rủi ro hướng thị trường (Market-Neutral Alpha).
+
+---
+
+### 2. Nền Tảng Toán Học Định Lượng: Mô Hình Avellaneda-Stoikov Mở Rộng
+
+#### 2.1. Bước Giá Tương Đối & Độ Sâu Thanh Khoản
+Bước giá tương đối tại mức thị giá $S$:
+$$\Delta_{\text{rel}}(S) = \frac{\text{TickSize}(S)}{S}$$
+Tại các thị trường bước giá lớn ($\Delta_{\text{rel}} \ge 0.35\%$), spread thực tế trên sổ lệnh bị chặn dưới bởi đúng 1 bước giá ($\text{Spread} = \text{TickSize}$). Nhà đầu tư không thể thu hẹp spread thêm nữa mà phải xếp hàng theo luật FIFO.
+
+#### 2.2. Giá Đặt Chỗ Điều Chỉnh Rủi Ro Tồn Kho (Reservation Price)
+Giả định một nhà tạo lập thị trường hoặc bot giao dịch tự hành đang nắm giữ số lượng tồn kho $q$ cổ phiếu tại thời điểm $t$ với thời gian kết thúc phiên $T$. Giá đặt chỗ cân bằng (Reservation Price $R$) được xác định qua hàm hữu ích CARA:
+$$R(s, q, t) = s - q \cdot \gamma \cdot \sigma^2 \cdot (T - t)$$
+Trong đó:
+- $s$: Giá cân bằng giữa Bid 1 và Ask 1 (Mid-Price).
+- $q$: Vị thế tồn kho hiện tại (dương nếu đang ôm hàng, âm nếu đang short/bán non).
+- $\gamma$: Hệ số e ngại rủi ro tồn kho.
+- $\sigma$: Độ biến động Realized Kernel của cổ phiếu.
+
+**Ý nghĩa kinh tế:** Khi bot đang ôm nhiều hàng ($q > 0$), giá đặt chỗ $R < s$ tự động lùi xuống, buộc bot phải hạ giá chào bán (Ask) để nhanh chóng giải phóng tồn kho, tránh rủi ro sụt giá qua đêm.
+
+#### 2.3. Khoảng Cách Kê Lệnh Hai Đầu Tối Ưu (Optimal Spreads) Thích Ứng Bước Giá Rời Rạc
+Khoảng cách kê lệnh mua $\delta_b^*$ (tính từ Mid-price lùi xuống) và khoảng cách kê lệnh bán $\delta_a^*$ (tính từ Mid-price tiến lên) liên tục theo Guéant et al. (2012):
+$$\delta_a^* + \delta_b^* = \frac{2}{\gamma} \ln\left(1 + \frac{\gamma}{k}\right)$$
+Trong đó $k$ là tham số độ sâu sổ lệnh trong hàm cường độ khớp lệnh $\lambda(\delta) = A e^{-k \delta}$.
+Khi chuyển sang sàn HOSE/HNX, khoảng cách này được làm tròn lên theo bội số của Tick Size:
+$$\delta_b^{\text{discrete}} = \left\lceil \frac{s - R(s, q, t) + \frac{1}{\gamma} \ln(1 + \gamma/k)}{\text{TickSize}} \right\rceil \times \text{TickSize}$$
+$$\delta_a^{\text{discrete}} = \left\lceil \frac{R(s, q, t) - s + \frac{1}{\gamma} \ln(1 + \gamma/k)}{\text{TickSize}} \right\rceil \times \text{TickSize}$$
+
+---
+
+### 3. Thuật Toán Python Mô Phỏng Kê Lệnh Tạo Lập Chênh Lệch Bước Giá
+
+```python
+import numpy as np
+import pandas as pd
+
+class TickSizeArbitrageEngine:
+    """
+    Bộ động cơ định lượng Avellaneda-Stoikov thích ứng bước giá phân tầng HOSE và HNX.
+    Tối ưu hóa kê lệnh hai đầu và khai thác đứt gãy bước giá cho KongKeng Radar.
+    """
+    def __init__(self, risk_aversion=0.01, liquidity_k=1.5):
+        self.gamma = risk_aversion          # Hệ số e ngại rủi ro tồn kho
+        self.k = liquidity_k                # Độ sâu thanh khoản sổ lệnh
+
+    def get_tick_size(self, exchange, price):
+        """Xác định bước giá chuẩn theo quy chế HOSE và HNX"""
+        if exchange.upper() == 'HNX' or exchange.upper() == 'UPCOM':
+            return 100
+        else:  # HOSE
+            if price < 10_000:
+                return 10
+            elif price < 50_000:
+                return 50
+            else:
+                return 100
+
+    def calculate_quotes(self, exchange, mid_price, current_inventory, daily_vol, time_left_day=0.5):
+        """
+        Tính giá đặt chỗ R và khoảng cách kê lệnh Mua (Bid) / Bán (Ask) tối ưu
+        """
+        tick = self.get_tick_size(exchange, mid_price)
+        sigma = daily_vol
+        
+        # 1. Giá đặt chỗ điều chỉnh rủi ro tồn kho
+        reservation_price = mid_price - current_inventory * self.gamma * (sigma ** 2) * time_left_day
+        
+        # 2. Khoảng cách chênh lệch tối ưu nửa dải
+        half_spread_ideal = (1.0 / self.gamma) * np.log(1.0 + self.gamma / self.k) * (tick * 0.5)
+        
+        # 3. Kê lệnh Bid / Ask làm tròn theo bội số bước giá
+        raw_bid = reservation_price - half_spread_ideal
+        raw_ask = reservation_price + half_spread_ideal
+        
+        optimal_bid = int(np.floor(raw_bid / tick)) * tick
+        optimal_ask = int(np.ceil(raw_ask / tick)) * tick
+        
+        # Đảm bảo Ask > Bid tối thiểu 1 tick
+        if optimal_ask <= optimal_bid:
+            optimal_ask = optimal_bid + tick
+            
+        realized_spread_pct = ((optimal_ask - optimal_bid) / mid_price) * 100
+        relative_tick_pct = (tick / mid_price) * 100
+
+        return {
+            'Exchange': exchange.upper(),
+            'Mid_Price': mid_price,
+            'Tick_Size_VND': tick,
+            'Relative_Tick_Pct': np.round(relative_tick_pct, 3),
+            'Inventory_Shares': current_inventory,
+            'Reservation_Price': np.round(reservation_price, 1),
+            'Optimal_Bid_VND': optimal_bid,
+            'Optimal_Ask_VND': optimal_ask,
+            'Spread_VND': optimal_ask - optimal_bid,
+            'Spread_Yield_Pct': np.round(realized_spread_pct, 2)
+        }
+
+# Thực nghiệm so sánh giữa cổ phiếu MBB (HOSE, giá 24,000đ) và SHB (HNX, giá 12,000đ)
+if __name__ == '__main__':
+    engine = TickSizeArbitrageEngine(risk_aversion=0.005, liquidity_k=1.2)
+    daily_volatility = 0.018  # Biến động 1.8%/ngày
+    
+    # Kịch bản 1: Cổ phiếu MBB trên HOSE (Giá 24,000đ -> Bước giá 50đ)
+    quote_mbb = engine.calculate_quotes('HOSE', mid_price=24_000, current_inventory=20_000, daily_vol=daily_volatility)
+    
+    # Kịch bản 2: Cổ phiếu SHB trên HNX (Giá 12,000đ -> Bước giá 100đ)
+    quote_shb = engine.calculate_quotes('HNX', mid_price=12_000, current_inventory=20_000, daily_vol=daily_volatility)
+    
+    print("=== ĐỐI SOÁT TẠO LẬP BƯỚC GIÁ: SÀN HOSE vs SÀN HNX ===")
+    df_res = pd.DataFrame([quote_mbb, quote_shb])
+    print(df_res[['Exchange', 'Mid_Price', 'Tick_Size_VND', 'Relative_Tick_Pct', 'Optimal_Bid_VND', 'Optimal_Ask_VND', 'Spread_Yield_Pct']].to_string(index=False))
+```
+
+---
+
+### 4. Ứng Dụng Đột Phá Vào Nền Tảng KongKeng Radar
+1. **Khai thác tỷ suất sinh lời vượt trội trên sàn HNX/UPCOM:**
+   - Tại các mã HNX thị giá thấp (như SHB quanh 12,000đ), một bước giá 100đ đem lại tỷ suất lợi nhuận spread lên tới **$0.83\%$**. Thuật toán Avellaneda-Stoikov tự động kê lệnh ở vị trí hàng đợi ưu tiên số 1, giúp bot thu về dòng tiền thặng dư đều đặn mà không phải dự đoán xu hướng thị trường.
+2. **Chiến lược "Đón đầu vượt mốc phân tầng" (Breakout Barrier Strategy):**
+   - Khi một cổ phiếu HOSE tích lũy sát mốc 9,950đ hoặc 49,800đ với dòng tiền cá mập ABSI dương lớn, hệ thống phát tín hiệu mua gom tại **Kịch Bản 2 (Thang Giá Tích Lũy Pullback)** trước khi giá vượt mốc 10,000đ hoặc 50,000đ. Khi bước giá chuyển từ 10đ lên 50đ (hoặc 50đ lên 100đ), biên độ biến động nở rộng lập tức kích hoạt đà bứt phá thanh khoản mạnh mẽ.

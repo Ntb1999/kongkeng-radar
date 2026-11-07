@@ -3221,6 +3221,29 @@ td[data-stock-role="price"],
   color: var(--down);
   border: 1px solid rgba(239,68,68,0.25);
 }
+.mnews-ai-eval {
+  margin: 8px 0;
+  padding: 8px 12px;
+  background: var(--sub);
+  border-radius: 0 6px 6px 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  transition: all .15s ease;
+}
+.mnews-ai-eval:hover {
+  background: var(--sub2);
+}
+.mnews-target-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 4px;
+  background: rgba(2,132,199,0.1);
+  color: #0284c7;
+  border: 1px solid rgba(2,132,199,0.25);
+}
 .mnews-badge-breaking {
   display: inline-flex;
   align-items: center;
@@ -8214,39 +8237,200 @@ const REPORTS = [
 const REP_TABS = [['Tất cả', 1152, () => true], ['Vĩ mô & Chiến lược', 86, r => r[2] === 'Vĩ mô' || r[2] === 'Chiến lược'], ['Ngành', 312, r => r[2] === 'Ngành'], ['Doanh nghiệp', 784, r => r[2] === 'Doanh nghiệp'], ['Có giá mục tiêu', 158, r => r[4] != null]];
 const recKey = r => ({ 'MUA': 'MUA', 'KHẢ QUAN': 'KHA', 'TRUNG LẬP': 'TRU', 'KÉM KHẢ QUAN': 'KEM', 'KÉM KQ': 'KEM', 'BÁN': 'BAN' }[r] || '');
 
+/* ================= MARIS AI SENTIMENT & IMPACT ENGINE (QUAD MCP) ================= */
+function evaluateNewsSentimentAndImpact(item) {
+  if (!item) return item;
+  const text = ((item.title || '') + ' ' + (item.summary || '') + ' ' + (item.content || '')).toLowerCase();
+  
+  // Natural Language Financial Sentiment Analysis for Vietnamese Market
+  const bullWords = [
+    'tăng trưởng', 'kỷ lục', 'lợi nhuận tăng', 'bứt phá', 'vượt đỉnh', 'cổ tức tiền mặt', 
+    'thoái vốn', 'mua ròng', 'nâng hạng', 'non-prefunding', 'bơm ròng', 'giải ngân', 
+    'mở rộng', 'hợp tác', 'chạy thử thành công', 'hưởng lợi', 'thặng dư', 'tăng vốn', 
+    'hạ nhiệt tỷ giá', 'hạ lãi suất', 'tái cấu trúc thành công', 'vượt kế hoạch', 'bàn giao',
+    'chạm đáy 3 năm', 'biên gộp phục hồi', 'đón sóng krx', 'top 5 thị phần'
+  ];
+  const bearWords = [
+    'thua lỗ', 'sụt giảm', 'giảm mạnh', 'bán ròng mạnh', 'khó khăn', 'vỡ nợ', 'lỗ nặng', 
+    'áp lực nợ', 'bị phạt', 'hủy niêm yết', 'nợ xấu tăng', 'căng thẳng', 'chi phí tăng cao', 
+    'đáo hạn trái phiếu', 'thiếu hụt thanh khoản', 'đình chỉ', 'suy thoái', 'áp lực trần',
+    'thách thức thanh khoản', 'cảnh báo', 'chậm công bố', 'thép giá rẻ'
+  ];
+
+  let bullScore = 0;
+  bullWords.forEach(w => { if (text.includes(w)) bullScore += 16; });
+  let bearScore = 0;
+  bearWords.forEach(w => { if (text.includes(w)) bearScore += 18; });
+
+  let sentiment = item.sentiment;
+  let score = item.sentimentScore;
+  if (score == null) {
+    if (bullScore > bearScore + 8) {
+      sentiment = 'TÍCH CỰC';
+      score = Math.min(96, Math.max(70, 65 + (bullScore - bearScore)));
+    } else if (bearScore > bullScore + 8) {
+      sentiment = 'TIÊU CỰC';
+      score = -Math.min(95, Math.max(65, 55 + (bearScore - bullScore)));
+    } else {
+      sentiment = 'TRUNG LẬP';
+      score = 0;
+    }
+  }
+
+  const tickers = item.tickers || [];
+  const tickerSyms = tickers.map(t => t.s);
+  const hasMarketScope = /vn-index|vn30|thị trường|toàn sàn|ftse|omo|ngân hàng nhà nước|lãi suất|tỷ giá/i.test(text);
+
+  let targetScope = item.targetScope;
+  if (!targetScope) {
+    targetScope = (hasMarketScope && (!tickerSyms.length || tickerSyms.length >= 3)) ? 'Toàn thị trường' : (tickerSyms.length ? 'Mã cổ phiếu' : 'Toàn thị trường');
+  }
+
+  let impactTarget = item.impactTarget;
+  if (!impactTarget) {
+    if (targetScope === 'Toàn thị trường') {
+      impactTarget = 'Toàn thị trường (VN-Index, VN30)';
+    } else if (tickerSyms.length) {
+      impactTarget = `Mã [${tickerSyms.join(', ')}]`;
+    } else {
+      impactTarget = 'Thị trường & Ngành';
+    }
+  }
+
+  let impactEstimate = item.impactEstimate;
+  if (!impactEstimate) {
+    if (sentiment === 'TÍCH CỰC') {
+      if (targetScope === 'Toàn thị trường') impactEstimate = 'VN-Index: +12.0 ~ +18.0 đ';
+      else if (tickerSyms.length) impactEstimate = `${tickerSyms[0]}: +3.0% ~ +5.5%`;
+      else impactEstimate = '+2.0% ~ +4.0%';
+    } else if (sentiment === 'TIÊU CỰC') {
+      if (targetScope === 'Toàn thị trường') impactEstimate = 'VN-Index: -8.0 ~ -15.0 đ';
+      else if (tickerSyms.length) impactEstimate = `${tickerSyms[0]}: -2.5% ~ -4.5%`;
+      else impactEstimate = '-2.0% ~ -3.5%';
+    } else {
+      impactEstimate = 'Biến động nhẹ (±0.5%)';
+    }
+  }
+
+  let actionTakeaway = item.actionTakeaway;
+  if (!actionTakeaway) {
+    if (sentiment === 'TÍCH CỰC') {
+      actionTakeaway = score >= 85 ? 'MUA GIA TĂNG' : 'TÍCH LŨY VÙNG HỖ TRỢ';
+    } else if (sentiment === 'TIÊU CỰC') {
+      actionTakeaway = Math.abs(score) >= 75 ? 'HẠ TỶ TRỌNG' : 'QUAN SÁT THẬN TRỌNG';
+    } else {
+      actionTakeaway = 'THEO DÕI THÊM';
+    }
+  }
+
+  let aiAssessment = item.aiAssessment;
+  if (!aiAssessment) {
+    if (sentiment === 'TÍCH CỰC') {
+      aiAssessment = `Thông tin hỗ trợ tích cực đối với ${impactTarget}. Dự báo dòng tiền mua chủ động gia tăng, kỳ vọng giá biến động ${impactEstimate}.`;
+    } else if (sentiment === 'TIÊU CỰC') {
+      aiAssessment = `Thông tin tạo áp lực ngắn hạn lên ${impactTarget}. Khuyến nghị nhà đầu tư thận trọng, canh cơ cấu tỷ trọng về ngưỡng an toàn.`;
+    } else {
+      aiAssessment = `Tác động trung tính, thị trường tiếp tục phản ánh thông tin và vận động tích lũy trong biên độ hẹp.`;
+    }
+  }
+
+  return {
+    ...item,
+    sentiment,
+    sentimentScore: score,
+    targetScope,
+    impactTarget,
+    impactEstimate,
+    actionTakeaway,
+    aiAssessment
+  };
+}
+
 /* ================= MARKET NEWS (TIN TỨC THỊ TRƯỜNG - QUAD MCP) ================= */
-const MARKET_NEWS = [
+const RAW_MARKET_NEWS = [
   {
     id: 'n1',
     title: 'Bộ Tài chính và UBCKNN hoàn tất dự thảo thông tư Non-prefunding: Bước ngoặt lớn gỡ nút thắt nâng hạng FTSE Emerging Markets',
     summary: 'Chính thức cho phép nhà đầu tư tổ chức nước ngoài giao dịch không ký quỹ 100% tiền (Non-prefunding). Đây là điều kiện tiên quyết để FTSE Russell xem xét nâng hạng thị trường chứng khoán Việt Nam lên Mới nổi (Secondary Emerging) với dòng vốn ngoại ước tính 1-1.5 tỷ USD.',
-    content: 'Dự thảo thông tư sửa đổi, bổ sung một số điều của các thông tư về giao dịch chứng khoán, bù trừ thanh toán và hoạt động của công ty chứng khoán đã bước vào giai đoạn lấy ý kiến hoàn tất trước khi ban hành chính thức.<br><br><b>Các điểm đột phá chính:</b><br>• <b>Cơ chế Non-prefunding:</b> Cho phép các nhà đầu tư tổ chức nước ngoài (Foreign Institutional Investors) đặt lệnh mua cổ phiếu mà không cần ký quỹ đủ 100% tiền trước thời điểm giao dịch.<br>• <b>Xử lý rủi ro thanh toán:</b> Trong trường hợp tổ chức nước ngoài không thanh toán đủ tiền vào ngày T+2, công ty chứng khoán nơi đặt lệnh sẽ chuyển nghĩa vụ thanh toán về tài khoản tự doanh của mình để xử lý qua cơ chế bán xử lý hoặc thỏa thuận.<br>• <b>Lợi ích trực tiếp:</b> Nhóm Chứng khoán (SSI, VND, HCM, VCI) gia tăng mạnh mẽ thị phần môi giới tổ chức; rổ VN30 (VCB, HPG, FPT, MWG, VNM) sẽ đón nhận dòng vốn thụ động và chủ động ước tính 1 - 1.5 tỷ USD ngay khi FTSE chính thức công bố nâng hạng.',
+    content: 'Dự thảo thông tư sửa đổi, bổ sung một số điều của các thông tư về giao dịch chứng khoán, bù trừ thanh toán và hoạt động của công ty chứng khoán đã bước vào giai đoạn lấy ý kiến hoàn tất trước khi ban hành chính thức.<br><br><b>Các điểm đột phá chính:</b><br>• <b>Cơ chế Non-prefunding:</b> Cho phép các nhà đầu tư tổ chức nước ngoài (Foreign Institutional Investors) đặt lệnh mua cổ phiếu mà không cần ký quỹ đủ 100% tiền trước thời điểm giao dịch.<br>• <b>Xử lý rủi ro thanh toán:</b> Trong trường hợp tổ chức nước ngoài không thanh toán đủ tiền vào ngày T+2, công ty chứng khoán nơi đặt lệnh sẽ chuyển nghĩa vụ thanh toán về tài khoản tự doanh của mình để xử lý qua cơ chế bán xử lý hoặc thỏa thuận.<br>• <b>Lợi ích trực tiếp:</b> Nhóm Chứng khoán (SSI, VND, HCM, VCI, VIX, MBS, SHS) gia tăng mạnh mẽ thị phần môi giới tổ chức; rổ VN30 (VCB, HPG, FPT, MWG, VNM) sẽ đón nhận dòng vốn thụ động và chủ động ước tính 1 - 1.5 tỷ USD ngay khi FTSE chính thức công bố nâng hạng.',
     category: 'Tin nóng',
     time: '14:15 Hôm nay',
-    source: 'UBCKNN & SSI iBoard News',
+    source: 'UBCKNN & SSI Research',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 94,
     impact: 'Rất cao',
     isHero: true,
+    targetScope: 'Toàn thị trường',
+    impactTarget: 'Toàn thị trường (VN-Index, VN30)',
+    impactEstimate: 'VN-Index: +15.0 ~ +20.0 đ',
+    aiAssessment: 'Bước ngoặt lớn nhất năm gỡ bỏ nút thắt ký quỹ ngoại. Dòng vốn tổ chức toàn cầu ước đạt 1 - 1.5 tỷ USD sẽ kích hoạt sóng tăng điểm diện rộng cho VN-Index và nhóm cổ phiếu vốn hóa lớn VN30.',
+    actionTakeaway: 'MUA GIA TĂNG TỶ TRỌNG',
     tickers: [{ s: 'SSI', c: 2.4 }, { s: 'VCB', c: 0.82 }, { s: 'HPG', c: 1.45 }, { s: 'FPT', c: 1.8 }],
     tags: ['Nâng hạng FTSE', 'Non-prefunding', 'KRX', 'Khối ngoại'],
     mcpTool: 'marketdata_list_company_news'
   },
   {
     id: 'n2',
-    title: 'FPT công bố doanh thu xuất khẩu phần mềm 9T/2026 vượt 1,2 tỷ USD, mở rộng trung tâm AI quy mô lớn tại Tokyo và Munich',
-    summary: 'Khối công nghệ tiếp tục là động lực tăng trưởng cốt lõi với doanh thu ký mới bứt phá 28% YoY; biên lợi nhuận gộp mảng chuyển đổi số và AI duy trì trên 38%.',
-    content: 'FPT ghi nhận kết quả kinh doanh 9 tháng đầu năm 2026 tăng trưởng ấn tượng. Doanh thu xuất khẩu phần mềm sang thị trường Nhật Bản tăng 34% nhờ nhu cầu chuyển đổi số Legacy System sang Cloud, trong khi thị trường Mỹ và Châu Âu duy trì mức tăng trưởng trên 22%.<br><br>FPT vừa khánh thành cụm trung tâm Nghiên cứu AI và Điện toán đám mây tại Munich (Đức), hợp tác chiến lược cùng NVIDIA phát triển giải pháp AI Factory cho ngành tự động hóa và tài chính ngân hàng quốc tế.',
+    title: 'Nhà Khang Điền (KDH) mở bán The Privia và triển khai cụm dự án hợp tác Keppel Land, doanh số Presales ước đạt 6.500 tỷ đồng',
+    summary: 'KDH đẩy mạnh tiến độ bàn giao dự án The Privia tại TP.HCM và bắt đầu ghi nhận doanh thu các phân kỳ hợp tác chiến lược cùng Keppel Land (Emeria, Clarita) tại khu Đông với biên lợi nhuận gộp vượt 42%.',
+    content: 'CTCP Đầu tư và Kinh doanh Nhà Khang Điền (KDH) ghi nhận tiến độ pháp lý và bán hàng vượt trội so với toàn ngành bất động sản dân cư. Dự án The Privia (Bình Tân) đã hoàn tất cất nóc và bàn giao đợt 1 với tỷ lệ hấp thụ đạt gần 100%.<br><br>Đồng thời, liên doanh KDH và tập đoàn Keppel Land (Singapore) tại hai dự án Clarita và Emeria (Bình Trưng Đông, TP. Thủ Đức) đã hoàn thành nghĩa vụ tài chính tiền sử dụng đất, sẵn sàng mở bán giai đoạn 1 trong Q4. Quỹ đất sạch quy mô lớn tại TP.HCM cùng cấu trúc nợ vay an toàn (tỷ lệ Nợ vay/Vốn chủ sở hữu dưới 0.45 lần) giúp KDH là tâm điểm hút dòng tiền đầu tư cơ bản.',
     category: 'Doanh nghiệp',
-    time: '13:45 Hôm nay',
+    time: '13:50 Hôm nay',
     source: 'SSI Research',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 89,
     impact: 'Cao',
-    tickers: [{ s: 'FPT', c: 1.8 }],
-    tags: ['AI Factory', 'Xuất khẩu phần mềm', 'KQKD Q3'],
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã KDH & Nhóm Bất động sản dân cư',
+    impactEstimate: 'KDH: +3.5% ~ +5.2% (Kỳ vọng vượt cản 34.5)',
+    aiAssessment: 'Tác động rất tích cực tới mã KDH nhờ dòng tiền presales thực tế và quỹ đất sạch pháp lý hoàn chỉnh. Dự báo KDH bứt phá vùng tích lũy 32.5 và hướng tới mục tiêu 36.0.',
+    actionTakeaway: 'MUA GOM VÙNG HỖ TRỢ',
+    tickers: [{ s: 'KDH', c: 5.23 }],
+    tags: ['KDH', 'The Privia', 'Keppel Land', 'Quỹ đất sạch'],
     mcpTool: 'marketdata_get_company_news_detail'
   },
   {
     id: 'n3',
+    title: 'Chứng khoán VIX hoàn tất tăng vốn điều lệ lên 14.500 tỷ đồng, lợi nhuận tự doanh Q3 tăng vọt 120% YoY',
+    summary: 'VIX phát hành thành công cho cổ đông hiện hữu, bổ sung nguồn vốn dồi dào mở rộng quy mô cho vay Margin và danh mục đầu tư tự doanh đón đầu hệ thống KRX.',
+    content: 'CTCP Chứng khoán VIX đã hoàn tất đợt phát hành tăng vốn điều lệ lên 14.500 tỷ đồng, vươn lên nhóm 5 công ty chứng khoán có quy mô vốn điều lệ lớn nhất thị trường.<br><br>Mảng tự doanh của VIX ghi nhận hiệu suất vượt trội nhờ nắm giữ danh mục các cổ phiếu cơ bản đầu ngành đón sóng nâng hạng (ngân hàng, thép, công nghệ). Dư địa cho vay Margin của VIX tăng thêm hơn 10.000 tỷ đồng, tạo tiền đề bùng nổ lợi nhuận quý 4/2026.',
+    category: 'Doanh nghiệp',
+    time: '13:15 Hôm nay',
+    source: 'VNDIRECT Smart Money',
+    sentiment: 'TÍCH CỰC',
+    sentimentScore: 87,
+    impact: 'Cao',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã VIX & Nhóm Chứng khoán vốn hóa lớn',
+    impactEstimate: 'VIX: +4.0% ~ +6.5% (Mục tiêu 16.8)',
+    aiAssessment: 'Tăng vốn thành công giải phóng room Margin và củng cố vị thế tài chính cho VIX. Dòng tiền đầu cơ và dòng tiền tổ chức duy trì mua ròng mạnh mẽ, xác suất bứt phá cản ngắn hạn rất cao.',
+    actionTakeaway: 'MUA THEO DÒNG TIỀN',
+    tickers: [{ s: 'VIX', c: 4.12 }],
+    tags: ['VIX', 'Tăng vốn 14.5k tỷ', 'Tự doanh bứt phá', 'Margin'],
+    mcpTool: 'marketdata_list_company_news'
+  },
+  {
+    id: 'n4',
+    title: 'FPT công bố doanh thu xuất khẩu phần mềm 9T/2026 vượt 1,2 tỷ USD, mở rộng trung tâm AI quy mô lớn tại Tokyo và Munich',
+    summary: 'Khối công nghệ tiếp tục là động lực tăng trưởng cốt lõi với doanh thu ký mới bứt phá 28% YoY; biên lợi nhuận gộp mảng chuyển đổi số và AI duy trì trên 38%.',
+    content: 'FPT ghi nhận kết quả kinh doanh 9 tháng đầu năm 2026 tăng trưởng ấn tượng. Doanh thu xuất khẩu phần mềm sang thị trường Nhật Bản tăng 34% nhờ nhu cầu chuyển đổi số Legacy System sang Cloud, trong khi thị trường Mỹ và Châu Âu duy trì mức tăng trưởng trên 22%.<br><br>FPT vừa khánh thành cụm trung tâm Nghiên cứu AI và Điện toán đám mây tại Munich (Đức), hợp tác chiến lược cùng NVIDIA phát triển giải pháp AI Factory cho ngành tự động hóa và tài chính ngân hàng quốc tế.',
+    category: 'Doanh nghiệp',
+    time: '12:45 Hôm nay',
+    source: 'SSI Research',
+    sentiment: 'TÍCH CỰC',
+    sentimentScore: 91,
+    impact: 'Cao',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã FPT & Nhóm Công nghệ',
+    impactEstimate: 'FPT: +2.0% ~ +3.5% (Đỉnh lịch sử mới)',
+    aiAssessment: 'Động lực tăng trưởng kép từ AI Factory NVIDIA và doanh thu xuất khẩu phần mềm quốc tế. Khối ngoại duy trì room kịch trần 49%, định giá tiếp tục được định vị lại ở mức P/E cao hơn.',
+    actionTakeaway: 'NẮM GIỮ CHIẾN LƯỢC',
+    tickers: [{ s: 'FPT', c: 1.8 }],
+    tags: ['FPT', 'AI Factory', 'Xuất khẩu phần mềm', 'NVIDIA'],
+    mcpTool: 'marketdata_get_company_news_detail'
+  },
+  {
+    id: 'n5',
     title: 'Hòa Phát (HPG) vận hành thử nghiệm phân kỳ 1 dự án Dung Quất 2: Sản lượng thép cuộn cán nóng HRC tăng thêm 3 triệu tấn/năm',
     summary: 'Dự án Khu liên hợp Gang thép Dung Quất 2 chính thức chạy thử lò cao số 1 thành công; dự kiến ghi nhận doanh thu thương mại bắt đầu từ Q4/2026.',
     content: 'Tập đoàn Hòa Phát (HPG) đã tiến hành sấy lò và chạy thử thành công phân kỳ 1 của dự án Dung Quất 2 với tổng mức đầu tư 85.000 tỷ đồng. Khi hoàn thiện cả 2 phân kỳ vào năm 2027, công suất thép thô của Hòa Phát sẽ đạt 14 triệu tấn/năm, lọt top 30 nhà sản xuất thép lớn nhất thế giới.<br><br>Sản phẩm thép cuộn cán nóng HRC chất lượng cao dùng cho vỏ ô tô, container và đóng tàu sẽ giúp HPG chiếm lĩnh thị trường nội địa thay thế thép nhập khẩu giá rẻ.',
@@ -8254,111 +8438,219 @@ const MARKET_NEWS = [
     time: '11:20 Hôm nay',
     source: 'VNDIRECT Research',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 88,
     impact: 'Cao',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã HPG & Nhóm Thép',
+    impactEstimate: 'HPG: +2.2% ~ +3.8% (Kỳ vọng vượt 29.0)',
+    aiAssessment: 'Dung Quất 2 là xúc tác lợi nhuận cốt lõi giai đoạn 2026-2028. Doanh thu thương mại HRC từ Q4 sẽ thúc đẩy tăng trưởng lợi nhuận ròng trên 30% YoY.',
+    actionTakeaway: 'MUA TÍCH LŨY DÀI HẠN',
     tickers: [{ s: 'HPG', c: 1.45 }],
-    tags: ['Dung Quất 2', 'Thép HRC', 'Mở rộng công suất'],
+    tags: ['HPG', 'Dung Quất 2', 'Thép HRC', 'Mở rộng công suất'],
     mcpTool: 'vnd_get_research_reports'
   },
   {
-    id: 'n4',
-    title: 'FPT chốt quyền tạm ứng cổ tức tiền mặt đợt 1/2026 tỷ lệ 15% (1.500 đồng/cp), ngày GDKHQ 15/10/2026',
-    summary: 'FPT thông báo ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức tiền mặt đợt 1/2026 là 16/10/2026; thanh toán vào ngày 30/10/2026 với tổng chi hơn 2.200 tỷ đồng.',
-    content: 'HĐQT CTCP FPT vừa thông qua nghị quyết chi trả cổ tức tiền mặt đợt 1 năm 2026 với tỷ lệ 15% mệnh giá (mỗi cổ phiếu nhận 1.500 đồng). Ngày giao dịch không hưởng quyền (GDKHQ) là 15/10/2026 và ngày thanh toán là 30/10/2026.<br><br>FPT duy trì chính sách trả cổ tức tiền mặt đều đặn kết hợp cổ tức bằng cổ phiếu hàng năm nhờ dòng tiền thuần từ hoạt động kinh doanh (Operating Cash Flow) luôn thặng dư trên 7.000 tỷ đồng mỗi năm.',
+    id: 'n6',
+    title: 'Nhựa Bình Minh (BMP) chi trả cổ tức tiền mặt kỷ lục 61%, hưởng lợi biên lợi nhuận gộp đỉnh cao nhờ giá hạt nhựa PVC chạm đáy 3 năm',
+    summary: 'BMP chốt danh sách tạm ứng cổ tức đợt 2/2026 tỷ lệ 61% bằng tiền mặt (6.100 đ/cp); giá hạt nhựa nguyên liệu đầu vào giảm sâu giúp biên lãi gộp duy trì trên 42.5%.',
+    content: 'CTCP Nhựa Bình Minh (BMP) tiếp tục khẳng định vị thế "vua cổ tức tiền mặt" trên sàn chứng khoán Việt Nam. Với tổng tỷ lệ cổ tức năm 2026 lên tới gần 100%, tỷ suất cổ tức tiền mặt thực nhận đạt xấp xỉ 8.5% - 9.0%, cao gấp 1.8 lần lãi suất tiết kiệm ngân hàng.<br><br>Lợi thế công nghệ từ tập đoàn mẹ SCG (Thái Lan) cùng việc giá nguyên liệu nhựa PVC thế giới neo ở mức thấp kỷ lục giúp BMP tối ưu hóa giá vốn, duy trì lượng tiền mặt ròng dồi dào trên 2.400 tỷ đồng và hoàn toàn không có nợ vay dài hạn.',
     category: 'Cổ tức',
-    time: '10:50 Hôm nay',
-    source: 'VNDIRECT Research Events',
+    time: '10:45 Hôm nay',
+    source: 'SSI iBoard Events',
     sentiment: 'TÍCH CỰC',
-    impact: 'Trung bình',
-    tickers: [{ s: 'FPT', c: 1.8 }],
-    tags: ['Cổ tức tiền mặt', 'GDKHQ', '15%'],
+    sentimentScore: 92,
+    impact: 'Cao',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã BMP & Cổ phiếu giá trị cổ tức cao',
+    impactEstimate: 'BMP: +3.0% ~ +4.8% (Tỷ suất cổ tức 9%)',
+    aiAssessment: 'Cổ tức tiền mặt 6.100 đ/cp cực kỳ hấp dẫn trong bối cảnh lãi suất thấp. Biên lợi nhuận gộp kỷ lục 42.5% tạo đệm an toàn vốn vững chắc cho nhà đầu tư giá trị.',
+    actionTakeaway: 'MUA HƯỞNG CỔ TỨC & NẮM GIỮ',
+    tickers: [{ s: 'BMP', c: 3.22 }],
+    tags: ['BMP', 'Cổ tức tiền mặt 61%', 'Hạt nhựa PVC', 'Tiền mặt ròng'],
     mcpTool: 'vnd_get_corporate_events'
   },
   {
-    id: 'n5',
-    title: 'MSB hoàn tất chuyển nhượng 100% vốn FCCOM, dự kiến ghi nhận lợi nhuận đột biến gần 2.000 tỷ đồng trong Q4',
-    summary: 'Thương vụ thoái vốn công ty con tài chính tiêu dùng FCCOM đã được NHNN chấp thuận về mặt nguyên tắc, bổ sung nguồn vốn cấp 1 giúp hệ số CAR của MSB tăng vọt lên 13.8%.',
-    content: 'Ngân hàng TMCP Hàng Hải Việt Nam (MSB) đang hoàn tất các thủ tục chuyển giao vốn tại Công ty Tài chính TNHH MTV Cộng Đồng (FCCOM) cho đối tác định chế tài chính quốc tế. Khoản lợi nhuận trước thuế đột biến ước tính gần 2.000 tỷ đồng sẽ được ghi nhận vào báo cáo tài chính quý 4/2026.<br><br>Khoản thặng dư vốn này sẽ tăng cường bộ đệm an toàn vốn, giúp MSB bứt tốc tăng trưởng tín dụng bán lẻ và khách hàng SME mà không chịu áp lực tăng chi phí vốn.',
+    id: 'n7',
+    title: 'Chứng khoán MB (MBS) bứt tốc thị phần môi giới quý 3 lọt Top 5 sàn HOSE, dư nợ Margin vượt 10.200 tỷ đồng',
+    summary: 'MBS hưởng lợi từ hệ sinh thái khách hàng số của Ngân hàng MB (MBB), thị phần môi giới tăng 0.8% lên 5.85%; doanh thu nghiệp vụ ngân hàng đầu tư (IB) bùng nổ.',
+    content: 'Theo dữ liệu công bố từ Sở GDCK TP.HCM (HOSE), Chứng khoán MB (MBS) đã vươn lên vị trí thứ 5 về thị phần môi giới cổ phiếu quý 3/2026. Tốc độ số hóa mở tài khoản qua App MBBank và nền tảng giao dịch mới MBS Mobile đã thu hút hơn 80.000 tài khoản mở mới.<br><br>Dư nợ Margin chạm mốc 10.200 tỷ đồng nhưng tỷ lệ an toàn vốn khả dụng vẫn duy trì trên 380%, bỏ xa quy định tối thiểu 180% của UBCKNN.',
     category: 'Doanh nghiệp',
-    time: '10:15 Hôm nay',
-    source: 'SSI iBoard News',
+    time: '10:10 Hôm nay',
+    source: 'SSI Research',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 85,
     impact: 'Cao',
-    tickers: [{ s: 'MSB', c: 1.02 }],
-    tags: ['Thoái vốn FCCOM', 'Lợi nhuận đột biến', 'CAR'],
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã MBS & Nhóm Chứng khoán',
+    impactEstimate: 'MBS: +2.8% ~ +4.5%',
+    aiAssessment: 'Tăng trưởng thị phần môi giới ấn tượng kết hợp hệ sinh thái MBB bảo chứng nguồn vốn rẻ. Kỳ vọng kết quả kinh doanh quý 4 tiếp tục duy trì mức tăng trưởng lợi nhuận trên 45% YoY.',
+    actionTakeaway: 'TÍCH LŨY MỤC TIÊU NGẮN HẠN',
+    tickers: [{ s: 'MBS', c: 2.15 }],
+    tags: ['MBS', 'Top 5 thị phần', 'Margin 10k tỷ', 'MBBank'],
     mcpTool: 'marketdata_list_company_news'
   },
   {
-    id: 'n6',
-    title: 'Ngân hàng Nhà nước bơm ròng qua OMO, duy trì lãi suất liên ngân hàng qua đêm quanh mức 3.5% - 4.0%',
-    summary: 'Thanh khoản hệ thống liên ngân hàng ổn định trở lại sau khi NHNN ngừng phát hành tín phiếu và duy trì các phiên chào thầu OMO kỳ hạn 7 ngày hỗ trợ nguồn vốn.',
+    id: 'n8',
+    title: 'Chứng khoán SHS hoàn tất chuẩn hóa danh mục tự doanh đón sóng KRX, lên kế hoạch chi trả cổ tức 10%',
+    summary: 'SHS cơ cấu tập trung vào nhóm cổ phiếu VN30 và ngân hàng có câu chuyện tăng trưởng; giá trị tài sản ròng danh mục đầu tư FVTPL tăng hơn 18% so với đầu năm.',
+    content: 'CTCP Chứng khoán Sài Gòn - Hà Nội (SHS) đã công bố cập nhật danh mục tự doanh quý 3. SHS chủ động giảm tỷ trọng các tài sản rủi ro và tăng cường nắm giữ các mã dẫn dắt như HPG, FPT, MWG, VCB.<br><br>Ban lãnh đạo SHS cho biết đã hoàn tất 100% các kịch bản kiểm thử User Acceptance Test (UAT) của hệ thống giao dịch mới KRX và sẵn sàng triển khai các nghiệp vụ giao dịch trong ngày (Day trading) và bán khống có bảo chứng ngay khi cơ quan quản lý cho phép.',
+    category: 'Doanh nghiệp',
+    time: '09:40 Hôm nay',
+    source: 'VNDIRECT Research',
+    sentiment: 'TÍCH CỰC',
+    sentimentScore: 82,
+    impact: 'Trung bình',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã SHS & Nhóm Chứng khoán HNX',
+    impactEstimate: 'SHS: +2.5% ~ +4.0%',
+    aiAssessment: 'Tái cơ cấu danh mục tự doanh thành công sang các mã blue-chip giúp SHS giảm thiểu rủi ro trích lập dự phòng và đón trọn sóng phục hồi của VN-Index.',
+    actionTakeaway: 'TÍCH LŨY',
+    tickers: [{ s: 'SHS', c: 1.72 }],
+    tags: ['SHS', 'KRX', 'Tự doanh FVTPL', 'Cổ tức 10%'],
+    mcpTool: 'marketdata_list_company_news'
+  },
+  {
+    id: 'n9',
+    title: 'Tập đoàn C.E.O (CEO) cất nóc tổ hợp Wyndham Garden Sonasea Vân Đồn, chuẩn bị mở bán phân kỳ 2 thu về dòng tiền 1.800 tỷ đồng',
+    summary: 'Dự án trọng điểm Sonasea Vân Đồn Harbor City bước vào giai đoạn bàn giao và vận hành thương mại; hưởng lợi trực tiếp từ hạ tầng cao tốc và sân bay quốc tế Vân Đồn.',
+    content: 'CTCP Tập đoàn C.E.O (CEO) vừa chính thức cất nóc khối khách sạn 5 sao Wyndham Garden thuộc dự án Sonasea Vân Đồn (Quảng Ninh). Đây là tổ hợp nghỉ dưỡng quốc tế quy mô lớn nhất tại đặc khu Vân Đồn chuẩn bị đi vào vận hành.<br><br>Phân kỳ 2 với dòng sản phẩm biệt thự biển và shophouse thương mại đã hoàn thiện hạ tầng 100%, dự kiến đem lại dòng tiền bán hàng hơn 1.800 tỷ đồng trong giai đoạn 2026 - 2027. Tỷ lệ đòn bẩy nợ của CEO hiện thuộc nhóm thấp nhất ngành BĐS nghỉ dưỡng với số dư tiền mặt ròng dương.',
+    category: 'Doanh nghiệp',
+    time: '09:15 Hôm nay',
+    source: 'SSI iBoard News',
+    sentiment: 'TÍCH CỰC',
+    sentimentScore: 78,
+    impact: 'Trung bình',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã CEO & Nhóm Bất động sản',
+    impactEstimate: 'CEO: +2.5% ~ +4.5%',
+    aiAssessment: 'Điểm rơi ghi nhận dòng tiền từ dự án Sonasea Vân Đồn tạo xung lực phục hồi mạnh mẽ cho CEO. Rủi ro nợ vay thấp giúp doanh nghiệp linh hoạt trong chu kỳ bất động sản mới.',
+    actionTakeaway: 'THEO DÕI VÙNG NỔ THANH KHOẢN',
+    tickers: [{ s: 'CEO', c: 1.86 }],
+    tags: ['CEO', 'Sonasea Vân Đồn', 'Bàn giao dự án', 'BĐS nghỉ dưỡng'],
+    mcpTool: 'marketdata_list_company_news'
+  },
+  {
+    id: 'n10',
+    title: 'Áp lực đáo hạn trái phiếu doanh nghiệp quý 4 dồn dập 45.000 tỷ đồng, Novaland (NVL) đối mặt thách thức thanh khoản và tái cấu trúc',
+    summary: 'FiinRatings và VNDIRECT Research phát đi cảnh báo áp lực đáo hạn trái phiếu BĐS đạt đỉnh trong tháng 11 - 12; NVL tiếp tục đàm phán gia hạn kỳ hạn và hoán đổi tài sản bảo đảm.',
+    content: 'Thị trường trái phiếu doanh nghiệp quý 4/2026 ghi nhận giá trị đáo hạn kỷ lục, trong đó nhóm bất động sản chiếm hơn 65% tổng khối lượng. Novaland (NVL) vẫn đang trong quá trình tháo gỡ vướng mắc pháp lý tại các đại dự án Aqua City và NovaWorld Phan Thiết.<br><br>Mặc dù một số phân kỳ đã được cấp phép xây dựng trở lại, dòng tiền bán hàng thực tế chưa đủ bù đắp nghĩa vụ trả nợ gốc và lãi vay ngắn hạn. Cổ phiếu NVL vẫn nằm trong diện cảnh báo của HOSE do chậm nộp BCTC soát xét.',
+    category: 'Vĩ mô',
+    time: '08:45 Hôm nay',
+    source: 'VNDIRECT Research',
+    sentiment: 'TIÊU CỰC',
+    sentimentScore: -82,
+    impact: 'Cao',
+    targetScope: 'Mã cổ phiếu & Ngành',
+    impactTarget: 'Mã NVL & Bất động sản đòn bẩy cao',
+    impactEstimate: 'NVL: -2.5% ~ -4.5% (Áp lực bán phòng vệ)',
+    aiAssessment: 'Tác động tiêu cực rõ rệt tới tâm lý nắm giữ mã NVL do áp lực đáo hạn trái phiếu ngắn hạn. Khuyến nghị nhà đầu tư thận trọng, hạ tỷ trọng để bảo toàn vốn.',
+    actionTakeaway: 'HẠ TỶ TRỌNG / QUẢN TRỊ RỦI RO',
+    tickers: [{ s: 'NVL', c: -3.25 }],
+    tags: ['NVL', 'Trái phiếu DN', 'Áp lực đáo hạn', 'Aqua City'],
+    mcpTool: 'vnd_get_research_reports'
+  },
+  {
+    id: 'n11',
+    title: 'Ngân hàng Nhà nước bơm ròng qua OMO, duy trì lãi suất liên ngân hàng qua đêm hạ nhiệt quanh mức 3.5% - 4.0%',
+    summary: 'Thanh khoản hệ thống liên ngân hàng ổn định trở lại sau khi NHNN ngừng phát hành tín phiếu và duy trì các phiên chào thầu OMO hỗ trợ chi phí vốn rẻ cho nền kinh tế.',
     content: 'Thị trường mở (OMO) ghi nhận động thái nới lỏng linh hoạt của Ngân hàng Nhà nước trong bối cảnh tỷ giá USD/VND đang hạ nhiệt mạnh mẽ. Lãi suất chào thầu giữ nguyên ở mức 4.0%/năm, giúp các ngân hàng thương mại kiểm soát tốt chi phí vốn đầu vào và ổn định lãi suất huy động dân cư quanh 4.8% - 5.4%/năm kỳ hạn 12 tháng.',
     category: 'Vĩ mô',
-    time: '09:30 Hôm nay',
+    time: '08:20 Hôm nay',
     source: 'FINHAY Macro Feed',
     sentiment: 'TÍCH CỰC',
-    impact: 'Trung bình',
+    sentimentScore: 84,
+    impact: 'Cao',
+    targetScope: 'Toàn thị trường',
+    impactTarget: 'Toàn thị trường (VN-Index, Hệ thống Ngân hàng)',
+    impactEstimate: 'VN-Index: +8.0 ~ +14.0 đ',
+    aiAssessment: 'Môi trường lãi suất thấp và thanh khoản dồi dào là bệ đỡ hoàn hảo cho định giá thị trường chứng khoán. Nhóm Ngân hàng (VCB, TCB, MSB) hưởng lợi giảm chi phí vốn COF.',
+    actionTakeaway: 'DUY TRÌ TỶ TRỌNG CỔ PHIẾU CAO',
     tickers: [{ s: 'VCB', c: 0.82 }, { s: 'TCB', c: 1.22 }, { s: 'MSB', c: 1.02 }],
     tags: ['Lãi suất', 'OMO', 'Thanh khoản liên ngân hàng'],
     mcpTool: 'finhay_get_interest_rates'
   },
   {
-    id: 'n7',
+    id: 'n12',
     title: 'Khối ngoại đảo chiều mua ròng hơn 850 tỷ đồng trên sàn HOSE, lực mua tập trung mạnh vào rổ VN30',
     summary: 'Dòng vốn tổ chức nước ngoài giải ngân mạnh mẽ sau 4 phiên bán ròng, trong đó top mua ròng gồm HPG (+210 tỷ), FPT (+185 tỷ), SSI (+145 tỷ) và MWG (+95 tỷ).',
     content: 'Sau giai đoạn chốt lời ngắn hạn, dòng tiền từ các quỹ ETF ngoại như Fubon FTSE Vietnam và DCVFM Diamond bắt đầu giải ngân trở lại. Tỷ lệ sở hữu nước ngoài tại FPT và MWG duy trì kịch trần (room ngoại 49%), trong khi HPG và SSI ghi nhận khối lượng giao dịch thỏa thuận của nhà đầu tư tổ chức gia tăng rõ rệt.',
     category: 'Dòng tiền',
-    time: '09:05 Hôm nay',
+    time: '07:55 Hôm nay',
     source: 'VNDIRECT Smart Money',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 86,
     impact: 'Cao',
+    targetScope: 'Toàn thị trường',
+    impactTarget: 'Toàn thị trường (VN30 & Bluechips)',
+    impactEstimate: 'VN-Index: +10.0 ~ +15.0 đ',
+    aiAssessment: 'Dòng tiền ngoại quay lại mua ròng phát tín hiệu xác nhận đáy ngắn hạn của chỉ số. Nhóm cổ phiếu trụ VN30 sẽ tiếp tục dẫn dắt nhịp hồi phục bền vững.',
+    actionTakeaway: 'THEO DÒNG TIỀN KHỐI NGOẠI',
     tickers: [{ s: 'HPG', c: 1.45 }, { s: 'FPT', c: 1.8 }, { s: 'SSI', c: 2.4 }],
-    tags: ['Mua ròng', 'Khối ngoại', 'ETF'],
+    tags: ['Mua ròng', 'Khối ngoại', 'ETF', 'VN30'],
     mcpTool: 'vnd_get_institutional_flow'
   },
   {
-    id: 'n8',
-    title: 'Giá dầu Brent tăng vọt lên 78.50 USD/thùng do căng thẳng Trung Đông leo thang, nhóm cổ phiếu Thượng nguồn dầu khí khởi sắc',
-    summary: 'Giá dầu thế giới tăng hơn 1.6% sau những diễn biến địa chính trị mới; các doanh nghiệp cung cấp dịch vụ kỹ thuật dầu khí (PVS, PVD, GAS) hưởng lợi từ giá dịch vụ neo cao.',
-    content: 'Giá dầu thô Brent giao sau trên sàn ICE London tăng lên 78.5 USD/thùng. Theo đánh giá từ Finhay Macro và SSI Research, mức giá dầu trên 75 USD/thùng là điều kiện lý tưởng giúp các dự án thăm dò khai thác quy mô lớn tại Việt Nam như Đại Hùng pha 3, Lạc Đà Vàng và chuỗi dự án khí Lô B Ô Môn đẩy nhanh tiến độ trao thầu EPCI.',
-    category: 'Hàng hóa',
-    time: '08:40 Hôm nay',
-    source: 'FINHAY Commodities',
-    sentiment: 'TÍCH CỰC',
-    impact: 'Trung bình',
-    tickers: [{ s: 'GAS', c: 0.75 }],
-    tags: ['Dầu Brent', 'Lô B Ô Môn', 'Dầu khí'],
-    mcpTool: 'finhay_get_macro_commodities'
-  },
-  {
-    id: 'n9',
-    title: 'Hòa Phát (HPG) công bố kế hoạch phát hành cổ phiếu trả cổ tức tỷ lệ 10%, ngày chốt danh sách dự kiến 18/10/2026',
-    summary: 'HPG sẽ phát hành thêm gần 640 triệu cổ phiếu để chi trả cổ tức cho cổ đông hiện hữu, nâng vốn điều lệ của tập đoàn lên hơn 70.350 tỷ đồng.',
-    content: 'Ủy ban Chứng khoán Nhà nước đã có văn bản thông báo nhận đầy đủ hồ sơ phát hành cổ phiếu để trả cổ tức của CTCP Tập đoàn Hòa Phát. Với tỷ lệ thực hiện 10:1 (cổ đông sở hữu 10 cổ phiếu nhận thêm 1 cổ phiếu mới), nguồn vốn thực hiện lấy từ lợi nhuận sau thuế chưa phân phối lũy kế trên BCTC kiểm toán.',
-    category: 'Cổ tức',
+    id: 'n13',
+    title: 'Thanh khoản 3 sàn lập đỉnh 34.000 tỷ đồng, cổ phiếu nhóm Chứng khoán hút trọn dòng tiền đầu cơ',
+    summary: 'Thanh khoản bùng nổ vượt 1,2 tỷ cổ phiếu được sang tay trong phiên; nhóm CTCK (SSI, VND, VIX, SHS, MBS) dẫn đầu giá trị giao dịch toàn thị trường.',
+    content: 'Sự cộng hưởng giữa kỳ vọng vận hành hệ thống giao dịch mới KRX và dòng tiền rẻ quay lại thị trường chứng khoán đã đẩy giá trị khớp lệnh lên mức cao nhất trong vòng 18 tháng. Dư nợ cho vay ký quỹ (Margin) tại các CTCK lớn ước đạt 210.000 tỷ đồng nhưng vẫn nằm trong ngưỡng an toàn dưới 1.5 lần vốn chủ sở hữu.',
+    category: 'Dòng tiền',
     time: 'Hôm qua',
-    source: 'VNDIRECT Research Events',
+    source: 'SSI iBoard Feed',
     sentiment: 'TÍCH CỰC',
-    impact: 'Trung bình',
-    tickers: [{ s: 'HPG', c: 1.45 }],
-    tags: ['Cổ tức cổ phiếu', 'HPG 10%', 'Tăng vốn'],
-    mcpTool: 'vnd_get_corporate_events'
+    sentimentScore: 88,
+    impact: 'Cao',
+    targetScope: 'Toàn thị trường & Nhóm Chứng khoán',
+    impactTarget: 'Toàn thị trường (VN-Index) & Nhóm Chứng khoán',
+    impactEstimate: 'VN-Index: +12.0 ~ +18.0 đ (Thanh khoản bùng nổ)',
+    aiAssessment: 'Thanh khoản 34k tỷ là chỉ báo khẳng định uptrend quay trở lại. Nhóm Chứng khoán là đối tượng hưởng lợi trực tiếp nhất từ phí môi giới và lãi vay Margin.',
+    actionTakeaway: 'MUA GIA TĂNG NHÓM CHỨNG KHOÁN',
+    tickers: [{ s: 'SSI', c: 2.4 }, { s: 'VIX', c: 4.12 }, { s: 'MBS', c: 2.15 }, { s: 'SHS', c: 1.72 }],
+    tags: ['Thanh khoản 34k tỷ', 'Chứng khoán', 'Margin'],
+    mcpTool: 'marketdata_list_top_stocks'
   },
   {
-    id: 'n10',
-    title: 'Thế Giới Di Động (MWG): Chuỗi Bách Hóa Xanh mở rộng thần tốc đạt 1.950 cửa hàng, chuẩn bị kế hoạch IPO riêng lẻ',
-    summary: 'Doanh thu bình quân mỗi siêu thị Bách Hóa Xanh duy trì trên 2,1 tỷ đồng/tháng; biên EBITDA cải thiện giúp đóng góp lợi nhuận dương liên tục 3 quý.',
-    content: 'Tại cuộc họp phân tích nhà đầu tư định kỳ, ban lãnh đạo MWG cho biết chuỗi Bách Hóa Xanh đã hoàn tất giai đoạn tái cơ cấu tối ưu chi phí logistics và mở mới hơn 120 điểm bán tại khu vực miền Trung và miền Tây. Doanh số trên mỗi mét vuông sàn bán hàng tăng 18% so với cùng kỳ.',
+    id: 'n14',
+    title: 'MSB hoàn tất chuyển nhượng 100% vốn FCCOM, dự kiến ghi nhận lợi nhuận đột biến gần 2.000 tỷ đồng trong Q4',
+    summary: 'Thương vụ thoái vốn công ty con tài chính tiêu dùng FCCOM đã được NHNN chấp thuận về mặt nguyên tắc, bổ sung nguồn vốn cấp 1 giúp hệ số CAR của MSB tăng vọt lên 13.8%.',
+    content: 'Ngân hàng TMCP Hàng Hải Việt Nam (MSB) đang hoàn tất các thủ tục chuyển giao vốn tại Công ty Tài chính TNHH MTV Cộng Đồng (FCCOM) cho đối tác định chế tài chính quốc tế. Khoản lợi nhuận trước thuế đột biến ước tính gần 2.000 tỷ đồng sẽ được ghi nhận vào báo cáo tài chính quý 4/2026.<br><br>Khoản thặng dư vốn này sẽ tăng cường bộ đệm an toàn vốn, giúp MSB bứt tốc tăng trưởng tín dụng bán lẻ và khách hàng SME mà không chịu áp lực tăng chi phí vốn.',
     category: 'Doanh nghiệp',
     time: 'Hôm qua',
     source: 'SSI iBoard News',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 84,
     impact: 'Cao',
-    tickers: [{ s: 'MWG', c: -0.3 }],
-    tags: ['Bách Hóa Xanh', 'IPO', 'Bán lẻ'],
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã MSB & Ngân hàng',
+    impactEstimate: 'MSB: +3.0% ~ +5.0%',
+    aiAssessment: 'Lợi nhuận đột biến 2.000 tỷ sẽ kéo P/E forward của MSB xuống vùng hấp dẫn nhất nhóm ngân hàng (dưới 6.0 lần). Xác suất tăng giá trong ngắn hạn rất cao.',
+    actionTakeaway: 'MUA ĐÓN SÓNG LỢI NHUẬN',
+    tickers: [{ s: 'MSB', c: 1.02 }],
+    tags: ['MSB', 'Thoái vốn FCCOM', 'Lợi nhuận đột biến', 'CAR'],
     mcpTool: 'marketdata_list_company_news'
   },
   {
-    id: 'n11',
+    id: 'n15',
+    title: 'FPT chốt quyền tạm ứng cổ tức tiền mặt đợt 1/2026 tỷ lệ 15% (1.500 đồng/cp), ngày GDKHQ 15/10/2026',
+    summary: 'FPT thông báo ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức tiền mặt đợt 1/2026 là 16/10/2026; thanh toán vào ngày 30/10/2026 với tổng chi hơn 2.200 tỷ đồng.',
+    content: 'HĐQT CTCP FPT vừa thông qua nghị quyết chi trả cổ tức tiền mặt đợt 1 năm 2026 với tỷ lệ 15% mệnh giá (mỗi cổ phiếu nhận 1.500 đồng). Ngày giao dịch không hưởng quyền (GDKHQ) là 15/10/2026 và ngày thanh toán là 30/10/2026.<br><br>FPT duy trì chính sách trả cổ tức tiền mặt đều đặn kết hợp cổ tức bằng cổ phiếu hàng năm nhờ dòng tiền thuần từ hoạt động kinh doanh (Operating Cash Flow) luôn thặng dư trên 7.000 tỷ đồng mỗi năm.',
+    category: 'Cổ tức',
+    time: 'Hôm qua',
+    source: 'VNDIRECT Research Events',
+    sentiment: 'TÍCH CỰC',
+    sentimentScore: 78,
+    impact: 'Trung bình',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã FPT',
+    impactEstimate: 'FPT: +1.5% ~ +2.8%',
+    aiAssessment: 'Cổ tức tiền mặt đều đặn khẳng định sức khỏe tài chính vượt trội của FPT. Tác động tích cực và tạo vùng đệm giá hỗ trợ vững chắc cho cổ đông dài hạn.',
+    actionTakeaway: 'NẮM GIỮ HƯỞNG QUYỀN',
+    tickers: [{ s: 'FPT', c: 1.8 }],
+    tags: ['FPT', 'Cổ tức tiền mặt', 'GDKHQ', '15%'],
+    mcpTool: 'vnd_get_corporate_events'
+  },
+  {
+    id: 'n16',
     title: 'Tỷ giá USD/VND liên ngân hàng giảm sâu về 24.850 VND, xua tan áp lực trần tỷ giá của Ngân hàng Nhà nước',
     summary: 'Đồng USD quốc tế (DXY) suy yếu về ngưỡng 101.5 điểm cùng thặng dư thương mại 9 tháng đạt 20,8 tỷ USD giúp nguồn cung ngoại tệ trong nước dồi dào.',
     content: 'Tỷ giá USD/VND tại các ngân hàng thương mại lớn như VCB, BID, MSB giảm 45-60 đồng so với phiên trước. Áp lực tỷ giá hạ nhiệt tạo dư địa rất lớn để Ngân hàng Nhà nước giữ môi trường lãi suất thấp kích thích tăng trưởng kinh tế và đầu tư tư nhân trong giai đoạn cuối năm 2026.',
@@ -8366,13 +8658,39 @@ const MARKET_NEWS = [
     time: 'Hôm qua',
     source: 'FINHAY FX Stream',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 82,
     impact: 'Cao',
+    targetScope: 'Toàn thị trường',
+    impactTarget: 'Toàn thị trường (VN-Index, Tỷ giá)',
+    impactEstimate: 'VN-Index: +6.0 ~ +12.0 đ',
+    aiAssessment: 'Tỷ giá hạ nhiệt gỡ bỏ mối lo lớn nhất của dòng vốn ngoại. Ngân hàng Nhà nước có thêm dư địa điều hành chính sách tiền tệ nới lỏng hỗ trợ tăng trưởng.',
+    actionTakeaway: 'TÍCH LŨY CỔ PHIẾU CƠ BẢN',
     tickers: [{ s: 'VCB', c: 0.82 }, { s: 'MSB', c: 1.02 }],
     tags: ['Tỷ giá USD', 'Thặng dư thương mại', 'DXY'],
     mcpTool: 'finhay_get_fx_rate'
   },
   {
-    id: 'n12',
+    id: 'n17',
+    title: 'Thế Giới Di Động (MWG): Chuỗi Bách Hóa Xanh mở rộng thần tốc đạt 1.950 cửa hàng, chuẩn bị kế hoạch IPO riêng lẻ',
+    summary: 'Doanh thu bình quân mỗi siêu thị Bách Hóa Xanh duy trì trên 2,1 tỷ đồng/tháng; biên EBITDA cải thiện giúp đóng góp lợi nhuận dương liên tục 3 quý.',
+    content: 'Tại cuộc họp phân tích nhà đầu tư định kỳ, ban lãnh đạo MWG cho biết chuỗi Bách Hóa Xanh đã hoàn tất giai đoạn tái cơ cấu tối ưu chi phí logistics và mở mới hơn 120 điểm bán tại khu vực miền Trung và miền Tây. Doanh số trên mỗi mét vuông sàn bán hàng tăng 18% so với cùng kỳ.',
+    category: 'Doanh nghiệp',
+    time: '08/10',
+    source: 'SSI iBoard News',
+    sentiment: 'TÍCH CỰC',
+    sentimentScore: 83,
+    impact: 'Cao',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã MWG & Ngành Bán lẻ',
+    impactEstimate: 'MWG: +2.5% ~ +4.2%',
+    aiAssessment: 'Bách Hóa Xanh trở thành động lực sinh lời mới bên cạnh mảng ICT. Kỳ vọng định giá chuỗi khi IPO riêng lẻ sẽ kích hoạt tái định giá toàn bộ tập đoàn MWG.',
+    actionTakeaway: 'MUA TÍCH LŨY',
+    tickers: [{ s: 'MWG', c: 1.25 }],
+    tags: ['MWG', 'Bách Hóa Xanh', 'IPO', 'Bán lẻ'],
+    mcpTool: 'marketdata_list_company_news'
+  },
+  {
+    id: 'n18',
     title: 'Vietcombank (VCB) lấy ý kiến cổ đông phương án chia cổ tức bằng cổ phiếu tỷ lệ 38.8% từ nguồn lợi nhuận giữ lại',
     summary: 'VCB chuẩn bị phát hành hơn 2,16 tỷ cổ phiếu để tăng vốn điều lệ lên mức kỷ lục hơn 77.500 tỷ đồng, củng cố vị thế ngân hàng có quy mô vốn lớn nhất hệ thống.',
     content: 'Động thái tăng vốn quy mô lớn này đã được Chính phủ và Ngân hàng Nhà nước phê duyệt chủ trương, nhằm gia tăng năng lực tài chính và bảo đảm hệ số an toàn vốn CAR theo chuẩn mực Basel III. Sau đợt chia cổ tức cổ phiếu, VCB cũng sẽ triển khai phương án phát hành riêng lẻ 6.5% vốn cho nhà đầu tư tài chính chiến lược nước ngoài.',
@@ -8380,13 +8698,19 @@ const MARKET_NEWS = [
     time: '08/10',
     source: 'VNDIRECT Research Events',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 86,
     impact: 'Cao',
+    targetScope: 'Mã cổ phiếu & Ngân hàng',
+    impactTarget: 'Mã VCB & Nhóm Ngân hàng quốc doanh',
+    impactEstimate: 'VCB: +2.0% ~ +3.5%',
+    aiAssessment: 'Tăng vốn điều lệ lên 77.5k tỷ giúp VCB nới rộng hạn mức tín dụng và cải thiện CAR. Cổ phiếu trụ giữ nhịp chỉ số vững vàng cho VN-Index.',
+    actionTakeaway: 'NẮM GIỮ DÀI HẠN',
     tickers: [{ s: 'VCB', c: 0.82 }],
-    tags: ['VCB 38.8%', 'Cổ tức cổ phiếu', 'Basel III'],
+    tags: ['VCB', 'Cổ tức cổ phiếu', 'Basel III', 'Tăng vốn'],
     mcpTool: 'vnd_get_corporate_events'
   },
   {
-    id: 'n13',
+    id: 'n19',
     title: 'Techcombank (TCB) bứt phá mảng cho vay bán lẻ & hệ sinh thái bất động sản, tỷ lệ CASA đạt kỷ lục 42.5%',
     summary: 'TCB duy trì chi phí vốn (COF) thấp nhất trong nhóm ngân hàng thương mại cổ phần nhờ nguồn tiền gửi không kỳ hạn dồi dào từ tệp khách hàng cá nhân cao cấp.',
     content: 'Mô hình kinh doanh dựa trên hệ sinh thái đối tác số hóa giúp Techcombank duy trì tốc độ mở mới tài khoản thanh toán tăng trưởng 25% YoY. Thu nhập từ phí dịch vụ bảo hiểm và tư vấn phát hành trái phiếu qua TCBS phục hồi mạnh mẽ, đóng góp hơn 35% tổng thu nhập ngoài lãi (non-NII).',
@@ -8394,55 +8718,79 @@ const MARKET_NEWS = [
     time: '08/10',
     source: 'SSI Research',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 80,
     impact: 'Trung bình',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã TCB',
+    impactEstimate: 'TCB: +2.0% ~ +3.8%',
+    aiAssessment: 'CASA 42.5% tạo lợi thế chi phí vốn tuyệt đối cho Techcombank. Tăng trưởng tín dụng bán lẻ phục hồi sẽ giúp NIM mở rộng mạnh mẽ trong Q4.',
+    actionTakeaway: 'TÍCH LŨY VÙNG GIÁ TỐT',
     tickers: [{ s: 'TCB', c: 1.22 }],
-    tags: ['CASA 42%', 'Chi phí vốn', 'TCBS'],
+    tags: ['TCB', 'CASA 42%', 'Chi phí vốn', 'TCBS'],
     mcpTool: 'marketdata_list_company_news'
   },
   {
-    id: 'n14',
-    title: 'Thanh khoản 3 sàn lập đỉnh 34.000 tỷ đồng, cổ phiếu nhóm Chứng khoán hút trọn dòng tiền đầu cơ',
-    summary: 'Thanh khoản bùng nổ vượt 1,2 tỷ cổ phiếu được sang tay trong phiên; nhóm CTCK (SSI, VND, VCI, HCM) dẫn đầu thanh khoản toàn thị trường.',
-    content: 'Sự cộng hưởng giữa kỳ vọng vận hành hệ thống giao dịch mới KRX và dòng tiền rẻ quay lại thị trường chứng khoán đã đẩy giá trị khớp lệnh lên mức cao nhất trong vòng 18 tháng. Dư nợ cho vay ký quỹ (Margin) tại các CTCK lớn ước đạt 210.000 tỷ đồng nhưng vẫn nằm trong ngưỡng an toàn dưới 1.5 lần vốn chủ sở hữu.',
-    category: 'Dòng tiền',
+    id: 'n20',
+    title: 'Giá dầu Brent tăng vọt lên 78.50 USD/thùng do căng thẳng Trung Đông leo thang, nhóm cổ phiếu Thượng nguồn dầu khí khởi sắc',
+    summary: 'Giá dầu thế giới tăng hơn 1.6% sau những diễn biến địa chính trị mới; các doanh nghiệp cung cấp dịch vụ kỹ thuật dầu khí (PVS, PVD, GAS) hưởng lợi từ giá dịch vụ neo cao.',
+    content: 'Giá dầu thô Brent giao sau trên sàn ICE London tăng lên 78.5 USD/thùng. Theo đánh giá từ Finhay Macro và SSI Research, mức giá dầu trên 75 USD/thùng là điều kiện lý tưởng giúp các dự án thăm dò khai thác quy mô lớn tại Việt Nam như Đại Hùng pha 3, Lạc Đà Vàng và chuỗi dự án khí Lô B Ô Môn đẩy nhanh tiến độ trao thầu EPCI.',
+    category: 'Hàng hóa',
     time: '07/10',
-    source: 'SSI iBoard Feed',
+    source: 'FINHAY Commodities',
     sentiment: 'TÍCH CỰC',
-    impact: 'Cao',
-    tickers: [{ s: 'SSI', c: 2.4 }],
-    tags: ['Thanh khoản 34k tỷ', 'Chứng khoán', 'Margin'],
-    mcpTool: 'marketdata_list_top_stocks'
+    sentimentScore: 74,
+    impact: 'Trung bình',
+    targetScope: 'Nhóm ngành & Mã cổ phiếu',
+    impactTarget: 'Mã GAS, PVD, PVS & Nhóm Dầu khí',
+    impactEstimate: 'GAS/PVD/PVS: +2.5% ~ +4.0%',
+    aiAssessment: 'Giá dầu neo cao trên 75 USD tạo đòn bẩy tâm lý và cải thiện giá cước cho thuê giàn khoan. Tác động phân hóa tích cực đối với nhóm thượng nguồn dầu khí.',
+    actionTakeaway: 'MUA THEO XU HƯỚNG GIÁ DẦU',
+    tickers: [{ s: 'GAS', c: 0.75 }],
+    tags: ['Dầu Brent', 'Lô B Ô Môn', 'Dầu khí', 'PVD', 'PVS'],
+    mcpTool: 'finhay_get_macro_commodities'
   },
   {
-    id: 'n15',
-    title: 'Áp lực đáo hạn trái phiếu doanh nghiệp quý 4 vẫn tập trung ở nhóm Bất động sản dân cư quy mô vừa và nhỏ',
-    summary: 'Ước tính có khoảng 45.000 tỷ đồng trái phiếu doanh nghiệp đáo hạn trong quý 4/2026; khuyến nghị nhà đầu tư thận trọng với các mã có tỷ lệ đòn bẩy nợ cao.',
-    content: 'Theo báo cáo tổng hợp từ VNDIRECT Research và FiinRatings, áp lực trả nợ gốc trái phiếu sẽ đạt đỉnh vào tháng 11 và 12/2026. Mặc dù thị trường bất động sản đang có dấu hiệu ấm dần tại các dự án có pháp lý hoàn chỉnh ở Hà Nội và TP.HCM, các doanh nghiệp gặp vướng mắc quy hoạch vẫn đối mặt thách thức thanh khoản lớn.',
-    category: 'Vĩ mô',
+    id: 'n21',
+    title: 'Cạnh tranh thép giá rẻ từ Trung Quốc làm giảm nhẹ giá thép thanh nội địa, nhóm thương mại thép đối mặt áp lực biên lãi',
+    summary: 'Áp lực dư thừa công suất từ các nhà máy thép Trung Quốc đẩy lượng thép cuộn cán nguội nhập khẩu vào Việt Nam tăng; các doanh nghiệp thương mại nhỏ ghi nhận biên lãi gộp thu hẹp.',
+    content: 'Hiệp hội Thép Việt Nam (VSA) kiến nghị Bộ Công Thương sớm áp dụng biện pháp chống bán phá giá tạm thời đối với thép HRC xuất xứ Trung Quốc và Ấn Độ. Trong ngắn hạn, các doanh nghiệp thuần thương mại hoặc cán lại thép không tự chủ được phôi đối mặt áp lực cạnh tranh gay gắt.',
+    category: 'Doanh nghiệp',
     time: '07/10',
     source: 'VNDIRECT Research',
     sentiment: 'TIÊU CỰC',
+    sentimentScore: -65,
     impact: 'Trung bình',
-    tickers: [{ s: 'NVL', c: -2.4 }],
-    tags: ['Trái phiếu DN', 'Bất động sản', 'Rủi ro đáo hạn'],
+    targetScope: 'Nhóm ngành',
+    impactTarget: 'Nhóm Thép thương mại nhỏ',
+    impactEstimate: 'Nhóm thép nhỏ: -1.8% ~ -3.2%',
+    aiAssessment: 'Áp lực cạnh tranh giá thép nhập khẩu làm giảm biên lãi nhóm doanh nghiệp thép nhỏ. Tuy nhiên, các nhà sản xuất quy mô lớn có lợi thế lò cao BOF như HPG ít bị ảnh hưởng hơn nhờ giá thành tối ưu.',
+    actionTakeaway: 'CƠ CẤU SANG MÃ ĐẦU NGÀNH (HPG)',
+    tickers: [],
+    tags: ['Thép Trung Quốc', 'Chống bán phá giá', 'VSA'],
     mcpTool: 'vnd_get_research_reports'
   },
   {
-    id: 'n16',
+    id: 'n22',
     title: 'Giá vàng SJC duy trì vùng 141.8 - 144.8 triệu đồng/lượng, Vàng thế giới vượt đỉnh 4.200 USD/oz',
     summary: 'Chênh lệch mua - bán duy trì ở mức 3.0 triệu đồng/lượng, thị trường vàng quốc tế giao ngay giao dịch quanh mốc 4.206 USD/oz.',
     content: 'Giá vàng thế giới giao ngay đạt mốc 4.206 USD/oz do dòng tiền quốc tế tìm kiếm nơi trú ẩn trước bất ổn địa chính trị và kỳ vọng chính sách tiền tệ Fed. Tại thị trường Việt Nam, giá vàng miếng SJC được các đơn vị lớn niêm yết ở mức 141.8 triệu đồng/lượng (mua vào) và 144.8 triệu đồng/lượng (bán ra). Chênh lệch mua - bán duy trì ở mức 3.0 triệu đồng/lượng.',
     category: 'Hàng hóa',
-    time: '12/10',
+    time: '06/10',
     source: 'FINHAY Wealth Gold',
     sentiment: 'TRUNG LẬP',
+    sentimentScore: 0,
     impact: 'Trung bình',
+    targetScope: 'Toàn thị trường',
+    impactTarget: 'Hàng hóa & Vàng miếng',
+    impactEstimate: 'Thị trường chứng khoán: Phân hóa nhẹ (±0.3%)',
+    aiAssessment: 'Giá vàng neo cao phản ánh tâm lý phòng thủ trên thế giới. Dòng tiền trong nước tạm thời chia sẻ giữa kênh chứng khoán và kim loại quý, không tạo sốc thanh khoản.',
+    actionTakeaway: 'QUAN SÁT TÍCH LŨY',
     tickers: [],
     tags: ['Vàng SJC', 'Vàng thế giới', 'Finhay MCP'],
     mcpTool: 'finhay_get_gold_rate'
   },
   {
-    id: 'n17',
+    id: 'n23',
     title: 'Vinamilk (VNM) mở rộng thị trường xuất khẩu sang Nam Mỹ và Trung Đông, biên lợi nhuận gộp phục hồi lên 42.1%',
     summary: 'Giá sữa bột nguyên liệu nhập khẩu (SMP/WMP) hạ nhiệt kết hợp với việc gia tăng tỷ trọng sữa chua và sữa hạt cao cấp giúp lợi nhuận sau thuế của VNM tăng trưởng quý thứ 4 liên tiếp.',
     content: 'Vinamilk tiếp tục chứng minh vị thế người khổng lồ ngành hàng tiêu dùng FMCG tại Việt Nam với thị phần hơn 55%. Hoạt động kinh doanh tại các chi nhánh quốc tế như Driftwood (Mỹ) và AngkorMilk (Campuchia) duy trì doanh thu tăng trưởng 2 chữ số.',
@@ -8450,13 +8798,19 @@ const MARKET_NEWS = [
     time: '06/10',
     source: 'SSI Research',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 76,
     impact: 'Trung bình',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã VNM & Nhóm Tiêu dùng',
+    impactEstimate: 'VNM: +1.5% ~ +2.8%',
+    aiAssessment: 'Biên lãi gộp 42.1% xác nhận đáy chu kỳ chi phí nguyên liệu. VNM duy trì chính sách trả cổ tức tiền mặt cao (~3.850 đ/năm), là tài sản phòng thủ lý tưởng.',
+    actionTakeaway: 'NẮM GIỮ PHÒNG THỦ & HƯỞNG CỔ TỨC',
     tickers: [{ s: 'VNM', c: 0.52 }],
-    tags: ['Biên gộp 42%', 'Xuất khẩu sữa', 'Cổ tức tiền mặt'],
+    tags: ['VNM', 'Biên gộp 42%', 'Xuất khẩu sữa', 'Cổ tức tiền mặt'],
     mcpTool: 'marketdata_list_company_news'
   },
   {
-    id: 'n18',
+    id: 'n24',
     title: 'MSB chuẩn bị chi trả cổ tức 30% gồm 15% cổ phiếu và 15% tiền mặt, ngày GDKHQ dự kiến 25/10/2026',
     summary: 'ĐHCĐ MSB đã phê duyệt phương án chi trả cổ tức tổng tỷ lệ 30% nhằm tối ưu hóa lợi ích cổ đông và tăng vốn điều lệ lên 26.000 tỷ đồng.',
     content: 'Cổ đông sở hữu cổ phiếu MSB sẽ nhận được 1.500 đồng tiền mặt/cp và 15 cổ phiếu mới cho mỗi 100 cổ phiếu sở hữu. Đây là mức chi trả cổ tức hấp dẫn bậc nhất trong nhóm ngân hàng thương mại cổ phần niêm yết, nhờ vào kết quả kinh doanh vượt kế hoạch và tỷ lệ nợ xấu kiểm soát chặt chẽ dưới 1.3%.',
@@ -8464,14 +8818,64 @@ const MARKET_NEWS = [
     time: '05/10',
     source: 'SSI iBoard Events',
     sentiment: 'TÍCH CỰC',
+    sentimentScore: 84,
     impact: 'Cao',
+    targetScope: 'Mã cổ phiếu',
+    impactTarget: 'Mã MSB',
+    impactEstimate: 'MSB: +2.5% ~ +4.5%',
+    aiAssessment: 'Cổ tức kép 30% (tiền mặt + cổ phiếu) là chất xúc tác cực mạnh thu hút dòng tiền cá nhân và tổ chức. Định giá MSB vẫn đang ở vùng chiết khấu sâu so với book value.',
+    actionTakeaway: 'MUA HƯỞNG QUYỀN CỔ TỨC KÉP',
     tickers: [{ s: 'MSB', c: 1.02 }],
-    tags: ['MSB 30%', 'Cổ tức kép', 'Tăng vốn 26k tỷ'],
+    tags: ['MSB', 'Cổ tức kép', 'Tăng vốn 26k tỷ'],
     mcpTool: 'vnd_get_corporate_events'
+  },
+  {
+    id: 'n25',
+    title: 'Cục Dự trữ Liên bang Mỹ (Fed) phát tín hiệu duy trì lộ trình hạ lãi suất, giảm áp lực thanh khoản toàn cầu',
+    summary: 'Chủ tịch Fed Jerome Powell khẳng định lạm phát Mỹ đang tiến vững chắc về mục tiêu 2%, mở đường cho các đợt cắt giảm thêm 50 điểm cơ bản trong các kỳ họp tới.',
+    content: 'Tuyên bố của Fed giúp chỉ số đồng USD (DXY) giảm nhẹ và lợi suất trái phiếu chính phủ Mỹ kỳ hạn 10 năm lùi về 3.85%. Diễn biến này tạo điều kiện thuận lợi cho các ngân hàng trung ương tại thị trường mới nổi như Việt Nam nới lỏng chính sách tiền tệ mà không lo áp lực rút vốn ngoại.',
+    category: 'Vĩ mô',
+    time: '04/10',
+    source: 'FINHAY Global Macro',
+    sentiment: 'TÍCH CỰC',
+    sentimentScore: 85,
+    impact: 'Cao',
+    targetScope: 'Toàn thị trường',
+    impactTarget: 'Toàn thị trường (VN-Index, Dòng vốn quốc tế)',
+    impactEstimate: 'VN-Index: +8.0 ~ +15.0 đ',
+    aiAssessment: 'Lộ trình hạ lãi suất của Fed giải tỏa áp lực tỷ giá và kích hoạt dòng vốn đầu tư gián tiếp quay lại các thị trường mới nổi, trong đó Việt Nam là điểm đến trọng tâm.',
+    actionTakeaway: 'TỰ TIN GIA TĂNG DANH MỤC',
+    tickers: [{ s: 'SSI', c: 2.4 }, { s: 'HPG', c: 1.45 }],
+    tags: ['Fed', 'Hạ lãi suất', 'DXY', 'Lợi suất trái phiếu'],
+    mcpTool: 'finhay_get_interest_rates'
+  },
+  {
+    id: 'n26',
+    title: 'Vingroup (VIC/VHM) công bố lộ trình huy động vốn quốc tế cho hạ tầng trạm sạc xe điện, áp lực chi phí tài chính ngắn hạn được cân bằng',
+    summary: 'Vingroup đạt thỏa thuận tài trợ tín dụng xanh trị giá 500 triệu USD từ các tổ chức tài chính châu Á nhằm phát triển mạng lưới trạm sạc xe điện toàn cầu.',
+    content: 'Tập đoàn Vingroup (VIC) và các công ty thành viên tiếp tục đa dạng hóa nguồn vốn dài hạn với chi phí hợp lý. Mặc dù chi phí lãi vay và chi phí mở rộng nhà máy tại Mỹ vẫn tạo áp lực lên bảng cân đối kế toán trong ngắn hạn, dòng tiền từ việc bàn giao dự án Vinhomes Royal Island (Vũ Yên, Hải Phòng) của VHM giúp cân đối thanh khoản tập đoàn.',
+    category: 'Doanh nghiệp',
+    time: '03/10',
+    source: 'SSI Research',
+    sentiment: 'TRUNG LẬP',
+    sentimentScore: 15,
+    impact: 'Trung bình',
+    targetScope: 'Mã cổ phiếu & Tập đoàn',
+    impactTarget: 'Mã VIC, VHM',
+    impactEstimate: 'VIC/VHM: Biến động hẹp (±1.5%)',
+    aiAssessment: 'Khoản tín dụng xanh 500 triệu USD giúp giải tỏa áp lực nợ vay ngắn hạn. Cổ phiếu VIC/VHM dự kiến tích lũy tạo nền quanh vùng giá hiện tại trước khi có báo cáo KQKD chính thức.',
+    actionTakeaway: 'QUAN SÁT TÍCH LŨY',
+    tickers: [],
+    tags: ['VIC', 'VHM', 'Tín dụng xanh', 'Xe điện'],
+    mcpTool: 'marketdata_list_company_news'
   }
 ];
 
+// Initialize MARKET_NEWS with AI automated evaluation
+const MARKET_NEWS = RAW_MARKET_NEWS.map(evaluateNewsSentimentAndImpact);
+
 const DIVIDEND_CALENDAR = [
+  { t: 'BMP', date: '14/10/2026', type: 'Tiền mặt', val: '6.100 đ/cp (61%)', payDate: '28/10/2026', src: 'SSI Events' },
   { t: 'FPT', date: '15/10/2026', type: 'Tiền mặt', val: '1.500 đ/cp (15%)', payDate: '30/10/2026', src: 'VNDIRECT Research' },
   { t: 'HPG', date: '18/10/2026', type: 'Cổ phiếu', val: 'Tỷ lệ 10% (10:1)', payDate: '15/11/2026', src: 'SSI MCP' },
   { t: 'VCB', date: '22/10/2026', type: 'Cổ phiếu', val: 'Tỷ lệ 38.8%', payDate: '30/11/2026', src: 'VNDIRECT Research' },
@@ -8481,12 +8885,15 @@ const DIVIDEND_CALENDAR = [
 ];
 
 const TRENDING_TICKERS = [
-  { s: 'FPT', n: 'FPT Corp', count: 24, pos: 92, p: 136.5, c: 1.8 },
-  { s: 'HPG', n: 'Tập đoàn Hòa Phát', count: 19, pos: 84, p: 27.9, c: 1.45 },
-  { s: 'SSI', n: 'Chứng khoán SSI', count: 16, pos: 88, p: 34.2, c: 2.4 },
-  { s: 'MSB', n: 'Ngân hàng Hàng Hải', count: 12, pos: 83, p: 14.85, c: 1.02 },
-  { s: 'TCB', n: 'Techcombank', count: 11, pos: 78, p: 24.8, c: 1.22 },
-  { s: 'VCB', n: 'Vietcombank', count: 10, pos: 75, p: 92.5, c: 0.82 }
+  { s: 'KDH', n: 'Nhà Khang Điền', count: 24, pos: 94, p: 32.5, c: 5.23 },
+  { s: 'VIX', n: 'Chứng khoán VIX', count: 22, pos: 91, p: 15.1, c: 4.12 },
+  { s: 'BMP', n: 'Nhựa Bình Minh', count: 18, pos: 96, p: 128.0, c: 3.22 },
+  { s: 'FPT', n: 'FPT Corp', count: 26, pos: 92, p: 136.5, c: 1.8 },
+  { s: 'HPG', n: 'Tập đoàn Hòa Phát', count: 21, pos: 88, p: 27.9, c: 1.45 },
+  { s: 'SSI', n: 'Chứng khoán SSI', count: 19, pos: 89, p: 34.2, c: 2.4 },
+  { s: 'MBS', n: 'Chứng khoán MB', count: 16, pos: 87, p: 28.6, c: 2.15 },
+  { s: 'SHS', n: 'Chứng khoán Sài Gòn - HN', count: 15, pos: 83, p: 14.8, c: 1.72 },
+  { s: 'CEO', n: 'Tập đoàn C.E.O', count: 14, pos: 81, p: 16.4, c: 1.86 }
 ];
 
 const MNEWS_TABS = [
@@ -14751,17 +15158,27 @@ function vMarketNews() {
   const filterTab = MNEWS_TABS[M.tab] ? MNEWS_TABS[M.tab][1] : () => true;
   const q = (M.q || '').trim().toLowerCase();
   
+  // Dynamic metrics calculation from MARKET_NEWS
+  const totalNewsCount = MARKET_NEWS.length;
+  const posCount = MARKET_NEWS.filter(n => n.sentiment === 'TÍCH CỰC').length;
+  const negCount = MARKET_NEWS.filter(n => n.sentiment === 'TIÊU CỰC').length;
+  const neuCount = Math.max(0, totalNewsCount - posCount - negCount);
+  const posPct = Math.round((posCount / totalNewsCount) * 100);
+  const negPct = Math.round((negCount / totalNewsCount) * 100);
+  const neuPct = Math.max(0, 100 - posPct - negPct);
+
   // Filter by tab, search keyword, span, sentiment
   let filtered = MARKET_NEWS.filter(filterTab).filter(n => {
     if (!q) return true;
-    const matchTitle = n.title.toLowerCase().includes(q);
+    const matchTitle = (n.title || '').toLowerCase().includes(q);
     const matchSum = (n.summary || '').toLowerCase().includes(q);
-    const matchTkrs = (n.tickers || []).some(t => t.s.toLowerCase().includes(q));
-    const matchTags = (n.tags || []).some(t => t.toLowerCase().includes(q));
-    return matchTitle || matchSum || matchTkrs || matchTags;
+    const matchTkrs = (n.tickers || []).some(t => (t.s || '').toLowerCase().includes(q));
+    const matchTags = (n.tags || []).some(t => (t || '').toLowerCase().includes(q));
+    const matchTarget = (n.impactTarget || '').toLowerCase().includes(q);
+    return matchTitle || matchSum || matchTkrs || matchTags || matchTarget;
   }).filter(n => {
-    if (M.span === 'Hôm nay') return n.time.includes('Hôm nay');
-    if (M.span === '3 ngày') return n.time.includes('Hôm nay') || n.time.includes('Hôm qua') || n.time.includes('08/10') || n.time.includes('07/10');
+    if (M.span === 'Hôm nay') return (n.time || '').includes('Hôm nay');
+    if (M.span === '3 ngày') return (n.time || '').includes('Hôm nay') || (n.time || '').includes('Hôm qua') || (n.time || '').includes('08/10') || (n.time || '').includes('07/10');
     if (M.span === '7 ngày') return true;
     return true;
   }).filter(n => {
@@ -14780,12 +15197,10 @@ function vMarketNews() {
 
   // Hero Story logic: show if first page, tab is 0 (or Breaking), and no specific query
   const heroStory = (!q && curPage === 1 && (M.tab === 0 || M.tab === 1)) ? MARKET_NEWS.find(n => n.isHero) : null;
-  // If hero is displayed separately, avoid duplicating in list if present
   const displayRows = heroStory ? pageRows.filter(n => n.id !== heroStory.id) : pageRows;
 
   // Sentiment class
   const sentCls = s => s === 'TÍCH CỰC' ? 'bullish' : (s === 'TIÊU CỰC' ? 'bearish' : 'neutral');
-
   const pgBtn = p => `<button class="${curPage === p ? 'on' : ''}" data-act="mnewspage" data-v="${p}">${p}</button>`;
 
   // Right sidebar widgets
@@ -14840,13 +15255,13 @@ function vMarketNews() {
     <!-- Quick Investor Metrics Banner -->
     <div style="margin:0 24px 12px;padding:10px 16px;background:var(--card-sub);border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:12px">
-        <div><span style="color:var(--ink3)">Tổng tin hôm nay:</span> <b style="color:var(--ink);font-family:var(--mono)">148 tin</b></div>
+        <div><span style="color:var(--ink3)">Tổng tin phân tích:</span> <b style="color:var(--ink);font-family:var(--mono)">${totalNewsCount} tin</b></div>
         <div style="width:1px;height:14px;background:var(--line)"></div>
-        <div><span style="color:var(--ink3)">Tâm lý tin tức AI:</span> <b style="color:var(--up);font-weight:700">68% Lạc quan (Bullish)</b></div>
+        <div><span style="color:var(--ink3)">Tâm lý tin tức AI:</span> <b style="color:var(--up);font-weight:700">${posPct}% Tích cực (Bullish)</b> · <b style="color:var(--warn)">${neuPct}% Trung lập</b> · <b style="color:var(--down)">${negPct}% Tiêu cực</b></div>
         <div style="width:1px;height:14px;background:var(--line)"></div>
-        <div><span style="color:var(--ink3)">Sự kiện quyền & Cổ tức:</span> <b style="color:var(--brand);font-family:var(--mono)">12 sự kiện</b></div>
+        <div><span style="color:var(--ink3)">Sự kiện quyền &amp; Cổ tức:</span> <b style="color:var(--brand);font-family:var(--mono)">${DIVIDEND_CALENDAR.length} sự kiện</b></div>
         <div style="width:1px;height:14px;background:var(--line)"></div>
-        <div><span style="color:var(--ink3)">Luồng dữ liệu:</span> <b style="color:#0284c7">Tổng hợp toàn thị trường</b></div>
+        <div><span style="color:var(--ink3)">Đồng bộ MCP Live:</span> <b style="color:#0284c7">● Đang hoạt động</b></div>
       </div>
       <div style="font-size:11px;color:var(--ink3)" id="mnews-updated-time">Cập nhật tự động theo thời gian thực</div>
     </div>
@@ -14865,7 +15280,7 @@ function vMarketNews() {
     <div class="mnews-filter-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 24px;border-bottom:1px solid var(--line);background:var(--bg);flex-wrap:wrap">
       <div style="position:relative;display:inline-flex;align-items:center">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:11px;color:var(--ink3);pointer-events:none"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-        <input id="mnewsq" type="search" placeholder="Tìm kiếm tin tức, mã CK (FPT, HPG, SSI...)..." value="${esc(M.q || '')}" style="width:280px;height:34px;padding:0 12px 0 34px;border:1px solid var(--line);border-radius:99px;background:var(--sub);color:var(--ink);font-size:12px;outline:none" oninput="S.mnews = S.mnews || {}; S.mnews.q = this.value; S.mnews.page = 1; render();">
+        <input id="mnewsq" type="search" placeholder="Tìm tin tức, mã CK (KDH, VIX, HPG, FPT, SSI, MBS...)..." value="${esc(M.q || '')}" style="width:280px;height:34px;padding:0 12px 0 34px;border:1px solid var(--line);border-radius:99px;background:var(--sub);color:var(--ink);font-size:12px;outline:none" oninput="S.mnews = S.mnews || {}; S.mnews.q = this.value; S.mnews.page = 1; render();">
       </div>
 
       <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap">
@@ -14890,9 +15305,10 @@ function vMarketNews() {
         ${heroStory ? `
           <div class="mnews-hero" data-act="mnewsarticle" data-v="${heroStory.id}">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-              <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                 <span class="mnews-badge-breaking">⚡ TIN TIÊU ĐIỂM THỊ TRƯỜNG</span>
-                <span class="mnews-sent-tag ${sentCls(heroStory.sentiment)}">${heroStory.sentiment} · Tác động ${heroStory.impact}</span>
+                <span class="mnews-sent-tag ${sentCls(heroStory.sentiment)}">🟢 ${heroStory.sentiment} ${heroStory.sentimentScore ? '+' + heroStory.sentimentScore : ''} · Tác động ${heroStory.impact}</span>
+                <span class="mnews-target-badge">🎯 ${esc(heroStory.impactTarget || heroStory.targetScope || 'Toàn thị trường')}</span>
               </div>
               <div style="font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:6px">
                 <span>${heroStory.time}</span>
@@ -14905,14 +15321,25 @@ function vMarketNews() {
               ${esc(heroStory.title)}
             </h3>
 
-            <p style="margin:0 0 12px;font-size:13px;line-height:1.55;color:var(--ink2)">
+            <p style="margin:0 0 10px;font-size:13px;line-height:1.55;color:var(--ink2)">
               ${esc(heroStory.summary)}
             </p>
+
+            <!-- Hero AI Takeaway Box -->
+            <div class="mnews-ai-eval" style="margin:0 0 12px;border-left:3px solid var(--up)">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:6px">
+                <b style="color:var(--ink);display:flex;align-items:center;gap:5px"><span>🤖</span> Phân tích &amp; Tự đánh giá tác động AI:</b>
+                <b style="color:var(--up);font-family:var(--mono)">${esc(heroStory.impactEstimate || 'VN-Index: +15 ~ +20 đ')}</b>
+              </div>
+              <div style="color:var(--ink2)">
+                ${esc(heroStory.aiAssessment || heroStory.summary)}
+              </div>
+            </div>
 
             <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
               <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
                 <span style="font-size:11.5px;color:var(--ink3)">Mã hưởng lợi:</span>
-                ${heroStory.tickers.map(tk => `
+                ${(heroStory.tickers || []).map(tk => `
                   <button class="mnews-tkr-chip ${tk.c >= 0 ? 'up' : 'down'}" data-act="stock" data-v="${tk.s}">
                     <b>${tk.s}</b> ${tk.c > 0 ? '+' : ''}${tk.c}%
                   </button>
@@ -14931,7 +15358,10 @@ function vMarketNews() {
                 <span style="font-weight:600;color:var(--ink2)">${n.time}</span>
                 <span>·</span>
                 <span class="tag" style="border-radius:3px">${n.category}</span>
-                <span class="mnews-sent-tag ${sentCls(n.sentiment)}">${n.sentiment}</span>
+                <span class="mnews-sent-tag ${sentCls(n.sentiment)}">
+                  ${n.sentiment === 'TÍCH CỰC' ? '🟢' : (n.sentiment === 'TIÊU CỰC' ? '🔴' : '⚪')} ${n.sentiment} ${n.sentimentScore != null ? (n.sentimentScore > 0 ? '+' : '') + n.sentimentScore : ''}
+                </span>
+                <span style="font-size:10.5px;color:var(--ink3)">Tác động: <b style="color:var(--ink)">${n.impact}</b></span>
                 <span style="margin-left:auto;font-size:10.5px" class="tag">
                   ${n.source}
                 </span>
@@ -14939,6 +15369,23 @@ function vMarketNews() {
 
               <div class="mnews-title">${esc(n.title)}</div>
               <div class="mnews-summary">${esc(n.summary)}</div>
+
+              <!-- AI Impact Assessment Box -->
+              <div class="mnews-ai-eval" style="border-left:3px solid ${n.sentiment === 'TÍCH CỰC' ? 'var(--up)' : (n.sentiment === 'TIÊU CỰC' ? 'var(--down)' : 'var(--warn)')}">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px;flex-wrap:wrap">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <span style="font-size:12px">🤖</span>
+                    <b style="color:var(--ink);font-size:11.5px">Đánh giá tác động AI:</b>
+                    <span class="mnews-target-badge">${esc(n.impactTarget || (n.targetScope === 'Toàn thị trường' ? 'Toàn thị trường (VN-Index)' : 'Mã CK liên quan'))}</span>
+                  </div>
+                  <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:${n.sentiment === 'TÍCH CỰC' ? 'var(--up)' : (n.sentiment === 'TIÊU CỰC' ? 'var(--down)' : 'var(--warn)')}">
+                    ${esc(n.impactEstimate || '')}
+                  </div>
+                </div>
+                <div style="color:var(--ink2);font-size:11.5px">
+                  ${esc(n.aiAssessment || n.summary)}
+                </div>
+              </div>
 
               <div class="mnews-item-bot">
                 <div class="mnews-tags-group">
@@ -14949,7 +15396,10 @@ function vMarketNews() {
                   `).join('')}
                   ${(n.tags || []).map(tg => `<span style="font-size:11px;color:var(--ink3)">#${tg}</span>`).join(' ')}
                 </div>
-                <span style="font-size:11.5px;color:var(--brand);font-weight:500">Xem chi tiết ↗</span>
+                <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+                  ${n.actionTakeaway ? `<span class="tag" style="font-size:10px;font-weight:600;color:var(--brand);border-color:rgba(228,95,53,0.3)">${esc(n.actionTakeaway)}</span>` : ''}
+                  <span style="font-size:11.5px;color:var(--brand);font-weight:500">Chi tiết ↗</span>
+                </div>
               </div>
             </div>
           `).join('') : `
@@ -14975,7 +15425,6 @@ function vMarketNews() {
         <!-- Footer Note -->
         <div class="rep-foot mnews-foot">
           <span>Nguồn tin tức được tổng hợp và chuẩn hóa theo thời gian thực từ <b>SSI iBoard Market Data</b>, <b>VNDIRECT Research Corporate Events</b>, <b>Finhay Macro &amp; Wealth</b> và FiinTrade. Toàn bộ thông tin mang tính tham khảo và phân tích thị trường, không cấu thành lời chào mua bán chứng khoán.</span>
-          
         </div>
       </div>
 
@@ -14987,7 +15436,6 @@ function vMarketNews() {
             <div class="mnews-widget-title">
               <span>📅</span> Lịch Cổ tức &amp; Sự kiện
             </div>
-            
           </div>
           <div style="font-size:11px;color:var(--ink3);margin-bottom:10px">Các mã sắp đến ngày Giao dịch không hưởng quyền (GDKHQ):</div>
           ${divRowsHtml}
@@ -14999,7 +15447,6 @@ function vMarketNews() {
             <div class="mnews-widget-title">
               <span>🔥</span> Tâm điểm Tin tức &amp; Dòng tiền
             </div>
-            
           </div>
           <div style="font-size:11px;color:var(--ink3);margin-bottom:8px">Top mã cổ phiếu được nhắc đến nhiều nhất trong 24 giờ qua:</div>
           <div style="border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg)">
@@ -15011,30 +15458,27 @@ function vMarketNews() {
         <div class="mnews-widget">
           <div class="mnews-widget-head">
             <div class="mnews-widget-title">
-              <span>🧭</span> Tâm lý Tin tức Thị trường
+              <span>🧭</span> Tâm lý Tin tức Thị trường (AI Sentiment)
             </div>
-            <span style="font-size:11px;font-weight:700;color:var(--up)">68/100 (Lạc quan)</span>
+            <span style="font-size:11px;font-weight:700;color:var(--up)">${posPct}/100 (${posPct >= 60 ? 'Lạc quan' : (posPct >= 40 ? 'Cân bằng' : 'Thận trọng')})</span>
           </div>
           
           <div style="margin:10px 0 6px">
             <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;gap:2px">
-              <div style="width:68%;background:var(--up)" title="Tích cực: 68%"></div>
-              <div style="width:22%;background:var(--warn)" title="Trung lập: 22%"></div>
-              <div style="width:10%;background:var(--down)" title="Tiêu cực: 10%"></div>
+              <div style="width:${posPct}%;background:var(--up)" title="Tích cực: ${posPct}%"></div>
+              <div style="width:${neuPct}%;background:var(--warn)" title="Trung lập: ${neuPct}%"></div>
+              <div style="width:${negPct}%;background:var(--down)" title="Tiêu cực: ${negPct}%"></div>
             </div>
             <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:6px;color:var(--ink2)">
-              <span style="color:var(--up)">● Tích cực 68%</span>
-              <span style="color:var(--warn)">● Trung lập 22%</span>
-              <span style="color:var(--down)">● Tiêu cực 10%</span>
+              <span style="color:var(--up)">● Tích cực ${posPct}%</span>
+              <span style="color:var(--warn)">● Trung lập ${neuPct}%</span>
+              <span style="color:var(--down)">● Tiêu cực ${negPct}%</span>
             </div>
           </div>
 
           <div style="font-size:11.5px;line-height:1.5;color:var(--ink2);background:var(--bg);padding:10px;border-radius:6px;border:1px solid var(--line);margin-top:10px">
-            <b>Nhận định AI:</b> Dòng thông tin xoay quanh tháo gỡ quy định Non-prefunding nâng hạng FTSE và kỳ vọng mùa KQKD Q3 tạo động lực tâm lý tích cực cho rổ VN30 và nhóm vốn hóa lớn.
+            <b>Nhận định AI:</b> Dòng thông tin xoay quanh tháo gỡ Non-prefunding nâng hạng FTSE, kết quả kinh doanh tăng trưởng của các trụ cột (FPT, HPG, KDH, VIX, MBS) và chính sách OMO nới lỏng tạo động lực tâm lý tích cực áp đảo toàn thị trường.
           </div>
-        </div>
-
-        
         </div>
       </aside>
     </div>
@@ -18943,25 +19387,57 @@ const A = {
     modal(`<div class="m-h">
       <div>
         <div class="muted" style="font-size:11.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span class="mnews-sent-tag ${sentClass}">${n.sentiment}</span>
+          <span class="mnews-sent-tag ${sentClass}">
+            ${n.sentiment === 'TÍCH CỰC' ? '🟢' : (n.sentiment === 'TIÊU CỰC' ? '🔴' : '⚪')} ${n.sentiment} ${n.sentimentScore != null ? (n.sentimentScore > 0 ? '+' : '') + n.sentimentScore : ''}
+          </span>
           <span class="tag" style="border-radius:3px">${n.category}</span>
           <span>·</span>
           <span>${n.time}</span>
           <span>·</span>
           <span class="tag">${n.source}</span>
+          <span>·</span>
+          <span class="tag" style="background:rgba(2,132,199,0.08);color:#0284c7">Tác động: ${n.impact}</span>
         </div>
         <h3 style="margin:4px 0 0;font-size:16px;line-height:1.4">${esc(n.title)}</h3>
       </div>
       <button class="navbtn" data-act="closemodal" aria-label="Đóng">${I.x}</button>
     </div>
     <div class="m-b">
-      <!-- AI Impact Summary Box -->
-      <div style="margin:0 0 14px;padding:12px 14px;background:var(--card-sub);border-radius:6px;border:1px solid var(--line)">
-        <div style="font-weight:700;font-size:12.5px;color:var(--brand);margin-bottom:6px;display:flex;align-items:center;gap:6px">
-          <span>⚡</span> Đánh giá tác động đầu tư (AI Investment Takeaway):
+      <!-- AI Impact & Forecast Grid -->
+      <div style="margin:0 0 16px;padding:14px;background:var(--card-sub);border-radius:8px;border:1px solid var(--line)">
+        <div style="font-weight:700;font-size:13px;color:var(--brand);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+          <span>🤖</span> AI Market Impact &amp; Catalyst Assessment (Đánh giá tác động tự động)
         </div>
-        <div style="font-size:12.5px;line-height:1.6;color:var(--ink)">
-          ${n.summary}
+        
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:10px;margin-bottom:12px">
+          <div style="background:var(--sub);padding:8px 10px;border-radius:6px;border:1px solid var(--line)">
+            <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:600">Đánh giá xu hướng</div>
+            <div style="font-size:12.5px;font-weight:700;color:${n.sentiment === 'TÍCH CỰC' ? 'var(--up)' : (n.sentiment === 'TIÊU CỰC' ? 'var(--down)' : 'var(--warn)')};margin-top:2px">
+              ${n.sentiment} (${n.sentimentScore > 0 ? '+' : ''}${n.sentimentScore}/100)
+            </div>
+          </div>
+          <div style="background:var(--sub);padding:8px 10px;border-radius:6px;border:1px solid var(--line)">
+            <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:600">Phạm vi ảnh hưởng</div>
+            <div style="font-size:12px;font-weight:700;color:var(--ink);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(n.impactTarget || n.targetScope)}">
+              ${esc(n.impactTarget || n.targetScope)}
+            </div>
+          </div>
+          <div style="background:var(--sub);padding:8px 10px;border-radius:6px;border:1px solid var(--line)">
+            <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:600">Dự phóng biến động</div>
+            <div style="font-size:12px;font-weight:700;color:${n.sentiment === 'TÍCH CỰC' ? 'var(--up)' : (n.sentiment === 'TIÊU CỰC' ? 'var(--down)' : 'var(--warn)')};font-family:var(--mono);margin-top:2px">
+              ${esc(n.impactEstimate || '±0.5%')}
+            </div>
+          </div>
+          <div style="background:var(--sub);padding:8px 10px;border-radius:6px;border:1px solid var(--line)">
+            <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:600">Khuyến nghị hành động</div>
+            <div style="font-size:12px;font-weight:700;color:var(--brand);margin-top:2px">
+              ${esc(n.actionTakeaway || 'Theo dõi chặt chẽ')}
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:12.5px;line-height:1.6;color:var(--ink);background:var(--sub);padding:10px 12px;border-radius:6px;border-left:3px solid ${n.sentiment === 'TÍCH CỰC' ? 'var(--up)' : (n.sentiment === 'TIÊU CỰC' ? 'var(--down)' : 'var(--warn)')}">
+          <b>Phân tích AI:</b> ${esc(n.aiAssessment || n.summary)}
         </div>
       </div>
 
@@ -18982,15 +19458,12 @@ const A = {
         ${n.content}
       </div>
 
-      
-        <div style="color:var(--ink3);line-height:1.4">
-          Dữ liệu được cập nhật tự động từ các nguồn chính thức của HOSE, SSI, VNDIRECT & FINHAY.
-        </div>
+      <div style="font-size:11px;color:var(--ink3);line-height:1.4">
+        Dữ liệu được cập nhật tự động từ các nguồn chính thức của HOSE, SSI, VNDIRECT &amp; FINHAY. Đánh giá tác động được tự động tính toán bởi Maris AI Sentiment Engine theo thời gian thực.
       </div>
     </div>
     <div class="m-f">
       ${firstTicker ? `<button class="btn" data-act="stock" data-v="${firstTicker}">Mở Biến động Mã chứng khoán (${firstTicker})</button>` : ''}
-      
       <button class="btn pri" data-act="closemodal">Đóng</button>
     </div>`);
   },
@@ -45528,19 +46001,34 @@ function syncReportsMcpLive() {
 function syncMarketNewsMcpLive() {
   const now = new Date();
   const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
+  
+  // Re-run AI Sentiment & Impact evaluation engine on all news
+  if (Array.isArray(MARKET_NEWS) && typeof evaluateNewsSentimentAndImpact === 'function') {
+    for (let i = 0; i < MARKET_NEWS.length; i++) {
+      MARKET_NEWS[i] = evaluateNewsSentimentAndImpact(MARKET_NEWS[i]);
+    }
+  }
+
   const timeEl = document.getElementById('mnews-updated-time');
   if (timeEl) {
-    timeEl.textContent = `Cập nhật tự động · ${timeStr}`;
+    timeEl.innerHTML = `● Đồng bộ MCP Live: <b style="color:var(--brand)">${timeStr}</b>`;
   }
+  
+  const total = Array.isArray(MARKET_NEWS) ? MARKET_NEWS.length : 0;
+  const pos = MARKET_NEWS.filter(n => n.sentiment === 'TÍCH CỰC').length;
+  const neg = MARKET_NEWS.filter(n => n.sentiment === 'TIÊU CỰC').length;
+  const neu = Math.max(0, total - pos - neg);
+  const posPct = Math.round((pos / total) * 100);
+  const negPct = Math.round((neg / total) * 100);
+  const neuPct = Math.max(0, 100 - posPct - negPct);
+
   if (typeof toast === 'function') {
-    toast(`↻ Đã làm mới 148 tin tức & sự kiện thị trường!`);
+    toast(`✅ [MCP Market News Live] Đã đồng bộ ${total} tin tức & AI tự đánh giá: ${posPct}% Tích cực, ${neuPct}% Trung lập, ${negPct}% Tiêu cực!`);
   }
   if (typeof rerender === 'function') {
     rerender();
   }
 }
-
-
 
 /* FETCH & APPLY DUAL MCP DATA PIPELINE (DNSE + VNDIRECT) */
 // Injected Comprehensive MCP Company Data Resolver

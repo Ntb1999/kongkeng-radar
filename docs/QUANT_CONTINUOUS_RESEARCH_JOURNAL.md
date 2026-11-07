@@ -157,6 +157,10 @@
 
 ---
 
+- [Chủ đề 125: Mô Hình Đồ Thị Mạng Lưới Tài Chính & Chỉ Số Lan Truyền Rủi Ro Hệ Thống (DebtRank & Delta-CoVaR) Tam Giác Vốn Việt Nam](#-chủ-đề-125-mô-hình-đồ-thị-mạng-lưới-tài-chính--chỉ-số-lan-truyền-rủi-ro-hệ-thống-debtrank--delta-covar-bóc-tách-mối-liên-thông-ngân-hàng---bất-động-sản---chứng-khoán-tại-việt-nam)
+
+---
+
 ## 🔬 CHỦ ĐỀ 01: PHƯƠNG PHÁP META-LABELING & TRIPLE BARRIER METHOD
 **Tác giả lý thuyết:** GS. Marcos López de Prado (*Advances in Financial Machine Learning*, 2018)  
 **Thời gian hoàn thành:** 2026-11-02 23:35 (ICT)  
@@ -13994,3 +13998,170 @@ if __name__ == '__main__':
    - Trong cửa sổ 5 ngày trước ngày Giao Dịch Không Hưởng Quyền, hệ thống tự động hiển thị khuyến nghị định lượng **"Nên giữ lăn chốt"** hoặc **"Nên bán trước chốt"** ngay trên thanh thông tin cổ phiếu.
 2. **Khắc phục bẫy FOMO mua đuổi trước ngày chốt quyền:**
    - Khi phát hiện giá cổ phiếu bị kéo tăng nóng (Pre-Ex Run-Up) vượt quá giá trị hợp lý của cổ tức sau thuế, KongKeng Radar cảnh báo nhà đầu tư không mua đuổi ở Kịch Bản 1, mà kiên nhẫn chờ nhịp chỉnh kỹ thuật sau ngày Ex-Date tại **Kịch Bản 2: Đặt Chờ Tích Lũy (Pullback Ladder)** với mức giá chiết khấu tối ưu.
+
+---
+
+## 🔬 CHỦ ĐỀ 125: MÔ HÌNH ĐỒ THỊ MẠNG LƯỚI TÀI CHÍNH & CHỈ SỐ LAN TRUYỀN RỦI RO HỆ THỐNG (DEBTRANK & DELTA-COVAR) BÓC TÁCH MỐI LIÊN THÔNG NGÂN HÀNG - BẤT ĐỘNG SẢN - CHỨNG KHOÁN TẠI VIỆT NAM
+
+```
+Chu kỳ nghiên cứu: 10 phút định kỳ (Iteration 24 / Task-7472)
+Thời gian hoàn thành: 2026-11-07 19:00:00
+Phân hệ áp dụng: Quản Trị Rủi Ro Hệ Thống & Cảnh Báo Sớm Khủng Hoảng Thanh Khoản (C360 Hub) / KongKeng Radar
+Mức độ kiểm định: Chuẩn mực Mạng lưới DebtRank Battiston & Hồi quy Phân vị CoVaR Adrian-Brunnermeier
+```
+
+### 1. Bối Cảnh Thực Tiễn & Rào Cản Tại Thị Trường Việt Nam
+Tại thị trường tài chính Việt Nam, mối quan hệ hữu cơ giữa 3 trụ cột vốn: **Ngân Hàng (Banking) - Bất Động Sản (Real Estate) - Công Ty Chứng Khoán (Securities)** tạo thành một hệ sinh thái cộng sinh nhưng cũng tiềm ẩn rủi ro lây nhiễm hệ thống (Systemic Contagion Risk) cực kỳ phức tạp:
+1. **Mạng lưới đan xen rủi ro chéo (Cross-Holding & Interconnected Exposures):**
+   - Các Ngân hàng thương mại nắm giữ danh mục trái phiếu doanh nghiệp BĐS lớn và cấp tín dụng thế chấp bằng dự án/bất động sản.
+   - Doanh nghiệp BĐS sử dụng nguồn vốn vay và phát hành trái phiếu qua các CTCK bảo lãnh.
+   - Các CTCK cấp dịch vụ giao dịch ký quỹ (Margin) với tài sản đảm bảo chính là cổ phiếu Ngân hàng và BĐS.
+2. **Hiệu ứng hòn tuyết lở bán giải chấp (Cross-Margin Liquidation Cascade):** Khi một tập đoàn BĐS gặp sự cố mất thanh khoản trái phiếu, giá cổ phiếu của tập đoàn đó bị khóa sàn mất thanh khoản. Các CTCK buộc phải kích hoạt bán giải chấp chéo các cổ phiếu tốt khác trong danh mục của nhà đầu tư (như VCB, TCB, FPT, HPG) để thu hồi vốn vay, làm sụp đổ dây chuyền cả thị trường.
+3. **Mục tiêu của KongKeng Radar:** Xây dựng mô hình đồ thị mạng lưới có trọng số (Directed Weighted Financial Network) tích hợp thuật toán **DebtRank (Battiston et al., 2012)** và thước đo rủi ro đuôi có điều kiện **$\Delta\text{CoVaR}$ (Adrian & Brunnermeier, 2016)**. Mô hình này lượng hóa tác động domino khi một mắt xích bị "vỡ nợ giả định", tính toán tốc độ lan truyền rủi ro qua từng chu kỳ, từ đó phát tín hiệu phòng vệ danh mục bằng Hợp đồng tương lai VN30F1M trước khi thị trường bước vào pha hoảng loạn diện rộng.
+
+---
+
+### 2. Nền Tảng Toán Học Định Lượng: Mô Hình Mạng Lưới DebtRank & $\Delta\text{CoVaR}$
+
+#### 2.1. Đồ Thị Mạng Lưới & Ma Trận Tiếp Xúc Rủi Ro Liên Định Chế
+Xét mạng lưới tài chính gồm $N$ định chế niêm yết (nút mạng). Mỗi định chế $i$ có Vốn chủ sở hữu $E_i$ và Tổng tài sản $A_i$.
+Ma trận liên kết tiếp xúc rủi ro $W = [W_{ij}]_{N \times N}$ đo lường mức độ dễ bị tổn thương của định chế $i$ khi định chế $j$ vỡ nợ:
+$$W_{ij} = \min\left(1, \, \frac{A_{ij}}{E_i}\right)$$
+Trong đó $A_{ij}$ là tổng giá trị tài sản mà định chế $i$ cho định chế $j$ vay (hoặc mức độ phơi nhiễm chéo qua trái phiếu, bảo lãnh, bảo hiểm ký quỹ).
+
+#### 2.2. Phương Trình Lan Truyền Tổn Thất DebtRank Đệ Quy
+Mỗi định chế $i$ tại bước thời gian $t$ có biến trạng thái tổn thất $h_i(t) \in [0, 1]$, biểu diễn tỷ lệ suy giảm vốn chủ sở hữu ($h_i = 0$: hoàn toàn khỏe mạnh; $h_i = 1$: phá sản/vỡ nợ hoàn toàn).
+Phương trình cập nhật lan truyền tổn thất qua từng chu kỳ:
+$$h_i(t) = \min\left(1, \, h_i(t-1) + \sum_{j \in \mathcal{A}(t-1)} W_{ij} \cdot [h_j(t-1) - h_j(t-2)] \right)$$
+Trong đó $\mathcal{A}(t-1)$ là tập hợp các định chế đang hoạt động và gây áp lực lan truyền tại bước $t-1$.
+Để ngăn chặn vòng lặp phản hồi vô tận (Feedback Loops), mỗi định chế chỉ được truyền tổn thất đến các đối tác của mình một lần duy nhất trong suốt quá trình lan truyền.
+
+#### 2.3. Chỉ Số Lan Truyền Hệ Thống Tổng Thể (Systemic Impact DebtRank - $R$)
+Mức độ tác động hệ thống toàn thị trường được tính bằng tổn thất vốn hóa cộng dồn có trọng số kinh tế:
+$$R = \sum_{i=1}^N v_i \cdot [h_i(T_{\text{end}}) - h_i(0)]$$
+Trong đó $v_i = \frac{E_i}{\sum_{k=1}^N E_k}$ là tỷ trọng quy mô vốn chủ sở hữu của định chế $i$.
+- $R < 0.10$: Hệ thống có khả năng tự hấp thụ cú sốc cao, không có nguy cơ lây nhiễm.
+- $0.10 \le R < 0.25$: Rủi ro lan truyền cục bộ trong ngành BĐS/CTCK.
+- $R \ge 0.25$: **BÁO ĐỘNG ĐỎ RỦI RO HỆ THỐNG DIỆN RỘNG (SYSTEMIC MELTDOWN RISK)**.
+
+#### 2.4. Thước Đo Đóng Góp Rủi Ro $\Delta\text{CoVaR}$
+$\Delta\text{CoVaR}_q^i$ đo lường mức độ gia tăng rủi ro của toàn bộ thị trường khi định chế $i$ rơi vào tình trạng kiệt quệ tài chính (Distress State):
+$$\Delta\text{CoVaR}_q^i = \text{CoVaR}_q^{\text{system} | X_i = \text{VaR}_q^i} - \text{CoVaR}_q^{\text{system} | X_i = \text{Median}_i}$$
+Được ước lượng qua mô hình Hồi quy Phân vị (Quantile Regression ở mức phân vị $\alpha = 0.05$):
+$$R_{\text{system}, t} = \alpha_q + \beta_q R_{i, t} + \gamma_q M_{t-1} + \varepsilon_t$$
+$$\Delta\text{CoVaR}_q^i = \hat{\beta}_q \cdot (\text{VaR}_q^i - \text{Median}_i)$$
+
+---
+
+### 3. Thuật Toán Python Mô Phỏng Mạng Lưới DebtRank Tam Giác Vốn Việt Nam
+
+```python
+import numpy as np
+import pandas as pd
+
+class SystemicContagionNetworkEngine:
+    """
+    Bộ động cơ định lượng mạng lưới tài chính và lan truyền rủi ro DebtRank cho KongKeng Radar.
+    Phân tích tam giác liên thông Ngân Hàng - Bất Động Sản - Chứng Khoán tại Việt Nam.
+    """
+    def __init__(self, institutions, equities, exposure_matrix):
+        self.institutions = institutions
+        self.N = len(institutions)
+        self.equities = np.array(equities, dtype=float)
+        self.total_equity = np.sum(self.equities)
+        self.weights = self.equities / self.total_equity
+        self.exposure_matrix = np.array(exposure_matrix, dtype=float)
+        
+        # Ma trận W_ij = Exposure_ij / Equity_i
+        self.W = np.zeros((self.N, self.N))
+        for i in range(self.N):
+            if self.equities[i] > 0:
+                self.W[i, :] = np.minimum(1.0, self.exposure_matrix[i, :] / self.equities[i])
+
+    def simulate_debtrank(self, shock_institution_idx, initial_shock_magnitude=0.5):
+        """
+        Mô phỏng thuật toán DebtRank khi một định chế chịu cú sốc ban đầu (Initial Distress)
+        """
+        h = np.zeros(self.N)
+        h[shock_institution_idx] = initial_shock_magnitude
+        
+        # Trạng thái nút: 0: Chưa ảnh hưởng (Undistressed), 1: Đang lan truyền (Active), 2: Đã xong (Inactive)
+        state = np.zeros(self.N, dtype=int)
+        state[shock_institution_idx] = 1
+        
+        history = [h.copy()]
+        rounds = 0
+        max_rounds = 15
+        
+        while np.any(state == 1) and rounds < max_rounds:
+            rounds += 1
+            h_prev = h.copy()
+            active_nodes = np.where(state == 1)[0]
+            
+            # Cập nhật tổn thất lan truyền cho các nút liên kết
+            for i in range(self.N):
+                if state[i] != 2:  # Chỉ nút chưa kết thúc mới nhận tổn thất
+                    incoming_loss = np.sum(self.W[i, active_nodes] * h_prev[active_nodes])
+                    h[i] = min(1.0, h_prev[i] + incoming_loss)
+                    
+            # Chuyển các nút vừa lan truyền sang trạng thái Inactive (2)
+            state[active_nodes] = 2
+            
+            # Kích hoạt các nút mới bị tổn thất vượt ngưỡng
+            newly_distressed = np.where((h > h_prev) & (state == 0))[0]
+            state[newly_distressed] = 1
+            
+            history.append(h.copy())
+            
+        # Tính toán chỉ số DebtRank tổng thể R
+        final_loss = h - history[0]
+        debtrank_index = np.sum(self.weights * final_loss)
+        
+        df_impact = pd.DataFrame({
+            'Institution': self.institutions,
+            'Equity_Bn_VND': self.equities,
+            'Initial_Loss': np.round(history[0] * 100, 1),
+            'Final_Loss_Pct': np.round(h * 100, 1),
+            'Equity_Destroyed_Bn': np.round(h * self.equities, 1)
+        })
+        
+        return debtrank_index, rounds, df_impact
+
+# Kiểm chứng trên mô hình giả lập 6 định chế đại diện HOSE:
+# Ngân hàng: VCB, TCB | Bất động sản: VHM, NVL | Chứng khoán: SSI, VND
+if __name__ == '__main__':
+    insts = ['VCB (Bank)', 'TCB (Bank)', 'VHM (RealEstate)', 'NVL (RealEstate)', 'SSI (Securities)', 'VND (Securities)']
+    # Vốn chủ sở hữu giả định (Nghìn tỷ đồng)
+    eq = [150.0, 130.0, 160.0, 45.0, 23.0, 18.0]
+    
+    # Ma trận tiếp xúc rủi ro phơi nhiễm (Nghìn tỷ đồng): A[i, j] là mức i phơi nhiễm đối với j
+    # Ví dụ: VCB và TCB cấp tín dụng và ôm trái phiếu NVL; SSI và VND cho vay margin NVL và nắm trái phiếu
+    A_matrix = [
+        [0.0, 0.0, 15.0, 18.0, 4.0, 3.0],   # VCB phơi nhiễm với [VHM, NVL, SSI, VND]
+        [0.0, 0.0, 22.0, 28.0, 6.0, 5.0],   # TCB phơi nhiễm lớn với VHM và NVL
+        [2.0, 3.0,  0.0,  0.0, 0.0, 0.0],   # VHM
+        [1.0, 2.0,  0.0,  0.0, 0.0, 0.0],   # NVL
+        [3.0, 4.0,  8.0, 12.0, 0.0, 0.0],   # SSI cấp margin và tư vấn trái phiếu
+        [2.0, 3.0,  6.0, 10.0, 0.0, 0.0]    # VND cấp margin và bảo lãnh trái phiếu
+    ]
+    
+    engine = SystemicContagionNetworkEngine(insts, eq, A_matrix)
+    
+    print("=== MÔ PHỎNG HIỆU ỨNG DOMINO KHI MỘT DOANH NGHIỆP BĐS (NVL) MẤT KHẢ NĂNG THANH TOÁN (SHOCK = 80%) ===")
+    r_index, r_steps, df_res = engine.simulate_debtrank(shock_institution_idx=3, initial_shock_magnitude=0.80)
+    
+    print(f"Tổng số chu kỳ lan truyền domino: {r_steps} bước")
+    print(f"Chỉ số rủi ro hệ thống DebtRank R : {r_index:.4f} ({r_index*100:.2f}% tổng vốn hóa bị tổn hại)")
+    print(f"Cấp độ cảnh báo rủi ro          : {'BÁO ĐỘNG ĐỎ KHỦNG HOẢNG HỆ THỐNG' if r_index >= 0.25 else 'Lan truyền cục bộ - Cảnh báo cao'}")
+    print("\nChi tiết mức độ suy giảm vốn chủ sở hữu từng định chế:")
+    print(df_res.to_string(index=False))
+```
+
+---
+
+### 4. Ứng Dụng Đột Phá Vào Nền Tảng KongKeng Radar
+1. **Bản đồ nhiệt cảnh báo sớm lây nhiễm chéo (Contagion Heatmap):**
+   - Giúp nhà đầu tư nhận diện ngay lập tức những mã cổ phiếu Ngân hàng hoặc Chứng khoán có mức phơi nhiễm rủi ro trái phiếu cao nhất đối với các tập đoàn BĐS đang gặp khó khăn.
+   - Tránh tâm lý chủ quan khi thấy doanh nghiệp của mình "không liên quan trực tiếp" nhưng thực chất đang nằm trong tâm chấn của mạng lưới lan truyền nợ.
+2. **Kích hoạt cơ chế Phòng Thủ Danh Mục (Automated Circuit Breaker):**
+   - Khi chỉ số DebtRank $R \ge 0.25$, bot giao dịch tự hành trên KongKeng Radar tự động kích hoạt lệnh Short phòng vệ 100% Beta trên hợp đồng tương lai VN30F1M, đồng thời dời toàn bộ các lệnh mua gom ở **Kịch Bản 2 (Pullback Ladder)** xuống các vùng hỗ trợ cứng thấp hơn từ 5% đến 8% để bảo vệ tuyệt đối nguồn vốn.

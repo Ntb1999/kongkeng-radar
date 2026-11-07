@@ -12784,13 +12784,13 @@ function vAll() {
       <span class="link" data-act="drawer">+ Thêm điều kiện</span>${A.chips.length ? '<span class="muted" style="cursor:pointer" data-act="clearchips">Xóa tất cả</span>' : ''}
     </div>
     <div class="ctabs-row"><div class="ctabs" role="tablist" aria-label="Bộ cột">${Object.keys(COLSETS).map(k => `<button role="tab" aria-selected="${A.cols === k}" class="${A.cols === k ? 'on' : ''}" data-act="colset" data-v="${k}">${k}</button>`).join('')}</div>
-      <div class="ctabs-act"><button class="btn" style="padding:0 12px 0 8px" data-act="toast" data-msg="Kéo thả để sắp xếp cột sẽ có ở bản tiếp theo">${I.cols}Quản lý cột</button><button class="btn" style="padding:0 12px 0 8px" data-act="awatch">${I.bm}Thêm vào Watchlist</button></div></div>
+      <div class="ctabs-act"><button class="btn" style="padding:0 12px 0 8px" data-act="toast" data-msg="Kéo thả để sắp xếp cột sẽ có ở bản tiếp theo">${I.cols}Quản lý cột</button><button class="btn" style="padding:0 12px 0 8px" data-act="awatch">${I.bm}Thêm vào danh sách theo dõi</button></div></div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px"><span class="cap" style="text-transform:none">Kết quả</span><span class="muted" style="font-size:14px;line-height:20px">(${rows.length} mã CK)</span></div>
     <div class="tscroll" style="border:1px solid var(--line)"><table class="t upper hd lg all-t"><thead><tr><th style="width:32px;text-align:center"><span class="check ${allSel ? 'on' : ''}" data-act="aselall" role="checkbox" aria-checked="${allSel}" tabindex="0"></span></th>${th('t', 'Mã CK', '')}<th class="frz" data-tip="Datafeed FiinGroup · Organization · OrganName">Tên công ty</th><th ${tipAttr('ex')}>Sàn</th>${cs.map(c => th(c[0], c[1])).join('')}<th ${tipAttr('ind')}>Ngành</th></tr></thead>
     <tbody>${rows.map(r => { const on = A.sel.has(r[0]); return `<tr class="click ${on ? 'sel' : ''}" data-act="stock" data-v="${r[0]}"><td style="text-align:center"><span class="check ${on ? 'on' : ''}" data-act="asel" data-v="${r[0]}" role="checkbox" aria-checked="${on}" tabindex="0"></span></td><td style="white-space:nowrap"><div style="display:flex;align-items:center;gap:7px">${getCompanyLogo(r[0], 20)}<b>${r[0]}</b></div></td><td class="frz ink2" style="max-width:168px;overflow:hidden;text-overflow:ellipsis" title="${esc(r[1])}">${r[1]}</td><td><span class="tg">${r[2]}</span></td>
       ${cs.map(c => { const x = c[2](r), k = c[4] ? c[4](r) : ''; return `<td class="rt ${k === 'sans' ? '' : 'num'} ${k === 'sans' ? '' : k}">${x == null && c[3] !== sgA ? '<span class="muted">—</span>' : c[3](x, r)}</td>`; }).join('')}
       <td class="ink2" style="max-width:226px;overflow:hidden;text-overflow:ellipsis">${r[11]}</td></tr>`; }).join('')}</tbody></table></div>
-    ${A.sel.size ? `<div class="bulk" role="region" aria-label="Thao tác hàng loạt"><span>Đã chọn ${A.sel.size} mã</span><button class="btn pri" data-act="acmp" ${A.sel.size < 2 ? 'disabled style="opacity:.5"' : ''}>So sánh</button><button class="btn" data-act="awatch">Thêm vào Watchlist</button><button class="x" data-act="aclear">Bỏ chọn</button></div>` : ''}
+    ${A.sel.size ? `<div class="bulk" role="region" aria-label="Thao tác hàng loạt"><span>Đã chọn ${A.sel.size} mã</span><button class="btn pri" data-act="acmp" ${A.sel.size < 2 ? 'disabled style="opacity:.5"' : ''}>So sánh</button><button class="btn" data-act="awatch">Thêm vào danh sách theo dõi</button><button class="x" data-act="aclear">Bỏ chọn</button></div>` : ''}
   </div>`;
 }
 const GROUPS = [
@@ -13586,7 +13586,7 @@ function vCompare() {
     <!-- SUB-TABS -->
     <div class="cmp-subtabs">
       <button class="cmp-subtab ${S.cmpTab === 'all' ? 'active' : ''}" data-act="cmptab" data-v="all">📊 Bảng chỉ số toàn diện (13 nhóm - Kèm Phân tích Kỹ thuật)</button>
-      <button class="cmp-subtab ${S.cmpTab === 'drating' ? 'active' : ''}" data-act="cmptab" data-v="drating">⭐ Ma trận D-Rating &amp; Sức mạnh</button>
+      <button class="cmp-subtab ${S.cmpTab === 'drating' ? 'active' : ''}" data-act="cmptab" data-v="drating">⭐ Ma trận Xếp hạng Sức mạnh Doanh nghiệp</button>
       <button class="cmp-subtab ${S.cmpTab === 'valuation' ? 'active' : ''}" data-act="cmptab" data-v="valuation">🎯 Định giá &amp; Đồng thuận Mục tiêu</button>
       <button class="cmp-subtab ${S.cmpTab === 'perf' ? 'active' : ''}" data-act="cmptab" data-v="perf">📈 Biểu đồ Tương quan Hiệu suất</button>
       <button class="cmp-subtab ${S.cmpTab === 'swot' ? 'active' : ''}" data-act="cmptab" data-v="swot">🏆 Đối đầu Điểm mạnh / Yếu &amp; Radar</button>
@@ -14265,7 +14265,7 @@ function renderMarketStockFlowHtml() {
     <div class="mkt-flow-kpi">
       <div class="mkt-flow-kpi-title">
         <span>🚀 TOP CÁ MẬP GOM RÒNG MẠNH</span>
-        <span class="tg" style="font-size:10px">VND D-Money</span>
+        <span class="tg" style="font-size:10px">Dòng tiền thông minh</span>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
         ${topInflows.map(s => `
@@ -14309,7 +14309,7 @@ function renderMarketStockFlowHtml() {
       </div>
       <div style="font-size:12px;color:var(--ink3);display:flex;align-items:center;gap:6px">
         <span class="live-pulse-dot" style="width:6px;height:6px;background:#22c55e"></span>
-        <span>⚡ Realtime VND D-Money Engine · ${rows.length} mã hiển thị</span>
+        <span>⚡ Realtime Smart Money Flow Engine · ${rows.length} mã hiển thị</span>
       </div>
     </div>
 
@@ -15816,7 +15816,7 @@ function vMarket() {
     <!-- Sub-tabs -->
     <div class="mkt-subtabs">
       <button class="mkt-subtab ${tab === 'pulse' ? 'active' : ''}" data-act="mkttab" data-v="pulse">📊 Toàn cảnh &amp; Độ rộng</button>
-      <button class="mkt-subtab ${tab === 'flow' ? 'active' : ''}" data-act="mkttab" data-v="flow">🌊 Biến động dòng tiền theo mã (VND D-Money)</button>
+      <button class="mkt-subtab ${tab === 'flow' ? 'active' : ''}" data-act="mkttab" data-v="flow">🌊 Dòng tiền Thông minh theo mã (Smart Money Flow)</button>
       <button class="mkt-subtab ${tab === 'foreign' ? 'active' : ''}" data-act="mkttab" data-v="foreign">🏛️ Dòng tiền Khối ngoại &amp; Tự doanh</button>
       <button class="mkt-subtab ${tab === 'leaders' ? 'active' : ''}" data-act="mkttab" data-v="leaders">⚡ Top Thanh khoản &amp; Biến động</button>
       <button class="mkt-subtab ${tab === 'global' ? 'active' : ''}" data-act="mkttab" data-v="global">🌐 Thị trường Quốc tế &amp; Hàng hóa</button>
@@ -21010,7 +21010,7 @@ const SCREENER_PRESETS = [
   // --- SSI iBoard Presets ---
   {
     id: 'ssi_growth',
-    name: 'Hạng cao với chiến lược Growth',
+    name: 'Chiến lược Tăng trưởng cao (Growth Score A)',
     group: 'ssi',
     origin: 'SSI iBoard',
     badge: 'SSI FiinTrade',
@@ -21021,7 +21021,7 @@ const SCREENER_PRESETS = [
   },
   {
     id: 'ssi_value',
-    name: 'Hạng cao với chiến lược Value',
+    name: 'Chiến lược Định giá hấp dẫn (Value Score A)',
     group: 'ssi',
     origin: 'SSI iBoard',
     badge: 'SSI FiinTrade',
@@ -21032,7 +21032,7 @@ const SCREENER_PRESETS = [
   },
   {
     id: 'ssi_momentum',
-    name: 'Hạng cao với chiến lược Momentum',
+    name: 'Chiến lược Đà tăng giá vượt trội (Momentum A)',
     group: 'ssi',
     origin: 'SSI iBoard',
     badge: 'SSI FiinTrade',
@@ -21043,7 +21043,7 @@ const SCREENER_PRESETS = [
   },
   {
     id: 'ssi_vgm',
-    name: 'Chiến thuật VGM Toàn diện',
+    name: 'Chiến lược Toàn diện VGM (Value - Growth - Momentum)',
     group: 'ssi',
     origin: 'SSI iBoard',
     badge: 'SSI FiinTrade',
@@ -21054,7 +21054,7 @@ const SCREENER_PRESETS = [
   },
   {
     id: 'ssi_yield',
-    name: 'Năng suất đảm bảo',
+    name: 'Cổ tức cao & Phòng thủ (Low Beta ≤ 1.0, Yield ≥ 4%)',
     group: 'ssi',
     origin: 'SSI iBoard',
     badge: 'SSI FiinTrade',
@@ -21065,7 +21065,7 @@ const SCREENER_PRESETS = [
   },
   {
     id: 'ssi_cheap_high_div',
-    name: 'Giá rẻ, Cổ tức cao',
+    name: 'Định giá P/E thấp & Cổ tức tiền mặt cao',
     group: 'ssi',
     origin: 'SSI iBoard',
     badge: 'SSI FiinTrade',
@@ -21076,7 +21076,7 @@ const SCREENER_PRESETS = [
   },
   {
     id: 'ssi_oversold',
-    name: 'Bắt đáy RSI Quá bán',
+    name: 'Săn điểm đảo chiều (RSI Quá bán ≤ 42)',
     group: 'ssi',
     origin: 'SSI iBoard',
     badge: 'SSI FiinTrade',
@@ -21087,7 +21087,7 @@ const SCREENER_PRESETS = [
   },
   {
     id: 'ssi_canslim',
-    name: 'Siêu cổ phiếu CANSLIM',
+    name: "Mô hình Siêu cổ phiếu CANSLIM (William O'Neil)",
     group: 'ssi',
     origin: 'SSI iBoard',
     badge: 'SSI FiinTrade',
@@ -21100,7 +21100,7 @@ const SCREENER_PRESETS = [
   // --- TradingView Presets ---
   {
     id: 'tv_most_cap',
-    name: 'Vốn hóa nhiều nhất (Most Capitalized)',
+    name: 'Top Vốn hóa thị trường lớn nhất (Large-Cap Bluechips)',
     group: 'tradingview',
     origin: 'TradingView',
     badge: 'TradingView',
@@ -21111,7 +21111,7 @@ const SCREENER_PRESETS = [
   },
   {
     id: 'tv_vol_shock',
-    name: 'Đột biến Khối lượng (Volume Leaders)',
+    name: 'Đột biến Khối lượng giao dịch (Volume Shock ≥ 1.5x)',
     group: 'tradingview',
     origin: 'TradingView',
     badge: 'TradingView',
@@ -21193,7 +21193,7 @@ const SCR_SUGG = [
 ];
 const cloneChips = cs => cs.map(c => Object.assign({}, c, c.set ? { set: c.set.slice() } : {}));
 Object.assign(S.all, {
-  name: 'Hạng cao với chiến lược Growth',
+  name: 'Chiến lược Tăng trưởng cao (Growth Score A)',
   presetId: 'ssi_growth',
   prCat: 'all',
   savedIdx: -1,
@@ -21528,6 +21528,253 @@ const I_CHECK = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" str
 const RO_TIP = '“Danh mục của tôi” được đồng bộ trực tiếp từ tài khoản KongKeng Trading nên ở chế độ chỉ xem. Quý khách vui lòng tạo bản sao để tùy chỉnh mã và vị thế.';
 const I_SEARCH = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#151515" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>';
 const rng52 = (lo, hi, p) => { const k = hi > lo ? Math.max(0, Math.min(1, (p - lo) / (hi - lo))) : .5; return `<span class="rg"><b>${fx2(lo)}</b><i><s style="left:${(k * 100).toFixed(1)}%"></s></i><b>${fx2(hi)}</b></span>`; };
+/* ================= TÓM TẮT DIỄN BIẾN WATCHLIST (1 NGÀY & CHỈ SỐ VN30) ================= */
+function showWlFormulaModal() {
+  const html = `
+    <div class="modal-card" style="max-width:580px;background:var(--card-bg,#161822);border:1px solid var(--line,#2a2e3d);border-radius:10px;padding:24px;box-shadow:0 12px 36px rgba(0,0,0,0.4)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;border-bottom:1px solid var(--line);padding-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:18px">📐</span>
+          <b style="font-size:16px;color:var(--ink)">Phương pháp &amp; Công thức tính Hiệu suất Watchlist</b>
+        </div>
+        <button class="x" onclick="closeLayer()" style="background:none;border:none;color:var(--ink3);font-size:20px;cursor:pointer">✕</button>
+      </div>
+      <div style="font-size:12.5px;line-height:1.6;color:var(--ink2);display:flex;flex-direction:column;gap:14px">
+        <div style="background:var(--sub,#1e2230);padding:12px;border-radius:6px;border:1px solid var(--line)">
+          <b style="color:var(--brand);font-size:13px">1. Tỷ suất sinh lời bình quân trong ngày (Equal-Weighted Basket Return):</b>
+          <p style="margin:4px 0 6px;color:var(--ink);font-family:var(--mono);font-size:13px">R_Watchlist = (1 / N) * Σ ( (P_khớp - P_TC) / P_TC ) * 100%</p>
+          <span style="font-size:11.5px;color:var(--ink3)">Giả định phân bổ vốn bình quân vào tất cả các mã cổ phiếu trong danh sách theo dõi.</span>
+        </div>
+        <div style="background:var(--sub,#1e2230);padding:12px;border-radius:6px;border:1px solid var(--line)">
+          <b style="color:var(--brand);font-size:13px">2. Chỉ số Watchlist Index (Tương tự VN30 / VN-Index):</b>
+          <p style="margin:4px 0 6px;color:var(--ink);font-family:var(--mono);font-size:13px">Index_Watchlist = 1.000 * (1 + R_Watchlist / 100) | ΔĐiểm = 10 * R_Watchlist</p>
+          <span style="font-size:11.5px;color:var(--ink3)">Quy chuẩn về mốc cơ sở 1.000 điểm tương tự chỉ số thị trường chứng khoán.</span>
+        </div>
+        <div style="background:var(--sub,#1e2230);padding:12px;border-radius:6px;border:1px solid var(--line)">
+          <b style="color:var(--brand);font-size:13px">3. Ước tính Lãi/Lỗ tiền mặt trong 1 ngày (Nominal Daily P&L):</b>
+          <p style="margin:4px 0 6px;color:var(--ink);font-family:var(--mono);font-size:13px">P&L = Vốn_chuẩn * (R_Watchlist / 100) (Mặc định 100.000.000 đ)</p>
+          <span style="font-size:11.5px;color:var(--ink3)">Nếu danh mục có số lượng nắm giữ thực tế, hệ thống tính theo Σ Q_i * (P_i - P_TC_i).</span>
+        </div>
+        <div style="background:var(--sub,#1e2230);padding:12px;border-radius:6px;border:1px solid var(--line)">
+          <b style="color:var(--brand);font-size:13px">4. Chỉ số Alpha vượt trội so với VN30:</b>
+          <p style="margin:4px 0 6px;color:var(--ink);font-family:var(--mono);font-size:13px">Alpha = R_Watchlist - R_VN30</p>
+          <span style="font-size:11.5px;color:var(--ink3)">Đo lường mức độ vượt trội của danh mục theo dõi so với rổ 30 cổ phiếu lớn nhất HOSE.</span>
+        </div>
+      </div>
+      <div style="margin-top:18px;display:flex;justify-content:flex-end">
+        <button class="btn pri" onclick="closeLayer()" style="padding:6px 18px;font-size:12px">Đã hiểu</button>
+      </div>
+    </div>
+  `;
+  modal(html);
+}
+
+function renderWatchlistSummaryBar(L, isPortfolio = false) {
+  if (!L || !L.tickers || !L.tickers.length) return '';
+  const tickers = L.tickers;
+
+  let validCount = 0;
+  let sumPct = 0;
+  let adv = 0, dec = 0, ref = 0;
+  let ceil = 0, floor = 0;
+  let totGt = 0;
+  let best = null, worst = null;
+
+  let hasPos = false;
+  let actualVal = (L.cash || 0) * 1000;
+  let actualTodayPnl = 0;
+  let actualPrevVal = (L.cash || 0) * 1000;
+
+  tickers.forEach(t => {
+    const s = ensureStock(t);
+    if (!s) return;
+    const p = (L.pos && typeof posOf === 'function') ? posOf(L, t) : null;
+    let price = s.p, chg = s.c, pct = s.pct;
+
+    if (isInstr(t)) {
+      const e = instrEff(L, t);
+      if (e) {
+        if (e.price != null) price = e.price;
+        if (e.c != null) chg = e.c;
+        if (e.pct != null) pct = e.pct;
+      }
+    }
+
+    if (price != null && !isNaN(price)) {
+      validCount++;
+      const curPct = (pct != null && !isNaN(pct)) ? pct : (price && chg ? (chg / (price - chg) * 100) : 0);
+      sumPct += curPct;
+
+      if (chg > 0) {
+        adv++;
+        if (curPct >= 6.8) ceil++;
+      } else if (chg < 0) {
+        dec++;
+        if (curPct <= -6.8) floor++;
+      } else {
+        ref++;
+      }
+
+      if (s.gt && !isNaN(s.gt)) totGt += s.gt;
+
+      if (!best || curPct > best.pct) best = { t, pct: curPct, p: price, c: chg };
+      if (!worst || curPct < worst.pct) worst = { t, pct: curPct, p: price, c: chg };
+
+      if (p && p.q > 0) {
+        hasPos = true;
+        const curVal = p.q * price * 1000;
+        const todayChg = p.q * (chg || 0) * 1000;
+        actualVal += curVal;
+        actualTodayPnl += todayChg;
+        actualPrevVal += (curVal - todayChg);
+      }
+    }
+  });
+
+  if (!validCount) return '';
+
+  const avgPct = sumPct / validCount;
+  const wlIndex = +(1000 * (1 + avgPct / 100)).toFixed(2);
+  const wlIndexChg = +(10 * avgPct).toFixed(2);
+
+  // VN30 Benchmark comparison
+  const vn30Obj = (typeof MARKET_INDICES !== 'undefined' && Array.isArray(MARKET_INDICES)) 
+    ? MARKET_INDICES.find(m => m.name.includes('VN30')) 
+    : (typeof TOP_INDICES_FALLBACK !== 'undefined' ? TOP_INDICES_FALLBACK.vn30 : null);
+  const vn30Pct = vn30Obj ? (vn30Obj.pct || 0) : 1.01;
+  const vn30Score = vn30Obj ? (vn30Obj.score || vn30Obj.val || 1846.39) : 1846.39;
+  const vn30Chg = vn30Obj ? (vn30Obj.chg || 0) : 18.84;
+  const alpha = +(avgPct - vn30Pct).toFixed(2);
+  const isAlphaPositive = alpha >= 0;
+
+  // Breadth bar
+  const advPct = Math.round((adv / validCount) * 100);
+  const refPct = Math.round((ref / validCount) * 100);
+  const decPct = Math.max(0, 100 - advPct - refPct);
+
+  // Nominal 100M VND Daily P&L
+  const nominalBase = 100000000;
+  const nominalPnl = Math.round(nominalBase * (avgPct / 100));
+
+  const isUp = avgPct > 0;
+  const isDown = avgPct < 0;
+  const cls = isUp ? 'up' : (isDown ? 'down' : '');
+  const sign = isUp ? '+' : '';
+
+  const pnlDisplayVal = hasPos ? actualTodayPnl : nominalPnl;
+  const pnlCls = pnlDisplayVal > 0 ? 'up' : (pnlDisplayVal < 0 ? 'down' : '');
+  const pnlSign = pnlDisplayVal > 0 ? '+' : '';
+  const pnlSubLabel = hasPos 
+    ? `Theo vị thế thực tế (${fmtVN(Math.round(actualVal))}đ)` 
+    : `Quy mô danh mục mẫu chuẩn: 100.000.000đ`;
+
+  return `
+  <div class="wl-summary-bar" style="margin:10px 0 16px;padding:14px 18px;background:var(--card-sub,#151824);border:1px solid var(--line);border-radius:8px">
+    <!-- Header of Summary -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:16px">⭐</span>
+        <b style="font-size:13.5px;color:var(--ink);letter-spacing:0.3px">TÓM TẮT HIỆU SUẤT WATCHLIST (1 NGÀY)</b>
+        <span class="tag" style="font-size:10.5px;padding:2px 8px;border-radius:4px;background:rgba(2,132,199,0.15);color:#0284c7;border:1px solid rgba(2,132,199,0.3)">
+          Chỉ số rổ bình quân (Equal-Weighted Index) • Mốc chuẩn 1.000 điểm
+        </span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn sm" onclick="showWlFormulaModal()" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 8px;border-radius:5px;cursor:pointer" title="Xem chi tiết công thức tính toán tài chính">
+          <span>📐</span> Công thức tính
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 Cards Grid -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));gap:12px">
+      <!-- Card 1: Watchlist Index (tương tự VN30) -->
+      <div style="background:var(--card-bg,#1a1d2d);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11.5px;font-weight:600;color:var(--ink2)">CHỈ SỐ WATCHLIST INDEX</span>
+          <span style="font-size:10.5px;color:var(--ink3)">${validCount} mã</span>
+        </div>
+        <div style="margin:6px 0">
+          <div style="font-size:20px;font-weight:700;font-family:var(--mono);color:var(--${cls || 'ink'})">${fmtVN(wlIndex, 2)}</div>
+          <div style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--${cls || 'ink2'});margin-top:2px">
+            ${sign}${fmtVN(wlIndexChg, 2)} điểm (${sign}${fmtVN(avgPct, 2)}%)
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--ink3);border-top:1px dashed var(--line);padding-top:6px;margin-top:4px">
+          Tương tự VN30: <b style="color:var(--ink)">${fmtVN(vn30Score, 2)}</b> (<span style="color:var(--${vn30Chg >= 0 ? 'up' : 'down'})">${vn30Chg >= 0 ? '+' : ''}${fmtVN(vn30Pct, 2)}%</span>)
+        </div>
+      </div>
+
+      <!-- Card 2: Lãi / Lỗ trong ngày (1-Day P&L) -->
+      <div style="background:var(--card-bg,#1a1d2d);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11.5px;font-weight:600;color:var(--ink2)">LÃI / LỖ TRONG 1 NGÀY</span>
+          <span class="tag" style="font-size:9.5px;padding:1px 5px">${hasPos ? 'Thực tế' : 'Ước tính'}</span>
+        </div>
+        <div style="margin:6px 0">
+          <div style="font-size:20px;font-weight:700;font-family:var(--mono);color:var(--${pnlCls || 'ink'})">
+            ${pnlSign}${fmtVN(Math.round(pnlDisplayVal))} đ
+          </div>
+          <div style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--${pnlCls || 'ink2'});margin-top:2px">
+            ${pnlSign}${fmtVN(avgPct, 2)}% trong phiên
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--ink3);border-top:1px dashed var(--line);padding-top:6px;margin-top:4px">
+          ${pnlSubLabel}
+        </div>
+      </div>
+
+      <!-- Card 3: Độ rộng danh mục (Breadth) -->
+      <div style="background:var(--card-bg,#1a1d2d);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11.5px;font-weight:600;color:var(--ink2)">ĐỘ RỘNG DANH MỤC</span>
+          <span style="font-size:10.5px;color:var(--ink3)">Tỷ lệ xanh: <b>${advPct}%</b></span>
+        </div>
+        <div style="margin:8px 0 6px">
+          <!-- Mini Breadth Bar -->
+          <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;gap:2px;background:var(--line)">
+            <div style="width:${advPct}%;background:#22c55e" title="Tăng: ${adv} mã (${advPct}%)"></div>
+            <div style="width:${refPct}%;background:#eab308" title="Tham chiếu: ${ref} mã (${refPct}%)"></div>
+            <div style="width:${decPct}%;background:#ef4444" title="Giảm: ${dec} mã (${decPct}%)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:6px;font-weight:600">
+            <span style="color:var(--up)">🟢 ${adv} Tăng ${ceil ? `(${ceil} Trần)` : ''}</span>
+            <span style="color:var(--warn)">🟡 ${ref} TC</span>
+            <span style="color:var(--down)">🔴 ${dec} Giảm ${floor ? `(${floor} Sàn)` : ''}</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--ink3);border-top:1px dashed var(--line);padding-top:6px;margin-top:4px">
+          Tổng GTGD rổ: <b style="color:var(--ink);font-family:var(--mono)">${fmtVN(totGt, 1)} tỷ đ</b>
+        </div>
+      </div>
+
+      <!-- Card 4: So sánh Alpha vs VN30 & Cổ phiếu dẫn dắt -->
+      <div style="background:var(--card-bg,#1a1d2d);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11.5px;font-weight:600;color:var(--ink2)">TƯƠNG QUAN VN30 &amp; MOVERS</span>
+          <span class="tag" style="font-size:9.5px;padding:1px 5px;background:${isAlphaPositive ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)'};color:${isAlphaPositive ? '#22c55e' : '#ef4444'}">
+            Alpha: ${isAlphaPositive ? '+' : ''}${alpha}%
+          </span>
+        </div>
+        <div style="margin:6px 0;font-size:11.5px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+            <span style="color:var(--ink3)">Dẫn dắt tăng:</span>
+            <span style="color:var(--up);font-weight:700">${best ? `${best.t} (+${fmtVN(best.pct, 2)}%)` : '—'}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="color:var(--ink3)">Kéo giảm sâu:</span>
+            <span style="color:var(--down);font-weight:700">${worst ? `${worst.t} (${fmtVN(worst.pct, 2)}%)` : '—'}</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:${isAlphaPositive ? 'var(--up)' : 'var(--ink3)'};border-top:1px dashed var(--line);padding-top:6px;margin-top:4px">
+          ${isAlphaPositive ? '⭐ Hiệu suất vượt trội VN30 (Outperform)' : 'Tiến độ theo sát diễn biến VN30'}
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
 const suspCell = s => s.susp ? `<span class="wl-warn" data-tip="${s.susp}">${I_ALERT}</span>` : '';
 
 function vWatch() {
@@ -21548,7 +21795,8 @@ function vWatch() {
     : S.wlTab === 'tq' ? wlOverviewTable(L) : wlHoldTable(L);
   const sel = [...S.wlSel].filter(t => L.tickers.includes(t));
   const selS = sel.filter(t => !isInstr(t)), bulk = sel.length ? `<div class="bulk wl-bulk" role="region" aria-label="Thao tác hàng loạt"><span>Đã chọn ${sel.length} mã</span><button class="btn wl-cmp" data-act="wlcmp" ${selS.length < 2 ? 'disabled style="opacity:.5"' : ''} ${selS.length < sel.length ? 'data-tip="CW/ETF không áp dụng So sánh — chỉ so sánh các cổ phiếu đã chọn"' : ''}>So sánh${selS.length < sel.length ? ` (${selS.length} cổ phiếu)` : ''}</button><button class="x" data-act="wlclear">Bỏ chọn</button></div>` : '';
-  return `<div class="page wl">${head}${simBar()}${summary}${tools}${body}${L.tickers.length ? wlLower(L) : ''}${bulk}</div>`;
+  const wlSummaryBar = renderWatchlistSummaryBar(L, true);
+  return `<div class="page wl">${head}${simBar()}${wlSummaryBar}${tools}${body}${L.tickers.length ? wlLower(L) : ''}${bulk}</div>`;
 }
 function wlSorted(L, keyf) {
   const t = L.tickers.slice(); if (!S.wlSort) return t;
@@ -21902,7 +22150,8 @@ function vFollow() {
   const sel = [...S.wtSel].filter(t => L.tickers.includes(t));
   const selS = sel.filter(t => !isInstr(t));
   const bulk = sel.length ? `<div class="bulk scr2-bulk" role="region" aria-label="Thao tác hàng loạt"><span>Đã chọn ${sel.length} mã</span><button class="btn wht" data-act="wtcmp" ${selS.length < 2 ? 'disabled style="opacity:.5"' : ''} ${selS.length < sel.length ? 'data-tip="CW/ETF không áp dụng So sánh — chỉ so sánh các cổ phiếu đã chọn"' : ''}>So sánh${selS.length < sel.length ? ` (${selS.length} cổ phiếu)` : ''}</button><button class="btn wht" data-act="wtrm">Xóa khỏi danh sách</button><button class="x" data-act="wtclear">Bỏ chọn</button></div>` : '';
-  return `<div class="page wl wt">${head}${simBar()}${tabs}${table}${rows.length ? wlLower({ tickers: L.tickers }) : ''}${bulk}</div>`;
+  const wlSummaryBar = renderWatchlistSummaryBar(L, false);
+  return `<div class="page wl wt">${head}${simBar()}${wlSummaryBar}${tabs}${table}${rows.length ? wlLower({ tickers: L.tickers }) : ''}${bulk}</div>`;
 }
 
 /* dòng CW/ETF trong Danh sách theo dõi: có nhãn loại, không bấm vào chi tiết; chỉ cột dữ liệu thị trường có giá trị */

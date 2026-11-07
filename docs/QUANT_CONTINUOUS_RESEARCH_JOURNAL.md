@@ -185,6 +185,10 @@
 
 ---
 
+- [Chủ đề 132: Mô Hình Dự Báo Thanh Khoản & Xác Suất Hấp Thụ Lệnh Đóng Cửa ATC (Closing Auction Imbalance) Dưới Áp Lực Tái Cơ Cấu ETF Tại HOSE](#-chủ-đề-132-mô-hình-dự-báo-thanh-khoản--xác-suất-hấp-thụ-lệnh-đóng-cửa-atc-closing-auction-imbalance-dưới-áp-lực-tái-cơ-cấu-etf-tại-hose)
+
+---
+
 ## 🔬 CHỦ ĐỀ 01: PHƯƠNG PHÁP META-LABELING & TRIPLE BARRIER METHOD
 **Tác giả lý thuyết:** GS. Marcos López de Prado (*Advances in Financial Machine Learning*, 2018)  
 **Thời gian hoàn thành:** 2026-11-02 23:35 (ICT)  
@@ -15160,3 +15164,170 @@ if __name__ == '__main__':
    - Đảm bảo mỗi trục đánh giá (Sức khỏe tài chính, Định giá, Dòng tiền cá mập, Động lượng, Hiệu quả hoạt động, An toàn nợ) đều chứa đựng thông tin thực sự độc lập, triệt tiêu sự trùng lặp đa cộng tuyến (Multicollinearity) giữa các chỉ số.
 3. **Nâng cao tỷ lệ thắng cho Thang Giá Tích Lũy (Pullback Ladder):**
    - Chỉ kích hoạt lệnh gom hàng khi các nhân tố Alpha vượt qua kiểm định độc lập $\text{dCor} \ge 0.35$ với mức ý nghĩa $p < 0.01$, đảm bảo tín hiệu vào lệnh là vững chắc và bền bỉ qua mọi chu kỳ thị trường.
+
+---
+
+## 🔬 CHỦ ĐỀ 132: MÔ HÌNH DỰ BÁO THANH KHOẢN & XÁC SUẤT HẤP THỤ LỆNH ĐÓNG CỬA ATC (CLOSING AUCTION IMBALANCE) DƯỚI ÁP LỰC TÁI CƠ CẤU ETF TẠI HOSE
+
+```
+Chu kỳ nghiên cứu: 10 phút định kỳ (Iteration 31 / Task-7472)
+Thời gian hoàn thành: 2026-11-07 20:10:00
+Phân hệ áp dụng: Tối Ưu Hóa Khớp Lệnh Định Kỳ ATC & Dự Báo Giá Đóng Cửa / KongKeng Radar
+Mức độ kiểm định: Chuẩn mực Cơ chế Ghép Lệnh Khối lượng Cực đại HOSE & Tái cơ cấu ETF Quý
+```
+
+### 1. Bối Cảnh Thực Tiễn & Rào Cản Tại Thị Trường Việt Nam
+Phiên khớp lệnh định kỳ đóng cửa (ATC: 14h30 - 14h45) trên sàn HOSE là khung giờ có mật độ giao dịch tập trung cao nhất trong ngày (thường chiếm từ 18% đến 35% tổng thanh khoản toàn phiên), nhưng cũng là "vùng mù rủi ro" (Blind Spot) lớn nhất đối với nhà đầu tư cá nhân:
+1. **Cơ chế khớp lệnh tích lũy "Hộp đen" (Accumulative Batch Auction):** Trong 15 phút ATC, toàn bộ các lệnh mua/bán (bao gồm cả lệnh ATC ưu tiên tuyệt đối và lệnh giới hạn LO) được tích lũy vào hệ thống mà không khớp ngay. Đến đúng 14h45, hệ thống máy chủ HOSE mới thực hiện một thuật toán duy nhất để xác định mức giá có khối lượng khớp lệnh lớn nhất.
+2. **Cú sốc tái cơ cấu quỹ ETF (ETF Rebalancing Shock):** Vào các kỳ đảo danh mục định kỳ (tháng 3, 6, 9, 12) của các quỹ ETF lớn (VFMVN Diamond ETF, VN30 ETF, SSIAM VNFIN LEAD ETF, FTSE Vietnam, V.N.M ETF), hàng chục triệu cổ phiếu trụ bị mua/bán ồ ạt trong phiên ATC.
+3. **Hiện tượng "Bẫy kê lệnh đè giá & nhồi lệnh phút chót" (Last-Minute Spoofing):** Các "tay to" và quỹ đầu cơ thường tận dụng 10 phút đầu của phiên ATC để kê các lệnh mua/bán ảo khối lượng khủng nhằm dắt mũi tâm lý đám đông, sau đó bất ngờ rút lệnh hoặc nhồi lệnh đối ứng vào 30 giây cuối cùng (14h44:30s) nhằm thao túng giá đóng cửa VN30 để chốt lãi hợp đồng tương lai VN30F1M.
+4. **Mục tiêu của KongKeng Radar:** Xây dựng mô hình **Closing Auction Order Imbalance (CAOI)** kết hợp thuật toán **Tìm Giá Khớp Cân Bằng Tối Ưu (Equilibrium Clearing Price Discovery)**. Hệ thống liên tục quét sổ lệnh ảo trong thời gian thực từ 14h30 đến 14h45, tính toán giá đóng cửa kỳ vọng $P_{\text{ATC}}^*$ và xác định mức chênh lệch mất cân đối ròng (Net Order Imbalance), giúp nhà đầu tư đưa ra quyết định vào lệnh chuẩn xác, tránh bẫy mua đuổi giá cao.
+
+---
+
+### 2. Nền Tảng Toán Học Định Lượng: Thuật Toán Khớp Lệnh Định Kỳ HOSE
+
+#### 2.1. Hàm Tích Lũy Cung - Cầu Đa Bước Giá
+Xét tập hợp các mức giá khả dĩ $\mathcal{P} = \{p_1 < p_2 < \dots < p_K\}$ nằm trong biên độ trần/sàn $\pm 7\%$ của phiên.
+Tại mỗi mức giá thử nghiệm $p \in \mathcal{P}$:
+- **Tổng cầu tích lũy (Cumulative Demand):** Lực mua sẵn sàng chấp nhận mức giá $p$ bao gồm toàn bộ lệnh mua thị trường $Q_{\text{ATC}}^{\text{Buy}}$ và các lệnh mua giới hạn có mức giá đặt cao hơn hoặc bằng $p$:
+  $$D(p) = Q_{\text{ATC}}^{\text{Buy}} + \sum_{p_i \ge p} q_i^{\text{Buy-LO}}$$
+- **Tổng cung tích lũy (Cumulative Supply):** Lực bán sẵn sàng bán ở mức giá $p$ bao gồm toàn bộ lệnh bán thị trường $Q_{\text{ATC}}^{\text{Sell}}$ và các lệnh bán giới hạn có mức giá đặt thấp hơn hoặc bằng $p$:
+  $$S(p) = Q_{\text{ATC}}^{\text{Sell}} + \sum_{p_j \le p} q_j^{\text{Sell-LO}}$$
+
+#### 2.2. Khối Lượng Khớp Thực Tế & Điều Kiện Cực Đại Hóa Khối Lượng
+Khối lượng khớp lệnh có thể thực hiện được tại mức giá $p$:
+$$V(p) = \min(D(p), \, S(p))$$
+
+Quy tắc ưu tiên xác định mức giá khớp lệnh đóng cửa $P_{\text{ATC}}^*$ theo thứ tự ưu tiên của Sở HOSE:
+1. **Ưu tiên 1 (Khối lượng lớn nhất):**
+   $$\mathcal{P}^* = \arg\max_{p \in \mathcal{P}} V(p)$$
+2. **Ưu tiên 2 (Chênh lệch dư mua/dư bán nhỏ nhất):** Nếu có nhiều mức giá cùng đạt khối lượng $V_{\text{max}}$:
+   $$\mathcal{P}^{**} = \arg\min_{p \in \mathcal{P}^*} |D(p) - S(p)|$$
+3. **Ưu tiên 3 (Gần giá khớp gần nhất):** Nếu vẫn có nhiều mức giá thỏa mãn, chọn mức giá gần nhất với giá khớp cuối cùng của phiên liên tục ($P_{\text{cont}}$).
+
+#### 2.3. Chỉ Số Mất Cân Đối Lệnh ATC Chuẩn Hóa (Normalized Order Imbalance - NOI)
+Chỉ số NOI lượng hóa độ lệch pha giữa cung và cầu tại mức giá cân bằng dự kiến:
+$$\text{NOI}_t(P^*) = \frac{D_t(P^*) - S_t(P^*)}{D_t(P^*) + S_t(P^*)} \in [-1, 1]$$
+- $\text{NOI} > +0.35$: Cầu mua áp đảo, xác suất cao giá đóng cửa sẽ bị đẩy lên từ 1 đến 3 bước giá so với phiên liên tục.
+- $\text{NOI} < -0.35$: Cung bán tháo áp đảo (thường do ETF xả), giá đóng cửa dễ bị ép về đáy phiên.
+- $|\text{NOI}| \le 0.15$: Thị trường cân bằng, trượt giá đóng cửa không đáng kể.
+
+---
+
+### 3. Thuật Toán Python Mô Phỏng Cơ Chế Khớp Lệnh ATC & Dự Báo Giá Đóng Cửa HOSE
+
+```python
+import numpy as np
+import pandas as pd
+
+class ClosingAuctionImbalanceEngine:
+    """
+    Bộ động cơ mô phỏng khớp lệnh định kỳ đóng cửa ATC (HOSE Clearing Algorithm).
+    Dự báo mức giá cân bằng và chỉ số mất cân đối lệnh NOI cho KongKeng Radar.
+    """
+    def __init__(self, ref_price=50_000, last_continuous_price=50_800):
+        self.ref_price = ref_price                        # Giá tham chiếu đầu ngày
+        self.last_cont_price = last_continuous_price      # Giá khớp cuối phiên liên tục (14h30)
+        self.tick_size = 100 if ref_price >= 50_000 else 50
+        self.floor_price = int(ref_price * 0.93 / self.tick_size) * self.tick_size
+        self.ceiling_price = int(ref_price * 1.07 / self.tick_size) * self.tick_size
+
+    def simulate_atc_clearing(self, buy_orders, sell_orders):
+        """
+        Mô phỏng thuật toán khớp lệnh định kỳ tối đa hóa khối lượng của Sở HOSE
+        buy_orders / sell_orders: Danh sách tuple (price, volume), price='ATC' cho lệnh ATC
+        """
+        # Tạo lưới giá khả dĩ từ sàn đến trần
+        price_grid = np.arange(self.floor_price, self.ceiling_price + self.tick_size, self.tick_size)
+        
+        # Tách lệnh ATC và lệnh LO
+        atc_buy_vol = sum(vol for px, vol in buy_orders if px == 'ATC')
+        atc_sell_vol = sum(vol for px, vol in sell_orders if px == 'ATC')
+        
+        limit_buys = [(px, vol) for px, vol in buy_orders if px != 'ATC']
+        limit_sells = [(px, vol) for px, vol in sell_orders if px != 'ATC']
+        
+        best_exec_vol = -1
+        best_prices = []
+        grid_metrics = []
+        
+        for p in price_grid:
+            # Lực cầu tích lũy: ATC Buy + LO Buy >= p
+            cum_demand = atc_buy_vol + sum(vol for px, vol in limit_buys if px >= p)
+            # Lực cung tích lũy: ATC Sell + LO Sell <= p
+            cum_supply = atc_sell_vol + sum(vol for px, vol in limit_sells if px <= p)
+            
+            exec_vol = min(cum_demand, cum_supply)
+            imbalance = cum_demand - cum_supply
+            
+            grid_metrics.append({
+                'Price': p,
+                'Demand': cum_demand,
+                'Supply': cum_supply,
+                'Exec_Vol': exec_vol,
+                'Imbalance': imbalance
+            })
+            
+            if exec_vol > best_exec_vol:
+                best_exec_vol = exec_vol
+                best_prices = [p]
+            elif exec_vol == best_exec_vol and exec_vol > 0:
+                best_prices.append(p)
+                
+        df_grid = pd.DataFrame(grid_metrics)
+        
+        # Áp dụng các quy tắc ưu tiên chọn giá tối ưu P*
+        if len(best_prices) == 1:
+            optimal_p = best_prices[0]
+        else:
+            # Ưu tiên 2: Chênh lệch tuyệt đối nhỏ nhất
+            subset = df_grid[df_grid['Price'].isin(best_prices)].copy()
+            subset['Abs_Imbalance'] = subset['Imbalance'].abs()
+            min_imb = subset['Abs_Imbalance'].min()
+            candidates = subset[subset['Abs_Imbalance'] == min_imb]['Price'].tolist()
+            
+            # Ưu tiên 3: Gần giá phiên liên tục nhất
+            candidates.sort(key=lambda x: abs(x - self.last_cont_price))
+            optimal_p = candidates[0]
+            
+        opt_row = df_grid[df_grid['Price'] == optimal_p].iloc[0]
+        total_vol = opt_row['Demand'] + opt_row['Supply']
+        noi = (opt_row['Demand'] - opt_row['Supply']) / max(total_vol, 1)
+        
+        return {
+            'Predicted_Close_Price': optimal_p,
+            'Price_Change_vs_Cont': optimal_p - self.last_cont_price,
+            'Max_Executed_Volume': int(opt_row['Exec_Vol']),
+            'Net_Imbalance_Vol': int(opt_row['Imbalance']),
+            'Normalized_NOI': np.round(noi, 3),
+            'ATC_Market_State': "CẦU MUA ÁP ĐẢO (ĐẨY GIÁ CAO)" if noi > 0.3 else (
+                "CUNG BÁN XẢ ÁP ĐẢO (ÉP GIÁ SÂU)" if noi < -0.3 else "CÂN BẰNG ỔN ĐỊNH"
+            )
+        }
+
+# Thực nghiệm trên cổ phiếu FPT phiên ATC có áp lực quỹ ETF mua tái cơ cấu 1.2 triệu CP
+if __name__ == '__main__':
+    engine = ClosingAuctionImbalanceEngine(ref_price=50_000, last_continuous_price=50_800)
+    
+    # Sổ lệnh tích lũy lúc 14h42:
+    # Lệnh Mua: ETF đặt mua 1,200,000 ATC + các lệnh LO gom vùng 50,500 - 51,500
+    buys = [('ATC', 1_200_000), (51_500, 150_000), (51_200, 250_000), (51_000, 400_000), (50_800, 300_000), (50_500, 200_000)]
+    # Lệnh Bán: Các lệnh LO bán chốt lời kê từ 50,700 đến 52,000 + 300,000 ATC
+    sells = [('ATC', 300_000), (50_700, 200_000), (50_800, 350_000), (51_000, 500_000), (51_200, 600_000), (51_500, 800_000)]
+    
+    result = engine.simulate_atc_clearing(buys, sells)
+    
+    print("=== KẾT QUẢ DỰ BÁO GIÁ ĐÓNG CỬA ATC MÃ FPT (TÁI CƠ CẤU ETF) ===")
+    for k, v in result.items():
+        print(f"  - {k:26}: {v}")
+```
+
+---
+
+### 4. Ứng Dụng Đột Phá Vào Nền Tảng KongKeng Radar
+1. **Giải mã hoàn toàn "Hộp đen ATC" trước 14h45:**
+   - Thay vì mù mờ đặt lệnh ATC phó mặc cho thị trường, nhà đầu tư quan sát được giá khớp dự kiến $P_{\text{ATC}}^*$ liên tục cập nhật theo thời gian thực từ 14h30.
+   - Khi phát hiện chỉ số $\text{NOI} > +0.35$ (Cầu áp đảo đẩy giá lên cao), KongKeng Radar cảnh báo nhà đầu tư **TUYỆT ĐỐI KHÔNG ĐẶT MUA ATC (FOMO)** để tránh bị khớp đỉnh ngắn hạn.
+2. **Khai thác chiến lược tích lũy kỹ thuật (Pullback Ladder Arbitrage):**
+   - Nếu một cổ phiếu cơ bản tốt bị quỹ ETF bán xả đột ngột trong phiên ATC khiến giá bị ép sâu ($\text{NOI} < -0.35$), hệ thống tự động kích hoạt **Kịch Bản 2 (Thang Giá Tích Lũy)**: Hướng dẫn nhà đầu tư kê lệnh gom giá rẻ vào phiên ATO sáng hôm sau để hưởng trọn nhịp hồi phục bù giá kỹ thuật.

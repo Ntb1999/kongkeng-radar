@@ -11578,7 +11578,7 @@ function stockHeader(tab, body) {
         </div>
         <div style="background:var(--sub);border:1px solid var(--line);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:11.5px">
           <div style="display:flex;justify-content:space-between">
-            <span style="color:var(--ink3)">Vùng mua gom (Pullback):</span>
+            <span style="color:var(--ink3)">Vùng gom giá tốt (Limit) (Pullback):</span>
             <b style="font-family:var(--mono);color:var(--up)">${fmtVN(Math.round(curPrice * 0.97 / 100) * 100, 0)} - ${fmtVN(curPrice, 0)}</b>
           </div>
           <div style="display:flex;justify-content:space-between">
@@ -11586,7 +11586,7 @@ function stockHeader(tab, body) {
             <b style="font-family:var(--mono);color:var(--brand)">${fmtVN(Math.round(curPrice * 1.075 / 100) * 100, 0)}</b>
           </div>
           <div style="display:flex;justify-content:space-between">
-            <span style="color:var(--ink3)">Cắt lỗ SL (-4.0%):</span>
+            <span style="color:var(--ink3)">Ngưỡng cắt lỗ (SL) (-4.0%):</span>
             <b style="font-family:var(--mono);color:var(--down)">${fmtVN(Math.round(curPrice * 0.96 / 100) * 100, 0)}</b>
           </div>
         </div>
@@ -17607,12 +17607,12 @@ window.renderQuantC360Section = function(sym) {
 
   // Radar Health Axes
   const axes = [
-    { label: 'Chất lượng tài chính', score: Math.min(95, Math.round(drating.fundamental || 80)), color: '#30D158' },
-    { label: 'Tăng trưởng doanh thu & LN', score: Math.min(96, Math.max(65, Math.round(75 + (npGrowth * 0.6)))), color: '#3B82F6' },
-    { label: 'Sức hấp dẫn định giá', score: Math.min(95, Math.max(60, Math.round(drating.valuation || 78))), color: '#F59E0B' },
-    { label: 'Thanh khoản thị trường', score: Math.min(98, Math.max(70, Math.round(82 + (cmp && cmp.vol ? 5 : 0)))), color: '#10B981' },
-    { label: 'Xung lượng kỹ thuật', score: Math.min(95, Math.round(drating.technical || 76)), color: '#FF6B3D' },
-    { label: 'Dòng tiền cá mập & Khối ngoại', score: Math.min(94, Math.max(65, Math.round(82 + (foreignNet10d.includes('+') ? 6 : -4)))), color: '#8B5CF6' }
+    { label: 'Chất lượng tài sản & an toàn vốn', score: Math.min(95, Math.round(drating.fundamental || 80)), color: '#30D158' },
+    { label: 'Tốc độ tăng trưởng kinh doanh', score: Math.min(96, Math.max(65, Math.round(75 + (npGrowth * 0.6)))), color: '#3B82F6' },
+    { label: 'Mức độ hấp dẫn định giá (P/E, P/B)', score: Math.min(95, Math.max(60, Math.round(drating.valuation || 78))), color: '#F59E0B' },
+    { label: 'Sức hút thanh khoản thị trường', score: Math.min(98, Math.max(70, Math.round(82 + (cmp && cmp.vol ? 5 : 0)))), color: '#10B981' },
+    { label: 'Xung lượng kỹ thuật & xu hướng', score: Math.min(95, Math.round(drating.technical || 76)), color: '#FF6B3D' },
+    { label: 'Dòng tiền cá mập & khối ngoại gom', score: Math.min(94, Math.max(65, Math.round(82 + (foreignNet10d.includes('+') ? 6 : -4)))), color: '#8B5CF6' }
   ];
 
   return `
@@ -17625,7 +17625,7 @@ window.renderQuantC360Section = function(sym) {
           <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:rgba(59,130,246,0.15);color:#3B82F6;font-size:17px;border:1px solid rgba(59,130,246,0.3)">🏢</span>
           <div>
             <div style="display:flex;align-items:center;gap:8px">
-              <span style="font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-0.01em">Dữ Liệu Định Lượng & Nền Tảng Tài Chính C360°</span>
+              <span style="font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-0.01em">Hồ Sơ Định Lượng & Nền Tảng Tài Chính Doanh Nghiệp (C360°)</span>
               <span class="chip" style="font-size:10px;font-weight:700;background:rgba(59,130,246,0.15);color:#60A5FA;padding:2px 8px;border-radius:10px">Chuẩn Đồng Bộ 93+ Mã C360</span>
             </div>
             <div style="font-size:11px;color:var(--ink3);margin-top:2px">Đối soát đa tầng: Định giá P/E & P/B, Dòng tiền tổ chức, Sức khỏe tài chính 6 trục & Xếp hạng ngành</div>
@@ -17638,7 +17638,7 @@ window.renderQuantC360Section = function(sym) {
            style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;background:linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(34,171,148,0.15) 100%);border:1px solid rgba(59,130,246,0.4);color:#60A5FA;transition:all 0.2s ease;text-decoration:none;cursor:pointer"
            onmouseover="this.style.background='linear-gradient(135deg, rgba(59,130,246,0.3) 0%, rgba(34,171,148,0.25) 100%)';this.style.transform='translateY(-1px)'"
            onmouseout="this.style.background='linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(34,171,148,0.15) 100%)';this.style.transform='none'">
-          <span>Mở Tab C360° Toàn Diện Của ${sym}</span>
+          <span>Mở Báo Cáo Doanh Nghiệp 360° Đầy Đủ</span>
           <span style="font-size:14px">↗</span>
         </a>
       </div>
@@ -17649,61 +17649,61 @@ window.renderQuantC360Section = function(sym) {
         <!-- Tile 1: P/E Multiple -->
         <div style="background:var(--card-bg, #0F172A);border:1px solid var(--line2, #2E3C56);border-radius:10px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.2)">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Hệ số P/E (TTM)</span>
+            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Hệ Số Hoàn Vốn P/E (TTM)</span>
             <span class="chip" style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;background:${pe < indPe ? 'rgba(48,209,88,0.15)' : 'rgba(255,107,61,0.15)'};color:${pe < indPe ? 'var(--up)' : 'var(--brand)'}">
               ${pe < indPe ? 'Chiết khấu hấp dẫn' : 'Hợp lý'}
             </span>
           </div>
           <div style="display:flex;align-items:baseline;gap:8px">
-            <span style="font-family:var(--mono);font-size:22px;font-weight:800;color:var(--ink)">${pe.toFixed(2)}x</span>
-            <span style="font-size:11px;color:var(--ink3)">Ngành: <strong style="font-family:var(--mono);color:var(--ink2)">${indPe.toFixed(1)}x</strong></span>
+            <span style="font-family:var(--mono);font-size:22px;font-weight:800;color:var(--ink)">${pe.toFixed(2)} năm</span>
+            <span style="font-size:11px;color:var(--ink3)">Ngành: <strong style="font-family:var(--mono);color:var(--ink2)">${indPe.toFixed(1)} năm</strong></span>
           </div>
           <div style="font-size:11px;color:var(--ink2);margin-top:4px">
-            Forward P/E: <strong style="font-family:var(--mono);color:var(--brand)">${fpe.toFixed(1)}x</strong> · PEG: <strong style="font-family:var(--mono)">${(cmp && cmp.peg ? cmp.peg : 0.92).toFixed(2)}</strong>
+            P/E Dự phóng: <strong style="font-family:var(--mono);color:var(--brand)">${fpe.toFixed(1)}x</strong> · PEG: <strong style="font-family:var(--mono)">${(cmp && cmp.peg ? cmp.peg : 0.92).toFixed(2)}</strong>
           </div>
         </div>
 
         <!-- Tile 2: P/B & Percentile -->
         <div style="background:var(--card-bg, #0F172A);border:1px solid var(--line2, #2E3C56);border-radius:10px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.2)">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Hệ số P/B (MRQ)</span>
+            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Định Giá Tài Sản P/B (MRQ)</span>
             <span class="chip" style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;background:rgba(59,130,246,0.15);color:#60A5FA">Phân vị 5 năm: 42%</span>
           </div>
           <div style="display:flex;align-items:baseline;gap:8px">
             <span style="font-family:var(--mono);font-size:22px;font-weight:800;color:var(--ink)">${pb.toFixed(2)}x</span>
-            <span style="font-size:11px;color:var(--ink3)">Định giá DCF: <strong style="font-family:var(--mono);color:var(--up)">${dcf.toFixed(2)}</strong></span>
+            <span style="font-size:11px;color:var(--ink3)">Giá trị thực (DCF): <strong style="font-family:var(--mono);color:var(--up)">${dcf.toFixed(2)}</strong></span>
           </div>
           <div style="font-size:11px;color:var(--ink2);margin-top:4px">
-            Biên an toàn định giá (MoS): <strong style="font-family:var(--mono);color:var(--up)">+${Math.max(8, Math.round(((dcf - price) / price) * 100))}%</strong>
+            Biên an toàn định giá (MoS): <strong style="font-family:var(--mono);color:var(--up)">Rẻ hơn +${Math.max(8, Math.round(((dcf - price) / price) * 100))}%</strong>
           </div>
         </div>
 
         <!-- Tile 3: ROE & Profitability -->
         <div style="background:var(--card-bg, #0F172A);border:1px solid var(--line2, #2E3C56);border-radius:10px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.2)">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Sinh Lời ROE (TTM)</span>
+            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Sinh Lời Trên Vốn ROE (TTM)</span>
             <span class="chip" style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;background:rgba(48,209,88,0.15);color:var(--up)">Hiệu quả cao</span>
           </div>
           <div style="display:flex;align-items:baseline;gap:8px">
-            <span style="font-family:var(--mono);font-size:22px;font-weight:800;color:var(--up)">${roe.toFixed(1)}%</span>
-            <span style="font-size:11px;color:var(--ink3)">LNST YoY: <strong style="font-family:var(--mono);color:var(--up)">+${npGrowth}%</strong></span>
+            <span style="font-family:var(--mono);font-size:22px;font-weight:800;color:var(--up)">${roe.toFixed(1)}%/năm</span>
+            <span style="font-size:11px;color:var(--ink3)">LNST: <strong style="font-family:var(--mono);color:var(--up)">+${npGrowth}% YoY</strong></span>
           </div>
           <div style="font-size:11px;color:var(--ink2);margin-top:4px">
-            Doanh thu tăng trưởng: <strong style="font-family:var(--mono);color:var(--ink)">+${revGrowth}%</strong> · Cổ tức: <strong style="font-family:var(--mono);color:var(--up)">${divYield}%</strong>
+            Doanh thu tăng: <strong style="font-family:var(--mono);color:var(--ink)">+${revGrowth}%</strong> · Cổ tức tiền: <strong style="font-family:var(--mono);color:var(--up)">${divYield}%/năm</strong>
           </div>
         </div>
 
         <!-- Tile 4: Smart Money & Foreign Flow -->
         <div style="background:var(--card-bg, #0F172A);border:1px solid var(--line2, #2E3C56);border-radius:10px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.2)">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Khối Ngoại & Quỹ</span>
+            <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em">Dòng Tiền Khối Ngoại & Quỹ</span>
             <span class="chip" style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;background:rgba(139,92,246,0.15);color:#A78BFA">Sở hữu: ${foreignRatio}</span>
           </div>
           <div style="display:flex;align-items:baseline;gap:8px">
             <span style="font-family:var(--mono);font-size:20px;font-weight:800;color:${foreignNet10d.includes('+') ? 'var(--up)' : 'var(--down)'}">${foreignNet10d}</span>
           </div>
           <div style="font-size:11px;color:var(--ink2);margin-top:4px">
-            Khối ngoại 10 phiên · Beta: <strong style="font-family:var(--mono)">${beta.toFixed(2)}</strong> · Tự doanh gom ròng
+            Gom ròng 10 phiên · Độ nhạy Beta: <strong style="font-family:var(--mono)">${beta.toFixed(2)}</strong> · Tự doanh gom
           </div>
         </div>
 
@@ -17717,9 +17717,9 @@ window.renderQuantC360Section = function(sym) {
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid var(--line, #1F293D);padding-bottom:8px">
             <div style="font-size:12px;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px">
               <span>📊</span>
-              <span>Bảng Chỉ Số Quy Mô & Thanh Khoản</span>
+              <span>Bảng Chỉ Số Quy Mô Vốn Hóa & Dòng Tiền</span>
             </div>
-            <span class="chip" style="font-size:10px;padding:1px 6px;background:rgba(255,255,255,0.06);color:var(--ink3)">BCTC Cập nhật</span>
+            <span class="chip" style="font-size:10px;padding:1px 6px;background:rgba(255,255,255,0.06);color:var(--ink3)">BCTC Kiểm toán</span>
           </div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:12px">
@@ -17728,19 +17728,19 @@ window.renderQuantC360Section = function(sym) {
               <strong style="font-family:var(--mono);color:var(--ink)">${mc.toFixed(2)} nghìn tỷ</strong>
             </div>
             <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
-              <span style="color:var(--ink3)">EPS (TTM):</span>
+              <span style="color:var(--ink3)">Lợi nhuận mỗi CP (EPS):</span>
               <strong style="font-family:var(--mono);color:var(--up)">${Math.round(price * 1000 / pe).toLocaleString('vi-VN')} đ</strong>
             </div>
             <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
-              <span style="color:var(--ink3)">KLGD TB 20 phiên:</span>
+              <span style="color:var(--ink3)">Khớp lệnh TB 20 phiên:</span>
               <strong style="font-family:var(--mono);color:var(--ink)">${(cmp && cmp.vol) ? cmp.vol : '4.250.000 CP'}</strong>
             </div>
             <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
-              <span style="color:var(--ink3)">GTGD gần nhất:</span>
+              <span style="color:var(--ink3)">Giá trị giao dịch phiên:</span>
               <strong style="font-family:var(--mono);color:var(--ink)">${(cmp && cmp.gt ? cmp.gt : 85.5).toFixed(1)} tỷ đ</strong>
             </div>
             <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
-              <span style="color:var(--ink3)">Tỷ lệ Lệnh Mua Chủ Động:</span>
+              <span style="color:var(--ink3)">Lệnh Mua Chủ Động:</span>
               <strong style="font-family:var(--mono);color:var(--up)">62.8% (Cá mập gom)</strong>
             </div>
             <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
@@ -17752,7 +17752,7 @@ window.renderQuantC360Section = function(sym) {
               <strong style="font-family:var(--mono);color:var(--ink)">${(cmp && cmp.hi ? cmp.hi : price * 1.25).toFixed(2)} / ${(cmp && cmp.lo ? cmp.lo : price * 0.75).toFixed(2)}</strong>
             </div>
             <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:6px">
-              <span style="color:var(--ink3)">Khuyến nghị đồng thuận:</span>
+              <span style="color:var(--ink3)">Đánh giá chung:</span>
               <strong style="color:var(--up);font-weight:800">${consensus.recommendation || 'MUA (BUY)'}</strong>
             </div>
           </div>
@@ -17761,7 +17761,7 @@ window.renderQuantC360Section = function(sym) {
           <div style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--line, #1F293D)">
             <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px">
               <span>📅</span>
-              <span>Sự Kiện Doanh Nghiệp Sắp Tới (Catalysts)</span>
+              <span>Chất Xúc Tác Tăng Trưởng Sắp Tới (Catalysts Feed)</span>
             </div>
             <div style="display:flex;flex-direction:column;gap:6px">
               ${events.map(ev => `
@@ -17780,7 +17780,7 @@ window.renderQuantC360Section = function(sym) {
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid var(--line, #1F293D);padding-bottom:8px">
             <div style="font-size:12px;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px">
               <span>🎯</span>
-              <span>Đánh Giá Sức Khỏe Đa Nhân Tố (6 Trục Radar)</span>
+              <span>Đánh Giá Sức Khỏe Đa Nhân Tố (6 Trục Radar C360)</span>
             </div>
             <span class="chip" style="font-size:10px;padding:1px 6px;background:rgba(48,209,88,0.15);color:var(--up);font-weight:700">D-Rating: ${drating.stars || '★★★★☆'} (${drating.score || 4.2}/5)</span>
           </div>
@@ -17808,7 +17808,7 @@ window.renderQuantC360Section = function(sym) {
 
           <!-- Consensus Analyst Note -->
           <div style="margin-top:14px;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px;border-left:3px solid #3B82F6">
-            <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:700;margin-bottom:2px">Nhận định chuyên gia phân tích (VNDIRECT / SSI Research):</div>
+            <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;font-weight:700;margin-bottom:2px">Luận điểm chuyên gia phân tích định chế (VNDIRECT / SSI Research):</div>
             <div style="font-size:11px;color:var(--ink2);line-height:1.45;font-style:italic">
               "${(v.reports && v.reports.thesis) ? v.reports.thesis : 'Doanh nghiệp duy trì lợi thế đầu ngành vững chắc, hưởng lợi lớn từ chu kỳ tăng trưởng kinh tế và dòng tiền tổ chức duy trì mua ròng mạnh mẽ.'}"
             </div>
@@ -18135,7 +18135,7 @@ function vQuant() {
                     <span style="font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-0.01em">Chọn mã cổ phiếu phân tích:</span>
                     <span class="chip" style="font-size:10px;font-weight:700;background:rgba(34,171,148,0.12);color:var(--brand);padding:2px 8px;border-radius:12px">93+ Mã toàn thị trường (HOSE & HNX)</span>
                   </div>
-                  <div style="font-size:11px;color:var(--ink3);margin-top:2px">Hệ thống lượng hóa Thước đo FOMO & Vùng mua gom Pullback đa chiều theo kỷ luật quỹ</div>
+                  <div style="font-size:11px;color:var(--ink3);margin-top:2px">Hệ thống lượng hóa Thước đo FOMO & Vùng gom giá tốt (Limit) Pullback đa chiều theo kỷ luật quỹ</div>
                 </div>
               </div>
 
@@ -18249,9 +18249,9 @@ function vQuant() {
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
                 <div style="display:flex;align-items:center;gap:6px">
                   <span style="font-size:16px">⚠️</span>
-                  <span style="font-weight:800;font-size:13px;color:var(--down);letter-spacing:0.02em;text-transform:uppercase">Kịch bản 1: Mua theo thị giá hiện tại</span>
+                  <span style="font-weight:800;font-size:13px;color:var(--down);letter-spacing:0.02em;text-transform:uppercase">Kịch bản 1: Mua Đuổi Ngay Giá Hiện Tại</span>
                 </div>
-                <span class="chip" style="background:rgba(239,68,68,0.15);color:var(--down);font-size:10px;font-weight:700">Rủi ro cao · R:R kém</span>
+                <span class="chip" style="background:rgba(239,68,68,0.15);color:var(--down);font-size:10px;font-weight:700">Rủi ro cao · Biên Lãi Mỏng</span>
               </div>
 
               <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:12px;margin-bottom:12px">
@@ -18261,12 +18261,12 @@ function vQuant() {
                     <div id="quant-fomo-entry-price" style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--ink);margin-top:2px">${fomoEntry.toFixed(2)}</div>
                   </div>
                   <div>
-                    <div style="font-size:10px;color:var(--ink3)">Chốt lời TP1</div>
+                    <div style="font-size:10px;color:var(--ink3)">Mục tiêu chốt lời (TP1)</div>
                     <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--up);margin-top:2px">${fomoTarget.toFixed(2)}</div>
                     <div id="quant-fomo-market-tp1-pct" style="font-size:10px;color:var(--up)">(${fomoUpPct >= 0 ? '+' : ''}${fomoUpPct}%)</div>
                   </div>
                   <div>
-                    <div style="font-size:10px;color:var(--ink3)">Cắt lỗ SL</div>
+                    <div style="font-size:10px;color:var(--ink3)">Ngưỡng cắt lỗ (SL)</div>
                     <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--down);margin-top:2px">${fomoSl.toFixed(2)}</div>
                     <div id="quant-fomo-market-sl-pct" style="font-size:10px;color:var(--down)">(${fomoDnPct}%)</div>
                   </div>
@@ -18278,11 +18278,11 @@ function vQuant() {
                 <div>
                   <div style="font-size:11px;color:var(--ink3);font-weight:600">Tỷ lệ Lãi / Lỗ (R:R):</div>
                   <div id="quant-fomo-market-rr" style="font-size:22px;font-weight:900;font-family:var(--mono);color:var(--down);line-height:1.2">
-                    1 : ${fomoRR} <span style="font-size:12px;font-weight:700">⚠️ Rủi ro cao</span>
+                    1 : ${fomoRR} <span style="font-size:12px;font-weight:700">⚠️ Chấp nhận lỗ 1 để ăn ${fomoRR}</span>
                   </div>
                 </div>
                 <div style="text-align:right">
-                  <div style="font-size:10px;color:var(--ink3)">Biên độ cắt lỗ</div>
+                  <div style="font-size:10px;color:var(--ink3)">Khoảng cách tới SL</div>
                   <div id="quant-fomo-market-sl-dist" style="font-size:13px;font-weight:700;font-family:var(--mono);color:var(--down)">
                     -${Math.abs(fomoDnPct)}%
                   </div>
@@ -18294,8 +18294,8 @@ function vQuant() {
               </div>
 
               <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--down);font-weight:600">
-                <span>❌ Rủi ro bẫy tăng giá và rung lắc T+1.5</span>
-                <span>Kỷ luật: Không mua đuổi</span>
+                <span>❌ Rủi ro dính bẫy giá cao & rung lắc chu kỳ T+1.5</span>
+                <span>Kỷ luật quỹ: Tuyệt đối không mua đuổi</span>
               </div>
             </div>
 
@@ -18304,24 +18304,24 @@ function vQuant() {
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
                 <div style="display:flex;align-items:center;gap:6px">
                   <span style="font-size:16px">💎</span>
-                  <span style="font-weight:800;font-size:13px;color:var(--up);letter-spacing:0.02em;text-transform:uppercase">Kịch bản 2: Đặt chờ tại vùng tích lũy (Pullback)</span>
+                  <span style="font-weight:800;font-size:13px;color:var(--up);letter-spacing:0.02em;text-transform:uppercase">Kịch bản 2: Kiên Nhẫn Treo Lệnh Chờ Nhịp Chỉnh (Pullback)</span>
                 </div>
-                <span class="chip" style="background:rgba(34,171,148,0.18);color:var(--up);font-size:10px;font-weight:700">Vùng mua tối ưu · R:R cao</span>
+                <span class="chip" style="background:rgba(34,171,148,0.18);color:var(--up);font-size:10px;font-weight:700">Vùng gom giá tốt · R:R vượt trội</span>
               </div>
 
               <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(34,171,148,0.2);border-radius:8px;padding:12px;margin-bottom:12px">
                 <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;text-align:center">
                   <div>
-                    <div style="font-size:10px;color:var(--ink3)">Vùng mua gom</div>
+                    <div style="font-size:10px;color:var(--ink3)">Vùng gom giá tốt (Limit)</div>
                     <div style="font-size:15px;font-weight:800;font-family:var(--mono);color:var(--up);margin-top:2px">${fomoData.pullbackBuy.zone}</div>
                   </div>
                   <div>
-                    <div style="font-size:10px;color:var(--ink3)">Chốt lời TP2</div>
+                    <div style="font-size:10px;color:var(--ink3)">Mục tiêu chốt lời lớn (TP2)</div>
                     <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--up);margin-top:2px">${fomoData.pullbackBuy.target.toFixed(2)}</div>
                     <div style="font-size:10px;color:var(--up)">(+${((fomoData.pullbackBuy.target - fomoData.pullbackBuy.midPrice) / fomoData.pullbackBuy.midPrice * 100).toFixed(1)}%)</div>
                   </div>
                   <div>
-                    <div style="font-size:10px;color:var(--ink3)">Cắt lỗ SL chặt</div>
+                    <div style="font-size:10px;color:var(--ink3)">Ngưỡng cắt lỗ (SL) chặt</div>
                     <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--down);margin-top:2px">${fomoData.pullbackBuy.sl.toFixed(2)}</div>
                     <div style="font-size:10px;color:var(--down)">(${((fomoData.pullbackBuy.sl - fomoData.pullbackBuy.midPrice) / fomoData.pullbackBuy.midPrice * 100).toFixed(1)}%)</div>
                   </div>
@@ -18333,11 +18333,11 @@ function vQuant() {
                 <div>
                   <div style="font-size:11px;color:var(--ink3);font-weight:600">Tỷ Lệ Lãi / Lỗ (R:R):</div>
                   <div style="font-size:22px;font-weight:900;font-family:var(--mono);color:var(--up);line-height:1.2">
-                    ${fomoData.pullbackBuy.rr} <span style="font-size:12px;font-weight:700">💎 Chuẩn kỷ luật</span>
+                    ${fomoData.pullbackBuy.rr} <span style="font-size:12px;font-weight:700">💎 Lãi vượt trội trên rủi ro</span>
                   </div>
                 </div>
                 <div style="text-align:right">
-                  <div style="font-size:10px;color:var(--ink3)">Xác suất có nhịp điều chỉnh</div>
+                  <div style="font-size:10px;color:var(--ink3)">Xác suất có nhịp rung lắc gom hàng</div>
                   <div style="display:inline-flex;align-items:center;gap:4px">
                     <span style="font-size:14px;font-weight:800;color:var(--brand)">${fomoData.pullbackBuy.prob}%</span>
                     <div style="width:40px;height:6px;background:rgba(0,0,0,0.08);border-radius:3px;overflow:hidden">

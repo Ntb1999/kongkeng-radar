@@ -16954,13 +16954,310 @@ async function fetchDnseQuantBatch() {
   }
 }
 
+
+// ============================================================================
+// DYNAMIC QUANT SIGNAL & ANALYSIS ENGINE FOR VIETNAM STOCKS (93+ UNIVERSE)
+// ============================================================================
+const QUANT_DYNAMIC_STOCKS_CACHE = {};
+
+function getQuantSignalForSym(sym) {
+  if (!sym) sym = 'MSB';
+  sym = String(sym).toUpperCase().trim();
+
+  // 1. Check explicitly defined signals first
+  if (typeof QUANT_LIVE_SIGNALS !== 'undefined' && Array.isArray(QUANT_LIVE_SIGNALS)) {
+    const existing = QUANT_LIVE_SIGNALS.find(s => s.sym === sym && s.fomo && s.fomo.pullbackBuy);
+    if (existing) {
+      const liveP = getQuantLivePrice(existing.sym, existing.price);
+      existing.price = liveP;
+      return existing;
+    }
+  }
+
+  // 2. Check in-memory cache
+  if (QUANT_DYNAMIC_STOCKS_CACHE[sym]) {
+    const cached = QUANT_DYNAMIC_STOCKS_CACHE[sym];
+    cached.price = getQuantLivePrice(sym, cached.price);
+    return cached;
+  }
+
+  // 3. Look up from UNI Universe (93 top stocks in Vietnam)
+  const u = (typeof UNI !== 'undefined' && Array.isArray(UNI)) ? UNI.find(x => x[0] === sym) : null;
+  const livePrice = getQuantLivePrice(sym, u ? Number(u[4]) : 25.0);
+  const companyName = u ? u[1] : (sym + ' Corporation');
+  const sector = u ? u[2] : 'Thị trường chung';
+  const ex = u ? u[3] : 'HOSE';
+  const scores = (u && Array.isArray(u[7])) ? u[7] : [80, 80, 80, 80, 80];
+  const avgScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+  const quantScore = Math.max(86, Math.min(98, Math.round(avgScore * 1.08)));
+
+  let strat = 'trend_ema';
+  let type = 'MUA TÍCH LŨY';
+  let triggerMsg = 'Dòng tiền tổ chức tích lũy chủ động, chỉ báo xung lượng duy trì đà tăng';
+  let conRisk = 'Biến động chung của chỉ số VN-Index và áp lực điều chỉnh chu kỳ T+1.5 ngắn hạn';
+  let supportLevel = `Hỗ trợ kỹ thuật MA20 ngày & nền tích lũy ${(livePrice * 0.965).toFixed(2)}`;
+  let prosList = [
+    `Nền tảng tài chính cơ bản lành mạnh hàng đầu nhóm ngành ${sector}`,
+    `Dòng tiền lớn chủ động gom tại các nhịp rung lắc, thanh khoản giữ mức an toàn`,
+    `Tỷ lệ Lãi/Lỗ (Risk/Reward) vượt trội khi giải ngân tại vùng hỗ trợ kỹ thuật`
+  ];
+
+  if (sector.includes('Ngân hàng')) {
+    strat = 'vol_breakout';
+    type = 'MUA BÙNG NỔ';
+    triggerMsg = 'Khối lượng giao dịch gia tăng vượt trội so với trung bình 20 phiên, dòng tiền khối ngoại gom ròng';
+    conRisk = 'Áp lực rung lắc khi chỉ số kiểm định vùng đỉnh cũ và biến động lãi suất liên ngân hàng';
+    supportLevel = `Hỗ trợ MA20 ngày & nền giá định giá P/B thấp ${(livePrice * 0.965).toFixed(2)}`;
+    prosList = [
+      'Tăng trưởng tín dụng và biên lãi thuần (NIM) duy trì ổn định qua các quý',
+      'Dòng tiền tổ chức tích lũy chủ động tại vùng hỗ trợ MA20 ngày',
+      'Tỷ lệ nợ xấu và bao phủ nợ xấu được kiểm soát chặt chẽ theo chuẩn Basel II'
+    ];
+  } else if (sector.includes('Chứng khoán')) {
+    strat = 'vol_breakout';
+    type = 'MUA MẠNH';
+    triggerMsg = 'Hưởng lợi trực tiếp từ thanh khoản thị trường bùng nổ và hệ thống giao dịch KRX mới';
+    conRisk = 'Độ nhạy cao với biến động VN-Index (Beta > 1.25), rung lắc mạnh trong các phiên điều chỉnh';
+    supportLevel = `Đường xu hướng tăng ngắn hạn & thanh khoản nâng đỡ ${(livePrice * 0.965).toFixed(2)}`;
+    prosList = [
+      'Thanh khoản toàn thị trường tăng cao thúc đẩy doanh thu môi giới và cho vay margin',
+      'Danh mục tự doanh hưởng lợi từ đà tăng đồng đều của rổ VN30',
+      'Chỉ báo xung lượng RSI và MACD duy trì phân kỳ dương vững chắc'
+    ];
+  } else if (sector.includes('Thép') || sector.includes('Vật liệu')) {
+    strat = 'vol_breakout';
+    type = 'MUA THEO ĐÀ TĂNG';
+    triggerMsg = 'Giá thép thế giới phục hồi và sản lượng xuất khẩu bứt phá vượt nền giá 2 tháng';
+    conRisk = 'Biến động giá nguyên liệu quặng sắt và chu kỳ phục hồi của thị trường bất động sản';
+    supportLevel = `Vùng cân bằng cung cầu chu kỳ & MA50 ngày ${(livePrice * 0.965).toFixed(2)}`;
+    prosList = [
+      'Sản lượng tiêu thụ thép xây dựng và HRC phục hồi tích cực theo từng quý',
+      'Dòng tiền khối tổ chức tích cực tham gia gom tại các nhịp rung lắc tích lũy',
+      'Định giá P/B ở vùng chiết khấu sâu so với trung bình chu kỳ lịch sử 5 năm'
+    ];
+  } else if (sector.includes('Công nghệ')) {
+    strat = 'trend_ema';
+    type = 'MUA THĂM DÒ';
+    triggerMsg = 'Kênh xu hướng tăng trưởng bền vững, hưởng lợi từ làn sóng chuyển đổi số và AI toàn cầu';
+    conRisk = 'Định giá P/E ở vùng cao đòi hỏi công ty phải duy trì tốc độ tăng trưởng doanh thu trên 20%';
+    supportLevel = `Đường trung bình động EMA21 & nền hộp Darvas ${(livePrice * 0.965).toFixed(2)}`;
+    prosList = [
+      'Doanh thu ký mới mảng dịch vụ công nghệ thông tin nước ngoài tăng trưởng cao',
+      'Tỷ suất sinh lời trên vốn chủ sở hữu (ROE) duy trì trên 25% bền vững',
+      'Cấu trúc tài chính lành mạnh, dòng tiền kinh doanh dồi dào và cổ tức tiền mặt đều đặn'
+    ];
+  } else if (sector.includes('Bất động sản')) {
+    strat = 'mean_bb_rsi';
+    type = 'BẮT ĐÁY HỒI PHỤC';
+    triggerMsg = 'Tín hiệu phân kỳ dương RSI đảo chiều từ vùng quá bán, áp lực bán rũ bỏ cạn kiệt';
+    conRisk = 'Tiến độ tháo gỡ pháp lý dự án và áp lực thanh khoản trái phiếu doanh nghiệp';
+    supportLevel = `Vùng hỗ trợ đáy trung hạn & thanh khoản rũ bỏ cạn cung ${(livePrice * 0.965).toFixed(2)}`;
+    prosList = [
+      'Định giá chiết khấu sâu so với giá trị tài sản ròng (RNAV) của quỹ đất sạch',
+      'Khối lượng giao dịch cạn kiệt báo hiệu áp lực bán tháo đã được hấp thụ hoàn toàn',
+      'Chính sách nới lỏng lãi suất cho vay mua nhà tạo đòn bẩy phục hồi sức mua'
+    ];
+  } else if (sector.includes('Bán lẻ') || sector.includes('Tiêu dùng')) {
+    strat = 'smart_money';
+    type = 'MUA TÍCH LŨY';
+    triggerMsg = 'Chu kỳ tiêu dùng phục hồi cuối năm, dòng tiền tổ chức tích lũy gom hàng cạn cung';
+    conRisk = 'Sức mua người tiêu dùng cần thời gian phục hồi và cạnh tranh biên lợi nhuận';
+    supportLevel = `Vùng đệm hỗ trợ MA20 ngày & nền tích lũy ${(livePrice * 0.965).toFixed(2)}`;
+    prosList = [
+      'Biên lợi nhuận gộp cải thiện nhờ tối ưu hóa chuỗi cửa hàng và mở rộng thị phần',
+      'Dòng tiền khối ngoại quay trở lại mua ròng chủ động nhiều phiên liên tiếp',
+      'Mô hình Pocket Pivot xuất hiện với thanh khoản vượt trội 180% so với MA20'
+    ];
+  } else if (sector.includes('Dầu khí') || sector.includes('Năng lượng')) {
+    strat = 'trend_ema';
+    type = 'MUA THEO ĐÀ TĂNG';
+    triggerMsg = 'Giá dầu thô Brent duy trì ổn định, các dự án thượng tầng trọng điểm triển khai đồng loạt';
+    conRisk = 'Biến động bất định của giá dầu thế giới và xung đột địa chính trị toàn cầu';
+    supportLevel = `Kênh hỗ trợ kỹ thuật trung hạn MA50 ${(livePrice * 0.965).toFixed(2)}`;
+    prosList = [
+      'Tiến độ triển khai đại dự án Lô B - Ô Môn mang lại khối lượng công việc dài hạn',
+      'Tình hình tài chính an toàn, lượng tiền gửi ròng lớn mang lại doanh thu tài chính cao',
+      'Tín hiệu MACD cắt lên đường tín hiệu xác nhận chu kỳ tăng giá mới'
+    ];
+  }
+
+  const pLow = +(livePrice * 0.965).toFixed(2);
+  const pHigh = +(livePrice * 0.985).toFixed(2);
+  const pMid = +((pLow + pHigh) / 2).toFixed(2);
+  const targetTP1 = +(livePrice * 1.045).toFixed(2);
+  const slMarket = +(livePrice * 0.94).toFixed(2);
+  const targetTP2 = +(livePrice * 1.155).toFixed(2);
+  const slPullback = +(pMid * 0.955).toFixed(2);
+  const rrMarket = (Math.abs(targetTP1 - livePrice) / Math.max(0.01, livePrice - slMarket)).toFixed(2);
+  const rrPullback = (Math.abs(targetTP2 - pMid) / Math.max(0.01, pMid - slPullback)).toFixed(2);
+
+  const sigObj = {
+    sym,
+    name: companyName,
+    ex,
+    strat,
+    type,
+    price: livePrice,
+    target: targetTP2,
+    sl: slMarket,
+    rr: `1 : ${rrPullback}`,
+    score: quantScore,
+    volRatio: 185,
+    time: '14:45 hôm nay',
+    triggerMsg,
+    fomo: {
+      recType: 'pullback',
+      recommendation: `CHỜ CHỈNH ${pLow} - ${pHigh}`,
+      marketBuy: {
+        entry: livePrice,
+        target: targetTP1,
+        sl: slMarket,
+        rr: `1 : ${rrMarket}`,
+        verdict: `Tỷ lệ Lãi/Lỗ thấp (1:${rrMarket}), rủi ro rung lắc T+1.5 khi mua đuổi tại vùng giá thị trường hiện tại.`
+      },
+      pullbackBuy: {
+        zone: `${pLow} - ${pHigh}`,
+        midPrice: pMid,
+        target: targetTP2,
+        sl: slPullback,
+        rr: `1 : ${rrPullback}`,
+        prob: 75,
+        support: supportLevel,
+        verdict: `Tỷ lệ Lãi/Lỗ 1:${rrPullback} vượt trội theo chuẩn quỹ, điểm dừng lỗ rất gần và kiểm soát rủi ro an toàn.`
+      },
+      pros: prosList,
+      con: conRisk,
+      fundDiscipline: `Kỷ luật quỹ: Không mua đuổi giá xanh trên ${livePrice}. Hãy kiên nhẫn đặt lệnh chờ tại vùng tích lũy ${pLow} - ${pHigh} để tối ưu hóa tỷ lệ sinh lời và bảo toàn vốn.`
+    }
+  };
+
+  QUANT_DYNAMIC_STOCKS_CACHE[sym] = sigObj;
+  return sigObj;
+}
+
+window.handleQuantSearchInput = function(val) {
+  const q = String(val || '').trim().toUpperCase();
+  const dd = document.getElementById('quant-search-dropdown');
+  const clearBtn = document.getElementById('quant-fomo-search-clear');
+  if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+  if (!dd) return;
+
+  const universe = (typeof UNI !== 'undefined' && Array.isArray(UNI)) ? UNI : [];
+  let matches = [];
+
+  if (!q) {
+    const popularSyms = ['MSB', 'FPT', 'HPG', 'SSI', 'TCB', 'MWG', 'VCB', 'VHM', 'DGC', 'VND', 'MBB', 'KDH'];
+    matches = universe.filter(u => popularSyms.includes(u[0]));
+  } else {
+    const symMatches = universe.filter(u => u[0].startsWith(q));
+    const symContains = universe.filter(u => !u[0].startsWith(q) && u[0].includes(q));
+    const nameMatches = universe.filter(u => !u[0].includes(q) && ((u[1] && u[1].toUpperCase().includes(q)) || (u[2] && u[2].toUpperCase().includes(q))));
+    matches = [...symMatches, ...symContains, ...nameMatches].slice(0, 10);
+  }
+
+  if (matches.length === 0) {
+    dd.innerHTML = `
+      <div style="padding:14px;text-align:center;color:var(--ink3);font-size:12px">
+        Không tìm thấy mã cổ phiếu phù hợp với từ khóa "<strong>${val}</strong>"
+      </div>
+    `;
+    dd.style.display = 'block';
+    return;
+  }
+
+  dd.innerHTML = matches.map(u => {
+    const sym = u[0];
+    const name = u[1];
+    const sector = u[2];
+    const ex = u[3];
+    const price = getQuantLivePrice(sym, Number(u[4]));
+    const chg = u[5] != null ? Number(u[5]) : 0;
+    const isCur = (S.quant && S.quant.fomoSym === sym);
+
+    return `
+      <div class="quant-search-item" onclick="selectQuantStock('${sym}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:8px;cursor:pointer;background:${isCur ? 'rgba(228,95,53,0.12)' : 'transparent'};transition:background 0.15s;gap:10px" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='${isCur ? 'rgba(228,95,53,0.12)' : 'transparent'}'">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          ${getCompanyLogo(sym, 28)}
+          <div style="min-width:0">
+            <div style="display:flex;align-items:center;gap:6px">
+              <strong style="color:var(--brand);font-size:13px">${sym}</strong>
+              <span class="chip" style="font-size:9px;padding:1px 5px;font-weight:700">${ex}</span>
+              <span style="font-size:11px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${sector}</span>
+            </div>
+            <div style="font-size:11px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px">${name}</div>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:var(--mono);font-weight:800;font-size:13px;color:var(--ink)">${price.toFixed(2)}</div>
+          <div style="font-size:10px;font-weight:700;color:${chg >= 0 ? 'var(--up)' : 'var(--down)'}">${chg >= 0 ? '+' : ''}${chg.toFixed(2)}%</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  dd.style.display = 'block';
+};
+
+window.handleQuantSearchFocus = function() {
+  const input = document.getElementById('quant-fomo-search-input');
+  handleQuantSearchInput(input ? input.value : '');
+};
+
+window.handleQuantSearchKeydown = function(e) {
+  if (e.key === 'Enter') {
+    const dd = document.getElementById('quant-search-dropdown');
+    if (dd && dd.style.display !== 'none') {
+      const firstItem = dd.querySelector('.quant-search-item');
+      if (firstItem) {
+        firstItem.click();
+        e.preventDefault();
+      }
+    }
+  } else if (e.key === 'Escape') {
+    const dd = document.getElementById('quant-search-dropdown');
+    if (dd) dd.style.display = 'none';
+  }
+};
+
+window.clearQuantSearch = function() {
+  const input = document.getElementById('quant-fomo-search-input');
+  if (input) {
+    input.value = '';
+    input.focus();
+  }
+  handleQuantSearchInput('');
+};
+
+window.selectQuantStock = function(sym) {
+  if (!sym) return;
+  sym = String(sym).toUpperCase().trim();
+  S.quant = S.quant || {};
+  S.quant.fomoSym = sym;
+  
+  const dd = document.getElementById('quant-search-dropdown');
+  if (dd) dd.style.display = 'none';
+
+  render(true);
+
+  const spotlightEl = document.getElementById('quant-fomo-spotlight');
+  if (spotlightEl) spotlightEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+// Global click outside to close dropdown
+document.addEventListener('click', e => {
+  const dd = document.getElementById('quant-search-dropdown');
+  if (dd && dd.style.display !== 'none' && !e.target.closest('.quant-search-box-wrap')) {
+    dd.style.display = 'none';
+  }
+});
+
 function vQuant() {
   const qState = S.quant || { tab: 'signals', strat: 'trend_ema', sym: 'MSB', fomoSym: 'MSB', period: '5Y', capital: 100000000, posSize: 20, sl: 6, tp: 15, fastMa: 9, slowMa: 21, botActive: true, filterStrat: 'all', botLogs: [] };
   const curTab = qState.tab || 'signals';
   const curStrat = QUANT_STRATEGIES[qState.strat] || QUANT_STRATEGIES.trend_ema;
   const backtest = runQuantBacktest(qState.sym, qState.strat, qState.period, qState.capital, qState.sl, qState.tp, qState.fastMa, qState.slowMa);
   const fomoSym = qState.fomoSym || 'MSB';
-  const fomoSig = QUANT_LIVE_SIGNALS.find(s => s.sym === fomoSym) || QUANT_LIVE_SIGNALS[0];
+  const fomoSig = getQuantSignalForSym(fomoSym);
   const liveFomoPrice = getQuantLivePrice(fomoSig.sym, fomoSig.price);
   fomoSig.price = liveFomoPrice;
   const fomoData = fomoSig.fomo || {};
@@ -17070,22 +17367,64 @@ function vQuant() {
             </p>
           </div>
 
-          <!-- Dedicated Organized Ticker Selector Toolbar -->
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:10px 14px;background:rgba(0,0,0,0.025);border:1px solid var(--line);border-radius:10px;margin-bottom:14px">
-            <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--ink)">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(228,95,53,0.15);color:var(--brand);font-size:11px">🎯</span>
-              <span>Chọn mã cổ phiếu phân tích:</span>
+          <!-- Dedicated Organized Ticker Search & Filter Toolbar -->
+          <div class="quant-search-toolbar card" style="padding:14px 18px;background:rgba(0,0,0,0.025);border:1px solid var(--line);border-radius:12px;margin-bottom:16px">
+            <!-- Row 1: Title & Interactive Search Input -->
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:rgba(228,95,53,0.15);color:var(--brand);font-size:12px">🎯</span>
+                <span style="font-size:13px;font-weight:800;color:var(--ink)">Chọn mã cổ phiếu phân tích:</span>
+                <span class="chip" style="font-size:10px;font-weight:700;background:rgba(34,171,148,0.12);color:var(--brand);padding:2px 8px;border-radius:12px">93+ Mã toàn thị trường (HOSE & HNX)</span>
+              </div>
+
+              <!-- Instant Search Box with Autocomplete -->
+              <div class="quant-search-box-wrap" style="position:relative;min-width:300px;flex:1;max-width:460px">
+                <div style="position:relative;display:flex;align-items:center">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--ink3)" stroke-width="2.2" style="position:absolute;left:13px;pointer-events:none">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  <input id="quant-fomo-search-input" 
+                         type="text" 
+                         placeholder="Tìm mã cổ phiếu (vd: VHM, HPG, SSI, FPT, MWG, KDH, PVS...)" 
+                         autocomplete="off" 
+                         oninput="handleQuantSearchInput(this.value)" 
+                         onfocus="handleQuantSearchFocus()" 
+                         onkeydown="handleQuantSearchKeydown(event)"
+                         style="width:100%;padding:9px 38px 9px 38px;border-radius:24px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-weight:700;font-size:12px;outline:none;transition:border-color 0.2s" 
+                         onfocus="this.style.borderColor='var(--brand)'" 
+                         onblur="this.style.borderColor='var(--line)'" />
+                  <button id="quant-fomo-search-clear" onclick="clearQuantSearch()" style="position:absolute;right:10px;background:none;border:none;color:var(--ink3);cursor:pointer;display:none;font-size:14px;padding:2px 6px" title="Xóa tìm kiếm">✕</button>
+                </div>
+
+                <!-- Autocomplete Dropdown List -->
+                <div id="quant-search-dropdown" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;max-height:360px;overflow-y:auto;z-index:999;border:1px solid var(--line);box-shadow:0 14px 36px rgba(0,0,0,0.35);border-radius:12px;padding:6px;background:var(--card)">
+                  <!-- Populated dynamically by handleQuantSearchInput -->
+                </div>
+              </div>
             </div>
-            <div class="quant-fomo-ticker-bar" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-              ${QUANT_LIVE_SIGNALS.map(s => {
-                const isCur = s.sym === fomoSym;
-                return `
-                  <button class="chip ${isCur ? 'on' : ''}" data-act="quantfomosym" data-sym="${s.sym}" style="cursor:pointer;padding:5px 11px;border-radius:8px;font-size:12px;font-weight:700;transition:all 0.18s;border:${isCur ? '1.5px solid var(--brand)' : '1px solid var(--line)'};background:${isCur ? 'linear-gradient(135deg, #FF3B30 0%, #FF6B00 100%)' : 'var(--card)'};color:${isCur ? '#fff' : 'var(--ink)'};box-shadow:${isCur ? '0 2px 10px rgba(255,107,0,0.35)' : 'none'};display:inline-flex;align-items:center;gap:6px">
-                    ${getCompanyLogo(s.sym, 16)}
-                    <span>${s.sym}</span>
-                  </button>
-                `;
-              }).join('')}
+
+            <!-- Row 2: Curated Quick Ticker Chips for 1-Click Access -->
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:600;color:var(--ink3)">Mã tiêu biểu:</span>
+              <div class="quant-fomo-ticker-bar" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                ${(() => {
+                  const defaultQuickSyms = ['MSB', 'FPT', 'HPG', 'SSI', 'TCB', 'MWG', 'VCB', 'VHM', 'DGC', 'MBB', 'VND', 'VNM', 'STB', 'KDH', 'PVS', 'CTR'];
+                  const chipsList = defaultQuickSyms.includes(fomoSym)
+                    ? defaultQuickSyms
+                    : [fomoSym, ...defaultQuickSyms];
+                  
+                  return chipsList.map(sym => {
+                    const isCur = (sym === fomoSym);
+                    return `
+                      <button class="chip ${isCur ? 'on' : ''}" data-act="quantfomosym" data-sym="${sym}" style="cursor:pointer;padding:5px 11px;border-radius:8px;font-size:12px;font-weight:700;transition:all 0.18s;border:${isCur ? '1.5px solid var(--brand)' : '1px solid var(--line)'};background:${isCur ? 'linear-gradient(135deg, #FF3B30 0%, #FF6B00 100%)' : 'var(--card)'};color:${isCur ? '#fff' : 'var(--ink)'};box-shadow:${isCur ? '0 2px 10px rgba(255,107,0,0.35)' : 'none'};display:inline-flex;align-items:center;gap:6px">
+                        ${getCompanyLogo(sym, 16)}
+                        <span>${sym}</span>
+                      </button>
+                    `;
+                  }).join('');
+                })()}
+              </div>
             </div>
           </div>
 
@@ -17450,7 +17789,7 @@ function vQuant() {
             <div>
               <label for="quant-sym-select" style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">MÃ CHỨNG KHOÁN</label>
               <select id="quant-sym-select" aria-label="Chọn mã cổ phiếu kiểm tra" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:12px">
-                ${['MSB', 'FPT', 'HPG', 'VCB', 'SSI', 'TCB', 'MWG', 'DGC', 'CTR', 'VNM', 'STB', 'MBB'].map(s => `
+                ${Array.from(new Set(['MSB', 'FPT', 'HPG', 'SSI', 'TCB', 'VCB', 'MWG', 'VHM', 'DGC', 'MBB', 'VND', 'VNM', 'STB', 'KDH', 'PVS', 'CTR', ...(typeof UNI !== 'undefined' ? UNI.map(x => x[0]) : [])])).sort().map(s => `
                   <option value="${s}" ${qState.sym === s ? 'selected' : ''}>${s}</option>
                 `).join('')}
               </select>

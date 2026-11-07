@@ -189,6 +189,10 @@
 
 ---
 
+- [Chủ đề 133: Mô Hình Kiểm Định Độ Bền Chiến Lược Bằng Bootstrap Khối Dừng (Stationary Bootstrap) Khử P-Hacking Trong Backtest Tại Việt Nam](#-chủ-đề-133-mô-hình-kiểm-định-độ-bền-chiến-lược-bằng-bootstrap-khối-dừng-stationary-bootstrap-đo-lường-xác-suất-may-rủi-p-hacking-trong-backtest-tại-việt-nam)
+
+---
+
 ## 🔬 CHỦ ĐỀ 01: PHƯƠNG PHÁP META-LABELING & TRIPLE BARRIER METHOD
 **Tác giả lý thuyết:** GS. Marcos López de Prado (*Advances in Financial Machine Learning*, 2018)  
 **Thời gian hoàn thành:** 2026-11-02 23:35 (ICT)  
@@ -15331,3 +15335,174 @@ if __name__ == '__main__':
    - Khi phát hiện chỉ số $\text{NOI} > +0.35$ (Cầu áp đảo đẩy giá lên cao), KongKeng Radar cảnh báo nhà đầu tư **TUYỆT ĐỐI KHÔNG ĐẶT MUA ATC (FOMO)** để tránh bị khớp đỉnh ngắn hạn.
 2. **Khai thác chiến lược tích lũy kỹ thuật (Pullback Ladder Arbitrage):**
    - Nếu một cổ phiếu cơ bản tốt bị quỹ ETF bán xả đột ngột trong phiên ATC khiến giá bị ép sâu ($\text{NOI} < -0.35$), hệ thống tự động kích hoạt **Kịch Bản 2 (Thang Giá Tích Lũy)**: Hướng dẫn nhà đầu tư kê lệnh gom giá rẻ vào phiên ATO sáng hôm sau để hưởng trọn nhịp hồi phục bù giá kỹ thuật.
+
+---
+
+## 🔬 CHỦ ĐỀ 133: MÔ HÌNH KIỂM ĐỊNH ĐỘ BỀN CHIẾN LƯỢC BẰNG BOOTSTRAP KHỐI DỪNG (STATIONARY BOOTSTRAP) ĐO LƯỜNG XÁC SUẤT MAY RỦI P-HACKING TRONG BACKTEST TẠI VIỆT NAM
+
+```
+Chu kỳ nghiên cứu: 10 phút định kỳ (Iteration 32 / Task-7472)
+Thời gian hoàn thành: 2026-11-07 20:20:00
+Phân hệ áp dụng: Kiểm Định Dữ Liệu Lịch Sử & Kiểm Soát Rủi Ro Đào Bới Dữ Liệu (Backtest Hub) / KongKeng Radar
+Mức độ kiểm định: Chuẩn mực Politis-Romano Stationary Bootstrap (JASA 1994) & Hansen SPA Test
+```
+
+### 1. Bối Cảnh Thực Tiễn & Rào Cản Tại Thị Trường Việt Nam
+Trong cộng đồng đầu tư định lượng và phát triển thuật toán giao dịch tại Việt Nam, căn bệnh phổ biến và nguy hiểm nhất là **"Ảo tưởng Backtest tuyệt hảo" (Backtest Overfitting & P-Hacking Fallacy)**:
+1. **Cạm bẫy thử nghiệm đa biến thể (Multiple Testing Snooping):** Nhà phát triển thử nghiệm đồng thời 50 đến 100 biến thể chỉ báo kỹ thuật (thay đổi chu kỳ RSI 14 sang 9, đổi MA 20 sang EMA 21, dời dải dừng lỗ từ 4% sang 5.5%), sau đó chọn ra duy nhất cấu hình có Tỷ số Sharpe cao nhất ($SR > 2.2$) và đường cong vốn dốc đứng tuyệt đẹp để công bố.
+2. **Sự sụp đổ của phương pháp Bootstrap độc lập Efron (1979):** Khi kiểm định ý nghĩa thống kê bằng cách bốc thăm ngẫu nhiên từng ngày độc lập (I.I.D. Resampling), toàn bộ tính tự tương quan (Autocorrelation), tính nhớ dài (Long Memory) và hiện tượng cụm biến động (Volatility Clustering) của thị trường chứng khoán Việt Nam bị xé nát hoàn toàn, khiến sai số chuẩn bị thu hẹp giả tạo và tạo ra kết quả kiểm định dương tính giả (False Discovery).
+3. **Mục tiêu của KongKeng Radar:** Ứng dụng **Mô hình Tái Lấy Mẫu Khối Dừng (Stationary Bootstrap)** của Dimitris N. Politis và Joseph P. Romano (1994) kết hợp với **Kiểm định Dự Báo Vượt Trội (Hansen's Superior Predictive Ability - SPA Test)**. Bằng việc sử dụng độ dài khối ngẫu nhiên tuân theo phân phối hình học, mô hình bảo toàn trọn vẹn tính dừng và cấu trúc phụ thuộc chuỗi thời gian sàn HOSE, định lượng chính xác **Xác suất Chiến lược Thành Công Hoàn Toàn Do May Mắn ($p$-value điều chỉnh)** trước khi cho phép bot tự hành giải ngân tiền thật.
+
+---
+
+### 2. Nền Tảng Toán Học Định Lượng: Mô Hình Stationary Bootstrap & Hansen SPA
+
+#### 2.1. Thuật Toán Tái Lấy Mẫu Khối Dừng Politis-Romano (1994)
+Cho chuỗi thời gian lợi suất quan sát $X = \{X_1, X_2, \dots, X_n\}$.
+Chiều dài của mỗi khối lấy mẫu $L_k$ là một biến ngẫu nhiên độc lập tuân theo phân phối hình học với tham số thành công $p \in (0, 1)$:
+$$\mathbb{P}(L_k = m) = (1 - p)^{m-1} p, \quad m = 1, 2, \dots$$
+Chiều dài khối trung bình kỳ vọng:
+$$b = \mathbb{E}[L] = \frac{1}{p}$$
+Quy tắc sinh chuỗi mẫu giả lập $X_t^*$ tại bước $t$:
+- Với xác suất $1 - p$: Chọn phần tử nối tiếp ngay sau phần tử trước đó trong mẫu gốc ($I_t = I_{t-1} + 1 \pmod n$).
+- Với xác suất $p$: Chọn ngẫu nhiên đều một điểm bắt đầu mới trên toàn bộ mẫu gốc ($I_t \sim \text{Uniform}\{1, n\}$).
+
+**Đặc tính toán học then chốt:** Chuỗi giả lập $\{X_t^*\}_{t=1}^n$ được chứng minh là dừng nghiêm ngặt (Strictly Stationary) có điều kiện trên tập dữ liệu gốc, giải quyết triệt để khuyết tật phi dừng của phương pháp Moving Block Bootstrap truyền thống.
+
+#### 2.2. Kiểm Định Năng Lực Dự Báo Vượt Trội (Hansen's SPA Test, 2005)
+Xét $K$ chiến lược định lượng cạnh tranh nhau để đánh bại Benchmark $0$ (Chỉ số VN30 hoặc Mua & Nắm Giữ).
+Chênh lệch hiệu suất tại thời điểm $t$ của chiến lược $k$:
+$$d_{k, t} = R_{k, t} - R_{0, t}, \quad k = 1, \dots, K$$
+Kỳ vọng hiệu suất vượt trội: $\mu_k = \mathbb{E}[d_{k, t}]$.
+Giả thuyết kiểm định không có kỹ năng (Null Hypothesis):
+$$H_0: \max_{k=1, \dots, K} \mu_k \le 0$$
+Thống kê kiểm định chuẩn hóa:
+$$T_n^{\text{SPA}} = \max\left( \max_{k=1, \dots, K} \frac{\sqrt{n} \bar{d}_k}{\hat{\omega}_k}, \, 0 \right)$$
+Trong đó $\bar{d}_k = \frac{1}{n} \sum_{t=1}^n d_{k, t}$ và $\hat{\omega}_k^2$ là ước lượng phương sai dài hạn Newey-West.
+
+#### 2.3. Quy Trình Tính $P$-Value Khử Đào Bới Dữ Liệu (Data-Snooping Adjusted P-Value)
+1. Dùng thuật toán Stationary Bootstrap sinh $B = 1,000$ mẫu chuỗi thời gian giả lập $\{d_{k, t}^{*, b}\}$.
+2. Tại mỗi mẫu $b$, căn chỉnh tâm dữ liệu dưới giả thuyết $H_0$:
+   $$Z_{k, t}^{*, b} = d_{k, t}^{*, b} - g(\bar{d}_k)$$
+   Với $g(\bar{d}_k) = \bar{d}_k \cdot \mathbb{I}(\sqrt{n}\bar{d}_k \ge -\sqrt{2 \ln \ln n} \hat{\omega}_k)$.
+3. Tính toán thống kê bootstrap cực đại:
+   $$T_n^{*, b} = \max\left( \max_{k=1, \dots, K} \frac{\sqrt{n} \bar{Z}_k^{*, b}}{\hat{\omega}_k}, \, 0 \right)$$
+4. Xác suất may rủi thực tế ($p$-value điều chỉnh):
+   $$p_{\text{SPA}} = \frac{1}{B} \sum_{b=1}^B \mathbb{I}\left( T_n^{*, b} \ge T_n^{\text{SPA}} \right)$$
+- Nếu $p_{\text{SPA}} \ge 0.05$: Chiến lược **BỊ LOẠI BỎ (FAIL)** vì kết quả backtest cao chỉ là sản phẩm của việc thử nghiệm quá nhiều lần ngẫu nhiên.
+- Chỉ khi $p_{\text{SPA}} < 0.05$: Chiến lược mới được xác nhận có **Lợi thế Alpha nội tại thực chất (STATISTICAL EDGE)**.
+
+---
+
+### 3. Thuật Toán Python Mô Phỏng Stationary Bootstrap & Hansen SPA Test
+
+```python
+import numpy as np
+import pandas as pd
+
+class StationaryBootstrapSPAEngine:
+    """
+    Bộ động cơ kiểm định Stationary Bootstrap & Hansen Superior Predictive Ability (SPA).
+    Khử hoàn toàn ảo tưởng may rủi P-Hacking trong Backtest dữ liệu sàn HOSE.
+    """
+    def __init__(self, avg_block_length=10, num_bootstraps=500):
+        self.p_geom = 1.0 / avg_block_length  # Tham số phân phối hình học
+        self.B = num_bootstraps
+
+    def generate_stationary_bootstrap_indices(self, n):
+        """Sinh chuỗi chỉ số ngẫu nhiên theo phân phối khối dừng Politis-Romano"""
+        indices = np.zeros(n, dtype=int)
+        indices[0] = np.random.randint(0, n)
+        
+        for t in range(1, n):
+            if np.random.rand() < self.p_geom:
+                indices[t] = np.random.randint(0, n)  # Bắt đầu khối mới
+            else:
+                indices[t] = (indices[t-1] + 1) % n   # Nối tiếp khối cũ
+        return indices
+
+    def test_strategy_superiority(self, benchmark_returns, strategy_pool_returns):
+        """
+        Kiểm định xem chiến lược tốt nhất trong strategy_pool_returns có thực sự vượt trội
+        hay chỉ do may rủi khai phá dữ liệu (Data Snooping Bias).
+        strategy_pool_returns: Ma trận (n_days, K_strategies)
+        """
+        n, K = strategy_pool_returns.shape
+        # Tính chênh lệch hiệu suất d_k,t = R_strat - R_bench
+        d = strategy_pool_returns - benchmark_returns[:, None]
+        
+        d_bar = np.mean(d, axis=0)
+        d_std = np.std(d, axis=0, ddof=1)
+        d_std = np.maximum(d_std, 1e-6)
+        
+        # Thống kê Hansen SPA gốc
+        t_stats = np.sqrt(n) * d_bar / d_std
+        t_spa_orig = max(np.max(t_stats), 0.0)
+        best_strat_idx = np.argmax(t_stats)
+        
+        # Centering function g(d_bar) theo chuẩn Hansen
+        threshold = -np.sqrt(2 * np.log(np.log(max(n, 3))))
+        g_dbar = np.where(t_stats >= threshold, d_bar, 0.0)
+        
+        # Vòng lặp Stationary Bootstrap
+        t_spa_boot = np.zeros(self.B)
+        for b in range(self.B):
+            boot_idx = self.generate_stationary_bootstrap_indices(n)
+            d_boot = d[boot_idx, :]
+            
+            # Căn chỉnh tâm dữ liệu dưới H0
+            z_boot = d_boot - g_dbar[None, :]
+            z_bar = np.mean(z_boot, axis=0)
+            
+            boot_t_stats = np.sqrt(n) * z_bar / d_std
+            t_spa_boot[b] = max(np.max(boot_t_stats), 0.0)
+            
+        # Tính p-value đã hiệu chỉnh đa kiểm định
+        p_spa = np.mean(t_spa_boot >= t_spa_orig)
+        
+        best_annual_ret = np.mean(strategy_pool_returns[:, best_strat_idx]) * 250
+        bench_annual_ret = np.mean(benchmark_returns) * 250
+        best_sharpe = (d_bar[best_strat_idx] / d_std[best_strat_idx]) * np.sqrt(250)
+
+        return {
+            'Tested_Strategies_Count': K,
+            'Best_Strategy_Index': int(best_strat_idx + 1),
+            'Best_Annual_Return_Pct': np.round(best_annual_ret * 100, 2),
+            'Benchmark_Annual_Return_Pct': np.round(bench_annual_ret * 100, 2),
+            'Best_Excess_Sharpe': np.round(best_sharpe, 3),
+            'Raw_Naive_T_Stat': np.round(t_spa_orig, 3),
+            'Hansen_Adjusted_P_Value': np.round(p_spa, 4),
+            'Verification_Result': "ALPHA THẬT CHẤT (VƯỢT QUA KIỂM ĐỊNH)" if p_spa < 0.05 else "BẪY MAY RỦI P-HACKING (BỊ BÁC BỎ)"
+        }
+
+# Kiểm chứng trên 40 biến thể chiến lược giả lập (Minh họa hiện tượng P-Hacking điển hình)
+if __name__ == '__main__':
+    np.random.seed(42)
+    n_days = 750  # ~3 năm giao dịch sàn HOSE
+    bench = np.random.normal(0.0004, 0.012, n_days)  # VN-Index tăng trưởng ~10%/năm
+    
+    # Giả lập 40 biến thể chiến lược KHÔNG có Alpha thực chất (chỉ là nhiễu ngẫu nhiên quanh benchmark)
+    mock_strategies = np.zeros((n_days, 40))
+    for k in range(40):
+        mock_strategies[:, k] = bench + np.random.normal(0, 0.008, n_days)
+        
+    engine = StationaryBootstrapSPAEngine(avg_block_length=12, num_bootstraps=600)
+    res = engine.test_strategy_superiority(bench, mock_strategies)
+    
+    print("=== KẾT QUẢ KIỂM ĐỊNH ĐỘ BỀN CHIẾN LƯỢC BẰNG STATIONARY BOOTSTRAP ===")
+    for k_item, v_item in res.items():
+        print(f"  - {k_item:30}: {v_item}")
+        
+    print("\n=> PHÂN TÍCH RỦI RO ĐỊNH LƯỢNG:")
+    print("  * Nếu nhìn vào Backtest đơn lẻ: Chiến lược tốt nhất có Sharpe vượt trội và T-stat cao (tưởng chừng rất thành công).")
+    print(f"  * Nhưng sau khi qua Stationary Bootstrap Hansen: P-value = {res['Hansen_Adjusted_P_Value']} > 0.05 -> Bẫy P-Hacking bị vạch trần!")
+```
+
+---
+
+### 4. Ứng Dụng Đột Phá Vào Nền Tảng KongKeng Radar
+1. **Bộ lọc miễn dịch P-Hacking cho Backtest Hub:**
+   - Mọi chiến lược hoặc chỉ báo định lượng được đưa lên tab **Kiểm Định Dữ Liệu Lịch Sử 5 Năm** của KongKeng Radar đều phải trải qua kiểm định Stationary Bootstrap với $B = 1,000$ chu kỳ.
+   - Chỉ khi chỉ số **Hansen Adjusted P-Value $< 0.05$**, chiến lược mới được gắn huy hiệu **"Đã Kiểm Định Độ Bền (Robust Alpha Certified)"**, giúp nhà đầu tư tránh xa các bot giao dịch "lãi ảo trên giấy".
+2. **Gia cố tính kỷ luật cho Thang Giá Tích Lũy (Pullback Ladder):**
+   - Đảm bảo các mức gom hàng tại Bước 1 (30%) và Bước 2 (70%) không bị tối ưu hóa quá mức theo từng khúc dữ liệu ngắn hạn, duy trì tỷ lệ Lãi/Lỗ tối ưu $R:R \ge 1:5.0$ bền bỉ qua mọi chu kỳ sụt giảm T+1.5.

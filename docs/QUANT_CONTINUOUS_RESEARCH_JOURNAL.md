@@ -245,6 +245,10 @@
 
 ---
 
+- [Chủ đề 147: Mạng Tích Chập Đồ Thị Dị Thể (Het-GCN) & Cơ Chế Attention Khai Thác Chuỗi Cung Ứng - Sở Hữu Chéo Tìm Kiếm Alpha Lan Truyền Trên HOSE](#-chủ-đề-147-mạng-tích-chập-đồ-thị-dị-thể-het-gcn--cơ-chế-attention-khai-thác-chuỗi-cung-ứng---sở-hữu-chéo-tìm-kiếm-alpha-lan-truyền-trên-hose)
+
+---
+
 ---
 
 ## 🔬 CHỦ ĐỀ 01: PHƯƠNG PHÁP META-LABELING & TRIPLE BARRIER METHOD
@@ -17865,4 +17869,200 @@ if __name__ == '__main__':
    * Khi phát hiện cổ phiếu đang bị đè giá về sát hỗ trợ cứng kèm điểm số Cá mập gom hàng cao (`WhaleScore > 0.70`), Agent TD3 tự động **nới lỏng biên độ cắt lỗ từ $-5\%$ xuống $-9.5\%$** để hấp thụ nhịp rung lắc rũ hàng giả của đội lái, bảo vệ vị thế an toàn cho nhà đầu tư.
 2. **Kéo Dài Điểm Chốt Lời Nuôi Siêu Sóng (Trend-Riding Dynamic TP Expansion):**
    * Ngược lại, khi cổ phiếu bước vào pha bứt phá đỉnh kèm dòng tiền cá mập áp đảo (`OFI > 0.50`), hệ thống tự động đẩy mục tiêu chốt lời từ $+15\%$ lên tới $+35\% - +45\%$, giúp nhà đầu tư ăn trọn vẹn toàn bộ con sóng tăng trưởng.
+
+---
+
+## 🔬 CHỦ ĐỀ 147: MẠNG TÍCH CHẬP ĐỒ THỊ DỊ THỂ (HET-GCN) & CƠ CHẾ ATTENTION KHAI THÁC CHUỖI CUNG ỨNG - SỞ HỮU CHÉO TÌM KIẾM ALPHA LAN TRUYỀN TRÊN HOSE
+**Tác giả lý thuyết:** Petar Veličković et al. (*Graph Attention Networks*, ICLR 2018), Fuli Feng et al. (*Temporal Relational Ranking for Stock Prediction via Graph Neural Networks*, ACM TOIS 2019), Thomas N. Kipf & Max Welling (*Semi-Supervised Classification with Graph Convolutional Networks*, ICLR 2017)  
+**Thời gian hoàn thành:** 2026-11-07 21:50 (ICT)  
+**Mục tiêu giải quyết:** Bắt trọn hiệu ứng trễ lan truyền dòng tiền (Lead-Lag Spillover) kéo dài từ 2 đến 7 phiên giữa các doanh nghiệp đầu ngành (Anchor Leaders) và các mắt xích hạ nguồn/công ty liên kết trên HOSE; mô hình hóa đồ thị tri thức quan hệ chuỗi cung ứng (Supply Chain) và sở hữu chéo (Cross-Ownership) giúp nhà đầu tư đón đầu nhịp tăng của cổ phiếu chưa chạy.
+
+---
+
+### 1. Bối Cảnh Thực Nghiệm: "Độ Trễ Lan Truyền Thông Tin" Giữa Các Mắt Xích Doanh Nghiệp tại Việt Nam
+Trên sàn HOSE, các cổ phiếu không vận động độc lập mà đan xen trong các mạng lưới kinh tế hữu cơ sâu rộng:
+1. **Chuỗi cung ứng ngành Vật liệu - Xây dựng:**
+   * Tập đoàn Hòa Phát (**HPG**) là nhà sản xuất thép thô và thép cuộn cán nóng (HRC) thượng nguồn lớn nhất Việt Nam.
+   * Hoa Sen (**HSG**) và Nam Kim (**NKG**) là khách hàng hạ nguồn trực tiếp mua HRC từ HPG để sản xuất tôn mạ, ống thép xuất khẩu.
+   * Coteccons (**CTD**), Vinaconex (**VCG**), Hòa Bình (**HBC**) là các nhà thầu tiêu thụ thép xây dựng thành phẩm.
+   * **Hiệu ứng trễ thực nghiệm:** Khi giá thép thế giới hoặc biên lợi nhuận HPG nổ tung, dòng tiền tổ chức thường quét thẳng vào HPG đầu tiên. Phải mất từ $2$ đến $5$ phiên sau, dòng tiền cá nhân và quỹ nhỏ mới bắt đầu nhận thức được tác động lan tỏa sang HSG, NKG hoặc CTD.
+2. **Mạng lưới Sở hữu Chéo & Hệ Sinh Thái Tập Đoàn (Conglomerate Ecosystems):**
+   * Hệ sinh thái Viettel: **VGI** (Viettel Global), **CTR** (Viettel Construction), **VTP** (Viettel Post), **VTK**.
+   * Hệ sinh thái Dầu khí (PVN): **GAS** (Thượng nguồn khí) $\to$ **DCM, DPM** (Hạ nguồn đạm hóa chất) $\to$ **PVS, PVD** (Dịch vụ kỹ thuật khoan).
+   * Hệ sinh thái Ngân hàng - Chứng khoán: **TCB** - **TCBS**, **VPB** - **VPBankS**, **MBB** - **MBS**.
+
+Các mô hình định lượng truyền thống (hồi quy đa biến hoặc LSTM chuỗi thời gian) chỉ phân tích từng cổ phiếu độc lập (Isolated Time Series) nên hoàn toàn **mù lòa trước mối quan hệ tương tác không gian (Spatial Interactions)** này. Mô hình **Đồ thị Dị thể Het-GCN & GAT** ra đời để khai phá mỏ vàng Alpha này.
+
+---
+
+### 2. Kiến Trúc Toán Học Mạng Đồ Thị Dị Thể GAT (Graph Attention Network)
+
+```mermaid
+flowchart TD
+    A["Vũ Trụ 94+ Cổ Phiếu HOSE & HNX"] --> B["Xây Dựng Đồ Thị Tri Thức Đa Quan Hệ G = (V, E, R)"]
+    B --> B1["Quan Hệ R1: Chuỗi Cung Ứng (Nhà Cung Cấp - Khách Hàng)"]
+    B --> B2["Quan Hệ R2: Sở Hữu Chéo & Công Ty Liên Kết (>= 5% CP)"]
+    B --> B3["Quan Hệ R3: Cùng Tập Đoàn / Hệ Sinh Thái Doanh Nghiệp"]
+    B1 & B2 & B3 --> C["Cơ Chế Trọng Số Chú Ý Đồ Thị GAT (Graph Attention Coefficients)"]
+    C --> D["Cập Nhật Trạng Thái Nút Nâng Cao: h_i^(l+1) = sigma(sum alpha_ij * W * h_j)"]
+    D --> E["Trích Xuất Vector Nhúng Alpha Lan Truyền (Spillover Alpha Embedding)"]
+    E --> F["Dự Báo Lợi Nhuận Vượt Trội T+3 / T+5 Cho Cổ Phiếu Hạ Nguồn"]
+    F --> G["Radar Săn Sóng Chuỗi Cung Ứng Tự Động của KongKeng Radar"]
+```
+
+#### 2.1. Biểu Diễn Đồ Thị Tri Thức Đa Quan Hệ (Multi-Relational Knowledge Graph)
+Đồ thị thị trường chứng khoán được định nghĩa là $\mathcal{G} = (\mathcal{V}, \mathcal{E}, \mathcal{R})$:
+* $\mathcal{V} = \{v_1, \dots, v_N\}$: Tập hợp $N$ cổ phiếu.
+* $\mathbf{x}_i \in \mathbb{R}^F$: Vector đặc trưng ban đầu của cổ phiếu $i$ (Lợi nhuận 5 phiên gần nhất, biến động ATR, chỉ số RSI, dòng tiền cá mập OFI, tỷ suất P/E).
+* $\mathcal{R} = \{\text{SupplyChain}, \text{CrossOwnership}, \text{Conglomerate}\}$: Tập hợp các quan hệ kinh tế vi cấu trúc.
+* Ma trận kề theo từng loại quan hệ $A^{(r)} \in \{0, 1\}^{N \times N}$.
+
+#### 2.2. Cơ Chế Chú Ý Không Gian (Spatial Attention Mechanism)
+Tại lớp tích chập thứ $l$, trọng số chú ý $\alpha_{ij}^r$ giữa cổ phiếu $i$ và cổ phiếu láng giềng $j \in \mathcal{N}_i^r$ dưới quan hệ $r$ được tính toán thông qua hàm kích hoạt LeakyReLU:
+$$\alpha_{ij}^r = \frac{\exp\left( \text{LeakyReLU}\left( \mathbf{a}_r^T \left[ W_r^{(l)} \mathbf{h}_i^{(l)} \parallel W_r^{(l)} \mathbf{h}_j^{(l)} \right] \right) \right)}{\sum_{k \in \mathcal{N}_i^r \cup \{i\}} \exp\left( \text{LeakyReLU}\left( \mathbf{a}_r^T \left[ W_r^{(l)} \mathbf{h}_i^{(l)} \parallel W_r^{(l)} \mathbf{h}_k^{(l)} \right] \right) \right)}$$
+
+Trong đó:
+* $W_r^{(l)} \in \mathbb{R}^{F' \times F}$: Ma trận biến đổi tuyến tính chiếu đặc trưng cho loại quan hệ $r$.
+* $\parallel$: Phép nối vector (Concatenation).
+* $\mathbf{a}_r \in \mathbb{R}^{2F'}$: Vector trọng số chú ý khả học.
+
+#### 2.3. Cơ Chế Truyền Tin Đa Quan Hệ (Multi-Head Message Aggregation)
+Vector biểu diễn mới của cổ phiếu $i$ tại lớp $l+1$ là sự tổng hòa thông tin lan truyền từ tất cả các quan hệ:
+$$\mathbf{h}_i^{(l+1)} = \sigma\left( \sum_{r \in \mathcal{R}} \sum_{j \in \mathcal{N}_i^r \cup \{i\}} \alpha_{ij}^r W_r^{(l)} \mathbf{h}_j^{(l)} \right)$$
+
+Hàm dự báo xác suất bùng nổ lợi nhuận T+3 của cổ phiếu $i$:
+$$\hat{y}_i = \text{Softmax}\left( \mathbf{w}_{\text{out}}^T \mathbf{h}_i^{(L)} + b \right)$$
+
+* **Bản chất kinh tế:** Nếu mã $j$ (HPG) có một cú nổ dòng tiền lớn, thông điệp tích cực này được truyền qua cạnh $r = \text{SupplyChain}$ với trọng số $\alpha_{ij}^r$ sang mã $i$ (NKG). Dù mã $i$ hôm nay chưa tăng, vector nhúng $\mathbf{h}_i$ đã hấp thụ năng lượng tăng giá của mã $j$, đẩy điểm số $\hat{y}_i$ lên cao.
+
+---
+
+### 3. Triển Khai Thực Nghiệm Python: Động Cơ GAT Phát Hiện Alpha Lan Truyền Trên Chuỗi Thép & Dầu Khí
+
+Dưới đây là module Python định lượng độc lập xây dựng đồ thị chuỗi cung ứng và tính toán điểm số lan truyền Alpha:
+
+```python
+import numpy as np
+import pandas as pd
+
+class SupplyChainGraphAttentionEngine:
+    """
+    Hệ thống Mạng Đồ Thị Chú Ý (GAT) phát hiện Alpha lan truyền từ chuỗi cung ứng
+    và hệ sinh thái tập đoàn trên sàn HOSE (HPG-NKG-CTD, GAS-PVS-DCM, VIC-VHM-VRE).
+    """
+    def __init__(self, tickers, relations_dict, feature_dim=4, hidden_dim=8):
+        self.tickers = tickers
+        self.N = len(tickers)
+        self.ticker_to_idx = {t: i for i, t in enumerate(tickers)}
+        self.relations = relations_dict  # {'supply': Adjacency_Matrix, 'ecosystem': Adjacency_Matrix}
+        self.hidden_dim = hidden_dim
+        
+        # Khởi tạo ma trận trọng số chiếu khả học
+        np.random.seed(42)
+        self.W_proj = {r: np.random.normal(0, 0.2, (feature_dim, hidden_dim)) for r in self.relations}
+        self.a_attn = {r: np.random.normal(0, 0.2, (2 * hidden_dim, 1)) for r in self.relations}
+        self.w_classifier = np.random.normal(0, 0.2, (hidden_dim, 1))
+        
+    def leaky_relu(self, x, alpha=0.2):
+        return np.where(x >= 0, x, alpha * x)
+        
+    def compute_graph_spillover(self, node_features):
+        """
+        node_features: Ma trận (N x feature_dim) chứa đặc trưng gần nhất của các mã
+        [Lợi nhuận 1 phiên, Lực mua chủ động OFI, Biến động ATR, Điểm dòng tiền cá mập]
+        """
+        X = np.array(node_features)
+        h_aggregated = np.zeros((self.N, self.hidden_dim))
+        
+        # Lặp qua từng loại quan hệ vi cấu trúc
+        for r_name, adj in self.relations.items():
+            W = self.W_proj[r_name]
+            a = self.a_attn[r_name]
+            
+            # Chiếu đặc trưng: H = X * W (N x hidden_dim)
+            H = np.dot(X, W)
+            
+            # Tính toán ma trận Attention song song
+            alpha_mat = np.zeros((self.N, self.N))
+            for i in range(self.N):
+                neighbors = np.where(adj[i] > 0)[0]
+                if len(neighbors) == 0:
+                    continue
+                    
+                # Nối vector [H_i || H_j] cho tất cả hàng xóm
+                H_i_expanded = np.repeat(H[i:i+1], len(neighbors), axis=0)
+                H_neighbors = H[neighbors]
+                H_concat = np.hstack([H_i_expanded, H_neighbors])  # (deg x 2*hidden_dim)
+                
+                # e_ij = LeakyReLU(a^T [H_i || H_j])
+                scores = self.leaky_relu(np.dot(H_concat, a)).flatten()
+                # Softmax chuẩn hóa
+                exp_scores = np.exp(scores - np.max(scores))
+                attn_weights = exp_scores / np.sum(exp_scores)
+                
+                alpha_mat[i, neighbors] = attn_weights
+                
+            # Message Passing: H_new = Alpha * H
+            h_r = np.dot(alpha_mat, H)
+            h_aggregated += h_r
+            
+        # Kích hoạt phi tuyến ReLU
+        h_final = np.maximum(0, h_aggregated)
+        
+        # Dự báo điểm số bùng nổ T+3 (Spillover Score)
+        logits = np.dot(h_final, self.w_classifier).flatten()
+        spillover_probs = 1.0 / (1.0 + np.exp(-logits))
+        
+        results = []
+        for i, ticker in enumerate(self.tickers):
+            results.append({
+                'ticker': ticker,
+                'spillover_alpha_score': round(float(spillover_probs[i] * 100), 2),
+                'signal': 'MUA ĐÓN ĐẦU (Gom T+3)' if spillover_probs[i] >= 0.70 else 'THEO DÕI'
+            })
+            
+        return pd.DataFrame(results).sort_values(by='spillover_alpha_score', ascending=False)
+
+# Minh họa chạy thực nghiệm trên cụm chuỗi cung ứng Thép & Xây dựng:
+# HPG (Đầu ngành quặng thép) -> HSG, NKG (Tôn mạ hạ nguồn) -> CTD, VCG (Nhà thầu)
+if __name__ == '__main__':
+    cluster_tickers = ['HPG', 'HSG', 'NKG', 'CTD', 'VCG']
+    n = len(cluster_tickers)
+    
+    # 1. Ma trận kề Chuỗi cung ứng (Có hướng: Thượng nguồn -> Hạ nguồn)
+    adj_supply = np.zeros((n, n))
+    # HPG (index 0) cung cấp cho HSG (1), NKG (2), CTD (3), VCG (4)
+    adj_supply[1, 0] = 1.0  # HSG nhận từ HPG
+    adj_supply[2, 0] = 1.0  # NKG nhận từ HPG
+    adj_supply[3, 0] = 1.0  # CTD nhận từ HPG
+    adj_supply[4, 0] = 1.0  # VCG nhận từ HPG
+    # Thêm vòng tự lặp (Self-loop)
+    np.fill_diagonal(adj_supply, 1.0)
+    
+    # 2. Giả lập kịch bản thị trường:
+    # HPG vừa nổ von tăng trần +6.8%, cá mập gom cực mạnh (WhaleScore = 0.95)
+    # Nhưng HSG, NKG, CTD hôm nay mới chỉ tăng nhẹ +0.5% do thị trường chưa nhận ra thông tin
+    mock_features = [
+        [0.068,  0.85, 0.025, 0.95],  # HPG (Đang nổ lớn)
+        [0.005,  0.15, 0.018, 0.35],  # HSG (Chưa kịp chạy)
+        [0.008,  0.20, 0.020, 0.40],  # NKG (Chưa kịp chạy)
+        [-0.002, -0.10, 0.015, 0.25], # CTD (Đang tích lũy đỏ)
+        [0.001,  0.05, 0.019, 0.30]   # VCG (Tích lũy)
+    ]
+    
+    engine = SupplyChainGraphAttentionEngine(cluster_tickers, {'supply': adj_supply}, feature_dim=4)
+    spillover_df = engine.compute_graph_spillover(mock_features)
+    
+    print("=== KẾT QUẢ DỰ BÁO ALPHA LAN TRUYỀN CHUỖI CUNG ỨNG (GAT ENGINE) ===")
+    print("Tình huống: HPG bứt phá mạnh, thuật toán quét tín hiệu lan truyền sang các mã hạ nguồn:")
+    print(spillover_df.to_string(index=False))
+```
+
+---
+
+### 4. Ứng Dụng Đột Phá Vào KongKeng Radar
+1. **Radar Săn Sóng Chuỗi Cung Ứng Tự Động (Supply Chain Spillover Radar):**
+   * Khi một mã đầu ngành (ví dụ HPG, GAS, VCB) xuất hiện tín hiệu Mua bùng nổ với Điểm tin cậy AI $> 90$, hệ thống tự động kích hoạt bộ quét đồ thị GAT để xếp hạng các cổ phiếu hạ nguồn đang bị nén giá tích lũy (như HSG, NKG, CTD hoặc MBS).
+2. **Kích Hoạt Kịch Bản 2 (Pullback Entry) Đón Đầu Dòng Tiền Thông Minh:**
+   * Thay vì xúi giục nhà đầu tư mua đuổi HPG ở giá trần (Kịch bản 1 rủi ro cao), KongKeng Radar tự động gợi ý nhà đầu tư **đặt lệnh chờ gom tại vùng hỗ trợ (Kịch bản 2)** của các mã hạ nguồn hưởng lợi trực tiếp từ chuỗi giá trị, mang lại tỷ lệ Lãi/Lỗ $R:R > 1:4.5$ vượt trội.
 

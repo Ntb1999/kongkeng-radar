@@ -8381,6 +8381,17 @@ const REPORTS = [
 ];
 const REP_TABS = [['Tất cả', 1152, () => true], ['Vĩ mô & Chiến lược', 86, r => r[2] === 'Vĩ mô' || r[2] === 'Chiến lược'], ['Ngành', 312, r => r[2] === 'Ngành'], ['Doanh nghiệp', 784, r => r[2] === 'Doanh nghiệp'], ['Có giá mục tiêu', 158, r => r[4] != null]];
 const recKey = r => ({ 'MUA': 'MUA', 'KHẢ QUAN': 'KHA', 'TRUNG LẬP': 'TRU', 'KÉM KHẢ QUAN': 'KEM', 'KÉM KQ': 'KEM', 'BÁN': 'BAN' }[r] || '');
+const REP_POPULAR_TICKERS = ['KDH', 'HPG', 'FPT', 'MSB', 'VIX', 'SSI', 'VCB', 'TCB', 'MWG', 'VNM', 'NVL', 'DIG', 'CEO', 'BVH', 'BMP', 'MBS', 'SHS', 'VHM', 'NLG'];
+
+function isReportDedicatedToTicker(r, sym) {
+  if (!sym) return true;
+  const symU = sym.toUpperCase().trim();
+  const title = (r[1] || '').toUpperCase();
+  if (title.startsWith(symU + ':') || title.startsWith(symU + ' -') || title.includes(' ' + symU + ' ') || title.includes('(' + symU + ')') || title.includes('[' + symU + ']')) return true;
+  const evalRes = typeof evaluateReportSentimentAndInsight === 'function' ? evaluateReportSentimentAndInsight(r) : null;
+  if (evalRes && evalRes.sym === symU) return true;
+  return false;
+}
 
 /* ================= MARIS AI REPORT INSIGHT & SENTIMENT ENGINE (QUAD MCP) ================= */
 function evaluateReportSentimentAndInsight(r) {
@@ -9613,7 +9624,7 @@ const S = {
   all: { chips: [['Sàn', 'HOSE · HNX', 'ex'], ['Ngành', '', 'ind', 5], ['Biến động giá', '', 'bd', '< 3%'], ['KLGD', '', 'kl', '> 1,000']], sort: ['mc', -1], sel: new Set(['HPG', 'GAS', 'VNM']), ex: new Set(['HOSE', 'HNX']), cols: 'Tổng quan' },
   dr: { open: { 1: true }, crit: new Set(), ex: new Set(['HOSE', 'HNX']), q: '' },
   cmp: ['MSB', 'FPT', 'HPG'], cmpClosed: new Set(), cmpTab: 'all', cmpPeriod: '3M', mktTab: 'pulse', mktLeaderTab: 'val', mktFlowMode: 'foreign', mktFlowPeriod: '1M', mktFlowSectorFilter: null, mktEx: 'ALL', mktGlobalCat: 'all',
-  rep: { tab: 0, q: '', page: 1, span: '30 ngày', span2: '30 ngày', lastSync: '' },
+  rep: { tab: 0, q: '', tkr: '', page: 1, span: '30 ngày', span2: '30 ngày', lastSync: '' },
   watch: new Set(['FPT', 'VCB', 'HPG']),
   mnews: { tab: 0, q: '', tkr: '', span: 'Tất cả', sentiment: 'Tất cả', page: 1 }
 };
@@ -13618,10 +13629,29 @@ function vCompare() {
 }
 /* ================= REPORTS ================= */
 function vReports() {
-  const R = S.rep, f = REP_TABS[R.tab][2], q = R.q.trim().toLowerCase();
-  let rows = REPORTS.filter(f).filter(r => !q || r[1].toLowerCase().includes(q) || (r[7] && r[7].toLowerCase().includes(q)) || (r[8] && r[8].toLowerCase().includes(q)));
+  const R = S.rep, f = REP_TABS[R.tab][2], q = (R.q || '').trim().toLowerCase();
+  const activeTkr = (R.tkr || '').toUpperCase().trim();
+
+  let rows = REPORTS.slice();
+  if (activeTkr) {
+    rows = rows.filter(r => isReportDedicatedToTicker(r, activeTkr));
+    if (q) {
+      rows = rows.filter(r => r[1].toLowerCase().includes(q) || (r[9] && r[9].toLowerCase().includes(q)));
+    }
+  } else {
+    rows = rows.filter(f);
+    if (q) {
+      rows = rows.filter(r => {
+        const titleMatch = r[1].toLowerCase().includes(q);
+        const pubMatch = r[7] && r[7].toLowerCase().includes(q);
+        const anaMatch = r[8] && r[8].toLowerCase().includes(q);
+        const thesisMatch = r[9] && r[9].toLowerCase().includes(q);
+        return titleMatch || pubMatch || anaMatch || thesisMatch;
+      });
+    }
+  }
   if (R.page > 1) rows = rows.map((r, i) => [['22/07', '21/07', '20/07', '18/07'][(i + R.page) % 4], ...r.slice(1)]).reverse();
-  const total = q ? rows.length : REP_TABS[R.tab][1];
+  const total = (activeTkr || q) ? rows.length : REP_TABS[R.tab][1];
   const pages = Math.max(1, Math.ceil(total / 20));
   const k = { '7 ngày': .27, '30 ngày': 1, '90 ngày': 2.8 }[R.span];
   const dist = [['MUA', 68, 'var(--s5)'], ['KHẢ QUAN', 41, 'var(--s4)'], ['TRUNG LẬP', 29, 'var(--s3)'], ['KÉM KHẢ QUAN', 9, 'var(--s2)'], ['BÁN', 3, 'var(--s1)']].map(d => [d[0], Math.max(1, Math.round(d[1] * k)), d[2]]);
@@ -13705,9 +13735,39 @@ function vReports() {
       </div>
     </div>
 
+    <!-- Quick Stock Ticker Filter Pills Bar for Reports -->
+    <div class="mnews-ticker-bar" style="display:flex;align-items:center;gap:6px;padding:8px 24px;border-bottom:1px solid var(--line);background:var(--sub);overflow-x:auto;white-space:nowrap;margin:0 0 12px 0;border-radius:8px">
+      <span style="font-size:11.5px;font-weight:700;color:var(--ink2);display:inline-flex;align-items:center;gap:4px;flex-shrink:0;margin-right:4px">
+        <span>🔍</span> Lọc báo cáo theo mã:
+      </span>
+      <button class="chip ${!activeTkr ? 'on' : ''}" data-act="repcleartkr" style="font-size:11px;padding:2px 8px;border-radius:6px;flex-shrink:0;font-weight:600">
+        Tất cả mã (${REPORTS.length})
+      </button>
+      ${REP_POPULAR_TICKERS.map(sym => {
+        const count = REPORTS.filter(r => isReportDedicatedToTicker(r, sym)).length;
+        const isSel = activeTkr === sym;
+        return `<button class="chip ${isSel ? 'on' : ''}" data-act="reptkr" data-v="${sym}" style="font-size:11px;padding:2px 8px;border-radius:6px;flex-shrink:0;${isSel ? 'background:#0284c7;color:#fff;font-weight:700;border-color:#0284c7' : ''}">
+          <b>${sym}</b> <span style="font-size:10px;opacity:0.85">(${count})</span>
+        </button>`;
+      }).join('')}
+    </div>
+
     <div class="rep"><div class="rep-l">
       <div class="rtabs">${REP_TABS.map((t, i) => `<button class="${R.tab === i ? 'on' : ''}" data-act="reptab" data-v="${i}">${t[0]} <span>${fmtVN(t[1])}</span></button>`).join('')}</div>
-      <div class="rsrch"><div class="search" style="display:inline-block"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="repq" type="search" placeholder="Tìm theo mã cổ phiếu, ngành hoặc tiêu đề báo cáo..." value="${esc(R.q)}" style="width:246px"></div></div>
+      <div class="rsrch" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+        <div style="position:relative;display:inline-flex;align-items:center">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:10px;color:var(--ink3);pointer-events:none"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <input id="repq" type="search" placeholder="Gõ mã CK (KDH, FPT, HPG...) hoặc tiêu đề báo cáo..." value="${esc(activeTkr || R.q || '')}" style="width:320px;height:34px;padding:0 32px 0 32px;border:1px solid ${activeTkr ? '#0284c7' : 'var(--line)'};border-radius:99px;background:var(--sub);color:var(--ink);font-size:12px;outline:none">
+          ${activeTkr || R.q ? `
+            <button data-act="repcleartkr" style="position:absolute;right:8px;background:transparent;border:0;color:var(--ink3);cursor:pointer;font-size:14px;padding:2px 6px" title="Xóa lọc">✕</button>
+          ` : ''}
+        </div>
+        ${activeTkr ? `
+          <div style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#0284c7;font-weight:600">
+            <span>Đang cô lập báo cáo mã <b>${activeTkr}</b> (${rows.length} báo cáo)</span>
+          </div>
+        ` : ''}
+      </div>
       <div class="tscroll"><table class="t upper rep-t"><thead><tr><th style="width:90px">Thời gian</th><th>Tiêu đề báo cáo &amp; Đánh giá AI</th><th style="width:104px">Phân loại</th><th style="width:108px">Khuyến nghị</th><th class="rt" style="width:96px">Thị giá</th><th class="rt" style="width:104px">Giá mục tiêu</th><th class="rt" style="width:84px">Upside</th><th class="rt" style="width:110px">Nguồn &amp; Trang</th></tr></thead>
       <tbody>${rows.map(r => {
         const evalRes = typeof evaluateReportSentimentAndInsight === 'function' ? evaluateReportSentimentAndInsight(r) : null;
@@ -13720,7 +13780,7 @@ function vReports() {
           <td class="muted">${r[0]}</td>
           <td class="ti" title="${esc(r[1])}">
             <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
-              ${sym ? `<span class="rep-ticker-chip" data-act="stock" data-v="${sym}" title="Mở Company 360 cho ${sym}">${sym}</span>` : ''}
+              ${sym ? `<span class="rep-ticker-chip" data-act="reptkr" data-v="${sym}" title="Lọc tất cả báo cáo của ${sym}">${sym}</span>` : ''}
               <span style="font-weight:600;color:var(--ink)">${esc(r[1])}</span>
             </div>
             ${evalRes ? `
@@ -21095,6 +21155,20 @@ const A = {
   cmpall: () => { if (S.cmpClosed.size) S.cmpClosed.clear(); else CMP_SECTIONS.forEach((_, i) => S.cmpClosed.add(i)); rerender(); },
 /* reports */
   reptab: el => { S.rep.tab = +el.dataset.v; S.rep.page = 1; rerender(); },
+  reptkr: el => {
+    const sym = (el.dataset.v || '').toUpperCase().trim();
+    S.rep = S.rep || {};
+    S.rep.tkr = (S.rep.tkr === sym) ? '' : sym;
+    S.rep.page = 1;
+    rerender();
+  },
+  repcleartkr: () => {
+    S.rep = S.rep || {};
+    S.rep.tkr = '';
+    S.rep.q = '';
+    S.rep.page = 1;
+    rerender();
+  },
   page: el => { S.rep.page = +el.dataset.v; rerender(); },
   repspan: el => openMenu(el, ['7 ngày', '30 ngày', '90 ngày'], S.rep.span, v => { S.rep.span = v; rerender(); }),
   repspan2: el => openMenu(el, ['7 ngày', '30 ngày', '90 ngày'], S.rep.span2, v => { S.rep.span2 = v; rerender(); }),
@@ -21433,7 +21507,20 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('input', e => {
   if (e.target.id === 'repq') {
-    S.rep.q = e.target.value; S.rep.page = 1; const pos = e.target.selectionStart; rerender(); const n = document.getElementById('repq'); if (n) { n.focus(); n.setSelectionRange(pos, pos); }
+    const val = (e.target.value || '').trim();
+    S.rep = S.rep || {};
+    S.rep.q = e.target.value;
+    S.rep.page = 1;
+    const upper = val.toUpperCase();
+    if (typeof REP_POPULAR_TICKERS !== 'undefined' && REP_POPULAR_TICKERS.includes(upper)) {
+      S.rep.tkr = upper;
+    } else if (!val) {
+      S.rep.tkr = '';
+    }
+    const pos = e.target.selectionStart;
+    rerender();
+    const n = document.getElementById('repq');
+    if (n) { n.focus(); n.setSelectionRange(pos, pos); }
   } else if (e.target.id === 'mnewsq') {
     const val = (e.target.value || '').trim();
     S.mnews = S.mnews || {};

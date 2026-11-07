@@ -177,6 +177,10 @@
 
 ---
 
+- [Chủ đề 130: Mô Hình Học Sâu Biến Đổi Không Gian - Thời Gian (ST-GNN) Dự Báo Động Lượng Ngành & Dòng Tiền Luân Chuyển Tại Sàn HOSE](#-chủ-đề-130-mô-hình-học-sâu-biến-đổi-không-gian---thời-gian-spatial-temporal-gnn-dự-báo-cấu-trúc-động-lượng-ngành--dòng-tiền-luân-chuyển-tại-sàn-hose)
+
+---
+
 ## 🔬 CHỦ ĐỀ 01: PHƯƠNG PHÁP META-LABELING & TRIPLE BARRIER METHOD
 **Tác giả lý thuyết:** GS. Marcos López de Prado (*Advances in Financial Machine Learning*, 2018)  
 **Thời gian hoàn thành:** 2026-11-02 23:35 (ICT)  
@@ -14814,3 +14818,170 @@ if __name__ == '__main__':
 2. **Đồng bộ hóa nhịp nhàng với 2 Kịch Bản FOMO:**
    - Khi tỷ trọng cổ phiếu vượt biên trên ($w > w_{\text{upper}}$), hệ thống kích hoạt chốt lời từng phần tại **Kịch Bản 1 (Bán Thị Giá)**.
    - Khi tỷ trọng rơi xuống dưới biên dưới ($w < w_{\text{lower}}$), hệ thống mới bắt đầu kích hoạt lệnh mua gom tại **Kịch Bản 2: Đặt Chờ Tích Lũy (Pullback Ladder)**, đảm bảo mua ở vùng chiết khấu tối ưu và giảm thiểu trượt giá khớp lệnh.
+
+---
+
+## 🔬 CHỦ ĐỀ 130: MÔ HÌNH HỌC SÂU BIẾN ĐỔI KHÔNG GIAN - THỜI GIAN (SPATIAL-TEMPORAL GNN) DỰ BÁO CẤU TRÚC ĐỘNG LƯỢNG NGÀNH & DÒNG TIỀN LUÂN CHUYỂN TẠI SÀN HOSE
+
+```
+Chu kỳ nghiên cứu: 10 phút định kỳ (Iteration 29 / Task-7472)
+Thời gian hoàn thành: 2026-11-07 19:50:00
+Phân hệ áp dụng: Dự Báo Luân Chuyển Ngành & Nhận Diện Cổ Phiếu Dẫn Sóng / KongKeng Radar
+Mức độ kiểm định: Chuẩn mực Spatio-Temporal Graph Neural Networks (ST-GNN) & Cấu trúc Vi mô HOSE
+```
+
+### 1. Bối Cảnh Thực Tiễn & Rào Cản Tại Thị Trường Việt Nam
+Tại thị trường chứng khoán Việt Nam, hiện tượng **Luân chuyển dòng tiền ngành (Sector Rotation & Capital Flow Dynamics)** là đặc trưng vận động cốt lõi của dòng tiền tạo lập (Smart Money):
+1. **Sự dịch chuyển dòng tiền theo chuỗi giá trị liên ngành (Cross-Sector Topology):** Dòng tiền lớn hiếm khi rút khỏi thị trường mà thường xoay vòng nhịp nhàng: khi nhóm Ngân hàng chững lại tích lũy, dòng tiền sẽ kích hoạt nhóm Chứng khoán và Thép; sau đó lan tỏa sang Bất động sản, Đầu tư công và Bán lẻ.
+2. **Hạn chế của các mô hình học máy truyền thống (1D Time Series Blindness):** Các mạng nơ-ron chuỗi thời gian như LSTM, GRU hay Transformer thông thường chỉ xử lý chuỗi giá độc lập của từng cổ phiếu riêng lẻ. Chúng hoàn toàn không có khả năng mô hình hóa cấu trúc không gian (Spatial Dependencies) - tức mối quan hệ phụ thuộc chuỗi cung ứng, sở hữu chéo và tâm lý lan truyền giữa các nhóm ngành.
+3. **Mục tiêu của KongKeng Radar:** Triển khai kiến trúc **Mạng Nơ-ron Đồ Thị Không Gian - Thời Gian (Spatial-Temporal Graph Neural Network - ST-GNN)** kết hợp tích chập đồ thị thích ứng (Adaptive Graph Convolution) và cơ chế Cổng kiểm soát thời gian (Temporal Gated Linear Units - TGLU). Mô hình dự báo trước hướng dịch chuyển của dòng tiền cá mập giữa các nhóm ngành trên sàn HOSE từ 1 đến 3 phiên, giúp nhà đầu tư đón đầu các cổ phiếu dẫn sóng (Leading Stocks) ngay tại chân sóng.
+
+---
+
+### 2. Nền Tảng Toán Học Định Lượng: Kiến Trúc Spatial-Temporal GNN
+
+#### 2.1. Biểu Diễn Đồ Thị Không Gian - Thời Gian Của Thị Trường
+Thị trường chứng khoán tại thời điểm $t$ được mô hình hóa thành một đồ thị động có hướng:
+$$\mathcal{G}_t = (\mathcal{V}, \mathcal{E}, A_t)$$
+Trong đó:
+- $\mathcal{V} = \{v_1, \dots, v_N\}$: Tập hợp $N$ nhóm ngành hoặc cổ phiếu trụ cột đại diện trên sàn HOSE ($N=8$ nhóm ngành lớn: Ngân hàng, Chứng khoán, Bất động sản, Thép, Bán lẻ, Công nghệ, Hóa chất, Dầu khí).
+- $X_t \in \mathbb{R}^{N \times F}$: Ma trận đặc trưng tại bước $t$ gồm $F$ biến định lượng vi cấu trúc (Lợi suất logarit, Khối lượng giao dịch chuẩn hóa, Tỷ lệ mất cân đối mua bán chủ động ABSI, Chỉ số dòng lệnh độc hại VPIN, và Biến động Realized Kernel).
+- $A_t \in \mathbb{R}^{N \times N}$: Ma trận kề động học tự thích ứng (Dynamic Adaptive Adjacency Matrix):
+  $$A_t = \text{Softmax}\left( \text{ReLU}\left( E_{\text{source}} \cdot E_{\text{target}}^T + \alpha \cdot C_t \right) \right)$$
+  Trong đó $E_{\text{source}}, E_{\text{target}} \in \mathbb{R}^{N \times d}$ là các vector nhúng nút tiềm ẩn học mối liên kết cơ bản giữa các ngành, và $C_t$ là ma trận tương quan lăn ngắn hạn.
+
+#### 2.2. Khối Tích Chập Đồ Thị Không Gian (Spatial Graph Convolution - GCN)
+Để tổng hợp thông tin từ các ngành lân cận trong mạng lưới dòng tiền:
+$$Z_t = \tilde{D}^{-1/2} \tilde{A}_t \tilde{D}^{-1/2} X_t W_s + b_s$$
+Trong đó $\tilde{A}_t = A_t + I_N$ bổ sung vòng tự liên kết (Self-loop) và ma trận bậc $\tilde{D}_{ii} = \sum_j \tilde{A}_{ij}$. Phép biến đổi này cho phép mỗi ngành hấp thụ tín hiệu động lượng từ toàn bộ các ngành thượng nguồn và hạ nguồn.
+
+#### 2.3. Khối Tích Chập Thời Gian Có Cổng (Temporal Gated Linear Units - TGLU)
+Để bóc tách xu hướng lịch sử qua các phiên giao dịch mà không bị triệt tiêu đạo hàm:
+$$\Gamma_t = (Z * \Theta_1) \odot \sigma(Z * \Theta_2)$$
+Trong đó:
+- $*$ là toán tử tích chập 1D theo trục thời gian với độ dài cửa sổ $K_t$ phiên.
+- $\Theta_1$ là bộ lọc đặc trưng tuyến tính, $\Theta_2$ là cổng kiểm soát thông tin (Gating Mechanism) với hàm kích hoạt Sigmoid $\sigma(\cdot)$, và $\odot$ là tích Hadamard từng phần tử.
+
+#### 2.4. Hàm Tổn Thất Xếp Hạng Động Lượng Ngành (Ranking Cross-Entropy Loss)
+Để tối ưu hóa độ chính xác của việc chọn ngành mạnh nhất (Top Momentum Sectors):
+$$\mathcal{L} = \frac{1}{N} \sum_{i=1}^N (\hat{r}_{i, t+1} - r_{i, t+1})^2 + \lambda_{\text{rank}} \sum_{i=1}^N \sum_{j=1}^N \max\left(0, \, -(\hat{r}_{i, t+1} - \hat{r}_{j, t+1})(r_{i, t+1} - r_{j, t+1}) \right)$$
+
+---
+
+### 3. Thuật Toán Python Mô Phỏng Mạng ST-GNN Luân Chuyển Ngành Sàn HOSE
+
+```python
+import numpy as np
+import pandas as pd
+
+class SpatialTemporalGNNRotationEngine:
+    """
+    Bộ động cơ định lượng Không gian - Thời gian ST-GNN cho KongKeng Radar.
+    Dự báo cấu trúc dòng tiền luân chuyển giữa 8 nhóm ngành chủ chốt sàn HOSE.
+    """
+    def __init__(self, sectors, num_features=4, hidden_dim=8):
+        self.sectors = sectors
+        self.N = len(sectors)
+        self.F = num_features
+        self.d = hidden_dim
+        
+        # Khởi tạo vector nhúng nút tiềm ẩn (Node Embeddings)
+        np.random.seed(42)
+        self.E_src = np.random.randn(self.N, self.d) * 0.1
+        self.E_tgt = np.random.randn(self.N, self.d) * 0.1
+        self.W_spatial = np.random.randn(self.F, self.d) * 0.1
+        self.W_out = np.random.randn(self.d, 1) * 0.1
+
+    def compute_adaptive_adjacency(self, short_term_corr):
+        """
+        Tính toán ma trận kề động học A_t kết hợp vector nhúng và tương quan dòng tiền ngắn hạn
+        A_t = Softmax(ReLU(E_src * E_tgt^T + 0.5 * Corr))
+        """
+        raw_affinity = np.dot(self.E_src, self.E_tgt.T) + 0.5 * short_term_corr
+        relu_affinity = np.maximum(0, raw_affinity)
+        
+        # Softmax theo từng hàng để chuẩn hóa xác suất dòng tiền lan tỏa
+        exp_aff = np.exp(relu_affinity - np.max(relu_affinity, axis=1, keepdims=True))
+        adj_matrix = exp_aff / np.sum(exp_aff, axis=1, keepdims=True)
+        return adj_matrix
+
+    def spatial_graph_convolution(self, X_t, adj_matrix):
+        """
+        Thực hiện tích chập đồ thị: Z = D^(-1/2) * A * D^(-1/2) * X * W_s
+        """
+        # Bổ sung self-loop
+        A_tilde = adj_matrix + np.eye(self.N)
+        D_tilde = np.diag(1.0 / np.sqrt(np.sum(A_tilde, axis=1)))
+        
+        normalized_A = np.dot(np.dot(D_tilde, A_tilde), D_tilde)
+        # Tích chập không gian
+        Z = np.dot(np.dot(normalized_A, X_t), self.W_spatial)
+        return np.maximum(0, Z)  # Hàm kích hoạt ReLU
+
+    def predict_sector_momentum(self, X_history, rolling_correlations):
+        """
+        Dự phóng điểm số động lượng dòng tiền (Momentum Inflow Score) cho phiên tiếp theo
+        X_history có kích thước (T_steps, N, F)
+        """
+        T_steps = X_history.shape[0]
+        curr_corr = rolling_correlations[-1]
+        adj_matrix = self.compute_adaptive_adjacency(curr_corr)
+        
+        # Lan truyền không gian tại bước thời gian gần nhất
+        X_latest = X_history[-1]
+        Z_spatial = self.spatial_graph_convolution(X_latest, adj_matrix)
+        
+        # Gating thời gian đơn giản hóa: Tích lũy xung lượng qua các bước lịch sử
+        temporal_trend = np.mean(X_history[:, :, 0], axis=0)  # Xu hướng lợi suất
+        
+        # Điểm số dự báo động lượng dòng tiền cho từng ngành
+        momentum_scores = np.dot(Z_spatial, self.W_out).flatten() + 0.4 * temporal_trend
+        
+        # Xếp hạng ngành
+        rank_indices = np.argsort(-momentum_scores)
+        
+        results = []
+        for rank, idx in enumerate(rank_indices):
+            sec = self.sectors[idx]
+            score = momentum_scores[idx]
+            status = "DẪN SÓNG (TOP LEADER)" if rank <= 1 else ("THEO SAU (FOLLOWER)" if rank <= 4 else "CHỐT LỜI / SUY YẾU (LAGGARD)")
+            results.append({
+                'Rank': rank + 1,
+                'Sector': sec,
+                'Momentum_Score': np.round(score, 4),
+                'Predicted_Status': status
+            })
+            
+        return pd.DataFrame(results), adj_matrix
+
+# Mô phỏng thực nghiệm trên 8 nhóm ngành cốt lõi sàn HOSE
+if __name__ == '__main__':
+    sectors_list = ['Ngân hàng', 'Chứng khoán', 'Bất động sản', 'Thép', 'Bán lẻ', 'Công nghệ', 'Hóa chất', 'Dầu khí']
+    engine = SpatialTemporalGNNRotationEngine(sectors=sectors_list)
+    
+    # Giả lập dữ liệu đặc trưng 5 phiên gần nhất cho 8 ngành: [Return, Norm_Vol, ABSI, VPIN]
+    np.random.seed(101)
+    mock_X_history = np.random.randn(5, 8, 4) * 0.02
+    # Thiết lập kịch bản: Nhóm Công nghệ và Thép đang có dòng tiền mua chủ động ABSI tăng vọt
+    mock_X_history[-1, 5, 0] = 0.035  # Công nghệ tăng mạnh
+    mock_X_history[-1, 3, 0] = 0.028  # Thép tăng mạnh
+    
+    # Ma trận tương quan ngắn hạn
+    mock_corr = np.eye(8) + np.random.uniform(0.1, 0.4, (8, 8))
+    mock_corr = (mock_corr + mock_corr.T) / 2.0
+    
+    df_ranks, dynamic_adj = engine.predict_sector_momentum(mock_X_history, [mock_corr])
+    
+    print("=== DỰ BÁO CẤU TRÚC ĐỘNG LƯỢNG NGÀNH BẰNG ST-GNN (HOSE ROTATION) ===")
+    print(df_ranks.to_string(index=False))
+```
+
+---
+
+### 4. Ứng Dụng Đột Phá Vào Nền Tảng KongKeng Radar
+1. **Đồng bộ hóa trực tiếp với Spotlight Symbol Search Modal:**
+   - 10 tab phân loại ngành trên hộp thoại tìm kiếm (`Tất cả (94)`, `Ngân hàng`, `Chứng khoán`, `Bất động sản`, `Thép`, `Bán lẻ`, `Công nghệ`, `Hóa chất`, `Dầu khí`) được tự động gắn huy hiệu sao sáng ⭐ cho 2 nhóm ngành đứng đầu bảng xếp hạng ST-GNN.
+   - Giúp nhà đầu tư định vị ngay lập tức các cổ phiếu dẫn sóng tiềm năng nhất thị trường trong ngày.
+2. **Tối ưu hóa điểm vào cho 2 Kịch Bản FOMO:**
+   - **Kịch Bản 1 (Mua Thị Giá):** Chỉ áp dụng tỷ lệ giải ngân thăm dò đối với các mã thuộc nhóm ngành đang trong trạng thái **"DẪN SÓNG (TOP LEADER)"**.
+   - **Kịch Bản 2 (Thang Giá Tích Lũy Pullback Ladder):** Ưu tiên đặt lệnh chờ gom tại các cổ phiếu thuộc nhóm ngành **"THEO SAU (FOLLOWER)"** đang tích lũy chặt chẽ và chuẩn bị đón nhận làn sóng dòng tiền luân chuyển tiếp theo.
